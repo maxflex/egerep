@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+    <!--
+    This is a starter template page. Use this page to start your new project from
+    scratch. This page gets rid of all links and provides the needed markup only.
+    -->
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>AdminLTE 2 | Dashboard</title>
+        <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+        <meta charset="utf-8">
+        <base href="//localhost:8081/egerep/public/">
+        <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Ubuntu&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+        <script src="{{ asset('/js/vendor.js') }}"></script>
+        <script src="{{ asset('/js/app.js') }}"></script>
+        @foreach($js as $script_name)
+            <script src="{{ asset('/js/' . $script_name . '.js') }}"></script>
+        @endforeach
+    </head>
+    <body class="skin-blue" ng-app="Egerep" ng-controller="@yield('controller')">
+        <div class="wrapper">
+            <!-- Left side column. contains the logo and sidebar -->
+            <aside class="main-sidebar" style="padding-top: 0">
+
+                <!-- sidebar: style can be found in sidebar.less -->
+                <section class="sidebar">
+
+                    <!-- Sidebar user panel (optional) -->
+                    <!-- <div class="user-panel">
+                        <div class="pull-left image">
+                            <img src="{{ asset("img/user2-160x160.jpg") }}" class="img-circle" alt="User Image" />
+                        </div>
+                        <div class="pull-left info">
+                            <p>Колядин Максим</p>
+                            <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                        </div>
+                    </div> -->
+
+                    <!-- search form (Optional) -->
+                    <form action="#" method="get" class="sidebar-form">
+                        <div class="input-group">
+                            <input type="text" name="q" class="form-control" placeholder="Поиск..."/>
+                            <span class="input-group-btn">
+                                <button type='submit' name='search' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                    <!-- /.search form -->
+
+                    <!-- Sidebar Menu -->
+                    <ul class="sidebar-menu">
+                        <li class="header">МЕНЮ</li>
+                        <!-- Optionally, you can add icons to the links -->
+                        <li class="active">
+                            {{ link_to_route('teachers.index', 'Заявки') }}
+                        </li>
+                        <li><a href="#"><span>Клиенты</span></a></li>
+                        <li class="treeview">
+                            <a href="#"><span>Преподаватели</span> <i class="fa fa-angle-left pull-right"></i></a>
+                            <ul class="treeview-menu">
+                                <li><a href="#">Профили</a></li>
+                                <li><a href="#">Дебет</a></li>
+                            </ul>
+                        </li>
+                    </ul><!-- /.sidebar-menu -->
+                </section>
+                <!-- /.sidebar -->
+            </aside>
+
+            <!-- Content Wrapper. Contains page content -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>
+                        @yield('title')
+                        <small>@yield('description')</small>
+                    </h1>
+                    <!-- <ol class="breadcrumb">
+                        <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
+                        <li class="active">Here</li>
+                    </ol> -->
+                </section>
+
+                <!-- Main content -->
+                <section class="content" ng-controller="TeachersCtrl">
+                    <!-- Your Page Content Here -->
+                    @yield('content')
+                </section><!-- /.content -->
+            </div><!-- /.content-wrapper -->
+
+        </div><!-- ./wrapper -->
+    </body>
+</html>

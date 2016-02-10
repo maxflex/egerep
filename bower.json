@@ -1,0 +1,41 @@
+{
+  "name": "egerep",
+  "description": "",
+  "main": "",
+  "authors": [
+    "Max Kolyadin <makcyxa-k@yandex.ru>"
+  ],
+  "license": "MIT",
+  "moduleType": [],
+  "homepage": "http://a-perspektiva.ru/",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.2.0",
+    "bootstrap": "~3.3.6",
+    "bootswatch-scss": "~3.2.0",
+    "normalize-css": "normalize.css#~3.0.3",
+    "Ionicons": "ionicons#~2.0.1",
+    "font-awesome": "~4.5.0",
+    "angular": "~1.4.8",
+    "jquery.inputmask": "~3.2.5",
+    "jquery-ui": "~1.11.4",
+    "angular-animate": "~1.4.8",
+    "angular-sanitize": "~1.4.8",
+    "angular-resource": "~1.4.8",
+    "nprogress": "~0.2.0",
+    "angular-material": "~1.0.2",
+    "angular-i18n": "~1.4.8",
+    "ngmap": "~1.16.7",
+    "underscore": "~1.8.3",
+    "angular-jquery-maskedinput": "*",
+    "bootstrap-select": "~1.9.4",
+    "ui-select": "angular-ui-select#~0.14.0",
+    "nya-bootstrap-select": "~2.1.2"
+  }
+}
