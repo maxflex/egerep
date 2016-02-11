@@ -4,3 +4,8 @@
     cd /var/www/html/repetitors/htdocs/egerep
     git pull github master
 @endtask
+
+@task('laroute')
+    cd /var/www/html/repetitors/htdocs/egerep
+    php artisan laroute:generate
+@endtask

@@ -1,4 +1,5 @@
 /node_modules
+/public/js/laroute.js
 Homestead.yaml
 Homestead.json
 Envoy.blade.php
