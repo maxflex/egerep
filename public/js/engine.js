@@ -9,6 +9,16 @@
 	})
 
 	/**
+	 * Svg map debug function.
+	 */
+	function clickSt(id) {
+		$('iframe').contents().find('#st' + id).click();
+	}
+	function selectLine(id) {
+		return $('iframe').contents().find('#line' + id);
+	}
+
+	/**
 	 * Helper funciton for selectpicker
 	 */
 	function sp(id, placeholder) {
@@ -40,7 +50,7 @@
 	 * Configure plugins
 	 */
 	function configurePlugins() {
-		
+
 	}
 
 	/**

@@ -36,7 +36,7 @@ SVGMap.prototype = {
 		this.options.unions = JSON.parse($(svgdom).find('rel#unions').text());
 		this.options.lines_stations = JSON.parse($(svgdom).find('rel#lines_stations').text());
 
-		this.options.placesHash = {};
+		// this.options.placesHash = {};
 		this.options.groupsHash = {};
 
 		this.svgdom = svgdom;
@@ -86,10 +86,31 @@ SVGMap.prototype = {
         }, 100);
     },
 
+    _getId: function(stationId) {
+        return parseInt(stationId.replace('st', ''));
+    },
+
+    declickAll: function() {
+        $.each(this.selected, function(stId, selected) {
+            // console.log(stId, selected, $('iframe').contents().find('#st' + stId))
+            if (selected && stId != 'null') {
+                $('iframe').contents().find('#st' + stId).click()
+            }
+        })
+    },
+
     deselectAll: function(passOff) {
+        // ЭТО УЖЕ БЫЛО ЗАКОММЕНТИРОВАНО
         //if (!passOff) $(document).off("svg.save");
-        for (i in this.options.placesHash)
-            this.selected[i] = false;
+        // ЭТО ЗАКОММЕНТИРОВАЛ Я
+        // for (i in this.options.placesHash)
+        //     this.selected[i] = false;
+        $.each(this.selected, function(index, selected) {
+            if (selected) {
+                this.selected[index] = false
+            }
+        }.bind(this));
+
         jQuery("#stations > g > g", this.svgdom).each(function(){
             $(this).find("path").css({"fill-opacity": opacity});
             $(this).siblings("text").css({"fill-opacity": opacity});
@@ -100,8 +121,11 @@ SVGMap.prototype = {
     },
 
     selectAll: function() {
-        for (i in this.options.placesHash)
-            this.selected[i] = true;
+        $.each(this.options.placesHash, function(index, value) {
+            this.selected[value] = true;
+        }.bind(this))
+        // for (i in this.options.placesHash)
+        //     this.selected[i] = true;
         jQuery("#stations > g > g", this.svgdom).each(function(){
             $(this).find("path").css({"fill-opacity": "1"});
             $(this).siblings("text").css({"fill-opacity": "1"});
@@ -120,9 +144,10 @@ SVGMap.prototype = {
     toggleGroup: function(groupId) {
         if (!this.options.groups || !this.options.groupsHash) return false;
         index = this.options.groupsHash[groupId];
+        console.log(this.options.groups[index].selected);
         if (!this.options.groups[index].selected) {
             if  (groupId == 0) {
-                this.selectAll();
+                this.selectAll()
                 for (i = 0; i < this.options.groups.length; i++)
                     this.options.groups[i].selected = true;
             }
@@ -148,11 +173,13 @@ SVGMap.prototype = {
     },
 
     deselect: function(id, ignoreRel) {
+
         var self = this;
         if ((id instanceof Array) && !(id instanceof String)) {
             for (i = 0; i < id.length; i++) {
                 iid = id[i];
                 if (!iid) continue;
+                console.log(iid);
                 this.selected[iid] = false;
                 if (!ignoreRel) {
                     place = this.options.places[this.options.placesHash[iid]];
@@ -177,7 +204,30 @@ SVGMap.prototype = {
             }
             g = jQuery("#stations #st"+id, this.svgdom);
             g.find("path").css({"fill-opacity": opacity});
-            g.siblings("text").css({"fill-opacity": opacity});
+
+            // 1. Смотрим, все ли станции внутри union выключены перед выключением текста
+            // находим нужный union
+            union = _.find(this.options.unions, function(union) {
+                return union.indexOf('st' + id) != -1
+            });
+
+            // если станция внутри union, смотрим, есть ли там еще выбранные станции?
+            all_union_deselected = true // отвечает за то, что все станции внутри union выключены
+
+            if (union !== undefined) {
+                $.each(union, function(index, st) {
+                    // если есть выбранная станция внутри union
+                    if (self.selected[self._getId(st)]) {
+                        all_union_deselected = false
+                        return
+                    }
+                })
+            }
+
+            // отключаем текст только в том случае, если все станции внутри выключены
+            if (all_union_deselected) {
+                g.siblings("text").css({"fill-opacity": opacity});
+            }
         }
         if (!ignoreRel) {
 			for(var lineId in this.options.lines_stations){
@@ -208,7 +258,7 @@ SVGMap.prototype = {
     },
 
 	select: function(id, ignoreRel) {
-
+        console.log(id)
         if ((id instanceof Array) && !(id instanceof String)) {
             if(!this.relSS){
                 this.selectUnion(id);
@@ -250,6 +300,7 @@ SVGMap.prototype = {
 				var stationIdTo = this.options.lines_stations[lineId][1].replace('st', '');
 
                 if (this.selected[stationIdFrom] && this.selected[stationIdTo]){
+                    // console.log(lineId, this.options.lines_stations[lineId])
                     $('#'+lineId, this.svgdom).css("fill-opacity", "1");
 				}
 			}
@@ -287,3 +338,20 @@ SVGMap.prototype = {
         return saved;
     }
 }
+
+// CHECK LINES SCRIPT
+// lines = JSON.parse($('iframe').contents().find('rel#lines_stations').text());
+//
+// lp = 1
+// $.each lines, (key, data) ->
+//     setTimeout ->
+//         console.clear()
+//         console.log "Checking #{key}"
+//         scope.SvgMap.map.declickAll()
+//         scope.SvgMap.selected = []
+//         $.each data, (index, st) ->
+//             setTimeout ->
+//                 el = $('iframe').contents().find('#' + st)
+//                 el.click()
+//             , index * 1000
+//     , lp++ * 3000
