@@ -1,5 +1,5 @@
 @extends('app')
-@section('title', 'Редактирование преподавателя new')
+@section('title', 'Редактирование преподавателя new2')
 @section('content')
 @section('controller', 'TutorsForm')
 @section('title-right')
