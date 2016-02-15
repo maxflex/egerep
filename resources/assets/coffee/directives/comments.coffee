@@ -23,6 +23,28 @@ angular.module('Egerep').directive 'comments', ->
             $scope.comment = ''
             $scope.start_commenting = false
 
+        $scope.remove = (comment) ->
+            $scope.comments = _.without($scope.comments, _.findWhere($scope.comments, {id: comment.id}))
+            comment.$remove()
+
+        $scope.edit = (comment, event) ->
+            old_text    = comment.comment
+            element     = $(event.target)
+
+            element.attr('contenteditable', 'true').focus()
+                .on 'keydown', (e) ->
+                    console.log e.keyCode
+                    if (e.keyCode is 13)
+                        $(@).removeAttr('contenteditable').blur()
+                        comment.comment = $(@).text()
+                        comment.$update()
+                .on 'blur', (e) ->
+                    if element.attr 'contenteditable'
+                        console.log old_text
+                        element.removeAttr('contenteditable').html old_text
+
+            setEndOfContenteditable(event.target)
+
         $scope.submitComment = (event) ->
             if event.keyCode is 13
                 new_comment = new Comment
@@ -31,7 +53,7 @@ angular.module('Egerep').directive 'comments', ->
                     entity_id: $scope.entityId
                     entity_type: $scope.entityType
                 new_comment.$save()
-                
+
                 new_comment.user = $scope.user
                 $scope.comments.push new_comment
                 $scope.endCommenting()

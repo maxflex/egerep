@@ -452,6 +452,31 @@
           $scope.comment = '';
           return $scope.start_commenting = false;
         };
+        $scope.remove = function(comment) {
+          $scope.comments = _.without($scope.comments, _.findWhere($scope.comments, {
+            id: comment.id
+          }));
+          return comment.$remove();
+        };
+        $scope.edit = function(comment, event) {
+          var element, old_text;
+          old_text = comment.comment;
+          element = $(event.target);
+          element.attr('contenteditable', 'true').focus().on('keydown', function(e) {
+            console.log(e.keyCode);
+            if (e.keyCode === 13) {
+              $(this).removeAttr('contenteditable').blur();
+              comment.comment = $(this).text();
+              return comment.$update();
+            }
+          }).on('blur', function(e) {
+            if (element.attr('contenteditable')) {
+              console.log(old_text);
+              return element.removeAttr('contenteditable').html(old_text);
+            }
+          });
+          return setEndOfContenteditable(event.target);
+        };
         return $scope.submitComment = function(event) {
           var new_comment;
           if (event.keyCode === 13) {

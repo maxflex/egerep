@@ -1,13 +1,11 @@
-{{-- @{{ entity.phone }} | @{{ level }} --}}
 <div class="comment-block">
     <div>
 		<div ng-repeat="comment in comments">
-			<div id="comment-block-@{{comment.id}}">
+			<div class='comment-div'>
 				<span style="color: @{{comment.user.color}}" class="comment-login">@{{comment.user.login}}: </span>
-				<div style="display: initial" id="comment-@{{comment.id}}" commentid="@{{comment.id}}" onclick="editComment(this)">@{{comment.comment}}</div>
-				<span class="save-coordinates">@{{ $parent.formatDateTime(comment.created_at) }}</span>
-				<span ng-attr-data-id="@{{comment.id}}"
-					class="glyphicon opacity-pointer text-danger glyphicon-remove glyphicon-2px" onclick="deleteComment(this)"></span>
+				<div style="display: initial" ng-click="edit(comment, $event)">@{{comment.comment}}</div>
+				<span class="save-coordinates">@{{ formatDateTime(comment.created_at) }}</span>
+				<span class="glyphicon opacity-pointer text-danger glyphicon-remove glyphicon-2px" ng-click="remove(comment)"></span>
 			</div>
 		</div>
 	</div>

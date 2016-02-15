@@ -9,3 +9,8 @@
     cd /var/www/html/repetitors/htdocs/egerep
     php artisan laroute:generate
 @endtask
+
+@task('migrate')
+    cd /var/www/html/repetitors/htdocs/egerep
+    php artisan migrate --force
+@endtask

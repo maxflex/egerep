@@ -2015,7 +2015,7 @@ white-space: nowrap;
 	font-size: 12px;
 }
 
-div[id^='comment-block'] {
+.comment-div {
 	& .save-coordinates, & .glyphicon-remove {
 		-webkit-transition: all linear .25s;
 		opacity: 0;
