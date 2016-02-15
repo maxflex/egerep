@@ -149,7 +149,7 @@
 
 			// FLOAT-LABEL
 			// $(".floatlabel").floatlabel();
-		}, 100)
+		}, 150)
 	}
 
 	/**
