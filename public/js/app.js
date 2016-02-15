@@ -195,6 +195,22 @@
 }).call(this);
 
 (function() {
+  angular.module('Egerep').controller('LoginCtrl', function($scope, $http) {
+    return $scope.checkFields = function() {
+      return $http.post('login', {
+        login: $scope.login,
+        password: $scope.password
+      }).then(function(response) {
+        if (response.data === true) {
+          return location.reload();
+        }
+      });
+    };
+  });
+
+}).call(this);
+
+(function() {
   angular.module('Egerep').factory('Request', function($resource) {
     return $resource('api/requests/:id', {}, {
       update: {
@@ -407,16 +423,52 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').value('RequestStatus', {
-    "new": 'новая',
-    finished: 'выполненная'
-  }).value('Subjects', {
-    all: ['математика', 'физика', 'русский', 'литература', 'английский', 'история', 'обществознание', 'химия', 'биология', 'информатика'],
-    full: ['Математика', 'Физика', 'Русский язык', 'Литература', 'Английский язык', 'История', 'Обществознание', 'Химия', 'Биология', 'Информатика'],
-    dative: ['математике', 'физике', 'русскому языку', 'литературе', 'английскому языку', 'истории', 'обществознанию', 'химии', 'биологии', 'информатике'],
-    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
-    three_letters: ['МАТ', 'ФИЗ', 'РУС', 'ЛИТ', 'АНГ', 'ИСТ', 'ОБЩ', 'ХИМ', 'БИО', 'ИНФ'],
-    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
+  angular.module('Egerep').directive('comments', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/comments',
+      scope: {
+        user: '=',
+        entityId: '=',
+        entityType: '@'
+      },
+      controller: function($scope, $timeout, Comment) {
+        $timeout(function() {
+          return $scope.comments = Comment.query({
+            entity_type: $scope.entityType,
+            entity_id: $scope.entityId
+          });
+        });
+        $scope.formatDateTime = function(date) {
+          return moment(date).format("DD.MM.YY в HH:mm");
+        };
+        $scope.startCommenting = function(event) {
+          $scope.start_commenting = true;
+          return $timeout(function() {
+            return $(event.target).parent().find('input').focus();
+          });
+        };
+        $scope.endCommenting = function() {
+          $scope.comment = '';
+          return $scope.start_commenting = false;
+        };
+        return $scope.submitComment = function(event) {
+          var new_comment;
+          if (event.keyCode === 13) {
+            new_comment = new Comment({
+              comment: $scope.comment,
+              user_id: $scope.user.id,
+              entity_id: $scope.entityId,
+              entity_type: $scope.entityType
+            });
+            new_comment.$save();
+            new_comment.user = $scope.user;
+            $scope.comments.push(new_comment);
+            return $scope.endCommenting();
+          }
+        };
+      }
+    };
   });
 
 }).call(this);
@@ -458,9 +510,28 @@
 }).call(this);
 
 (function() {
+  angular.module('Egerep').value('RequestStatus', {
+    "new": 'новая',
+    finished: 'выполненная'
+  }).value('Subjects', {
+    all: ['математика', 'физика', 'русский', 'литература', 'английский', 'история', 'обществознание', 'химия', 'биология', 'информатика'],
+    full: ['Математика', 'Физика', 'Русский язык', 'Литература', 'Английский язык', 'История', 'Обществознание', 'Химия', 'Биология', 'Информатика'],
+    dative: ['математике', 'физике', 'русскому языку', 'литературе', 'английскому языку', 'истории', 'обществознанию', 'химии', 'биологии', 'информатике'],
+    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
+    three_letters: ['МАТ', 'ФИЗ', 'РУС', 'ЛИТ', 'АНГ', 'ИСТ', 'ОБЩ', 'ХИМ', 'БИО', 'ИНФ'],
+    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
+  });
+
+}).call(this);
+
+(function() {
   var apiPath, updateMethod;
 
-  angular.module('Egerep').factory('Client', function($resource) {
+  angular.module('Egerep').factory('Comment', function($resource) {
+    return $resource(apiPath('comments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Client', function($resource) {
     return $resource(apiPath('clients'), {
       id: '@id'
     }, updateMethod());

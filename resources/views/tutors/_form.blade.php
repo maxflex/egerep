@@ -2,6 +2,10 @@
 @include('modules.gmap')
 
 <div class="row">
+    <div class="col-sm-12">
+    </div>
+</div>
+<div class="row">
     <div class="col-sm-1" style="width: 157px">
         <div class="form-group">
             <div class="tutor-img" ng-class="{'border-transparent': tutor.has_photo}">
@@ -201,5 +205,8 @@
             <label>Опубликованная цена</label>
             <textarea class="md-input" ng-model="tutor.public_price"></textarea>
         </md-input-container>
+
+        <h4>КОММЕНТАРИИ</h4>
+        <comments entity-type='tutor' entity-id='{{ $id }}' user='{{ $user }}'></comments>
     </div>
 </div>

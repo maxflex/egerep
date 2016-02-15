@@ -25840,11 +25840,7 @@ div[id^='comment-block'] .save-coordinates {
   outline: none;
   border: 0;
   width: 50%;
-  display: none;
   background-color: transparent; }
-
-.comment-add-login {
-  display: none; }
 
 .comment-add {
   color: #999999;

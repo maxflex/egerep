@@ -11,22 +11,28 @@
 |
 */
 
-Route::resource('tutors', 'TutorsController');
-Route::resource('requests', 'RequestsController');
-Route::resource('clients', 'ClientsController');
+Route::post('login', 'LoginController@login');
+Route::get('logout', 'LoginController@logout');
 
-Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
-    Route::get('tutors/list', 'TutorsController@lists');
+Route::group(['middleware' => ['web']], function () {
     Route::resource('tutors', 'TutorsController');
     Route::resource('requests', 'RequestsController');
     Route::resource('clients', 'ClientsController');
-    Route::resource('users', 'UsersController');
-});
+
+    Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
+        Route::get('tutors/list', 'TutorsController@lists');
+        Route::resource('tutors', 'TutorsController');
+        Route::resource('requests', 'RequestsController');
+        Route::resource('clients', 'ClientsController');
+        Route::resource('users', 'UsersController');
+        Route::resource('comments', 'CommentsController');
+    });
 
 
-# Templates for angular directives
-Route::get('directives/{directive}', function($directive) {
-    return view("directives.{$directive}");
+    # Templates for angular directives
+    Route::get('directives/{directive}', function($directive) {
+        return view("directives.{$directive}");
+    });
 });
 
 // Route::group('prefix' => 'directives', function() {
@@ -43,7 +49,6 @@ Route::get('directives/{directive}', function($directive) {
 | kernel and includes session state, CSRF protection, and more.
 |
 */
-
-Route::group(['middleware' => ['web']], function () {
-    //
-});
+// Route::group(['middleware' => ['web']], function () {
+//
+// });

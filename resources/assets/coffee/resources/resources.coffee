@@ -1,4 +1,9 @@
 angular.module('Egerep')
+    .factory 'Comment', ($resource) ->
+        $resource apiPath('comments'), {id: '@id'}, updateMethod()
+
+
+
     .factory 'Client', ($resource) ->
         $resource apiPath('clients'), {id: '@id'}, updateMethod()
 
