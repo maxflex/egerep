@@ -99,20 +99,7 @@
 
     <div class="col-sm-3">
         <div class="form-group">
-            <div class="input-group">
-                <input type="text" class="form-control phone-masked" ng-model="tutor.phone" placeholder="телефон">
-                <div class="input-group-btn">
-                    <button class="btn btn-default">
-                        <span class="glyphicon glyphicon-earphone no-margin-right"></span>
-                    </button>
-                    <button class="btn btn-default">
-                        <span class="glyphicon glyphicon-envelope no-margin-right"></span>
-                    </button>
-                    <button class="btn btn-default">
-                        <span class="glyphicon glyphicon-plus no-margin-right"></span>
-                    </button>
-                </div>
-            </div>
+            <phones entity='tutor'></phones>
         </div>
         <div class="form-group">
             <div class="input-group">
