@@ -115,6 +115,5 @@ angular
         # refresh selectpicker on $selected_attachment update
         $scope.$watch 'selected_attachment', (newVal, oldVal) ->
             return if newVal is undefined
-
             sp 'attachment-subjects', 'предмет' if oldVal is undefined
             spRefresh 'attachment-subjects' if oldVal isnt undefined

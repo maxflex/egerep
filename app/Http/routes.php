@@ -26,6 +26,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('clients', 'ClientsController');
         Route::resource('users', 'UsersController');
         Route::resource('comments', 'CommentsController');
+        Route::resource('sms', 'SmsController');
     });
 
 

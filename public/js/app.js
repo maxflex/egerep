@@ -233,8 +233,11 @@
     };
   }).controller("TutorsIndex", function($scope, $timeout, Tutor) {
     return $scope.tutors = Tutor.query();
-  }).controller("TutorsForm", function($scope, $timeout, $interval, Tutor, SvgMap) {
+  }).controller("TutorsForm", function($scope, $timeout, $interval, Tutor, SvgMap, Subjects, Grades) {
     var _setMarkers;
+    $scope.SvgMap = SvgMap;
+    $scope.Subjects = Subjects;
+    $scope.Grades = Grades;
     $timeout(function() {
       if ($scope.id > 0) {
         return $scope.tutor = Tutor.get({
@@ -242,7 +245,28 @@
         });
       }
     });
-    $scope.SvgMap = SvgMap;
+    $scope.$watch('tutor.subjects', function(newVal, oldVal) {
+      if (newVal === void 0) {
+        return;
+      }
+      if (oldVal === void 0) {
+        sp('tutor-subjects', 'предмет');
+      }
+      if (oldVal !== void 0) {
+        return spRefresh('tutor-subjects');
+      }
+    });
+    $scope.$watch('tutor.grades', function(newVal, oldVal) {
+      if (newVal === void 0) {
+        return;
+      }
+      if (oldVal === void 0) {
+        sp('tutor-grades', 'калссы');
+      }
+      if (oldVal !== void 0) {
+        return spRefresh('tutor-grades');
+      }
+    });
     $scope.svgSave = function() {
       return $scope.tutor.svg_map = SvgMap.save();
     };
@@ -257,7 +281,7 @@
         });
       });
     };
-    $scope.edit = function() {
+    $scope.editOld = function() {
       var old_markers;
       $scope.saving = true;
       $scope.tutor['svg_map[]'] = $scope.tutor.svg_map;
@@ -265,6 +289,16 @@
       return Tutor.update($scope.tutor, {
         id: $scope.id
       }, function() {
+        $scope.tutor.markers = old_markers;
+        return $scope.saving = false;
+      });
+    };
+    $scope.edit = function() {
+      var old_markers;
+      $scope.saving = true;
+      $scope.tutor['svg_map[]'] = $scope.tutor.svg_map;
+      old_markers = _setMarkers();
+      return $scope.tutor.$update().then(function(response) {
         $scope.tutor.markers = old_markers;
         return $scope.saving = false;
       });
@@ -423,6 +457,35 @@
 }).call(this);
 
 (function() {
+  angular.module('Egerep').value('RequestStatus', {
+    "new": 'новая',
+    finished: 'выполненная'
+  }).value('Grades', {
+    1: '1 класс',
+    2: '2 класс',
+    3: '3 класс',
+    4: '4 класс',
+    5: '5 класс',
+    6: '6 класс',
+    7: '7 класс',
+    8: '8 класс',
+    9: '9 класс',
+    10: '10 класс',
+    11: '11 класс',
+    12: 'студенты',
+    13: 'остальные'
+  }).value('Subjects', {
+    all: ['математика', 'физика', 'русский', 'литература', 'английский', 'история', 'обществознание', 'химия', 'биология', 'информатика'],
+    full: ['Математика', 'Физика', 'Русский язык', 'Литература', 'Английский язык', 'История', 'Обществознание', 'Химия', 'Биология', 'Информатика'],
+    dative: ['математике', 'физике', 'русскому языку', 'литературе', 'английскому языку', 'истории', 'обществознанию', 'химии', 'биологии', 'информатике'],
+    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
+    three_letters: ['МАТ', 'ФИЗ', 'РУС', 'ЛИТ', 'АНГ', 'ИСТ', 'ОБЩ', 'ХИМ', 'БИО', 'ИНФ'],
+    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
+  });
+
+}).call(this);
+
+(function() {
   angular.module('Egerep').directive('comments', function() {
     return {
       restrict: 'E',
@@ -525,8 +588,12 @@
           }
           return !number.match(/_/);
         };
-        return $scope.isMobile = function(number) {
+        $scope.isMobile = function(number) {
           return parseInt(number[4]) === 9 || parseInt(number[1]) === 9;
+        };
+        return $scope.sms = function(number) {
+          $('#sms-modal').modal('show');
+          return $scope.$parent.sms_number = number;
         };
       }
     };
@@ -535,16 +602,71 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').value('RequestStatus', {
-    "new": 'новая',
-    finished: 'выполненная'
-  }).value('Subjects', {
-    all: ['математика', 'физика', 'русский', 'литература', 'английский', 'история', 'обществознание', 'химия', 'биология', 'информатика'],
-    full: ['Математика', 'Физика', 'Русский язык', 'Литература', 'Английский язык', 'История', 'Обществознание', 'Химия', 'Биология', 'Информатика'],
-    dative: ['математике', 'физике', 'русскому языку', 'литературе', 'английскому языку', 'истории', 'обществознанию', 'химии', 'биологии', 'информатике'],
-    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
-    three_letters: ['МАТ', 'ФИЗ', 'РУС', 'ЛИТ', 'АНГ', 'ИСТ', 'ОБЩ', 'ХИМ', 'БИО', 'ИНФ'],
-    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
+  angular.module('Egerep').directive('ngSelect', function() {
+    return {
+      restrict: 'E',
+      replace: true,
+      scope: {
+        object: '=',
+        model: '=',
+        title: '@'
+      },
+      templateUrl: 'directives/ngselect',
+      controller: function($scope, $element, $attrs, $timeout) {
+        $scope.title = $attrs.title;
+        $scope.multiple = $attrs.hasOwnProperty('multiple');
+        return $scope.$watch('model', function(newVal, oldVal) {
+          console.log(newVal, oldVal);
+          if (newVal === void 0) {
+            return;
+          }
+          if (oldVal === void 0) {
+            spe($element, 'предмет');
+          }
+          if (oldVal !== void 0) {
+            return spRefresh($element);
+          }
+        });
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('sms', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/sms',
+      scope: {
+        number: '='
+      },
+      controller: function($scope, $timeout, Sms) {
+        $scope.mass = false;
+        $scope.smsCount = function() {
+          return SmsCounter.count($scope.message || '').messages;
+        };
+        $scope.send = function() {
+          var sms;
+          if ($scope.message) {
+            sms = new Sms({
+              message: $scope.message,
+              to: $scope.number,
+              mass: $scope.mass
+            });
+            return sms.$save();
+          }
+        };
+        return $scope.$watch('number', function(newVal, oldVal) {
+          console.log($scope.$parent.formatDateTime($scope.created_at));
+          if (newVal) {
+            return $scope.history = Sms.query({
+              number: newVal
+            });
+          }
+        });
+      }
+    };
   });
 
 }).call(this);
@@ -552,7 +674,11 @@
 (function() {
   var apiPath, updateMethod;
 
-  angular.module('Egerep').factory('Comment', function($resource) {
+  angular.module('Egerep').factory('Sms', function($resource) {
+    return $resource(apiPath('sms'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Comment', function($resource) {
     return $resource(apiPath('comments'), {
       id: '@id'
     }, updateMethod());

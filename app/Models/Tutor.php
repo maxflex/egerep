@@ -16,13 +16,32 @@ class Tutor extends Model
         "tb", "lk", "js", "approved", "contacts", "price", "education", "achievements",
         "preferences", "experience", "current_work", "tutoring_experience",
         "students_category", "impression", "schedule", "public_desc", "public_price",
-        "markers", "svg_map"
+        "markers", "svg_map", 'subjects', 'grades'
     ];
+
     protected $appends = ['full_name', 'has_photo'];
     protected $with = ['markers'];
     // protected $guarded = ['id', 'created_at', '$promise', '$resolved', 'full_name', 'has_photo'];
 
     const UPLOAD_DIR = "img/tutors/";
+
+    public function getSubjectsAttribute($value)
+    {
+        return empty($value) ? null : explode(',', $value);
+    }
+    public function setSubjectsAttribute($value)
+    {
+        $this->attributes['subjects'] = implode(',', $value);
+    }
+
+    public function getGradesAttribute($value)
+    {
+        return explode(',', $value);
+    }
+    public function setGradesAttribute($value)
+    {
+        $this->attributes['grades'] = implode(',', $value);
+    }
 
     public function getFullNameAttribute()
     {
@@ -41,14 +60,15 @@ class Tutor extends Model
 
     public function setSvgMapAttribute($value)
     {
-        $this->attributes['svg_map'] = implode(',', $value);
+        if ($value) {
+            $this->attributes['svg_map'] = implode(',', $value);
+        }
     }
 
     public function markers()
     {
         return $this->morphMany('App\Models\Marker', 'markerable');
     }
-
 
     public function save(array $options = [])
     {

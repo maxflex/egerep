@@ -3,8 +3,10 @@
 
 <div class="row">
     <div class="col-sm-12">
+        <sms number='sms_number'></sms>
     </div>
 </div>
+
 <div class="row">
     <div class="col-sm-1" style="width: 157px">
         <div class="form-group">
@@ -83,23 +85,28 @@
             </span>
         </div>
 
-        {{-- <div layout-gt-sm="row">
-          <md-input-container class="md-block flex-gt-sm">
-            <label>Имя</label>
-            <input ng-model="tutor.first_name">
-          </md-input-container>
+        <div class="form-group">
+            <select class="form-control" multiple id='sp-tutor-subjects'
+                ng-model="tutor.subjects"
+                ng-options="subject_id as subject for (subject_id, subject) in Subjects.all">
+            </select>
+        </div>
 
-          <md-input-container class="md-block flex-gt-sm">
-            <label>Фамилия</label>
-            <input ng-model="tutor.last_name">
-          </md-input-container>
-        </div> --}}
-
+        <div class="form-group">
+            {{-- <ng-select object='Grades' model='tutor.grades' title='тести' multiple></ng-select> --}}
+            <select class="form-control" multiple id='sp-tutor-grades' ng-model='tutor.grades'
+                ng-options="grade_id as label for (grade_id, label) in Grades">
+            </select>
+            {{-- <select class="form-control" multiple
+                ng-model="tutor.grades"
+                ng-options="object_id as label for (object_id, label) in Grades">
+            </select> --}}
+        </div>
     </div>
 
     <div class="col-sm-3">
         <div class="form-group">
-            <phones entity='tutor'></phones>
+            <phones entity='tutor' sms-number='sms_number'></phones>
         </div>
         <div class="form-group">
             <div class="input-group">

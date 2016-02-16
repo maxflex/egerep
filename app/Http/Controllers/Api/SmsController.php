@@ -3,21 +3,21 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-use App\Models\Tutor;
-use Log;
+
+use App\Models\Sms;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class TutorsController extends Controller
+class SmsController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Tutor::all()->toJson();
+        return Sms::number($request->input('number'))->get();
     }
 
     /**
@@ -38,7 +38,8 @@ class TutorsController extends Controller
      */
     public function store(Request $request)
     {
-        return Tutor::create($request->input());
+        extract($request->input());
+        Sms::send($to, $message, $mass);
     }
 
     /**
@@ -49,7 +50,7 @@ class TutorsController extends Controller
      */
     public function show($id)
     {
-        return Tutor::find($id)->toJson();
+        //
     }
 
     /**
@@ -72,8 +73,7 @@ class TutorsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // dd($request->input());
-        Tutor::find($id)->update($request->input());
+        //
     }
 
     /**
@@ -86,13 +86,4 @@ class TutorsController extends Controller
     {
         //
     }
-
-    /**
-     * Get a list of only tutor_id => tutor full name
-     */
-     public function lists()
-     {
-         return Tutor::selectRaw("CONCAT_WS(' ', last_name, first_name, middle_name) as name, id")
-            ->pluck('name', 'id');
-     }
 }

@@ -18,12 +18,28 @@ angular
     #
     #   ADD/EDIT CONTROLLER
     #
-    .controller "TutorsForm", ($scope, $timeout, $interval, Tutor, SvgMap) ->
+    .controller "TutorsForm", ($scope, $timeout, $interval, Tutor, SvgMap, Subjects, Grades) ->
+        $scope.SvgMap   = SvgMap
+        $scope.Subjects = Subjects
+        $scope.Grades   = Grades
+
         # get tutor
         $timeout ->
             $scope.tutor = Tutor.get {id: $scope.id} if $scope.id > 0
 
-        $scope.SvgMap = SvgMap
+
+        # @todo: ЗАМЕНИТЬ НА ДИРЕКТИВУ <ng-select> (уже сделано, но глючная. надо доделать)
+        # refresh selectpicker on update
+        $scope.$watch 'tutor.subjects', (newVal, oldVal) ->
+            return if newVal is undefined
+            sp 'tutor-subjects', 'предмет' if oldVal is undefined
+            spRefresh 'tutor-subjects' if oldVal isnt undefined
+
+        # refresh selectpicker on update
+        $scope.$watch 'tutor.grades', (newVal, oldVal) ->
+            return if newVal is undefined
+            sp 'tutor-grades', 'калссы' if oldVal is undefined
+            spRefresh 'tutor-grades' if oldVal isnt undefined
 
         $scope.svgSave = ->
             $scope.tutor.svg_map = SvgMap.save()
@@ -37,7 +53,7 @@ angular
                 window.location = laroute.route 'tutors.edit',
                     tutors: tutor.id
 
-        $scope.edit = ->
+        $scope.editOld = ->
             $scope.saving = true
             $scope.tutor['svg_map[]'] = $scope.tutor.svg_map
             # delete $scope.tutor.svg_map
@@ -50,6 +66,35 @@ angular
                 # $scope.tutor.svg_map = $scope.tutor['svg_map[]']
                 # delete $scope.tutor['svg_map[]']
                 # delte $scope.tutor['markers[]']
+
+        $scope.edit = ->
+            $scope.saving = true
+            $scope.tutor['svg_map[]'] = $scope.tutor.svg_map
+            # delete $scope.tutor.svg_map
+
+            old_markers = _setMarkers()
+
+            $scope.tutor.$update()
+                .then (response) ->
+                    $scope.tutor.markers = old_markers
+                    $scope.saving = false
+
+            # Tutor.update $scope.tutor, {id: $scope.id}, ->
+            #     $scope.tutor.markers = old_markers
+            #     $scope.saving = false
+                # $scope.tutor.svg_map = $scope.tutor['svg_map[]']
+                # delete $scope.tutor['svg_map[]']
+                # delte $scope.tutor['markers[]']
+
+
+            # $scope.tutor['svg_map[]'] = $scope.tutor.svg_map
+            # # delete $scope.tutor.svg_map
+            #
+            # old_markers = _setMarkers()
+            #
+            # Tutor.update $scope.tutor, {id: $scope.id}, ->
+            #     $scope.tutor.markers = old_markers
+            #     $scope.saving = false
 
         _setMarkers = ->
             new_markers = []

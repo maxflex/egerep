@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'AddFieldsToTeachers' => $baseDir . '/database/migrations/2016_01_15_122608_add_fields_to_teachers.php',
+    'AddGradesToTeachers' => $baseDir . '/database/migrations/2016_02_15_193218_add_grades_to_teachers.php',
     'AddListsToClient' => $baseDir . '/database/migrations/2016_01_22_152742_add_lists_to_client.php',
     'AddSvgMapToTeachers' => $baseDir . '/database/migrations/2016_01_19_131426_add_svg_map_to_teachers.php',
     'AddUserCreatedIdToRequests' => $baseDir . '/database/migrations/2016_01_22_123001_add_user_created_id_to_requests.php',
@@ -17,6 +18,7 @@ return array(
     'CreateCommentsTable' => $baseDir . '/database/migrations/2016_02_15_004853_create_comments_table.php',
     'CreateMarkersTable' => $baseDir . '/database/migrations/2016_01_20_083340_create_markers_table.php',
     'CreateRequestsTable' => $baseDir . '/database/migrations/2016_01_21_085227_create_requests_table.php',
+    'CreateSmsTable' => $baseDir . '/database/migrations/2016_02_15_122855_create_sms_table.php',
     'DatabaseSeeder' => $baseDir . '/database/seeds/DatabaseSeeder.php',
     'File_Iterator' => $vendorDir . '/phpunit/php-file-iterator/src/Iterator.php',
     'File_Iterator_Facade' => $vendorDir . '/phpunit/php-file-iterator/src/Facade.php',

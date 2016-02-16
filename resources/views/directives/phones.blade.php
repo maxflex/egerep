@@ -1,4 +1,3 @@
-{{-- @{{ entity.phone }} | @{{ level }} --}}
 @foreach(['', 2, 3] as $phone_id)
 <div class="form-group" ng-show="level >= {{ $phone_id ? $phone_id : 1 }}">
     <div ng-class="{'input-group': isFull(entity.phone{{ $phone_id }})
@@ -9,7 +8,9 @@
             <button class="btn btn-default" ng-if="isFull(entity.phone{{ $phone_id }})">
                 <span class="glyphicon glyphicon-earphone no-margin-right"></span>
             </button>
-            <button class="btn btn-default" ng-if="isFull(entity.phone{{ $phone_id }}) && isMobile(entity.phone{{ $phone_id }})">
+            <button class="btn btn-default"
+                ng-click='sms(entity.phone{{ $phone_id }})'
+                ng-if="isFull(entity.phone{{ $phone_id }}) && isMobile(entity.phone{{ $phone_id }})">
                 <span class="glyphicon glyphicon-envelope no-margin-right"></span>
             </button>
             <button class="btn btn-default" ng-if="level == {{ $phone_id ? $phone_id : 1 }} && level < 3" ng-click="nextLevel()">

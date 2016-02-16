@@ -25,3 +25,8 @@ angular.module('Egerep').directive 'phones', ->
 
         $scope.isMobile = (number) ->
             parseInt(number[4]) is 9 or parseInt(number[1]) is 9
+
+        # отправить смс
+        $scope.sms = (number) ->
+            $('#sms-modal').modal 'show'
+            $scope.$parent.sms_number = number
