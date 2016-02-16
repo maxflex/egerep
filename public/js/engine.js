@@ -123,7 +123,7 @@
 			// Маска телефонов
 			$(".phone-masked")
 				.mask("+7 (999) 999-99-99", { autoclear: false })
-		}, (delay === undefined ? 0 : delay) )
+		}, (delay === undefined ? 100 : delay)  )
 	}
 
 	/**
