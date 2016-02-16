@@ -25,7 +25,9 @@ angular
 
         # get tutor
         $timeout ->
-            $scope.tutor = Tutor.get {id: $scope.id} if $scope.id > 0
+            if $scope.id > 0
+                $scope.tutor = Tutor.get {id: $scope.id}, ->
+                    rebindMasks()
 
 
         # @todo: ЗАМЕНИТЬ НА ДИРЕКТИВУ <ng-select> (уже сделано, но глючная. надо доделать)
