@@ -22,13 +22,14 @@ angular
         $scope.SvgMap   = SvgMap
         $scope.Subjects = Subjects
         $scope.Grades   = Grades
+        $scope.frontend_loading = true
 
         # get tutor
         $timeout ->
             if $scope.id > 0
                 $scope.tutor = Tutor.get {id: $scope.id}, ->
+                    $scope.frontend_loading = false
                     rebindMasks()
-
 
         # @todo: ЗАМЕНИТЬ НА ДИРЕКТИВУ <ng-select> (уже сделано, но глючная. надо доделать)
         # refresh selectpicker on update

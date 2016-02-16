@@ -92,9 +92,10 @@
           if (client.subject_list !== null) {
             $scope.selected_list_id = client.subject_list[0];
             if (client.attachments[$scope.selected_list_id]) {
-              return $scope.selected_attachment = client.attachments[$scope.selected_list_id][0];
+              $scope.selected_attachment = client.attachments[$scope.selected_list_id][0];
             }
           }
+          return rebindMasks();
         });
       }
     });
@@ -242,11 +243,13 @@
     $scope.SvgMap = SvgMap;
     $scope.Subjects = Subjects;
     $scope.Grades = Grades;
+    $scope.frontend_loading = true;
     $timeout(function() {
       if ($scope.id > 0) {
         return $scope.tutor = Tutor.get({
           id: $scope.id
         }, function() {
+          $scope.frontend_loading = false;
           return rebindMasks();
         });
       }
@@ -463,35 +466,6 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').value('RequestStatus', {
-    "new": 'новая',
-    finished: 'выполненная'
-  }).value('Grades', {
-    1: '1 класс',
-    2: '2 класс',
-    3: '3 класс',
-    4: '4 класс',
-    5: '5 класс',
-    6: '6 класс',
-    7: '7 класс',
-    8: '8 класс',
-    9: '9 класс',
-    10: '10 класс',
-    11: '11 класс',
-    12: 'студенты',
-    13: 'остальные'
-  }).value('Subjects', {
-    all: ['математика', 'физика', 'русский', 'литература', 'английский', 'история', 'обществознание', 'химия', 'биология', 'информатика'],
-    full: ['Математика', 'Физика', 'Русский язык', 'Литература', 'Английский язык', 'История', 'Обществознание', 'Химия', 'Биология', 'Информатика'],
-    dative: ['математике', 'физике', 'русскому языку', 'литературе', 'английскому языку', 'истории', 'обществознанию', 'химии', 'биологии', 'информатике'],
-    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
-    three_letters: ['МАТ', 'ФИЗ', 'РУС', 'ЛИТ', 'АНГ', 'ИСТ', 'ОБЩ', 'ХИМ', 'БИО', 'ИНФ'],
-    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
-  });
-
-}).call(this);
-
-(function() {
   angular.module('Egerep').directive('comments', function() {
     return {
       restrict: 'E',
@@ -569,6 +543,24 @@
           if (event.keyCode === 27) {
             return $(event.target).blur();
           }
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('email', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/email',
+      scope: {
+        address: '='
+      },
+      controller: function($scope) {
+        return $scope.send = function() {
+          return $('#email-modal').modal('show');
         };
       }
     };
@@ -690,6 +682,35 @@
 }).call(this);
 
 (function() {
+  angular.module('Egerep').value('RequestStatus', {
+    "new": 'новая',
+    finished: 'выполненная'
+  }).value('Grades', {
+    1: '1 класс',
+    2: '2 класс',
+    3: '3 класс',
+    4: '4 класс',
+    5: '5 класс',
+    6: '6 класс',
+    7: '7 класс',
+    8: '8 класс',
+    9: '9 класс',
+    10: '10 класс',
+    11: '11 класс',
+    12: 'студенты',
+    13: 'остальные'
+  }).value('Subjects', {
+    all: ['математика', 'физика', 'русский', 'литература', 'английский', 'история', 'обществознание', 'химия', 'биология', 'информатика'],
+    full: ['Математика', 'Физика', 'Русский язык', 'Литература', 'Английский язык', 'История', 'Обществознание', 'Химия', 'Биология', 'Информатика'],
+    dative: ['математике', 'физике', 'русскому языку', 'литературе', 'английскому языку', 'истории', 'обществознанию', 'химии', 'биологии', 'информатике'],
+    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
+    three_letters: ['МАТ', 'ФИЗ', 'РУС', 'ЛИТ', 'АНГ', 'ИСТ', 'ОБЩ', 'ХИМ', 'БИО', 'ИНФ'],
+    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
+  });
+
+}).call(this);
+
+(function() {
   var apiPath, updateMethod;
 
   angular.module('Egerep').factory('Sms', function($resource) {
@@ -747,7 +768,7 @@
         }, {
           "id": "3",
           "title": "красная юг",
-          "points": [33, 108, 125, 148, 151, 164]
+          "points": [33, 108, 125, 148, 151, 164, 209, 210]
         }, {
           "id": "4",
           "title": "зеленая север",
@@ -783,7 +804,7 @@
         }, {
           "id": "12",
           "title": "фиолетовая юг",
-          "points": [30, 35, 57, 61, 107, 115, 134, 205, 206]
+          "points": [30, 35, 57, 61, 107, 115, 134, 205, 206, 211]
         }, {
           "id": "13",
           "title": "желтая",

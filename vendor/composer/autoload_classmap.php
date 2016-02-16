@@ -16,6 +16,7 @@ return array(
     'CreateClientSubjectListsTable' => $baseDir . '/database/migrations/2016_01_22_232210_create_client_subject_lists_table.php',
     'CreateClientsTable' => $baseDir . '/database/migrations/2016_01_20_161717_create_clients_table.php',
     'CreateCommentsTable' => $baseDir . '/database/migrations/2016_02_15_004853_create_comments_table.php',
+    'CreateEmailsTable' => $baseDir . '/database/migrations/2016_02_16_173835_create_emails_table.php',
     'CreateMarkersTable' => $baseDir . '/database/migrations/2016_01_20_083340_create_markers_table.php',
     'CreateRequestsTable' => $baseDir . '/database/migrations/2016_01_21_085227_create_requests_table.php',
     'CreateSmsTable' => $baseDir . '/database/migrations/2016_02_15_122855_create_sms_table.php',

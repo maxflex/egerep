@@ -42,6 +42,7 @@ angular
                         # set the default attachment, if any
                         if client.attachments[$scope.selected_list_id]
                             $scope.selected_attachment = client.attachments[$scope.selected_list_id][0]
+                    rebindMasks()
 
         $scope.attachmentExists = (subject_id, tutor_id) ->
             return false if $scope.client.attachments[subject_id] is undefined

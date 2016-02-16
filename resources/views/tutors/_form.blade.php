@@ -1,11 +1,7 @@
 @include('modules.svgmap')
 @include('modules.gmap')
 
-<div class="row">
-    <div class="col-sm-12">
-        <sms number='sms_number'></sms>
-    </div>
-</div>
+<sms number='sms_number'></sms>
 
 <div class="row">
     <div class="col-sm-1" style="width: 157px">
@@ -109,14 +105,15 @@
             <phones entity='tutor' sms-number='sms_number'></phones>
         </div>
         <div class="form-group">
-            <div class="input-group">
+            <email address='tutor.email'></email>
+            {{-- <div class="input-group">
                 <input type="text" class="form-control" ng-model="tutor.email" placeholder="email">
                 <div class="input-group-btn">
                     <button class="btn btn-default">
                         <span class="glyphicon glyphicon-envelope no-margin-right"></span>
                     </button>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 
@@ -143,7 +140,7 @@
 <div class="row" style="margin-top: 10px">
     <div class="col-sm-12">
         <h4>САМОЕ ВАЖНОЕ</h4>
-        <md-input-container class="md-block" style="margin-top: 30px">
+        <md-input-container class="md-block" style="margin-top: 20px">
             <label>Контакты, места для занятий</label>
             <textarea class="md-input" ng-model="tutor.contacts"></textarea>
         </md-input-container>
@@ -153,7 +150,7 @@
         </md-input-container>
 
         <h4>ОБЩИЕ СВЕДЕНИЯ</h4>
-        <md-input-container class="md-block" style="margin-top: 30px">
+        <md-input-container class="md-block" style="margin-top: 20px">
             <label>Образование (вуз, факультет, аспирантура, с годами)</label>
             <textarea class="md-input" ng-model="tutor.education"></textarea>
         </md-input-container>
@@ -191,14 +188,41 @@
         </md-input-container>
 
         <h4>ИНФОРМАЦИЯ НА САЙТЕ</h4>
-        <md-input-container class="md-block" style="margin-top: 30px">
+        <md-input-container class="md-block" style="margin-top: 20px">
             <label>Опубликованное описание</label>
             <textarea class="md-input" ng-model="tutor.public_desc"></textarea>
         </md-input-container>
-        <md-input-container class="md-block" style="margin-top: 20px">
-            <label>Опубликованная цена</label>
-            <textarea class="md-input" ng-model="tutor.public_price"></textarea>
-        </md-input-container>
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <md-input-container class="md-block" style="margin-top: 20px">
+                            <label>Опубликованная цена</label>
+                            <textarea class="md-input digits-only" ng-model="tutor.public_price"></textarea>
+                        </md-input-container>
+                    </div>
+                    <div class="col-sm-6">
+                        <span class="ng-grey" style="position: relative; top: 27px" ng-show='tutor.public_price > 0'>
+                            <ng-pluralize count='tutor.public_price' when="{
+                                'one': 'рубль',
+                                'few': 'рубля',
+                                'many': 'рублей'
+                            }"></ng-pluralize> за 90 минут @{{ tutor.svg_map.length ? ' + ' :  '' }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4" ng-show='tutor.svg_map.length'>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <md-input-container class="md-block" style="margin-top: 20px">
+                            <label>За выезд</label>
+                            <textarea class="md-input digits-only" ng-model="tutor.departure_price"></textarea>
+                        </md-input-container>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <h4>КОММЕНТАРИИ</h4>
         <comments entity-type='tutor' entity-id='{{ $id }}' user='{{ $user }}'></comments>

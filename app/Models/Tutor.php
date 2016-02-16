@@ -89,6 +89,7 @@ class Tutor extends Model
     protected static function boot()
     {
         static::saving(function($model) {
+            cleanNumbers($model);
         });
     }
 }
