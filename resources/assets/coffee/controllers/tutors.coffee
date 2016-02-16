@@ -40,7 +40,7 @@ angular
         # refresh selectpicker on update
         $scope.$watch 'tutor.grades', (newVal, oldVal) ->
             return if newVal is undefined
-            sp 'tutor-grades', 'калссы' if oldVal is undefined
+            sp 'tutor-grades', 'классы' if oldVal is undefined
             spRefresh 'tutor-grades' if oldVal isnt undefined
 
         $scope.svgSave = ->
