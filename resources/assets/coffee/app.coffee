@@ -1,4 +1,9 @@
 angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap'])
+    .config [
+        '$compileProvider'
+        ($compileProvider) ->
+            $compileProvider.aHrefSanitizationWhitelist /^\s*(https?|ftp|mailto|chrome-extension|sip):/
+	]
     .run ($rootScope) ->
         $rootScope.laroute = laroute
 

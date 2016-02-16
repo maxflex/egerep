@@ -1,5 +1,9 @@
 (function() {
-  angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap']).run(function($rootScope) {
+  angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap']).config([
+    '$compileProvider', function($compileProvider) {
+      return $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension|sip):/);
+    }
+  ]).run(function($rootScope) {
     $rootScope.laroute = laroute;
     $rootScope.range = function(min, max, step) {
       var i, input;
@@ -35,6 +39,204 @@
     return $rootScope.ajaxEnd = function() {
       ajaxEnd();
       return $rootScope.saving = false;
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('comments', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/comments',
+      scope: {
+        user: '=',
+        entityId: '=',
+        entityType: '@'
+      },
+      controller: function($scope, $timeout, Comment) {
+        $timeout(function() {
+          return $scope.comments = Comment.query({
+            entity_type: $scope.entityType,
+            entity_id: $scope.entityId
+          });
+        });
+        $scope.formatDateTime = function(date) {
+          return moment(date).format("DD.MM.YY в HH:mm");
+        };
+        $scope.startCommenting = function(event) {
+          $scope.start_commenting = true;
+          return $timeout(function() {
+            return $(event.target).parent().find('input').focus();
+          });
+        };
+        $scope.endCommenting = function() {
+          $scope.comment = '';
+          return $scope.start_commenting = false;
+        };
+        $scope.remove = function(comment) {
+          $scope.comments = _.without($scope.comments, _.findWhere($scope.comments, {
+            id: comment.id
+          }));
+          return comment.$remove();
+        };
+        $scope.edit = function(comment, event) {
+          var element, old_text;
+          old_text = comment.comment;
+          element = $(event.target);
+          element.unbind('keydown').unbind('blur');
+          element.attr('contenteditable', 'true').focus().on('keydown', function(e) {
+            console.log(old_text);
+            if (e.keyCode === 13) {
+              $(this).removeAttr('contenteditable').blur();
+              comment.comment = $(this).text();
+              comment.$update();
+            }
+            if (e.keyCode === 27) {
+              return $(this).blur();
+            }
+          }).on('blur', function(e) {
+            if (element.attr('contenteditable')) {
+              console.log(old_text);
+              return element.removeAttr('contenteditable').html(old_text);
+            }
+          });
+        };
+        return $scope.submitComment = function(event) {
+          var new_comment;
+          if (event.keyCode === 13) {
+            new_comment = new Comment({
+              comment: $scope.comment,
+              user_id: $scope.user.id,
+              entity_id: $scope.entityId,
+              entity_type: $scope.entityType
+            });
+            new_comment.$save().then(function(response) {
+              console.log(response);
+              new_comment.user = $scope.user;
+              new_comment.id = response.id;
+              return $scope.comments.push(new_comment);
+            });
+            $scope.endCommenting();
+          }
+          if (event.keyCode === 27) {
+            return $(event.target).blur();
+          }
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('phones', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/phones',
+      scope: {
+        entity: '='
+      },
+      controller: function($scope, $timeout) {
+        $timeout(function() {
+          return $scope.level = $scope.entity.phone3 !== "" ? 3 : $scope.entity.phone2 !== "" ? 2 : 1;
+        }, 100);
+        $scope.nextLevel = function() {
+          return $scope.level++;
+        };
+        $scope.phoneMaskControl = function(event) {
+          var el, phone_id;
+          el = $(event.target);
+          phone_id = el.attr('ng-model').split('.')[1];
+          return $scope.entity[phone_id] = $(event.target).val();
+        };
+        $scope.isFull = function(number) {
+          if (number === void 0 || number === "") {
+            return false;
+          }
+          return !number.match(/_/);
+        };
+        $scope.isMobile = function(number) {
+          return parseInt(number[4]) === 9 || parseInt(number[1]) === 9;
+        };
+        $scope.sms = function(number) {
+          $('#sms-modal').modal('show');
+          return $scope.$parent.sms_number = number;
+        };
+        return $scope.call = function(number) {
+          return location.href = "sip:" + number.replace(/[^0-9]/g, '');
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('ngSelect', function() {
+    return {
+      restrict: 'E',
+      replace: true,
+      scope: {
+        object: '=',
+        model: '=',
+        title: '@'
+      },
+      templateUrl: 'directives/ngselect',
+      controller: function($scope, $element, $attrs, $timeout) {
+        $scope.title = $attrs.title;
+        $scope.multiple = $attrs.hasOwnProperty('multiple');
+        return $scope.$watch('model', function(newVal, oldVal) {
+          console.log(newVal, oldVal);
+          if (newVal === void 0) {
+            return;
+          }
+          if (oldVal === void 0) {
+            spe($element, 'предмет');
+          }
+          if (oldVal !== void 0) {
+            return spRefresh($element);
+          }
+        });
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('sms', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/sms',
+      scope: {
+        number: '='
+      },
+      controller: function($scope, $timeout, Sms) {
+        $scope.mass = false;
+        $scope.smsCount = function() {
+          return SmsCounter.count($scope.message || '').messages;
+        };
+        $scope.send = function() {
+          var sms;
+          if ($scope.message) {
+            sms = new Sms({
+              message: $scope.message,
+              to: $scope.number,
+              mass: $scope.mass
+            });
+            return sms.$save();
+          }
+        };
+        return $scope.$watch('number', function(newVal, oldVal) {
+          console.log($scope.$parent.formatDateTime($scope.created_at));
+          if (newVal) {
+            return $scope.history = Sms.query({
+              number: newVal
+            });
+          }
+        });
+      }
     };
   });
 
@@ -481,192 +683,6 @@
     short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
     three_letters: ['МАТ', 'ФИЗ', 'РУС', 'ЛИТ', 'АНГ', 'ИСТ', 'ОБЩ', 'ХИМ', 'БИО', 'ИНФ'],
     short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('comments', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/comments',
-      scope: {
-        user: '=',
-        entityId: '=',
-        entityType: '@'
-      },
-      controller: function($scope, $timeout, Comment) {
-        $timeout(function() {
-          return $scope.comments = Comment.query({
-            entity_type: $scope.entityType,
-            entity_id: $scope.entityId
-          });
-        });
-        $scope.formatDateTime = function(date) {
-          return moment(date).format("DD.MM.YY в HH:mm");
-        };
-        $scope.startCommenting = function(event) {
-          $scope.start_commenting = true;
-          return $timeout(function() {
-            return $(event.target).parent().find('input').focus();
-          });
-        };
-        $scope.endCommenting = function() {
-          $scope.comment = '';
-          return $scope.start_commenting = false;
-        };
-        $scope.remove = function(comment) {
-          $scope.comments = _.without($scope.comments, _.findWhere($scope.comments, {
-            id: comment.id
-          }));
-          return comment.$remove();
-        };
-        $scope.edit = function(comment, event) {
-          var element, old_text;
-          old_text = comment.comment;
-          element = $(event.target);
-          element.attr('contenteditable', 'true').focus().on('keydown', function(e) {
-            console.log(e.keyCode);
-            if (e.keyCode === 13) {
-              $(this).removeAttr('contenteditable').blur();
-              comment.comment = $(this).text();
-              return comment.$update();
-            }
-          }).on('blur', function(e) {
-            if (element.attr('contenteditable')) {
-              console.log(old_text);
-              return element.removeAttr('contenteditable').html(old_text);
-            }
-          });
-          return setEndOfContenteditable(event.target);
-        };
-        return $scope.submitComment = function(event) {
-          var new_comment;
-          if (event.keyCode === 13) {
-            new_comment = new Comment({
-              comment: $scope.comment,
-              user_id: $scope.user.id,
-              entity_id: $scope.entityId,
-              entity_type: $scope.entityType
-            });
-            new_comment.$save();
-            new_comment.user = $scope.user;
-            $scope.comments.push(new_comment);
-            return $scope.endCommenting();
-          }
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('phones', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/phones',
-      scope: {
-        entity: '='
-      },
-      controller: function($scope, $timeout) {
-        $timeout(function() {
-          return $scope.level = $scope.entity.phone3 !== "" ? 3 : $scope.entity.phone2 !== "" ? 2 : 1;
-        }, 100);
-        $scope.nextLevel = function() {
-          return $scope.level++;
-        };
-        $scope.phoneMaskControl = function(event) {
-          var el, phone_id;
-          el = $(event.target);
-          phone_id = el.attr('ng-model').split('.')[1];
-          return $scope.entity[phone_id] = $(event.target).val();
-        };
-        $scope.isFull = function(number) {
-          if (number === void 0 || number === "") {
-            return false;
-          }
-          return !number.match(/_/);
-        };
-        $scope.isMobile = function(number) {
-          return parseInt(number[4]) === 9 || parseInt(number[1]) === 9;
-        };
-        return $scope.sms = function(number) {
-          $('#sms-modal').modal('show');
-          return $scope.$parent.sms_number = number;
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('ngSelect', function() {
-    return {
-      restrict: 'E',
-      replace: true,
-      scope: {
-        object: '=',
-        model: '=',
-        title: '@'
-      },
-      templateUrl: 'directives/ngselect',
-      controller: function($scope, $element, $attrs, $timeout) {
-        $scope.title = $attrs.title;
-        $scope.multiple = $attrs.hasOwnProperty('multiple');
-        return $scope.$watch('model', function(newVal, oldVal) {
-          console.log(newVal, oldVal);
-          if (newVal === void 0) {
-            return;
-          }
-          if (oldVal === void 0) {
-            spe($element, 'предмет');
-          }
-          if (oldVal !== void 0) {
-            return spRefresh($element);
-          }
-        });
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('sms', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/sms',
-      scope: {
-        number: '='
-      },
-      controller: function($scope, $timeout, Sms) {
-        $scope.mass = false;
-        $scope.smsCount = function() {
-          return SmsCounter.count($scope.message || '').messages;
-        };
-        $scope.send = function() {
-          var sms;
-          if ($scope.message) {
-            sms = new Sms({
-              message: $scope.message,
-              to: $scope.number,
-              mass: $scope.mass
-            });
-            return sms.$save();
-          }
-        };
-        return $scope.$watch('number', function(newVal, oldVal) {
-          console.log($scope.$parent.formatDateTime($scope.created_at));
-          if (newVal) {
-            return $scope.history = Sms.query({
-              number: newVal
-            });
-          }
-        });
-      }
-    };
   });
 
 }).call(this);

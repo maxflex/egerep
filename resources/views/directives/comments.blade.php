@@ -3,7 +3,7 @@
 		<div ng-repeat="comment in comments">
 			<div class='comment-div'>
 				<span style="color: @{{comment.user.color}}" class="comment-login">@{{comment.user.login}}: </span>
-				<div style="display: initial" ng-click="edit(comment, $event)">@{{comment.comment}}</div>
+				<div class='comment-line' ng-click="edit(comment, $event)">@{{comment.comment}}</div>
 				<span class="save-coordinates">@{{ formatDateTime(comment.created_at) }}</span>
 				<span class="glyphicon opacity-pointer text-danger glyphicon-remove glyphicon-2px" ng-click="remove(comment)"></span>
 			</div>

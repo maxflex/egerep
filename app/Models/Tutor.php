@@ -85,4 +85,10 @@ class Tutor extends Model
         }
         unset($this->markers);
     }
+
+    protected static function boot()
+    {
+        static::saving(function($model) {
+        });
+    }
 }

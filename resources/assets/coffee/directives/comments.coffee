@@ -31,19 +31,24 @@ angular.module('Egerep').directive 'comments', ->
             old_text    = comment.comment
             element     = $(event.target)
 
+            element.unbind('keydown').unbind('blur')
+
             element.attr('contenteditable', 'true').focus()
                 .on 'keydown', (e) ->
-                    console.log e.keyCode
-                    if (e.keyCode is 13)
+                    console.log old_text
+                    if e.keyCode is 13
                         $(@).removeAttr('contenteditable').blur()
                         comment.comment = $(@).text()
                         comment.$update()
+                    if e.keyCode is 27
+                        $(@).blur()
+
                 .on 'blur', (e) ->
                     if element.attr 'contenteditable'
                         console.log old_text
                         element.removeAttr('contenteditable').html old_text
-
-            setEndOfContenteditable(event.target)
+            return
+            # setEndOfContenteditable(event.target)
 
         $scope.submitComment = (event) ->
             if event.keyCode is 13
@@ -53,7 +58,12 @@ angular.module('Egerep').directive 'comments', ->
                     entity_id: $scope.entityId
                     entity_type: $scope.entityType
                 new_comment.$save()
-
-                new_comment.user = $scope.user
-                $scope.comments.push new_comment
+                    .then (response)->
+                        console.log response
+                        new_comment.user = $scope.user
+                        new_comment.id = response.id
+                        $scope.comments.push new_comment
                 $scope.endCommenting()
+
+            if event.keyCode is 27
+                $(event.target).blur()

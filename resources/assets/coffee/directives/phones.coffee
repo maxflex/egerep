@@ -30,3 +30,7 @@ angular.module('Egerep').directive 'phones', ->
         $scope.sms = (number) ->
             $('#sms-modal').modal 'show'
             $scope.$parent.sms_number = number
+
+        # позвонить
+        $scope.call = (number) ->
+            location.href = "sip:" + number.replace(/[^0-9]/g, '')

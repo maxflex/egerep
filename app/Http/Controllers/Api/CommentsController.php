@@ -40,7 +40,7 @@ class CommentsController extends Controller
      */
     public function store(Request $request)
     {
-        Comment::create($request->input());
+        return Comment::create($request->input());
     }
 
     /**

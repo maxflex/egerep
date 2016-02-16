@@ -5,7 +5,7 @@
         <input ng-keyup="phoneMaskControl($event)" type="text"
         class="form-control phone-masked" ng-model="entity.phone{{ $phone_id }}" placeholder="телефон {{ $phone_id }}">
         <div class="input-group-btn">
-            <button class="btn btn-default" ng-if="isFull(entity.phone{{ $phone_id }})">
+            <button class="btn btn-default" ng-if="isFull(entity.phone{{ $phone_id }})" ng-click='call(entity.phone{{ $phone_id }})'>
                 <span class="glyphicon glyphicon-earphone no-margin-right"></span>
             </button>
             <button class="btn btn-default"
