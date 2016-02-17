@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'AddDeparturePriceToTeachers' => $baseDir . '/database/migrations/2016_02_17_121119_add_departure_price_to_teachers.php',
     'AddFieldsToTeachers' => $baseDir . '/database/migrations/2016_01_15_122608_add_fields_to_teachers.php',
     'AddGradesToTeachers' => $baseDir . '/database/migrations/2016_02_15_193218_add_grades_to_teachers.php',
     'AddListsToClient' => $baseDir . '/database/migrations/2016_01_22_152742_add_lists_to_client.php',

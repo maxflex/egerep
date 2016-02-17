@@ -19,6 +19,10 @@ Route::group(['middleware' => ['web']], function () {
     Route::resource('requests', 'RequestsController');
     Route::resource('clients', 'ClientsController');
 
+    Route::controllers([
+        'transfer' => 'TransferController'
+    ]);
+
     Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
         Route::get('tutors/list', 'TutorsController@lists');
         Route::resource('tutors', 'TutorsController');

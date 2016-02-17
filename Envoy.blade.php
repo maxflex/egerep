@@ -12,6 +12,11 @@
     php artisan laroute:generate
 @endtask
 
+@task('gulp')
+    cd /var/www/html/repetitors/htdocs/egerep
+    gulp --production
+@endtask
+
 @task('migrate')
     cd /var/www/html/repetitors/htdocs/egerep
     php artisan migrate --force

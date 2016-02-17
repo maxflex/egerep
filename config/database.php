@@ -76,6 +76,18 @@ return [
             'unix_socket'   => env('DB_SOCKET', ''),
         ],
 
+        'egerep' => [
+            'driver'    => 'mysql',
+            'host'      => env('DB_HOST_EGEREP'),
+            'database'  => env('DB_DATABASE_EGEREP'),
+            'username'  => env('DB_USERNAME_EGEREP'),
+            'password'  => env('DB_PASSWORD_EGEREP'),
+            'charset'   => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix'    => '',
+            'unix_socket'   => env('DB_SOCKET', ''),
+        ],
+
         'pgsql' => [
             'driver'   => 'pgsql',
             'host'     => env('DB_HOST', 'localhost'),
