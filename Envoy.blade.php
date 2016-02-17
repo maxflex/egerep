@@ -3,6 +3,8 @@
 @task('deploy')
     cd /var/www/html/repetitors/htdocs/egerep
     git pull github master
+    php artisan config:cache
+    php artisan route:cache
 @endtask
 
 @task('laroute')

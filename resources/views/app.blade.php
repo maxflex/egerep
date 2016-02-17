@@ -51,9 +51,9 @@
           <div class="panel-heading">@yield('title')
               <div class="pull-right links-right">@yield('title-right')</div>
           </div>
-          <div class="panel-body">
-              <div class="frontend-loading" ng-show='frontend_loading'>
-                  <span>загрузка...</span>
+          <div class="panel-body panel-frontend-loading">
+              <div class="frontend-loading animate-fadeIn" ng-show='frontend_loading'>
+                  <span></span>
               </div>
               @yield('content')
           </div>

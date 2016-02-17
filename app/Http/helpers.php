@@ -27,12 +27,16 @@
 
     /**
      * Пребежать по номерам телефона
-     * @todo: функция пока не работает. не было тестов.
+     * функция должна возвращать номер телефона
+     * @example throughNumbers($tutor, function($number)) {
+     *              return $number . '123';
+     *          }
+     *
      */
-    function throughNumbers(&$object, $fun)
+    function throughNumbers(&$object, $func)
     {
-        foreach(['phone', 'phone2', 'phone3'] as $phone_field) {
-            $object->{$phone_field} = $fun($object->{$phone_field});
+        foreach (['phone', 'phone2', 'phone3'] as $phone_field) {
+            $object->{$phone_field} = $func($object->{$phone_field});
         }
     }
 
@@ -41,7 +45,5 @@
      */
     function cleanNumbers(&$object)
     {
-        foreach(['phone', 'phone2', 'phone3'] as $phone_field) {
-            $object->{$phone_field} = cleanNumber($object->{$phone_field});
-        }
+        throughNumbers($object, cleanNumber);
     }

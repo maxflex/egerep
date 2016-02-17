@@ -1,4 +1,4 @@
-angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap'])
+angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ngAnimate'])
     .config [
         '$compileProvider'
         ($compileProvider) ->
@@ -6,6 +6,10 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap'])
 	]
     .run ($rootScope) ->
         $rootScope.laroute = laroute
+
+        $rootScope.frontendStop = (rebind_masks = true) ->
+            $rootScope.frontend_loading = false
+            rebindMasks() if rebind_masks
 
         $rootScope.range = (min, max, step) ->
           step = step or 1

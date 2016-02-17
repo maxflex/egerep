@@ -1,10 +1,19 @@
 (function() {
-  angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap']).config([
+  angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ngAnimate']).config([
     '$compileProvider', function($compileProvider) {
       return $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension|sip):/);
     }
   ]).run(function($rootScope) {
     $rootScope.laroute = laroute;
+    $rootScope.frontendStop = function(rebind_masks) {
+      if (rebind_masks == null) {
+        rebind_masks = true;
+      }
+      $rootScope.frontend_loading = false;
+      if (rebind_masks) {
+        return rebindMasks();
+      }
+    };
     $rootScope.range = function(min, max, step) {
       var i, input;
       step = step || 1;
@@ -237,20 +246,22 @@
       female: 'Женский'
     };
   }).controller("TutorsIndex", function($scope, $timeout, Tutor) {
-    return $scope.tutors = Tutor.query();
+    $scope.$parent.frontend_loading = true;
+    return $scope.tutors = Tutor.query(function() {
+      return $scope.frontendStop();
+    });
   }).controller("TutorsForm", function($scope, $timeout, $interval, Tutor, SvgMap, Subjects, Grades) {
     var _setMarkers;
     $scope.SvgMap = SvgMap;
     $scope.Subjects = Subjects;
     $scope.Grades = Grades;
-    $scope.frontend_loading = true;
+    $scope.$parent.frontend_loading = true;
     $timeout(function() {
       if ($scope.id > 0) {
         return $scope.tutor = Tutor.get({
           id: $scope.id
         }, function() {
-          $scope.frontend_loading = false;
-          return rebindMasks();
+          return $scope.frontendStop();
         });
       }
     });
