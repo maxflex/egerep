@@ -5,10 +5,9 @@
     <meta charset="utf-8">
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <meta charset="utf-8">
-    <base href="{{ env('BASE_URL') }}">
+    <base href="{{ config('app.url') }}">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css">
     <link href="css/signin.css" rel="stylesheet" type="text/css">
-    {{-- <link href='https://fonts.googleapis.com/css?family=Ubuntu&subset=latin,cyrillic' rel='stylesheet' type='text/css'> --}}
     @yield('scripts')
 
     <script src="{{ asset('/js/vendor.js') }}"></script>

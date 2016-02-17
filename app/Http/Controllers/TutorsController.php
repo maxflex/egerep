@@ -29,12 +29,14 @@ class TutorsController extends Controller
     public function store(Request $request)
     {
         Tutor::create($request->input());
-
         return redirect()->route('tutors.index');
     }
 
     public function edit($id)
     {
+        // $nginit = ngInit([
+        //     'tutor' => Tutor::find($id)
+        // ]);
         return view('tutors.edit')->with(compact('id'));
     }
 }

@@ -3,7 +3,7 @@
     <input type="text" class="form-control" ng-model="address" placeholder="email">
     <div class="input-group-btn">
         <button class="btn btn-default" ng-click='send()'>
-            <span class="glyphicon glyphicon-envelope no-margin-right"></span>
+            <span class="glyphicon glyphicon-envelope small no-margin-right"></span>
         </button>
     </div>
 </div>
