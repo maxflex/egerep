@@ -25,7 +25,7 @@ angular
         $scope.SvgMap   = SvgMap
         $scope.Subjects = Subjects
         $scope.Grades   = Grades
-        # $scope.$parent.frontend_loading = true
+        $scope.$parent.frontend_loading = true
 
         # get tutor
         $timeout ->

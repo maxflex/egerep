@@ -255,6 +255,7 @@
     $scope.SvgMap = SvgMap;
     $scope.Subjects = Subjects;
     $scope.Grades = Grades;
+    $scope.$parent.frontend_loading = true;
     $timeout(function() {
       if ($scope.id > 0) {
         return $scope.tutor = Tutor.get({
