@@ -148,7 +148,7 @@
     };
     $scope.getUser = function(user_id) {
       return _.findWhere($scope.users, {
-        id: user_id
+        id: parseInt(user_id)
       });
     };
     $scope.addListSubject = function() {
@@ -898,49 +898,6 @@
 }).call(this);
 
 (function() {
-  var apiPath, updateMethod;
-
-  angular.module('Egerep').factory('Request', function($resource) {
-    return $resource(apiPath('requests'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Sms', function($resource) {
-    return $resource(apiPath('sms'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Comment', function($resource) {
-    return $resource(apiPath('comments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Client', function($resource) {
-    return $resource(apiPath('clients'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('User', function($resource) {
-    return $resource(apiPath('users'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Tutor', function($resource) {
-    return $resource(apiPath('tutors'), {
-      id: '@id'
-    }, updateMethod());
-  });
-
-  apiPath = function(entity) {
-    return "api/" + entity + "/:id";
-  };
-
-  updateMethod = function() {
-    return {
-      update: {
-        method: 'PUT'
-      }
-    };
-  };
-
-}).call(this);
-
-(function() {
   angular.module('Egerep').service('SvgMap', function() {
     this.map = new SVGMap({
       iframeId: 'map',
@@ -1044,6 +1001,49 @@
     };
     return this;
   });
+
+}).call(this);
+
+(function() {
+  var apiPath, updateMethod;
+
+  angular.module('Egerep').factory('Request', function($resource) {
+    return $resource(apiPath('requests'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Sms', function($resource) {
+    return $resource(apiPath('sms'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Comment', function($resource) {
+    return $resource(apiPath('comments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Client', function($resource) {
+    return $resource(apiPath('clients'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('User', function($resource) {
+    return $resource(apiPath('users'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Tutor', function($resource) {
+    return $resource(apiPath('tutors'), {
+      id: '@id'
+    }, updateMethod());
+  });
+
+  apiPath = function(entity) {
+    return "api/" + entity + "/:id";
+  };
+
+  updateMethod = function() {
+    return {
+      update: {
+        method: 'PUT'
+      }
+    };
+  };
 
 }).call(this);
 

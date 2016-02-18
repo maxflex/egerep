@@ -50,7 +50,7 @@ angular
                     if client.subject_list isnt null
                         $scope.selected_list_id = client.subject_list[0]
                         # set the default attachment, if any
-                        # @temporary 
+                        # @temporary
                         # if client.attachments[$scope.selected_list_id]
                         #     $scope.selected_attachment = client.attachments[$scope.selected_list_id][0]
                     $rootScope.frontendStop()
@@ -84,7 +84,7 @@ angular
 
         $scope.getUser = (user_id) ->
             _.findWhere $scope.users,
-                id: user_id
+                id: parseInt(user_id)
 
         $scope.addListSubject = ->
             $scope.client.subject_list.push($scope.list_subject_id)
