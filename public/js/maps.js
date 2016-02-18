@@ -65,7 +65,7 @@ this.newMarker = function(id, latLng, map, type) {
   return new google.maps.Marker({
     map: map,
     position: latLng,
-    icon: type === 'green' ? ICON_GREEN : ICON_RED,
+    icon: type === 'green' ? ICON_GREEN : type === 'red' ? ICON_RED : ICON_BLUE,
     id: id,
     type: type,
     lat: latLng.lat(),

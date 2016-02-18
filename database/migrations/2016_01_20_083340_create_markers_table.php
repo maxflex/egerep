@@ -18,7 +18,7 @@ class CreateMarkersTable extends Migration
             $table->string('markerable_type');
             $table->string('lat');
             $table->string('lng');
-            $table->enum('type', ['green', 'red']);
+            $table->enum('type', ['green', 'red', 'blue']);
         });
     }
 
