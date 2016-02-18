@@ -168,7 +168,7 @@ angular
                 if markers_count > 0
                     $scope.gmap.fitBounds bounds
                     $scope.gmap.panToBounds bounds
-                    $scope.gmap.setZoom 13
+                    $scope.gmap.setZoom 11
 
         $scope.gmapAddMarker = (event) ->
             # Создаем маркер
