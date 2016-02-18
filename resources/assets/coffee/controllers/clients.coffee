@@ -14,9 +14,10 @@ angular
     #
     #   ADD/EDIT CONTROLLER
     #
-    .controller "ClientsForm", ($scope, $timeout, $interval, $http, Client, User, RequestStatus, Subjects) ->
+    .controller "ClientsForm", ($scope, $timeout, $interval, $http, $q, Client, User, RequestStatus, Subjects) ->
         $scope.RequestStatus = RequestStatus
         $scope.Subjects = Subjects
+        $scope.dataLoaded = $q.defer()
 
         # Save everything
         $scope.edit = ->
@@ -24,6 +25,7 @@ angular
             $scope.client.$update()
                 .then (response) ->
                     $scope.ajaxEnd()
+
 
         # get teacher
         $timeout ->
@@ -35,6 +37,7 @@ angular
 
             if $scope.id > 0
                 $scope.client = Client.get {id: $scope.id}, (client) ->
+                    $scope.dataLoaded.resolve(client)
                     $scope.selected_request = if $scope.request_id then _.findWhere(client.requests, {id: $scope.request_id}) else client.requests[0]
                     # set the default list
                     if client.subject_list isnt null

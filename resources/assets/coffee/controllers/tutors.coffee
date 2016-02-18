@@ -21,16 +21,18 @@ angular
     #
     #   ADD/EDIT CONTROLLER
     #
-    .controller "TutorsForm", ($scope, $timeout, $interval, Tutor, SvgMap, Subjects, Grades) ->
+    .controller "TutorsForm", ($scope, $timeout, $interval, $q, Tutor, SvgMap, Subjects, Grades) ->
         $scope.SvgMap   = SvgMap
         $scope.Subjects = Subjects
         $scope.Grades   = Grades
         $scope.$parent.frontend_loading = true
+        $scope.dataLoaded = $q.defer()
 
         # get tutor
         $timeout ->
             if $scope.id > 0
                 $scope.tutor = Tutor.get {id: $scope.id}, ->
+                    $scope.dataLoaded.resolve(true)
                     $scope.frontendStop()
 
         # @todo: ЗАМЕНИТЬ НА ДИРЕКТИВУ <ng-select> (уже сделано, но глючная. надо доделать)

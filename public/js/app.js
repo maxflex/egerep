@@ -77,9 +77,10 @@
 (function() {
   angular.module('Egerep').controller("ClientsIndex", function($scope, $timeout, Client) {
     return $scope.clients = Client.query();
-  }).controller("ClientsForm", function($scope, $timeout, $interval, $http, Client, User, RequestStatus, Subjects) {
+  }).controller("ClientsForm", function($scope, $timeout, $interval, $http, $q, Client, User, RequestStatus, Subjects) {
     $scope.RequestStatus = RequestStatus;
     $scope.Subjects = Subjects;
+    $scope.dataLoaded = $q.defer();
     $scope.edit = function() {
       $scope.ajaxStart();
       return $scope.client.$update().then(function(response) {
@@ -95,6 +96,7 @@
         return $scope.client = Client.get({
           id: $scope.id
         }, function(client) {
+          $scope.dataLoaded.resolve(client);
           $scope.selected_request = $scope.request_id ? _.findWhere(client.requests, {
             id: $scope.request_id
           }) : client.requests[0];
@@ -250,17 +252,19 @@
     return $scope.tutors = Tutor.query(function() {
       return $scope.frontendStop();
     });
-  }).controller("TutorsForm", function($scope, $timeout, $interval, Tutor, SvgMap, Subjects, Grades) {
+  }).controller("TutorsForm", function($scope, $timeout, $interval, $q, Tutor, SvgMap, Subjects, Grades) {
     var _setMarkers;
     $scope.SvgMap = SvgMap;
     $scope.Subjects = Subjects;
     $scope.Grades = Grades;
     $scope.$parent.frontend_loading = true;
+    $scope.dataLoaded = $q.defer();
     $timeout(function() {
       if ($scope.id > 0) {
         return $scope.tutor = Tutor.get({
           id: $scope.id
         }, function() {
+          $scope.dataLoaded.resolve(true);
           return $scope.frontendStop();
         });
       }
@@ -588,9 +592,9 @@
         entity: '='
       },
       controller: function($scope, $timeout) {
-        $timeout(function() {
+        $scope.$parent.dataLoaded.promise.then(function(data) {
           return $scope.level = $scope.entity.phone3 ? 3 : $scope.entity.phone2 ? 2 : 1;
-        }, 100);
+        });
         $scope.nextLevel = function() {
           return $scope.level++;
         };

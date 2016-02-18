@@ -16,7 +16,9 @@
     </div>
     <div class="col-sm-3">
         <div class="form-group">
-            <phones entity="client"></phones>
+            <div ng-if='client !== undefined'>
+                <phones entity="client"></phones>
+            </div>
         </div>
     </div>
     <div class="col-sm-4"></div>
