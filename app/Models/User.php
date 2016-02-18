@@ -15,6 +15,12 @@ class User extends Model
     const LAST_REAL_ID = 112;
     const USER_TYPE = 'USER';
 
+    # Fake system user
+    const SYSTEM_USER = [
+        'id'    => 0,
+        'login' => 'system',
+    ];
+
     /**
      * Вход пользователя
      */
@@ -72,6 +78,14 @@ class User extends Model
     }
 
     /**
+     * Вернуть системного пользователя
+     */
+    public static function getSystem()
+    {
+        return (object)static::SYSTEM_USER;
+    }
+
+    /**
 	 * Вернуть пароль, как в репетиторах
 	 *
 	 */
@@ -85,15 +99,10 @@ class User extends Model
 
     /**
      * Get real users
+     *
      */
-    public static function getReal($only_working = false)
+    public static function scopeReal($query)
     {
-        $query = User::where('id', '<=', self::LAST_REAL_ID);
-
-        if ($only_working) {
-            $query = $query->where('worktime', 1);
-        }
-
-        return $query->get();
+        return $query->where('type', static::USER_TYPE);
     }
 }

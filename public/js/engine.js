@@ -9,6 +9,13 @@
 	})
 
 	/**
+	 * Remove by id
+	 */
+	function removeById(object, id) {
+		return _.without(object, _.findWhere(object, {id: id}))
+	}
+
+	/**
 	 * Svg map debug function.
 	 */
 	function clickSt(id) {

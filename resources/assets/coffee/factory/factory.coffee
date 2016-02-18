@@ -1,7 +1,9 @@
 angular.module('Egerep')
-    .value 'RequestStatus',
-        new: 'новая'
-        finished: 'выполненная'
+    .value 'RequestState',
+        new: 'невыполненные'
+        awaiting: 'в ожидании'
+        finished: 'выполненные'
+        deny: 'отказы'
 
     .value 'Grades',
         1: '1 класс'

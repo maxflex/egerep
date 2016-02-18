@@ -3,13 +3,15 @@
     '$compileProvider', function($compileProvider) {
       return $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension|sip):/);
     }
-  ]).run(function($rootScope) {
+  ]).run(function($rootScope, $q) {
     $rootScope.laroute = laroute;
+    $rootScope.dataLoaded = $q.defer();
     $rootScope.frontendStop = function(rebind_masks) {
       if (rebind_masks == null) {
         rebind_masks = true;
       }
       $rootScope.frontend_loading = false;
+      $rootScope.dataLoaded.resolve(true);
       if (rebind_masks) {
         return rebindMasks();
       }
@@ -77,12 +79,19 @@
 (function() {
   angular.module('Egerep').controller("ClientsIndex", function($scope, $timeout, Client) {
     return $scope.clients = Client.query();
-  }).controller("ClientsForm", function($scope, $timeout, $interval, $http, $q, Client, User, RequestStatus, Subjects) {
-    $scope.RequestStatus = RequestStatus;
+  }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, User, RequestState, Subjects, Grades) {
+    var filterMarkers;
+    $scope.RequestState = RequestState;
     $scope.Subjects = Subjects;
-    $scope.dataLoaded = $q.defer();
+    $scope.Grades = Grades;
+    $rootScope.frontend_loading = true;
+    $scope.fake_user = {
+      id: 0,
+      login: 'system'
+    };
     $scope.edit = function() {
       $scope.ajaxStart();
+      filterMarkers();
       return $scope.client.$update().then(function(response) {
         return $scope.ajaxEnd();
       });
@@ -96,17 +105,13 @@
         return $scope.client = Client.get({
           id: $scope.id
         }, function(client) {
-          $scope.dataLoaded.resolve(client);
           $scope.selected_request = $scope.request_id ? _.findWhere(client.requests, {
             id: $scope.request_id
           }) : client.requests[0];
           if (client.subject_list !== null) {
             $scope.selected_list_id = client.subject_list[0];
-            if (client.attachments[$scope.selected_list_id]) {
-              $scope.selected_attachment = client.attachments[$scope.selected_list_id][0];
-            }
           }
-          return rebindMasks();
+          return $rootScope.frontendStop();
         });
       }
     });
@@ -132,13 +137,14 @@
     };
     $scope.toggleUser = function() {
       var new_user;
+      if (!$scope.selected_request.user) {
+        $scope.selected_request.user = $scope.fake_user;
+      }
       new_user = _.find($scope.users, function(user) {
         return user.id > $scope.selected_request.user.id;
       });
-      if (new_user === void 0) {
-        new_user = $scope.users[0];
-      }
-      return $scope.selected_request.user = new_user;
+      $scope.selected_request.user = new_user;
+      return $scope.selected_request.user_id = new_user.id;
     };
     $scope.getUser = function(user_id) {
       return _.findWhere($scope.users, {
@@ -171,13 +177,21 @@
     };
     $scope.addRequest = function() {
       var new_request;
-      new_request = {
-        id: null,
-        client_id: $scope.id,
-        status: 'new'
-      };
-      $scope.client.requests.push(new_request);
-      return $scope.selected_request = new_request;
+      new_request = new Request({
+        client_id: $scope.id
+      });
+      return new_request.$save().then(function(data) {
+        $scope.client.requests.push(data);
+        return $scope.selected_request = data;
+      });
+    };
+    $scope.removeRequest = function() {
+      return Request["delete"]({
+        id: $scope.selected_request.id
+      }, function() {
+        $scope.client.requests = removeById($scope.client.requests, $scope.selected_request.id);
+        return $scope.selected_request = $scope.client.requests[0];
+      });
     };
     $scope.$watch('selected_request.comment', function(newVal, oldVal) {
       var matches;
@@ -195,7 +209,7 @@
         return $scope.tutor_ids.push(parseInt(tutor_id));
       });
     });
-    return $scope.$watch('selected_attachment', function(newVal, oldVal) {
+    $scope.$watch('selected_attachment', function(newVal, oldVal) {
       if (newVal === void 0) {
         return;
       }
@@ -206,6 +220,169 @@
         return spRefresh('attachment-subjects');
       }
     });
+    $scope.$watch('client.grades', function(newVal, oldVal) {
+      console.log(newVal, oldVal, 'grades');
+      if (newVal === void 0) {
+        return;
+      }
+      if (oldVal === void 0) {
+        sp('client-grades', 'укажите класс');
+      }
+      if (oldVal !== void 0) {
+        return spRefresh('client-grades');
+      }
+    });
+    $scope.marker_id = 1;
+    filterMarkers = function() {
+      var new_markers;
+      new_markers = [];
+      $.each($scope.client.markers, function(index, marker) {
+        return new_markers.push(_.pick(marker, 'lat', 'lng', 'type'));
+      });
+      return $scope.client.markers = new_markers;
+    };
+    $scope.$on('mapInitialized', function(event, map) {
+      var INIT_COORDS;
+      $scope.gmap = map;
+      $scope.loadMarkers();
+      INIT_COORDS = {
+        lat: 55.7387,
+        lng: 37.6032
+      };
+      $scope.RECOM_BOUNDS = new google.maps.LatLngBounds(new google.maps.LatLng(INIT_COORDS.lat - 0.5, INIT_COORDS.lng - 0.5), new google.maps.LatLng(INIT_COORDS.lat + 0.5, INIT_COORDS.lng + 0.5));
+      $scope.geocoder = new google.maps.Geocoder;
+      return google.maps.event.addListener(map, 'click', function(event) {
+        return $scope.gmapAddMarker(event);
+      });
+    });
+    $scope.showMap = function() {
+      var bounds, markers_count;
+      $('#gmap-modal').modal('show');
+      google.maps.event.trigger($scope.gmap, 'resize');
+      $scope.gmap.setCenter(new google.maps.LatLng(55.7387, 37.6032));
+      $scope.gmap.setZoom(11);
+      $('#map-search').val('');
+      if ($scope.search_markers && $scope.search_markers.length) {
+        $.each($scope.search_markers, function(i, marker) {
+          return marker.setMap(null);
+        });
+        $scope.search_markers = [];
+      }
+      if ($scope.client.markers.length) {
+        bounds = new google.maps.LatLngBounds;
+        markers_count = 0;
+        $.each($scope.client.markers, function(index, marker) {
+          markers_count++;
+          return bounds.extend(marker.position);
+        });
+        if (markers_count > 0) {
+          $scope.gmap.fitBounds(bounds);
+          $scope.gmap.panToBounds(bounds);
+          return $scope.gmap.setZoom(11);
+        }
+      }
+    };
+    $scope.gmapAddMarker = function(event) {
+      var marker;
+      marker = newMarker($scope.marker_id++, event.latLng, $scope.map);
+      $scope.client.markers.push(marker);
+      marker.setMap($scope.gmap);
+      $scope.bindMarkerDelete(marker);
+      return $scope.bindMarkerChangeType(marker);
+    };
+    $scope.bindMarkerDelete = function(marker) {
+      return google.maps.event.addListener(marker, 'dblclick', function(event) {
+        var t;
+        t = this;
+        t.setMap(null);
+        return $.each($scope.client.markers, function(index, m) {
+          console.log('id', t.id, m.id);
+          if (m !== void 0 && t.id === m.id) {
+            return $scope.client.markers.splice(index, 1);
+          }
+        });
+      });
+    };
+    $scope.bindMarkerChangeType = function(marker) {
+      return google.maps.event.addListener(marker, 'click', function(event) {
+        if (this.type === 'green') {
+          this.type = 'red';
+          return this.setIcon(ICON_RED);
+        } else if (this.type === 'red') {
+          this.type = 'blue';
+          return this.setIcon(ICON_BLUE);
+        } else {
+          this.type = 'green';
+          return this.setIcon(ICON_GREEN);
+        }
+      });
+    };
+    $scope.searchMap = function(address) {
+      return $scope.geocoder.geocode({
+        address: address + ', московская область',
+        bounds: $scope.RECOM_BOUNDS
+      }, function(results, status) {
+        var max_results, search_result_bounds;
+        if (status === google.maps.GeocoderStatus.OK) {
+          max_results = 3;
+          search_result_bounds = new google.maps.LatLngBounds;
+          $.each(results, function(i, result) {
+            var search_marker;
+            if (i >= max_results) {
+              return;
+            }
+            search_result_bounds.extend(result.geometry.location);
+            search_marker = new google.maps.Marker({
+              map: $scope.map,
+              position: result.geometry.location,
+              icon: ICON_SEARCH
+            });
+            google.maps.event.addListener(search_marker, 'click', function(event) {
+              this.setMap(null);
+              return $scope.gmapAddMarker(event);
+            });
+            $scope.search_markers = initIfNotSet($scope.search_markers);
+            return $scope.search_markers.push(search_marker);
+          });
+          if (results.length > 0) {
+            $scope.gmap.fitBounds(search_result_bounds);
+            $scope.gmap.panToBounds(search_result_bounds);
+            if (results.length === 1) {
+              return $scope.gmap.setZoom(12);
+            }
+          } else {
+            return $('#map-search').addClass('has-error').focus();
+          }
+        }
+      });
+    };
+    $scope.gmapsSearch = function($event) {
+      if ($event.keyCode === 13 || $event.type === 'click') {
+        if ($('#map-search').val() === '') {
+          $('#map-search').addClass('has-error').focus();
+        } else {
+          $('#map-search').removeClass('has-error');
+        }
+        return $scope.searchMap($('#map-search').val());
+      }
+    };
+    $scope.loadMarkers = function() {
+      return $rootScope.dataLoaded.promise.then(function() {
+        var markers;
+        markers = [];
+        $.each($scope.client.markers, function(index, marker) {
+          marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, marker.type);
+          marker.setMap($scope.map);
+          $scope.bindMarkerDelete(marker);
+          $scope.bindMarkerChangeType(marker);
+          return markers.push(marker);
+        });
+        return $scope.client.markers = markers;
+      });
+    };
+    return $scope.saveMarkers = function() {
+      return $('#gmap-modal').modal('hide');
+    };
   });
 
 }).call(this);
@@ -247,25 +424,23 @@
       male: 'Мужской',
       female: 'Женский'
     };
-  }).controller("TutorsIndex", function($scope, $timeout, Tutor) {
-    $scope.$parent.frontend_loading = true;
+  }).controller("TutorsIndex", function($scope, $rootScope, $timeout, Tutor) {
+    $rootScope.frontend_loading = true;
     return $scope.tutors = Tutor.query(function() {
-      return $scope.frontendStop();
+      return $rootScope.frontendStop();
     });
-  }).controller("TutorsForm", function($scope, $timeout, $interval, $q, Tutor, SvgMap, Subjects, Grades) {
-    var _setMarkers;
+  }).controller("TutorsForm", function($scope, $rootScope, $timeout, $interval, Tutor, SvgMap, Subjects, Grades) {
+    var filterMarkers;
     $scope.SvgMap = SvgMap;
     $scope.Subjects = Subjects;
     $scope.Grades = Grades;
-    $scope.$parent.frontend_loading = true;
-    $scope.dataLoaded = $q.defer();
+    $rootScope.frontend_loading = true;
     $timeout(function() {
       if ($scope.id > 0) {
         return $scope.tutor = Tutor.get({
           id: $scope.id
         }, function() {
-          $scope.dataLoaded.resolve(true);
-          return $scope.frontendStop();
+          return $rootScope.frontendStop();
         });
       }
     });
@@ -305,40 +480,22 @@
         });
       });
     };
-    $scope.editOld = function() {
-      var old_markers;
-      $scope.saving = true;
-      $scope.tutor['svg_map[]'] = $scope.tutor.svg_map;
-      old_markers = _setMarkers();
-      return Tutor.update($scope.tutor, {
-        id: $scope.id
-      }, function() {
-        $scope.tutor.markers = old_markers;
-        return $scope.saving = false;
-      });
-    };
     $scope.edit = function() {
-      var old_markers;
       $scope.saving = true;
-      $scope.tutor['svg_map[]'] = $scope.tutor.svg_map;
-      old_markers = _setMarkers();
+      filterMarkers();
       return $scope.tutor.$update().then(function(response) {
-        $scope.tutor.markers = old_markers;
         return $scope.saving = false;
       });
-    };
-    _setMarkers = function() {
-      var new_markers, old_markers;
-      new_markers = [];
-      old_markers = $scope.tutor.markers;
-      delete $scope.tutor.markers;
-      $.each(old_markers, function(index, marker) {
-        return new_markers.push(_.pick(marker, 'lat', 'lng', 'type'));
-      });
-      $scope.tutor['markers[]'] = new_markers;
-      return old_markers;
     };
     $scope.marker_id = 1;
+    filterMarkers = function() {
+      var new_markers;
+      new_markers = [];
+      $.each($scope.tutor.markers, function(index, marker) {
+        return new_markers.push(_.pick(marker, 'lat', 'lng', 'type'));
+      });
+      return $scope.tutor.markers = new_markers;
+    };
     $scope.$on('mapInitialized', function(event, map) {
       var INIT_COORDS;
       $scope.gmap = map;
@@ -462,16 +619,18 @@
       }
     };
     $scope.loadMarkers = function() {
-      var markers;
-      markers = [];
-      $.each($scope.tutor.markers, function(index, marker) {
-        marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, marker.type);
-        marker.setMap($scope.map);
-        $scope.bindMarkerDelete(marker);
-        $scope.bindMarkerChangeType(marker);
-        return markers.push(marker);
+      return $rootScope.dataLoaded.promise.then(function() {
+        var markers;
+        markers = [];
+        $.each($scope.tutor.markers, function(index, marker) {
+          marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, marker.type);
+          marker.setMap($scope.map);
+          $scope.bindMarkerDelete(marker);
+          $scope.bindMarkerChangeType(marker);
+          return markers.push(marker);
+        });
+        return $scope.tutor.markers = markers;
       });
-      return $scope.tutor.markers = markers;
     };
     return $scope.saveMarkers = function() {
       return $('#gmap-modal').modal('hide');
@@ -491,10 +650,10 @@
         entityType: '@'
       },
       controller: function($scope, $timeout, Comment) {
-        $timeout(function() {
+        $scope.$watch('entityId', function(newVal, oldVal) {
           return $scope.comments = Comment.query({
             entity_type: $scope.entityType,
-            entity_id: $scope.entityId
+            entity_id: newVal
           });
         });
         $scope.formatDateTime = function(date) {
@@ -591,8 +750,8 @@
       scope: {
         entity: '='
       },
-      controller: function($scope, $timeout) {
-        $scope.$parent.dataLoaded.promise.then(function(data) {
+      controller: function($scope, $timeout, $rootScope) {
+        $rootScope.dataLoaded.promise.then(function(data) {
           return $scope.level = $scope.entity.phone3 ? 3 : $scope.entity.phone2 ? 2 : 1;
         });
         $scope.nextLevel = function() {
@@ -697,9 +856,11 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').value('RequestStatus', {
-    "new": 'новая',
-    finished: 'выполненная'
+  angular.module('Egerep').value('RequestState', {
+    "new": 'невыполненные',
+    awaiting: 'в ожидании',
+    finished: 'выполненные',
+    deny: 'отказы'
   }).value('Grades', {
     1: '1 класс',
     2: '2 класс',
@@ -739,7 +900,11 @@
 (function() {
   var apiPath, updateMethod;
 
-  angular.module('Egerep').factory('Sms', function($resource) {
+  angular.module('Egerep').factory('Request', function($resource) {
+    return $resource(apiPath('requests'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Sms', function($resource) {
     return $resource(apiPath('sms'), {
       id: '@id'
     }, updateMethod());

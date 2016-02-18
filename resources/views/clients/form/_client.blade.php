@@ -9,8 +9,8 @@
             </div>
         </div>
         <div class="form-group">
-            <select class="form-control" ng-model="client.grade"
-                ng-options="grade as grade + ' класс' for grade in range(9, 11)">
+            <select class="form-control" multiple id='sp-client-grades' ng-model='client.grades'
+                ng-options="grade_id as label for (grade_id, label) in Grades">
             </select>
         </div>
     </div>
@@ -21,5 +21,9 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-4"></div>
+    <div class="col-sm-4">
+        <div class="form-group">
+            <span class="link-like" ng-click="showMap()">метки</span> (@{{ client.markers.length }})
+        </div>
+    </div>
 </div>

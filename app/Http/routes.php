@@ -26,7 +26,10 @@ Route::group(['middleware' => ['web']], function () {
     Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
         Route::get('tutors/list', 'TutorsController@lists');
         Route::resource('tutors', 'TutorsController');
+
         Route::resource('requests', 'RequestsController');
+        Route::put('requests/toggle/{id}', 'RequestsController@toggle');
+
         Route::resource('clients', 'ClientsController');
         Route::resource('users', 'UsersController');
         Route::resource('comments', 'CommentsController');

@@ -27,7 +27,7 @@ class RequestsController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -38,7 +38,7 @@ class RequestsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return \App\Models\Request::create($request->input());
     }
 
     /**
@@ -83,6 +83,6 @@ class RequestsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return \App\Models\Request::destroy($id);
     }
 }

@@ -10,30 +10,28 @@ angular
     #
     #   LIST CONTROLLER
     #
-    .controller "TutorsIndex", ($scope, $timeout, Tutor) ->
-        $scope.$parent.frontend_loading = true
+    .controller "TutorsIndex", ($scope, $rootScope, $timeout, Tutor) ->
+        $rootScope.frontend_loading = true
 
         $scope.tutors = Tutor.query ->
-            $scope.frontendStop()
+            $rootScope.frontendStop()
 
 
 
     #
     #   ADD/EDIT CONTROLLER
     #
-    .controller "TutorsForm", ($scope, $timeout, $interval, $q, Tutor, SvgMap, Subjects, Grades) ->
+    .controller "TutorsForm", ($scope, $rootScope, $timeout, $interval, Tutor, SvgMap, Subjects, Grades) ->
         $scope.SvgMap   = SvgMap
         $scope.Subjects = Subjects
         $scope.Grades   = Grades
-        $scope.$parent.frontend_loading = true
-        $scope.dataLoaded = $q.defer()
+        $rootScope.frontend_loading = true
 
         # get tutor
         $timeout ->
             if $scope.id > 0
                 $scope.tutor = Tutor.get {id: $scope.id}, ->
-                    $scope.dataLoaded.resolve(true)
-                    $scope.frontendStop()
+                    $rootScope.frontendStop()
 
         # @todo: ЗАМЕНИТЬ НА ДИРЕКТИВУ <ng-select> (уже сделано, но глючная. надо доделать)
         # refresh selectpicker on update
@@ -60,59 +58,20 @@ angular
                 window.location = laroute.route 'tutors.edit',
                     tutors: tutor.id
 
-        $scope.editOld = ->
-            $scope.saving = true
-            $scope.tutor['svg_map[]'] = $scope.tutor.svg_map
-            # delete $scope.tutor.svg_map
-
-            old_markers = _setMarkers()
-
-            Tutor.update $scope.tutor, {id: $scope.id}, ->
-                $scope.tutor.markers = old_markers
-                $scope.saving = false
-                # $scope.tutor.svg_map = $scope.tutor['svg_map[]']
-                # delete $scope.tutor['svg_map[]']
-                # delte $scope.tutor['markers[]']
-
         $scope.edit = ->
             $scope.saving = true
-            $scope.tutor['svg_map[]'] = $scope.tutor.svg_map
-            # delete $scope.tutor.svg_map
-
-            old_markers = _setMarkers()
+            filterMarkers()
 
             $scope.tutor.$update()
                 .then (response) ->
-                    $scope.tutor.markers = old_markers
                     $scope.saving = false
 
-            # Tutor.update $scope.tutor, {id: $scope.id}, ->
-            #     $scope.tutor.markers = old_markers
-            #     $scope.saving = false
-                # $scope.tutor.svg_map = $scope.tutor['svg_map[]']
-                # delete $scope.tutor['svg_map[]']
-                # delte $scope.tutor['markers[]']
 
 
-            # $scope.tutor['svg_map[]'] = $scope.tutor.svg_map
-            # # delete $scope.tutor.svg_map
-            #
-            # old_markers = _setMarkers()
-            #
-            # Tutor.update $scope.tutor, {id: $scope.id}, ->
-            #     $scope.tutor.markers = old_markers
-            #     $scope.saving = false
 
-        _setMarkers = ->
-            new_markers = []
-            old_markers = $scope.tutor.markers
-            delete $scope.tutor.markers
 
-            $.each old_markers, (index, marker) ->
-                new_markers.push _.pick(marker, 'lat', 'lng', 'type')
-            $scope.tutor['markers[]'] = new_markers
 
-            old_markers
+
 
 
         #
@@ -120,6 +79,12 @@ angular
         #
         $scope.marker_id = 1
 
+        filterMarkers = ->
+            new_markers = []
+            $.each $scope.tutor.markers, (index, marker) ->
+                new_markers.push _.pick(marker, 'lat', 'lng', 'type')
+            $scope.tutor.markers = new_markers
+            
         $scope.$on 'mapInitialized', (event, map) ->
             # Запоминаем карту после инициалицации
             $scope.gmap = map
@@ -256,19 +221,20 @@ angular
 
         # Загрузить метки
         $scope.loadMarkers = ->
-            markers = []
-            $.each $scope.tutor.markers, (index, marker) ->
-                # Создаем маркер
-                marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, marker.type)
+            $rootScope.dataLoaded.promise.then ->
+                markers = []
+                $.each $scope.tutor.markers, (index, marker) ->
+                    # Создаем маркер
+                    marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, marker.type)
 
-                # Добавляем маркер на карту
-                marker.setMap($scope.map)
+                    # Добавляем маркер на карту
+                    marker.setMap($scope.map)
 
-                # Добавляем ивент удаления маркера
-                $scope.bindMarkerDelete(marker)
-                $scope.bindMarkerChangeType(marker)
-                markers.push marker
-            $scope.tutor.markers = markers
+                    # Добавляем ивент удаления маркера
+                    $scope.bindMarkerDelete(marker)
+                    $scope.bindMarkerChangeType(marker)
+                    markers.push marker
+                $scope.tutor.markers = markers
 
         # Сохранить метки
         $scope.saveMarkers = ->

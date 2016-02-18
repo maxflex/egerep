@@ -3,9 +3,9 @@ angular.module('Egerep').directive 'phones', ->
     templateUrl: 'directives/phones'
     scope:
         entity: '='
-    controller: ($scope, $timeout) ->
+    controller: ($scope, $timeout, $rootScope) ->
         # level depth on + (phone1, phone2, phone3)
-        $scope.$parent.dataLoaded.promise.then (data) ->
+        $rootScope.dataLoaded.promise.then (data) ->
             $scope.level = if $scope.entity.phone3 then 3 else if $scope.entity.phone2 then 2 else 1
         # $timeout ->
         #     $scope.level = if $scope.entity.phone3 then 3 else if $scope.entity.phone2 then 2 else 1

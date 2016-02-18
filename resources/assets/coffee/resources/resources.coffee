@@ -1,4 +1,7 @@
 angular.module('Egerep')
+    .factory 'Request', ($resource) ->
+        $resource apiPath('requests'), {id: '@id'}, updateMethod()
+
     .factory 'Sms', ($resource) ->
         $resource apiPath('sms'), {id: '@id'}, updateMethod()
 

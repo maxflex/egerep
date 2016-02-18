@@ -4,11 +4,15 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
         ($compileProvider) ->
             $compileProvider.aHrefSanitizationWhitelist /^\s*(https?|ftp|mailto|chrome-extension|sip):/
 	]
-    .run ($rootScope) ->
+    .run ($rootScope, $q) ->
         $rootScope.laroute = laroute
 
+        # отвечает за загрузку данных
+        $rootScope.dataLoaded = $q.defer()
+        # конец анимации front-end загрузки и rebind маск
         $rootScope.frontendStop = (rebind_masks = true) ->
             $rootScope.frontend_loading = false
+            $rootScope.dataLoaded.resolve(true)
             rebindMasks() if rebind_masks
 
         $rootScope.range = (min, max, step) ->

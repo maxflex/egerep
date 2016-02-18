@@ -28258,6 +28258,9 @@ md-input-container textarea {
   .comment-block .glyphicon.text-danger {
     color: #FF809C; }
 
+.link-like.text-danger {
+  color: #A94442; }
+
 .comment-add-field {
   outline: none;
   border: 0;
