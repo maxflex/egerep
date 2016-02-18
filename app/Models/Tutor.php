@@ -16,7 +16,7 @@ class Tutor extends Model
         "tb", "lk", "js", "approved", "contacts", "price", "education", "achievements",
         "preferences", "experience", "current_work", "tutoring_experience",
         "students_category", "impression", "schedule", "public_desc", "public_price",
-        "markers", "svg_map", 'subjects', 'grades', 'id_a_pers'
+        "markers", "svg_map", 'subjects', 'grades', 'id_a_pers', 'departure_price'
     ];
 
     protected $appends = ['full_name', 'has_photo'];

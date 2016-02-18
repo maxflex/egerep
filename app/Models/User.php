@@ -8,8 +8,12 @@ class User extends Model
 {
     protected $connection = 'egecrm';
 
+    protected $fillable = ['login', 'password'];
+    public $timestamps = false;
+
     # ID of the last real user
     const LAST_REAL_ID = 112;
+    const USER_TYPE = 'USER';
 
     /**
      * Вход пользователя

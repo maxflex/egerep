@@ -26447,6 +26447,22 @@ md-tooltip {
   -webkit-animation-name: slideOutUp;
   animation-name: slideOutUp; }
 
+@-webkit-keyframes frontendLoading {
+  0% {
+    opacity: 0; }
+  70% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
+
+@keyframes frontendLoading {
+  0% {
+    opacity: 0; }
+  70% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
+
 .animate-fadeIn {
   transition: all linear .2s; }
   .animate-fadeIn.ng-hide {
@@ -26469,7 +26485,11 @@ span {
     text-align: center;
     margin: 300px 0;
     display: block;
-    color: #999999; }
+    color: #999999;
+    -webkit-animation-duration: 3s;
+    animation-duration: 3s;
+    -webkit-animation-name: frontendLoading;
+    animation-name: frontendLoading; }
 
 .bootstrap-select {
   width: 100% !important; }
@@ -26551,18 +26571,19 @@ span {
   margin-bottom: 7px !important;
   position: relative !important; }
 
-.input-group.custom .input-group-addon {
-  background-color: white !important;
-  color: #999999;
-  padding-right: 0; }
-
-.input-group.custom input {
-  border-left: none !important;
-  box-shadow: none !important;
-  padding-left: 3px; }
-
-.input-group.custom .form-control:focus {
-  border-color: #ccc; }
+.input-group.custom {
+  width: 120px;
+  margin: 0 auto; }
+  .input-group.custom .input-group-addon {
+    background-color: white !important;
+    color: #999999;
+    padding-right: 0; }
+  .input-group.custom input {
+    border-left: none !important;
+    box-shadow: none !important;
+    padding-left: 3px; }
+  .input-group.custom .form-control:focus {
+    border-color: #ccc; }
 
 .user-pick {
   cursor: pointer;
@@ -26604,7 +26625,9 @@ span {
   line-height: 30px;
   cursor: pointer;
   outline: none;
-  transition: all linear .3s; }
+  transition: all linear .3s;
+  width: 120px;
+  margin: 0 auto; }
   .tutor-approved.not-approved {
     color: #999999;
     background-color: #eee;

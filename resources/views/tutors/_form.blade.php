@@ -193,7 +193,7 @@
             <textarea class="md-input" ng-model="tutor.public_desc"></textarea>
         </md-input-container>
         <div class="row">
-            <div class="col-sm-4">
+            <div class="col-sm-6">
                 <div class="row">
                     <div class="col-sm-6">
                         <md-input-container class="md-block" style="margin-top: 20px">
@@ -207,18 +207,27 @@
                                 'one': 'рубль',
                                 'few': 'рубля',
                                 'many': 'рублей'
-                            }"></ng-pluralize> за 90 минут @{{ tutor.svg_map.length ? ' + ' :  '' }}
+                            }"></ng-pluralize> за 90 минут
                         </span>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-4" ng-show='tutor.svg_map.length'>
+            <div class="col-sm-6" ng-show='tutor.svg_map.length'>
                 <div class="row">
                     <div class="col-sm-6">
                         <md-input-container class="md-block" style="margin-top: 20px">
-                            <label>За выезд</label>
+                            <label>Минимальная стоимость выезда</label>
                             <textarea class="md-input digits-only" ng-model="tutor.departure_price"></textarea>
                         </md-input-container>
+                    </div>
+                    <div class="col-sm-6">
+                        <span class="ng-grey" style="position: relative; top: 27px" ng-show='tutor.public_price > 0'>
+                            <ng-pluralize count='tutor.departure_price' when="{
+                                'one': 'рубль',
+                                'few': 'рубля',
+                                'many': 'рублей'
+                            }"></ng-pluralize>
+                        </span>
                     </div>
                 </div>
             </div>

@@ -75,7 +75,14 @@ return [
             'prefix'    => '',
             'unix_socket'   => env('DB_SOCKET', ''),
         ],
-
+        'repetitors' => [
+            'driver'    => 'mysql',
+            'host'      => env('DB_HOST_REPETITORS'),
+            'database'  => env('DB_DATABASE_REPETITORS'),
+            'username'  => env('DB_USERNAME_REPETITORS'),
+            'password'  => env('DB_PASSWORD_REPETITORS'),
+        ],
+        
         'egerep' => [
             'driver'    => 'mysql',
             'host'      => env('DB_HOST_EGEREP'),

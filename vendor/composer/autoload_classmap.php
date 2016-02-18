@@ -10,6 +10,7 @@ return array(
     'AddFieldsToTeachers' => $baseDir . '/database/migrations/2016_01_15_122608_add_fields_to_teachers.php',
     'AddGradesToTeachers' => $baseDir . '/database/migrations/2016_02_15_193218_add_grades_to_teachers.php',
     'AddListsToClient' => $baseDir . '/database/migrations/2016_01_22_152742_add_lists_to_client.php',
+    'AddMarkersToTeachers' => $baseDir . '/database/migrations/2016_02_18_124553_add_markers_to_teachers.php',
     'AddSvgMapToTeachers' => $baseDir . '/database/migrations/2016_01_19_131426_add_svg_map_to_teachers.php',
     'AddUserCreatedIdToRequests' => $baseDir . '/database/migrations/2016_01_22_123001_add_user_created_id_to_requests.php',
     'ClientsSeeder' => $baseDir . '/database/seeds/ClientsSeeder.php',

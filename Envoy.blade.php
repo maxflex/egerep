@@ -17,6 +17,12 @@
     gulp --production
 @endtask
 
+@task('cache')
+    cd /var/www/html/repetitors/htdocs/egerep
+    php artisan config:cache
+    php artisan route:cache
+@endtask
+
 @task('migrate')
     cd /var/www/html/repetitors/htdocs/egerep
     php artisan migrate --force
