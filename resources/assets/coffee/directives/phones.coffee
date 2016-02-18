@@ -6,7 +6,7 @@ angular.module('Egerep').directive 'phones', ->
     controller: ($scope, $timeout) ->
         # level depth on + (phone1, phone2, phone3)
         $timeout ->
-            $scope.level = if $scope.entity.phone3 isnt "" then 3 else if $scope.entity.phone2 isnt "" then 2 else 1
+            $scope.level = if $scope.entity.phone3 then 3 else if $scope.entity.phone2 then 2 else 1
         , 100
 
         $scope.nextLevel = ->
