@@ -203,6 +203,14 @@
         return delete $scope.selected_list;
       });
     };
+    $scope.removeAttachment = function() {
+      return Attachment["delete"]({
+        id: $scope.selected_attachment.id
+      }, function() {
+        $scope.selected_list.attachments = removeById($scope.selected_list.attachments, $scope.selected_attachment.id);
+        return delete $scope.selected_attachment;
+      });
+    };
     $scope.$watch('selected_request.comment', function(newVal, oldVal) {
       var matches;
       if (newVal === void 0 && oldVal === void 0) {

@@ -147,6 +147,11 @@ angular
                 $scope.selected_request.lists = removeById $scope.selected_request.lists, $scope.selected_list.id
                 delete $scope.selected_list
 
+        $scope.removeAttachment = ->
+            Attachment.delete {id: $scope.selected_attachment.id}, ->
+                $scope.selected_list.attachments = removeById $scope.selected_list.attachments, $scope.selected_attachment.id
+                delete $scope.selected_attachment
+
         # parse textarea for tutor IDS
         $scope.$watch 'selected_request.comment', (newVal, oldVal) ->
             return if newVal is undefined and oldVal is undefined

@@ -83,6 +83,6 @@ class AttachmentsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return Attachment::destroy($id);
     }
 }

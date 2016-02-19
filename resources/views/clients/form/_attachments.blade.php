@@ -6,7 +6,7 @@
                 ng-class="{'link-like': attachment !== selected_attachment}"
                 ng-click="selectAttachment(attachment)"
             >@{{ tutors[attachment.tutor_id] }}</span>
-            <a class="text-danger" href="#">удалить стыковку</a>
+            <span class="link-like text-danger" ng-click="removeAttachment()">удалить стыковку</span>
         </div>
     </div>
 
@@ -127,7 +127,7 @@
                 </div>
             </div>
             <div class="col-sm-6">
-                
+
             </div>
         </div>
     </div>
