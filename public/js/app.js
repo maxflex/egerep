@@ -220,18 +220,6 @@
         return spRefresh('attachment-subjects');
       }
     });
-    $scope.$watch('client.grades', function(newVal, oldVal) {
-      console.log(newVal, oldVal, 'grades');
-      if (newVal === void 0) {
-        return;
-      }
-      if (oldVal === void 0) {
-        sp('client-grades', 'укажите класс');
-      }
-      if (oldVal !== void 0) {
-        return spRefresh('client-grades');
-      }
-    });
     $scope.marker_id = 1;
     filterMarkers = function() {
       var new_markers;
@@ -898,6 +886,49 @@
 }).call(this);
 
 (function() {
+  var apiPath, updateMethod;
+
+  angular.module('Egerep').factory('Request', function($resource) {
+    return $resource(apiPath('requests'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Sms', function($resource) {
+    return $resource(apiPath('sms'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Comment', function($resource) {
+    return $resource(apiPath('comments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Client', function($resource) {
+    return $resource(apiPath('clients'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('User', function($resource) {
+    return $resource(apiPath('users'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Tutor', function($resource) {
+    return $resource(apiPath('tutors'), {
+      id: '@id'
+    }, updateMethod());
+  });
+
+  apiPath = function(entity) {
+    return "api/" + entity + "/:id";
+  };
+
+  updateMethod = function() {
+    return {
+      update: {
+        method: 'PUT'
+      }
+    };
+  };
+
+}).call(this);
+
+(function() {
   angular.module('Egerep').service('SvgMap', function() {
     this.map = new SVGMap({
       iframeId: 'map',
@@ -1001,49 +1032,6 @@
     };
     return this;
   });
-
-}).call(this);
-
-(function() {
-  var apiPath, updateMethod;
-
-  angular.module('Egerep').factory('Request', function($resource) {
-    return $resource(apiPath('requests'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Sms', function($resource) {
-    return $resource(apiPath('sms'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Comment', function($resource) {
-    return $resource(apiPath('comments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Client', function($resource) {
-    return $resource(apiPath('clients'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('User', function($resource) {
-    return $resource(apiPath('users'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Tutor', function($resource) {
-    return $resource(apiPath('tutors'), {
-      id: '@id'
-    }, updateMethod());
-  });
-
-  apiPath = function(entity) {
-    return "api/" + entity + "/:id";
-  };
-
-  updateMethod = function() {
-    return {
-      update: {
-        method: 'PUT'
-      }
-    };
-  };
 
 }).call(this);
 

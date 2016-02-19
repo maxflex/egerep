@@ -140,15 +140,6 @@ angular
             sp 'attachment-subjects', 'предмет' if oldVal is undefined
             spRefresh 'attachment-subjects' if oldVal isnt undefined
 
-        $scope.$watch 'client.grades', (newVal, oldVal) ->
-            console.log newVal, oldVal, 'grades'
-            return if newVal is undefined
-            sp 'client-grades', 'укажите класс' if oldVal is undefined
-            spRefresh 'client-grades' if oldVal isnt undefined
-
-
-
-
 
 
 

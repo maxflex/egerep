@@ -13,22 +13,12 @@ class Client extends Model
     protected $with = ['requests', 'markers'];
     // protected $appends = ['lists', 'attachments'];
     protected $fillable = ["name", "phone", "phone2", "phone3", 'attachments',
-                        'grades', "address", "subject_list", "requests", "lists",
+                        'grade', "address", "subject_list", "requests", "lists",
                         'markers'];
 
     public function requests()
     {
         return $this->hasMany('App\Models\Request');
-    }
-
-    public function getGradesAttribute($value)
-    {
-        return explode(',', $value);
-    }
-
-    public function setGradesAttribute($value)
-    {
-        $this->attributes['grades'] = implode(',', $value);
     }
 
     public function setRequestsAttribute($value)

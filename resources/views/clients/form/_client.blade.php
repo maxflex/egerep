@@ -9,9 +9,14 @@
             </div>
         </div>
         <div class="form-group">
-            <select class="form-control" multiple id='sp-client-grades' ng-model='client.grades'
-                ng-options="grade_id as label for (grade_id, label) in Grades">
+            <select class="form-control" ng-model='client.grade'
+                ng-options='+(grade_id) as label for (grade_id, label) in Grades'>
+                <option value="">выберите класс</option>
             </select>
+            {{-- <select class="form-control" ng-model='client.grade'>
+                <option value="">выберите класс</option>
+                <option ng-repeat='(grade_id, label) in Grades' ng-value='grade_id' ng-selected='client.grade == grade_id'>@{{ label }}</option>
+            </select> --}}
         </div>
     </div>
     <div class="col-sm-3">
