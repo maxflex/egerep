@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class RequestList extends Model
 {
-    protected $fillable = ['request_id', 'tutor_ids', 'subject_id'];
+    protected $fillable = ['request_id', 'tutor_ids', 'subjects'];
     protected $with = ['attachments'];
     public $timestamps = false;
 
@@ -18,6 +18,15 @@ class RequestList extends Model
     public function attachments()
     {
         return $this->hasMany('App\Models\Attachment');
+    }
+
+    public function getSubjectsAttribute($value)
+    {
+        return empty($value) ? [] : explode(',', $value);
+    }
+    public function setSubjectsAttribute($value)
+    {
+        $this->attributes['subjects'] = implode(',', $value);
     }
 
     public function getTutorIdsAttribute($value='')

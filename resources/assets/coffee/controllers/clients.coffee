@@ -56,7 +56,14 @@ angular
                     $rootScope.frontendStop()
 
         $scope.attachmentExists = (tutor_id) ->
-            _.findWhere($scope.selected_list.attachments, {tutor_id: parseInt(tutor_id)}) isnt undefined
+            attachment_exists = false
+            $.each $scope.client.requests, (index, request) ->
+                return if attachment_exists
+                $.each request.lists, (index, list) ->
+                    $.each list.attachments, (index, attachment) ->
+                        attachment_exists = true if parseInt(attachment.tutor_id) is parseInt(tutor_id)
+            attachment_exists
+            # _.findWhere($scope.selected_list.attachments, {tutor_id: parseInt(tutor_id)}) isnt undefined
             # return false if $scope.client.attachments[subject_id] is undefined
             # _.findWhere($scope.client.attachments[subject_id], {tutor_id: tutor_id}) isnt undefined
 
@@ -66,6 +73,9 @@ angular
         $scope.setList = (list) ->
             $scope.selected_list = list
             delete $scope.selected_attachment
+
+        $scope.listExists = (subject_id) ->
+            _.findWhere($scope.selected_request.lists, {subject_id: parseInt(subject_id)}) isnt undefined
 
         $scope.selectRequest = (request) ->
             $scope.selected_request = request
@@ -90,7 +100,7 @@ angular
         $scope.addListSubject = ->
             RequestList.save
                 request_id: $scope.selected_request.id
-                subject_id: $scope.list_subject_id
+                subjects: $scope.list_subject_id
             , (data) ->
                 $scope.selected_request.lists.push data
                 $scope.selected_list = data
@@ -100,6 +110,7 @@ angular
 
             delete $scope.list_subject_id
             $('#add-subject').modal 'hide'
+            return
 
         $scope.addListTutor = ->
             $scope.selected_list.tutor_ids.push $scope.list_tutor_id
@@ -114,6 +125,7 @@ angular
         $scope.newAttachment = (tutor_id) ->
             Attachment.save
                 tutor_id: tutor_id
+                subjects: $scope.selected_list.subjects
                 request_list_id: $scope.selected_list.id
             , (new_attachment) ->
                 $scope.selected_attachment = new_attachment
@@ -138,19 +150,25 @@ angular
                     $scope.selected_request = data
 
         $scope.removeRequest = ->
-            Request.delete {id: $scope.selected_request.id}, ->
-                $scope.client.requests = removeById $scope.client.requests, $scope.selected_request.id
-                $scope.selected_request = $scope.client.requests[0]
+            bootbox.confirm 'Вы уверены, что хотите удалить заявку?', (response) ->
+                if response is true
+                    Request.delete {id: $scope.selected_request.id}, ->
+                        $scope.client.requests = removeById $scope.client.requests, $scope.selected_request.id
+                        $scope.selected_request = $scope.client.requests[0]
 
         $scope.removeList = ->
-            RequestList.delete {id: $scope.selected_list.id}, ->
-                $scope.selected_request.lists = removeById $scope.selected_request.lists, $scope.selected_list.id
-                delete $scope.selected_list
+            bootbox.confirm 'Вы уверены, что хотите удалить список?', (response) ->
+                if response is true
+                    RequestList.delete {id: $scope.selected_list.id}, ->
+                        $scope.selected_request.lists = removeById $scope.selected_request.lists, $scope.selected_list.id
+                        delete $scope.selected_list
 
         $scope.removeAttachment = ->
-            Attachment.delete {id: $scope.selected_attachment.id}, ->
-                $scope.selected_list.attachments = removeById $scope.selected_list.attachments, $scope.selected_attachment.id
-                delete $scope.selected_attachment
+            bootbox.confirm 'Вы уверены, что хотите удалить стыковку?', (response) ->
+                if response is true
+                    Attachment.delete {id: $scope.selected_attachment.id}, ->
+                        $scope.selected_list.attachments = removeById $scope.selected_list.attachments, $scope.selected_attachment.id
+                        delete $scope.selected_attachment
 
         # parse textarea for tutor IDS
         $scope.$watch 'selected_request.comment', (newVal, oldVal) ->
@@ -165,8 +183,15 @@ angular
         # refresh selectpicker on $selected_attachment update
         $scope.$watch 'selected_attachment', (newVal, oldVal) ->
             return if newVal is undefined
-            sp 'attachment-subjects', 'предмет' if oldVal is undefined
+            sp 'attachment-subjects', 'выберите предмет' if oldVal is undefined
             spRefresh 'attachment-subjects' if oldVal isnt undefined
+            rebindMasks()
+
+        # refresh selectpicker on $selected_attachment update
+        $scope.$watch 'list_subject_id', (newVal, oldVal) ->
+            return if newVal is undefined
+            sp 'subject-select-model', 'выберите предмет' if oldVal is undefined
+            spRefresh 'subject-select-model' if oldVal isnt undefined
 
 
 

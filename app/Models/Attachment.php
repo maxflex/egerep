@@ -29,10 +29,10 @@ class Attachment extends Model
     ];
 
     // @todo: rename list() to something else
-    // public function list()
-    // {
-    //     return $this->belongsTo('App\Models\List');
-    // }
+    public function requestList()
+    {
+        return $this->belongsTo('App\Models\RequestList');
+    }
 
     public function getSubjectsAttribute($value)
     {
@@ -42,5 +42,19 @@ class Attachment extends Model
     public function setSubjectsAttribute($value)
     {
         $this->attributes['subjects'] = implode(',', $value);
+    }
+
+    public function getAttachmentDateAttribute($value)
+    {
+        return date('d.m.Y', strtotime($value));
+    }
+
+    protected static function boot()
+    {
+        static::saving(function ($model) {
+            if (!$model->exists) {
+                $model->attachment_date = date('Y-m-d');
+            }
+        });
     }
 }

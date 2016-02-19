@@ -36,6 +36,7 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
 
         $rootScope.dialog = (id) ->
             $("##{id}").modal 'show'
+            return 
 
         $rootScope.ajaxStart = ->
             ajaxStart()

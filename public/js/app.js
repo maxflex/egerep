@@ -41,7 +41,7 @@
       return moment(date).format("DD.MM.YY в HH:mm");
     };
     $rootScope.dialog = function(id) {
-      return $("#" + id).modal('show');
+      $("#" + id).modal('show');
     };
     $rootScope.ajaxStart = function() {
       ajaxStart();
@@ -116,9 +116,21 @@
       }
     });
     $scope.attachmentExists = function(tutor_id) {
-      return _.findWhere($scope.selected_list.attachments, {
-        tutor_id: parseInt(tutor_id)
-      }) !== void 0;
+      var attachment_exists;
+      attachment_exists = false;
+      $.each($scope.client.requests, function(index, request) {
+        if (attachment_exists) {
+          return;
+        }
+        return $.each(request.lists, function(index, list) {
+          return $.each(list.attachments, function(index, attachment) {
+            if (parseInt(attachment.tutor_id) === parseInt(tutor_id)) {
+              return attachment_exists = true;
+            }
+          });
+        });
+      });
+      return attachment_exists;
     };
     $scope.selectAttachment = function(attachment) {
       return $scope.selected_attachment = attachment;
@@ -126,6 +138,11 @@
     $scope.setList = function(list) {
       $scope.selected_list = list;
       return delete $scope.selected_attachment;
+    };
+    $scope.listExists = function(subject_id) {
+      return _.findWhere($scope.selected_request.lists, {
+        subject_id: parseInt(subject_id)
+      }) !== void 0;
     };
     $scope.selectRequest = function(request) {
       $scope.selected_request = request;
@@ -150,13 +167,13 @@
     $scope.addListSubject = function() {
       RequestList.save({
         request_id: $scope.selected_request.id,
-        subject_id: $scope.list_subject_id
+        subjects: $scope.list_subject_id
       }, function(data) {
         $scope.selected_request.lists.push(data);
         return $scope.selected_list = data;
       });
       delete $scope.list_subject_id;
-      return $('#add-subject').modal('hide');
+      $('#add-subject').modal('hide');
     };
     $scope.addListTutor = function() {
       $scope.selected_list.tutor_ids.push($scope.list_tutor_id);
@@ -171,6 +188,7 @@
     $scope.newAttachment = function(tutor_id) {
       return Attachment.save({
         tutor_id: tutor_id,
+        subjects: $scope.selected_list.subjects,
         request_list_id: $scope.selected_list.id
       }, function(new_attachment) {
         $scope.selected_attachment = new_attachment;
@@ -188,27 +206,39 @@
       });
     };
     $scope.removeRequest = function() {
-      return Request["delete"]({
-        id: $scope.selected_request.id
-      }, function() {
-        $scope.client.requests = removeById($scope.client.requests, $scope.selected_request.id);
-        return $scope.selected_request = $scope.client.requests[0];
+      return bootbox.confirm('Вы уверены, что хотите удалить заявку?', function(response) {
+        if (response === true) {
+          return Request["delete"]({
+            id: $scope.selected_request.id
+          }, function() {
+            $scope.client.requests = removeById($scope.client.requests, $scope.selected_request.id);
+            return $scope.selected_request = $scope.client.requests[0];
+          });
+        }
       });
     };
     $scope.removeList = function() {
-      return RequestList["delete"]({
-        id: $scope.selected_list.id
-      }, function() {
-        $scope.selected_request.lists = removeById($scope.selected_request.lists, $scope.selected_list.id);
-        return delete $scope.selected_list;
+      return bootbox.confirm('Вы уверены, что хотите удалить список?', function(response) {
+        if (response === true) {
+          return RequestList["delete"]({
+            id: $scope.selected_list.id
+          }, function() {
+            $scope.selected_request.lists = removeById($scope.selected_request.lists, $scope.selected_list.id);
+            return delete $scope.selected_list;
+          });
+        }
       });
     };
     $scope.removeAttachment = function() {
-      return Attachment["delete"]({
-        id: $scope.selected_attachment.id
-      }, function() {
-        $scope.selected_list.attachments = removeById($scope.selected_list.attachments, $scope.selected_attachment.id);
-        return delete $scope.selected_attachment;
+      return bootbox.confirm('Вы уверены, что хотите удалить стыковку?', function(response) {
+        if (response === true) {
+          return Attachment["delete"]({
+            id: $scope.selected_attachment.id
+          }, function() {
+            $scope.selected_list.attachments = removeById($scope.selected_list.attachments, $scope.selected_attachment.id);
+            return delete $scope.selected_attachment;
+          });
+        }
       });
     };
     $scope.$watch('selected_request.comment', function(newVal, oldVal) {
@@ -232,10 +262,22 @@
         return;
       }
       if (oldVal === void 0) {
-        sp('attachment-subjects', 'предмет');
+        sp('attachment-subjects', 'выберите предмет');
       }
       if (oldVal !== void 0) {
-        return spRefresh('attachment-subjects');
+        spRefresh('attachment-subjects');
+      }
+      return rebindMasks();
+    });
+    $scope.$watch('list_subject_id', function(newVal, oldVal) {
+      if (newVal === void 0) {
+        return;
+      }
+      if (oldVal === void 0) {
+        sp('subject-select-model', 'выберите предмет');
+      }
+      if (oldVal !== void 0) {
+        return spRefresh('subject-select-model');
       }
     });
     $scope.marker_id = 1;

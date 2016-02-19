@@ -4,9 +4,9 @@
             ng-repeat="list in selected_request.lists"
             ng-class="{'link-like': selected_list !== list}"
             ng-click="setList(list)"
-        >список по @{{ Subjects.dative[list.subject_id] }}</span>
-        <span class="link-like link-gray" ng-click="dialog('add-subject')">добавить список</span>
-        <span class="link-like text-danger" ng-click="removeList()">удалить список</span>
+        >список по <sbj ng-repeat='subject_id in list.subjects'>@{{Subjects.dative[subject_id]}}@{{$last ? '' : ' и '}}</sbj></span>
+        <span class="link-like link-gray" ng-click="list_subject_id = 0; dialog('add-subject')">добавить список</span>
+        <span class="link-like text-danger show-on-hover" ng-show='selected_list' ng-click="removeList()">удалить список</span>
     </div>
 </div>
 

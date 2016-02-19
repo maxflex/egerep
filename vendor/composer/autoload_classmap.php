@@ -14,6 +14,8 @@ return array(
     'AddUserCreatedIdToRequests' => $baseDir . '/database/migrations/2016_01_22_123001_add_user_created_id_to_requests.php',
     'ChangeClientSubjectListReference' => $baseDir . '/database/migrations/2016_02_19_012520_change_client_subject_list_reference.php',
     'ChangeRequestStatuses' => $baseDir . '/database/migrations/2016_02_18_223244_change_request_statuses.php',
+    'ChangeSubjectIdToSubjects' => $baseDir . '/database/migrations/2016_02_19_191241_change_subject_id_to_subjects.php',
+    'ChangeSubjectIdToSubjectsType' => $baseDir . '/database/migrations/2016_02_19_191427_change_subject_id_to_subjects_type.php',
     'ClientsSeeder' => $baseDir . '/database/seeds/ClientsSeeder.php',
     'CreateAttachmentsTable' => $baseDir . '/database/migrations/2016_01_25_093501_create_attachments_table.php',
     'CreateClientSubjectListsTable' => $baseDir . '/database/migrations/2016_01_22_232210_create_client_subject_lists_table.php',

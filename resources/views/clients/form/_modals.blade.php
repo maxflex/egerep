@@ -1,17 +1,15 @@
 {{-- ДОБАВЛЕНИЕ СПИСКА --}}
-<div id="add-subject" class="modal" role="dialog" tabindex="-1">
+<div id="add-subject" class="modal" role="dialog" tabindex="-1" ng-if="selected_request">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">Добавление списка</h4>
       </div>
       <div class="modal-body">
-        <select class='form-control' ng-model='list_subject_id'
+        <select class='form-control' multiple ng-model='$parent.list_subject_id' id='sp-subject-select-model'
             ng-options='subject_id as subject_name
-                        disable when client.subject_list.indexOf(subject_id) != -1
                         for (subject_id, subject_name) in Subjects.all'
         >
-            <option value="">выберите предмет</option>
         </select>
 
       </div>
@@ -34,7 +32,8 @@
       </div>
       <div class="modal-body">
         <select class='form-control' ng-model='list_tutor_id'
-            ng-options='tutor_id as tutor_name for (tutor_id, tutor_name) in tutors'
+            ng-options='tutor_id as tutor_name
+                        for (tutor_id, tutor_name) in tutors'
         >
             <option value="">выберите преподавателя</option>
         </select>

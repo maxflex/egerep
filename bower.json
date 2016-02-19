@@ -37,6 +37,7 @@
     "bootstrap-select": "~1.9.4",
     "ui-select": "angular-ui-select#~0.14.0",
     "nya-bootstrap-select": "~2.1.2",
-    "animate.css": "^3.5.1"
+    "animate.css": "^3.5.1",
+    "bootstrap-datepicker": "^1.6.0"
   }
 }

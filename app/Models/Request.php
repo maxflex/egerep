@@ -13,6 +13,11 @@ class Request extends Model
     protected $with = ['user', 'lists'];
     protected $fillable = ['comment', 'state', 'client_id', 'user_id', 'user_id_created'];
 
+    public function client()
+    {
+        return $this->belongsTo('App\Models\Client');
+    }
+
     public function user()
     {
         return $this->belongsTo('App\Models\User');

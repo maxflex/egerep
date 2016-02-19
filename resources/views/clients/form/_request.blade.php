@@ -4,7 +4,7 @@
             ng-click="selectRequest(request)"
             ng-class="{'link-like': request !== selected_request}"><span ng-if='request.id'>заявка @{{ request.id }}</span><span ng-if='!request.id'>новая заявка</span></span>
         <a class='link-like link-gray' ng-click='addRequest()'>добавить</a>
-        <a class='link-like text-danger' ng-click='removeRequest()'>удалить заявку</a>
+        <a class='link-like text-danger show-on-hover' ng-show='selected_request' ng-click='removeRequest()'>удалить заявку</a>
     </div>
 </div>
 

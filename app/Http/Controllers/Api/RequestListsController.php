@@ -38,7 +38,8 @@ class RequestListsController extends Controller
      */
     public function store(Request $request)
     {
-        return RequestList::create($request->input());
+        $request_list = RequestList::create($request->input());
+        return RequestList::find($request_list->id);
     }
 
     /**

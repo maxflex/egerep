@@ -35,5 +35,6 @@ elixir(function(mix) {
             '../bower/nprogress/nprogress.js',
             '../bower/underscore/underscore-min.js',
             '../bower/bootstrap-select/dist/js/bootstrap-select.js',
+            '../bower/bootstrap-datepicker/dist/js/bootstrap-datepicker.js',
         ], 'public/js/vendor.js');
 });

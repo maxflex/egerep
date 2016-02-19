@@ -6,7 +6,7 @@
                 ng-class="{'link-like': attachment !== selected_attachment}"
                 ng-click="selectAttachment(attachment)"
             >@{{ tutors[attachment.tutor_id] }}</span>
-            <span class="link-like text-danger" ng-click="removeAttachment()">удалить стыковку</span>
+            <span class='link-like text-danger show-on-hover' ng-click="removeAttachment()" ng-show='selected_attachment'>удалить стыковку</span>
         </div>
     </div>
 
@@ -103,7 +103,7 @@
                 </div>
             </div>
             <div class="col-sm-6">
-
+                
             </div>
         </div>
 
@@ -118,8 +118,8 @@
 
         <div class="row mb">
             <div class="col-sm-3">
-                <div class="form-group"><input type="text" class="form-control bs-date" placeholder="дата архивации"></div>
-                <div class="form-group"><input type="text" class="form-control digits-only" placeholder="всего занятий не проведено"></div>
+                <div class="form-group"><input type="text" class="form-control bs-date" placeholder="оценка репетитору"></div>
+                <div class="form-group"><input type="text" class="form-control digits-only" placeholder="подпись"></div>
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
