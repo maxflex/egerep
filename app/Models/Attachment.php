@@ -28,10 +28,11 @@ class Attachment extends Model
         'created_at',
     ];
 
-    public function list()
-    {
-        return $this->belongsTo('App\Models\List');
-    }
+    // @todo: rename list() to something else
+    // public function list()
+    // {
+    //     return $this->belongsTo('App\Models\List');
+    // }
 
     public function getSubjectsAttribute($value)
     {
