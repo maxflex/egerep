@@ -10,7 +10,7 @@ class Request extends Model
         'state' => 'new',
     ];
 
-    protected $with = ['user'];
+    protected $with = ['user', 'lists'];
     protected $fillable = ['comment', 'state', 'client_id', 'user_id', 'user_id_created'];
 
     public function user()
@@ -21,6 +21,11 @@ class Request extends Model
     public function userCreated()
     {
         return $this->belongsTo('App\Models\User', 'user_id_created');
+    }
+
+    public function lists()
+    {
+        return $this->hasMany('App\Models\RequestList');
     }
 
     protected static function boot()

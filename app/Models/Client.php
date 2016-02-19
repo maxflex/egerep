@@ -12,9 +12,10 @@ class Client extends Model
 
     protected $with = ['requests', 'markers'];
     // protected $appends = ['lists', 'attachments'];
-    protected $fillable = ["name", "phone", "phone2", "phone3", 'attachments',
-                        'grade', "address", "subject_list", "requests", "lists",
-                        'markers'];
+    protected $fillable = ['name', 'phone', 'phone2', 'phone3',
+                            'grade', 'address', 'requests',
+                            'markers'
+                        ];
 
     public function requests()
     {

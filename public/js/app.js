@@ -79,7 +79,7 @@
 (function() {
   angular.module('Egerep').controller("ClientsIndex", function($scope, $timeout, Client) {
     return $scope.clients = Client.query();
-  }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, User, RequestState, Subjects, Grades) {
+  }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestState, Subjects, Grades, Attachment) {
     var filterMarkers;
     $scope.RequestState = RequestState;
     $scope.Subjects = Subjects;
@@ -115,25 +115,21 @@
         });
       }
     });
-    $scope.attachmentExists = function(subject_id, tutor_id) {
-      if ($scope.client.attachments[subject_id] === void 0) {
-        return false;
-      }
-      return _.findWhere($scope.client.attachments[subject_id], {
-        tutor_id: tutor_id
+    $scope.attachmentExists = function(tutor_id) {
+      return _.findWhere($scope.selected_list.attachments, {
+        tutor_id: parseInt(tutor_id)
       }) !== void 0;
     };
-    $scope.selectAttachment = function(tutor_id) {
-      return $scope.selected_attachment = _.findWhere($scope.client.attachments[$scope.selected_list_id], {
-        tutor_id: tutor_id
-      });
+    $scope.selectAttachment = function(attachment) {
+      return $scope.selected_attachment = attachment;
     };
-    $scope.setList = function(subject_id) {
-      console.log(subject_id);
-      return $scope.selected_list_id = subject_id;
+    $scope.setList = function(list) {
+      $scope.selected_list = list;
+      return delete $scope.selected_attachment;
     };
     $scope.selectRequest = function(request) {
-      return $scope.selected_request = request;
+      $scope.selected_request = request;
+      return delete $scope.selected_list;
     };
     $scope.toggleUser = function() {
       var new_user;
@@ -152,28 +148,34 @@
       });
     };
     $scope.addListSubject = function() {
-      $scope.client.subject_list.push($scope.list_subject_id);
-      $scope.client.lists[$scope.list_subject_id] = [];
-      $scope.selected_list_id = $scope.list_subject_id;
+      RequestList.save({
+        request_id: $scope.selected_request.id,
+        subject_id: $scope.list_subject_id
+      }, function(data) {
+        $scope.selected_request.lists.push(data);
+        return $scope.selected_list = data;
+      });
       delete $scope.list_subject_id;
       return $('#add-subject').modal('hide');
     };
     $scope.addListTutor = function() {
-      $scope.client.lists[$scope.selected_list_id].push($scope.list_tutor_id);
-      delete $scope.list_tutor_id;
-      return $('#add-tutor').modal('hide');
+      $scope.selected_list.tutor_ids.push($scope.list_tutor_id);
+      return RequestList.update({
+        id: $scope.selected_list.id,
+        tutor_ids: $scope.selected_list.tutor_ids
+      }, function() {
+        delete $scope.list_tutor_id;
+        return $('#add-tutor').modal('hide');
+      });
     };
-    $scope.newAttachment = function(tutor_id, subject_id) {
-      var new_attachment;
-      if (!$scope.client.attachments[subject_id]) {
-        $scope.client.attachments[subject_id] = [];
-      }
-      new_attachment = {
+    $scope.newAttachment = function(tutor_id) {
+      return Attachment.save({
         tutor_id: tutor_id,
-        client_id: $scope.id
-      };
-      $scope.client.attachments[subject_id].push(new_attachment);
-      return $scope.selected_attachment = new_attachment;
+        request_list_id: $scope.selected_list.id
+      }, function(new_attachment) {
+        $scope.selected_attachment = new_attachment;
+        return $scope.selected_list.attachments.push(new_attachment);
+      });
     };
     $scope.addRequest = function() {
       var new_request;
@@ -191,6 +193,14 @@
       }, function() {
         $scope.client.requests = removeById($scope.client.requests, $scope.selected_request.id);
         return $scope.selected_request = $scope.client.requests[0];
+      });
+    };
+    $scope.removeList = function() {
+      return RequestList["delete"]({
+        id: $scope.selected_list.id
+      }, function() {
+        $scope.selected_request.lists = removeById($scope.selected_request.lists, $scope.selected_list.id);
+        return delete $scope.selected_list;
       });
     };
     $scope.$watch('selected_request.comment', function(newVal, oldVal) {
@@ -876,8 +886,30 @@
       9: 'история',
       10: 'английский'
     },
-    full: ['Математика', 'Физика', 'Русский язык', 'Литература', 'Английский язык', 'История', 'Обществознание', 'Химия', 'Биология', 'Информатика'],
-    dative: ['математике', 'физике', 'русскому языку', 'литературе', 'английскому языку', 'истории', 'обществознанию', 'химии', 'биологии', 'информатике'],
+    full: {
+      1: 'Математика',
+      2: 'Физика',
+      3: 'Химия',
+      4: 'Биология',
+      5: 'Информатика',
+      6: 'Русский язык',
+      7: 'Литература',
+      8: 'Обществознание',
+      9: 'История',
+      10: 'Английский язык'
+    },
+    dative: {
+      1: 'математике',
+      2: 'физике',
+      3: 'химии',
+      4: 'биологии',
+      5: 'информатике',
+      6: 'русскому языку',
+      7: 'литературе',
+      8: 'обществознанию',
+      9: 'истории',
+      10: 'английскому языку'
+    },
     short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
     three_letters: ['МАТ', 'ФИЗ', 'РУС', 'ЛИТ', 'АНГ', 'ИСТ', 'ОБЩ', 'ХИМ', 'БИО', 'ИНФ'],
     short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
@@ -888,7 +920,15 @@
 (function() {
   var apiPath, updateMethod;
 
-  angular.module('Egerep').factory('Request', function($resource) {
+  angular.module('Egerep').factory('Attachment', function($resource) {
+    return $resource(apiPath('attachments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('RequestList', function($resource) {
+    return $resource(apiPath('lists'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Request', function($resource) {
     return $resource(apiPath('requests'), {
       id: '@id'
     }, updateMethod());

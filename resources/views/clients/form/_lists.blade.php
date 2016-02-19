@@ -1,25 +1,25 @@
 <div class="row controls-line">
     <div class="col-sm-12">
         <span
-            ng-repeat="subject_id in client.subject_list"
-            ng-class="{'link-like': selected_list_id != subject_id}"
-            ng-click="setList(subject_id)"
-        >список по @{{ Subjects.dative[subject_id] }}</span>
+            ng-repeat="list in selected_request.lists"
+            ng-class="{'link-like': selected_list !== list}"
+            ng-click="setList(list)"
+        >список по @{{ Subjects.dative[list.subject_id] }}</span>
         <span class="link-like link-gray" ng-click="dialog('add-subject')">добавить список</span>
-        <a class="text-danger" href="#">удалить список</a>
+        <span class="link-like text-danger" ng-click="removeList()">удалить список</span>
     </div>
 </div>
 
 <div class="row">
     <div class="col-sm-12">
-        <p ng-repeat="tutor_id in client.lists[selected_list_id]">
+        <p ng-repeat="tutor_id in selected_list.tutor_ids">
             <span class="line-number">@{{ tutor_id }}</span>
             <a href="tutors/@{{ tutor_id }}/edit">@{{ tutors[tutor_id] }}</a>
-            <span ng-show="!attachmentExists(selected_list_id, tutor_id)"
+            <span ng-hide="attachmentExists(tutor_id)"
                 class="link-like link-gray" style="margin-left: 10px"
-                ng-click="newAttachment(tutor_id, selected_list_id)">начать процесс</span>
+                ng-click="newAttachment(tutor_id)">начать процесс</span>
         </p>
-        <p>
+        <p ng-show='selected_list'>
             <span class="line-number"></span>
             <span class="link-like" ng-click="dialog('add-tutor')">добавить репетитора</span>
         </p>

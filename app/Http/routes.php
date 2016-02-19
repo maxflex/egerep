@@ -28,7 +28,10 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('tutors', 'TutorsController');
 
         Route::resource('requests', 'RequestsController');
-        Route::put('requests/toggle/{id}', 'RequestsController@toggle');
+        Route::resource('lists', 'RequestListsController');
+        Route::resource('attachments', 'AttachmentsController');
+        
+        // Route::put('requests/toggle/{id}', 'RequestsController@toggle');
 
         Route::resource('clients', 'ClientsController');
         Route::resource('users', 'UsersController');

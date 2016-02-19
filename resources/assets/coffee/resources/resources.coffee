@@ -1,4 +1,10 @@
 angular.module('Egerep')
+    .factory 'Attachment', ($resource) ->
+        $resource apiPath('attachments'), {id: '@id'}, updateMethod()
+
+    .factory 'RequestList', ($resource) ->
+        $resource apiPath('lists'), {id: '@id'}, updateMethod()
+
     .factory 'Request', ($resource) ->
         $resource apiPath('requests'), {id: '@id'}, updateMethod()
 

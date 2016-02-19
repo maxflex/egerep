@@ -14,7 +14,7 @@ angular
     #
     #   ADD/EDIT CONTROLLER
     #
-    .controller "ClientsForm", ($scope, $rootScope, $timeout, $interval, $http, Client, Request, User, RequestState, Subjects, Grades) ->
+    .controller "ClientsForm", ($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestState, Subjects, Grades, Attachment) ->
         $scope.RequestState = RequestState
         $scope.Subjects = Subjects
         $scope.Grades = Grades
@@ -55,20 +55,21 @@ angular
                         #     $scope.selected_attachment = client.attachments[$scope.selected_list_id][0]
                     $rootScope.frontendStop()
 
-        $scope.attachmentExists = (subject_id, tutor_id) ->
-            return false if $scope.client.attachments[subject_id] is undefined
-            _.findWhere($scope.client.attachments[subject_id], {tutor_id: tutor_id}) isnt undefined
+        $scope.attachmentExists = (tutor_id) ->
+            _.findWhere($scope.selected_list.attachments, {tutor_id: parseInt(tutor_id)}) isnt undefined
+            # return false if $scope.client.attachments[subject_id] is undefined
+            # _.findWhere($scope.client.attachments[subject_id], {tutor_id: tutor_id}) isnt undefined
 
-        $scope.selectAttachment = (tutor_id) ->
-            $scope.selected_attachment = _.findWhere $scope.client.attachments[$scope.selected_list_id],
-                tutor_id: tutor_id
+        $scope.selectAttachment = (attachment) ->
+            $scope.selected_attachment = attachment
 
-        $scope.setList = (subject_id) ->
-            console.log subject_id
-            $scope.selected_list_id = subject_id
+        $scope.setList = (list) ->
+            $scope.selected_list = list
+            delete $scope.selected_attachment
 
         $scope.selectRequest = (request) ->
             $scope.selected_request = request
+            delete $scope.selected_list
 
         $scope.toggleUser = ->
             # @костыль
@@ -87,27 +88,45 @@ angular
                 id: parseInt(user_id)
 
         $scope.addListSubject = ->
-            $scope.client.subject_list.push($scope.list_subject_id)
-            $scope.client.lists[$scope.list_subject_id] = []
-            $scope.selected_list_id = $scope.list_subject_id
+            RequestList.save
+                request_id: $scope.selected_request.id
+                subject_id: $scope.list_subject_id
+            , (data) ->
+                $scope.selected_request.lists.push data
+                $scope.selected_list = data
+            # $scope.client.subject_list.push($scope.list_subject_id)
+            # $scope.client.lists[$scope.list_subject_id] = []
+            # $scope.selected_list_id = $scope.list_subject_id
 
             delete $scope.list_subject_id
             $('#add-subject').modal 'hide'
 
         $scope.addListTutor = ->
-            $scope.client.lists[$scope.selected_list_id].push $scope.list_tutor_id
-            delete $scope.list_tutor_id
-            $('#add-tutor').modal 'hide'
+            $scope.selected_list.tutor_ids.push $scope.list_tutor_id
+            RequestList.update
+                id: $scope.selected_list.id
+                tutor_ids: $scope.selected_list.tutor_ids
+            , ->
+            # $scope.client.lists[$scope.selected_list_id].push $scope.list_tutor_id
+                delete $scope.list_tutor_id
+                $('#add-tutor').modal 'hide'
 
-        $scope.newAttachment = (tutor_id, subject_id) ->
-            $scope.client.attachments[subject_id] = [] if not $scope.client.attachments[subject_id]
-
-            new_attachment =
+        $scope.newAttachment = (tutor_id) ->
+            Attachment.save
                 tutor_id: tutor_id
-                client_id: $scope.id
-
-            $scope.client.attachments[subject_id].push new_attachment
-            $scope.selected_attachment = new_attachment
+                request_list_id: $scope.selected_list.id
+            , (new_attachment) ->
+                $scope.selected_attachment = new_attachment
+                $scope.selected_list.attachments.push new_attachment
+            #
+            # $scope.client.attachments[subject_id] = [] if not $scope.client.attachments[subject_id]
+            #
+            # new_attachment =
+            #     tutor_id: tutor_id
+            #     client_id: $scope.id
+            #
+            # $scope.client.attachments[subject_id].push new_attachment
+            # $scope.selected_attachment = new_attachment
 
         $scope.addRequest = ->
             new_request = new Request
@@ -123,6 +142,10 @@ angular
                 $scope.client.requests = removeById $scope.client.requests, $scope.selected_request.id
                 $scope.selected_request = $scope.client.requests[0]
 
+        $scope.removeList = ->
+            RequestList.delete {id: $scope.selected_list.id}, ->
+                $scope.selected_request.lists = removeById $scope.selected_request.lists, $scope.selected_list.id
+                delete $scope.selected_list
 
         # parse textarea for tutor IDS
         $scope.$watch 'selected_request.comment', (newVal, oldVal) ->
