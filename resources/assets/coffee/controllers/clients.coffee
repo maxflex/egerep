@@ -188,7 +188,7 @@ angular
 
         $scope.newAttachment = (tutor_id) ->
             Attachment.save
-                grade: parseInt($scope.client.grade)
+                grade: $scope.client.grade
                 tutor_id: tutor_id
                 subjects: $scope.selected_list.subjects
                 request_list_id: $scope.selected_list.id

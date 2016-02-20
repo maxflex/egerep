@@ -30,6 +30,7 @@ class Attachment extends Model
     protected $casts = [
         'review_on'     => 'boolean',
         'archive_on'    => 'boolean',
+        'grade'         => 'int',
     ];
     protected $with = ['user'];
     protected static $commaSeparated = ['subjects'];
