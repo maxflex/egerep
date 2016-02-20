@@ -27,6 +27,10 @@ class Attachment extends Model
         'review_comment',
         'review_status',
     ];
+    protected $casts = [
+        'review_on'     => 'boolean',
+        'archive_on'    => 'boolean',
+    ];
     protected $with = ['user'];
     protected static $commaSeparated = ['subjects'];
     protected static $dotDates = ['attachment_date', 'archive_date', 'review_date'];
