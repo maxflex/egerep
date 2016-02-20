@@ -38,7 +38,8 @@ class RequestsController extends Controller
      */
     public function store(Request $request)
     {
-        return \App\Models\Request::create($request->input());
+        $request = \App\Models\Request::create($request->input());
+        return \App\Models\Request::find($request->id);
     }
 
     /**

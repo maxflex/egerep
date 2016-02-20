@@ -2537,7 +2537,11 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      */
     private static function _getDotDate($value)
     {
-        return date('d.m.Y', strtotime($value));
+        if ($value) {
+            return date('d.m.Y', strtotime($value));
+        } else {
+            return $value;
+        }
     }
 
     /**

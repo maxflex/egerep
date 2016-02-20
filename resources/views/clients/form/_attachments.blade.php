@@ -16,7 +16,7 @@
                 <div class="form-group">
                     <div class="input-group custom">
                       <span class="input-group-addon">дата стыковки –</span>
-                      <input type="text" placeholder="дата стыковки"
+                      <input type="text"
                           class="form-control bs-date" ng-model="selected_attachment.attachment_date">
                     </div>
                 </div>
@@ -42,7 +42,7 @@
             </div>
             <div class="col-sm-6">
                 <p>
-                    <b>Стыковку создал:</b> root 15.09.16 в 16:15
+                    <b>Стыковку создал:</b> @{{ selected_attachment.user.login }} @{{ formatDateTime(selected_attachment.created_at) }}
                 </p>
                 <p>
                     <b>Статус стыковки:</b> новая
@@ -60,17 +60,21 @@
             <div class="col-sm-12">
                 <div class="form-group">
                     <b>архивация</b>
+                    <span ng-hide='selected_attachment.archive_on' class="link-like link-gray" style="margin-left: 10px"
+                        ng-click="toggleArchive()">начать процесс</span>
+                    <span ng-show='selected_attachment.archive_on' class="link-like link-gray" style="margin-left: 10px"
+                        ng-click="toggleArchive()">разархивировать</span>
                 </div>
             </div>
         </div>
 
-        <div class="row mb">
+        <div class="row mb" ng-show='selected_attachment.archive_on'>
             <div class="col-sm-3">
                 <div class="form-group">
                     <div class="form-group">
                         <div class="input-group custom">
                           <span class="input-group-addon">дата архивации –</span>
-                          <input type="text" class="form-control bs-date" placeholder="дата архивации"
+                          <input type="text" class="form-control bs-date"
                               ng-model="selected_attachment.archive_date">
                         </div>
                     </div>
@@ -82,11 +86,17 @@
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
-                    <textarea style="height: 75px" cols="40" class="form-control"></textarea>
+                    <textarea style="height: 75px" cols="40" class="form-control" ng-model='selected_attachment.archive_comment'></textarea>
                 </div>
             </div>
             <div class="col-sm-6">
-
+                <p>
+                    <b>Процесс заархивирован:</b> @{{ selected_attachment.archive_user_login }} @{{ formatDateTime(selected_attachment.archive_date_saved) }}
+                </p>
+                <p>
+                    <b>Разархивация и продолжение:</b> <span class="link-like"
+                        ng-click="toggleEnum(selected_attachment, 'archive_status', ArchiveState)">@{{ ArchiveState[selected_attachment.archive_status] }}</span>
+                </p>
             </div>
         </div>
 
@@ -95,11 +105,15 @@
             <div class="col-sm-12">
                 <div class="form-group">
                     <b>отзыв</b>
+                    <span ng-hide='selected_attachment.review_on' class="link-like link-gray" style="margin-left: 10px"
+                        ng-click="toggleReview()">написать отзыв</span>
+                    <span ng-show='selected_attachment.review_on' class="link-like link-gray" style="margin-left: 10px"
+                        ng-click="toggleReview()">удалить отзыв</span>
                 </div>
             </div>
         </div>
 
-        <div class="row mb">
+        <div class="row mb" ng-show='selected_attachment.review_on'>
             <div class="col-sm-3">
                 <div class="form-group">
                     <select class="form-control" ng-model='selected_attachment.score'
@@ -107,15 +121,21 @@
                         <option value="">оценка репетитору</option>
                     </select>
                 </div>
-                <div class="form-group"><input type="text" class="form-control" placeholder="подпись"></div>
+                <div class="form-group"><input type="text" class="form-control" ng-model='selected_attachment.signature' placeholder="подпись"></div>
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
-                    <textarea style="height: 75px" cols="40" class="form-control"></textarea>
+                    <textarea style="height: 75px" cols="40" class="form-control" ng-model='selected_attachment.review_comment'></textarea>
                 </div>
             </div>
             <div class="col-sm-6">
-
+                <p>
+                    <b>Отзыв создан:</b> @{{ selected_attachment.review_user_login }} @{{ formatDateTime(selected_attachment.review_date_saved) }}
+                </p>
+                <p>
+                    <b>Статус:</b> <span class="link-like"
+                        ng-click="toggleEnum(selected_attachment, 'review_status', ReviewStatus)">@{{ ReviewStatus[selected_attachment.review_status] }}</span>
+                </p>
             </div>
         </div>
     </div>

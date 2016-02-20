@@ -27,6 +27,7 @@ class Attachment extends Model
         'review_comment',
         'review_status',
     ];
+    protected $with = ['user'];
     protected static $commaSeparated = ['subjects'];
     protected static $dotDates = ['attachment_date', 'archive_date', 'review_date'];
 
@@ -37,6 +38,11 @@ class Attachment extends Model
         return $this->belongsTo('App\Models\RequestList');
     }
 
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User');
+    }
+
     // ------------------------------------------------------------------------
 
     protected static function boot()
@@ -44,6 +50,7 @@ class Attachment extends Model
         static::saving(function ($model) {
             if (!$model->exists) {
                 $model->attachment_date = date('Y-m-d');
+                $model->user_id = User::fromSession()->id;
             }
         });
     }

@@ -19,10 +19,11 @@
 
   </head>
   <body class="content" ng-app="Egerep" ng-controller="@yield('controller')"
-    @if (isset($nginit))
-        ng-init='{{ $nginit }}'
-    @endif
-  >
+        ng-init='user = {{ $user }};
+        @if (isset($nginit))
+            {{ $nginit }}
+        @endif
+    '>
     <div class="row">
       <div style="margin-left: 10px" class="col-sm-2">
         <div>

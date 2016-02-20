@@ -5,6 +5,14 @@ angular.module('Egerep')
         finished: 'выполненные'
         deny: 'отказы'
 
+    .value 'ArchiveState',
+        impossible: 'невозможно'
+        possible: 'возможно'
+
+    .value 'ReviewStatus',
+        unpublished: 'не опубликован'
+        published: 'опубликован'
+
     .value 'ReviewState',
         1: 1
         2: 2

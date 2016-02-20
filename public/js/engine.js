@@ -16,6 +16,13 @@
 	}
 
 	/**
+	 * Find by id
+	 */
+	function findById(object, id) {
+		return _.findWhere(object, {id: parseInt(id)})
+	}
+
+	/**
 	 * Svg map debug function.
 	 */
 	function clickSt(id) {

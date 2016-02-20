@@ -79,23 +79,20 @@
 (function() {
   angular.module('Egerep').controller("ClientsIndex", function($scope, $timeout, Client) {
     return $scope.clients = Client.query();
-  }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestState, Subjects, Grades, Attachment, ReviewState) {
+  }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestState, Subjects, Grades, Attachment, ReviewState, ArchiveState, ReviewStatus) {
     var filterMarkers, saveSelectedList;
     $scope.RequestState = RequestState;
     $scope.Subjects = Subjects;
     $scope.Grades = Grades;
     $scope.ReviewState = ReviewState;
+    $scope.ReviewStatus = ReviewStatus;
+    $scope.ArchiveState = ArchiveState;
     $rootScope.frontend_loading = true;
     $scope.is_dragging_teacher = false;
     $scope.sortableOptions = {
       tolerance: 'pointer',
       activeClass: 'drag-active',
       helper: 'clone',
-      sort: function(e, ui) {
-        return ui.helper.css({
-          'top': ui.position.top + $(window).scrollTop() + 'px'
-        });
-      },
       start: function(e, ui) {
         $scope.is_dragging_teacher = true;
         return $scope.$apply();
@@ -124,9 +121,10 @@
         drop: function(e, ui) {
           var tutor_id;
           tutor_id = $(ui.draggable).data('id');
-          $scope.selected_list.tutor_ids = _.without($scope.selected_list.tutor_ids, tutor_id.toString());
-          $scope.$apply();
-          return saveSelectedList();
+          return $timeout(function() {
+            $scope.selected_list.tutor_ids = _.without($scope.selected_list.tutor_ids, tutor_id.toString());
+            return saveSelectedList();
+          });
         }
       });
       $scope.users = User.query();
@@ -141,15 +139,59 @@
             id: $scope.request_id
           }) : client.requests[0];
           sp('list-subjects', 'выберите предмет');
-          if (client.subject_list !== null) {
-            $scope.selected_list_id = client.subject_list[0];
-          }
+          $scope.parseHash();
           return $rootScope.frontendStop();
         });
       }
     });
     saveSelectedList = function() {
       return RequestList.update($scope.selected_list);
+    };
+    $scope.parseHash = function() {
+      var values;
+      values = window.location.hash.split('#');
+      values.shift();
+      if (values[0]) {
+        $scope.selected_list = findById($scope.selected_request.lists, values[0]);
+      }
+      if (values[1] && $scope.selected_list) {
+        return $scope.selected_attachment = findById($scope.selected_list.attachments, values[1]);
+      }
+    };
+    $scope.toggleArchive = function() {
+      if ($scope.selected_attachment.archive_on) {
+        $scope.selected_attachment.archive_on = false;
+        $scope.selected_attachment.archive_date = null;
+        $scope.selected_attachment.archive_date_saved = null;
+        $scope.selected_attachment.archive_user_id = null;
+        $scope.selected_attachment.archive_user_login = null;
+        $scope.selected_attachment.total_lessons_missing = null;
+        return $scope.selected_attachment.archive_comment = '';
+      } else {
+        $scope.selected_attachment.archive_on = true;
+        $scope.selected_attachment.archive_date = moment().format('DD.MM.YYYY');
+        $scope.selected_attachment.archive_date_saved = moment().format('YYYY-MM-DD HH:mm:ss');
+        $scope.selected_attachment.archive_user_id = $scope.user.id;
+        $scope.selected_attachment.archive_user_login = $scope.user.login;
+        return $scope.selected_attachment.archive_status = 'impossible';
+      }
+    };
+    $scope.toggleReview = function() {
+      if ($scope.selected_attachment.review_on) {
+        $scope.selected_attachment.review_on = false;
+        $scope.selected_attachment.review_date_saved = null;
+        $scope.selected_attachment.review_user_id = null;
+        $scope.selected_attachment.review_user_login = null;
+        $scope.selected_attachment.review_comment = '';
+        $scope.selected_attachment.signature = '';
+        return $scope.selected_attachment.review_status = 0;
+      } else {
+        $scope.selected_attachment.review_on = true;
+        $scope.selected_attachment.review_date_saved = moment().format('YYYY-MM-DD HH:mm:ss');
+        $scope.selected_attachment.review_user_id = $scope.user.id;
+        $scope.selected_attachment.review_user_login = $scope.user.login;
+        return $scope.selected_attachment.review_status = 'unpublished';
+      }
     };
     $scope.attachmentExists = function(tutor_id) {
       var attachment_exists;
@@ -227,6 +269,7 @@
     };
     $scope.newAttachment = function(tutor_id) {
       return Attachment.save({
+        grade: $scope.client.grade,
         tutor_id: tutor_id,
         subjects: $scope.selected_list.subjects,
         request_list_id: $scope.selected_list.id
@@ -938,6 +981,12 @@
     awaiting: 'в ожидании',
     finished: 'выполненные',
     deny: 'отказы'
+  }).value('ArchiveState', {
+    impossible: 'невозможно',
+    possible: 'возможно'
+  }).value('ReviewStatus', {
+    unpublished: 'не опубликован',
+    published: 'опубликован'
   }).value('ReviewState', {
     1: 1,
     2: 2,

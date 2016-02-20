@@ -14,22 +14,21 @@ angular
     #
     #   ADD/EDIT CONTROLLER
     #
-    .controller "ClientsForm", ($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestState, Subjects, Grades, Attachment, ReviewState) ->
+    .controller "ClientsForm", ($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestState, Subjects, Grades, Attachment, ReviewState, ArchiveState, ReviewStatus) ->
         $scope.RequestState = RequestState
         $scope.Subjects = Subjects
         $scope.Grades = Grades
         $scope.ReviewState = ReviewState
+        $scope.ReviewStatus = ReviewStatus
+        $scope.ArchiveState = ArchiveState
         $rootScope.frontend_loading = true
 
-
+        # @todo: доделать позиционирование
         $scope.is_dragging_teacher = false
         $scope.sortableOptions =
             tolerance: 'pointer'
-            # appendTo: 'body'
             activeClass: 'drag-active'
             helper: 'clone'
-            sort: (e, ui) ->
-                ui.helper.css({'top' : ui.position.top + $(window).scrollTop() + 'px'})
             start: (e, ui) ->
                 $scope.is_dragging_teacher = true
                 $scope.$apply()
@@ -59,9 +58,9 @@ angular
                 hoverClass: 'drop-hover'
                 drop: (e, ui) ->
                     tutor_id = $(ui.draggable).data 'id'
-                    $scope.selected_list.tutor_ids = _.without($scope.selected_list.tutor_ids, tutor_id.toString())
-                    $scope.$apply()
-                    saveSelectedList()
+                    $timeout ->
+                        $scope.selected_list.tutor_ids = _.without($scope.selected_list.tutor_ids, tutor_id.toString())
+                        saveSelectedList()
 
             $scope.users = User.query()
 
@@ -73,17 +72,53 @@ angular
                 $scope.client = Client.get {id: $scope.id}, (client) ->
                     $scope.selected_request = if $scope.request_id then _.findWhere(client.requests, {id: $scope.request_id}) else client.requests[0]
                     sp 'list-subjects', 'выберите предмет'
-                    # set the default list
-                    if client.subject_list isnt null
-                        $scope.selected_list_id = client.subject_list[0]
-                        # set the default attachment, if any
-                        # @temporary
-                        # if client.attachments[$scope.selected_list_id]
-                        #     $scope.selected_attachment = client.attachments[$scope.selected_list_id][0]
+                    $scope.parseHash()
                     $rootScope.frontendStop()
 
         saveSelectedList = ->
             RequestList.update $scope.selected_list
+
+        # Если в ссылке указан хэш, то это #id_списка#id_стыковки
+        $scope.parseHash = ->
+            values = window.location.hash.split('#')
+            values.shift()
+            if values[0]
+                $scope.selected_list = findById($scope.selected_request.lists, values[0])
+            if values[1] and $scope.selected_list
+                $scope.selected_attachment = findById($scope.selected_list.attachments, values[1])
+
+        $scope.toggleArchive = ->
+            if $scope.selected_attachment.archive_on
+                $scope.selected_attachment.archive_on = false
+                $scope.selected_attachment.archive_date = null
+                $scope.selected_attachment.archive_date_saved = null
+                $scope.selected_attachment.archive_user_id = null
+                $scope.selected_attachment.archive_user_login = null
+                $scope.selected_attachment.total_lessons_missing = null
+                $scope.selected_attachment.archive_comment = ''
+            else
+                $scope.selected_attachment.archive_on = true
+                $scope.selected_attachment.archive_date = moment().format('DD.MM.YYYY')
+                $scope.selected_attachment.archive_date_saved = moment().format('YYYY-MM-DD HH:mm:ss')
+                $scope.selected_attachment.archive_user_id = $scope.user.id
+                $scope.selected_attachment.archive_user_login = $scope.user.login
+                $scope.selected_attachment.archive_status = 'impossible'
+
+        $scope.toggleReview = ->
+            if $scope.selected_attachment.review_on
+                $scope.selected_attachment.review_on = false
+                $scope.selected_attachment.review_date_saved = null
+                $scope.selected_attachment.review_user_id = null
+                $scope.selected_attachment.review_user_login = null
+                $scope.selected_attachment.review_comment = ''
+                $scope.selected_attachment.signature = ''
+                $scope.selected_attachment.review_status = 0
+            else
+                $scope.selected_attachment.review_on = true
+                $scope.selected_attachment.review_date_saved = moment().format('YYYY-MM-DD HH:mm:ss')
+                $scope.selected_attachment.review_user_id = $scope.user.id
+                $scope.selected_attachment.review_user_login = $scope.user.login
+                $scope.selected_attachment.review_status = 'unpublished'
 
         $scope.attachmentExists = (tutor_id) ->
             attachment_exists = false
@@ -93,9 +128,6 @@ angular
                     $.each list.attachments, (index, attachment) ->
                         attachment_exists = true if parseInt(attachment.tutor_id) is parseInt(tutor_id)
             attachment_exists
-            # _.findWhere($scope.selected_list.attachments, {tutor_id: parseInt(tutor_id)}) isnt undefined
-            # return false if $scope.client.attachments[subject_id] is undefined
-            # _.findWhere($scope.client.attachments[subject_id], {tutor_id: tutor_id}) isnt undefined
 
         $scope.selectAttachment = (attachment) ->
             $scope.selected_attachment = attachment
@@ -155,21 +187,13 @@ angular
 
         $scope.newAttachment = (tutor_id) ->
             Attachment.save
+                grade: $scope.client.grade
                 tutor_id: tutor_id
                 subjects: $scope.selected_list.subjects
                 request_list_id: $scope.selected_list.id
             , (new_attachment) ->
                 $scope.selected_attachment = new_attachment
                 $scope.selected_list.attachments.push new_attachment
-            #
-            # $scope.client.attachments[subject_id] = [] if not $scope.client.attachments[subject_id]
-            #
-            # new_attachment =
-            #     tutor_id: tutor_id
-            #     client_id: $scope.id
-            #
-            # $scope.client.attachments[subject_id].push new_attachment
-            # $scope.selected_attachment = new_attachment
 
         $scope.addRequest = ->
             new_request = new Request
