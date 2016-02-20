@@ -6,9 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class RequestList extends Model
 {
-    protected $fillable = ['request_id', 'tutor_ids', 'subjects'];
     protected $with = ['attachments'];
+    protected $fillable = [
+        'request_id',
+        'tutor_ids',
+        'subjects',
+        'attachments',
+    ];
+    protected static $commaSeparated = ['tutor_ids', 'subjects'];
     public $timestamps = false;
+
+    // ------------------------------------------------------------------------
 
     public function request()
     {
@@ -20,21 +28,12 @@ class RequestList extends Model
         return $this->hasMany('App\Models\Attachment');
     }
 
-    public function getSubjectsAttribute($value)
-    {
-        return empty($value) ? [] : explode(',', $value);
-    }
-    public function setSubjectsAttribute($value)
-    {
-        $this->attributes['subjects'] = implode(',', $value);
-    }
+    // ------------------------------------------------------------------------
 
-    public function getTutorIdsAttribute($value='')
+    public function setAttachmentsAttribute($value)
     {
-        return empty($value) ? [] : explode(',', $value);
-    }
-    public function setTutorIdsAttribute($value)
-    {
-        $this->attributes['tutor_ids'] = implode(',', $value);
+        foreach ($value as $attachment) {
+            Attachment::find($attachment['id'])->update($attachment);
+        }
     }
 }

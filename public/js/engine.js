@@ -103,15 +103,15 @@
 				orientation	: 'bottom auto',
 			})
 
-			$(".bs-datetime").datetimepicker({
-				format: 'YYYY-MM-DD HH:mm',
-				locale: 'ru',
-			})
-
-			$(".bs-date-default").datetimepicker({
-				format: 'YYYY-MM-DD',
-				locale: 'ru',
-			})
+			// $(".bs-datetime").datetimepicker({
+			// 	format: 'YYYY-MM-DD HH:mm',
+			// 	locale: 'ru',
+			// })
+			//
+			// $(".bs-date-default").datetimepicker({
+			// 	format: 'YYYY-MM-DD',
+			// 	locale: 'ru',
+			// })
 
 			$(".passport-number").inputmask("Regex", {regex: "[a-zA-Z0-9]{0,12}"});
 			$(".digits-year").inputmask("Regex", {regex: "[0-9]{0,4}"});

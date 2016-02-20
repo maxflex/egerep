@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Attachment extends Model
 {
@@ -25,29 +26,18 @@ class Attachment extends Model
         'signature',
         'review_comment',
         'review_status',
-        'created_at',
     ];
+    protected static $commaSeparated = ['subjects'];
+    protected static $dotDates = ['attachment_date', 'archive_date', 'review_date'];
 
-    // @todo: rename list() to something else
+    // ------------------------------------------------------------------------
+
     public function requestList()
     {
         return $this->belongsTo('App\Models\RequestList');
     }
 
-    public function getSubjectsAttribute($value)
-    {
-        return empty($value) ? [] : explode(',', $value);
-    }
-
-    public function setSubjectsAttribute($value)
-    {
-        $this->attributes['subjects'] = implode(',', $value);
-    }
-
-    public function getAttachmentDateAttribute($value)
-    {
-        return date('d.m.Y', strtotime($value));
-    }
+    // ------------------------------------------------------------------------
 
     protected static function boot()
     {

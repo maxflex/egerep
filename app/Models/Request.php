@@ -9,9 +9,17 @@ class Request extends Model
     protected $attributes = [
         'state' => 'new',
     ];
-
     protected $with = ['user', 'lists'];
-    protected $fillable = ['comment', 'state', 'client_id', 'user_id', 'user_id_created'];
+    protected $fillable = [
+        'comment',
+        'state',
+        'client_id',
+        'user_id',
+        'user_id_created',
+        'lists',
+    ];
+
+    // ------------------------------------------------------------------------
 
     public function client()
     {
@@ -32,6 +40,17 @@ class Request extends Model
     {
         return $this->hasMany('App\Models\RequestList');
     }
+
+    // ------------------------------------------------------------------------
+
+    public function setListsAttribute($value)
+    {
+        foreach ($value as $list) {
+            RequestList::find($list['id'])->update($list);
+        }
+    }
+
+    // ------------------------------------------------------------------------
 
     protected static function boot()
     {

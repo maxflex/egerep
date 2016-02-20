@@ -108,6 +108,7 @@
           $scope.selected_request = $scope.request_id ? _.findWhere(client.requests, {
             id: $scope.request_id
           }) : client.requests[0];
+          sp('list-subjects', 'выберите предмет');
           if (client.subject_list !== null) {
             $scope.selected_list_id = client.subject_list[0];
           }
@@ -134,6 +135,9 @@
     };
     $scope.selectAttachment = function(attachment) {
       return $scope.selected_attachment = attachment;
+    };
+    $scope.addList = function() {
+      return $scope.dialog('add-subject');
     };
     $scope.setList = function(list) {
       $scope.selected_list = list;
@@ -167,12 +171,13 @@
     $scope.addListSubject = function() {
       RequestList.save({
         request_id: $scope.selected_request.id,
-        subjects: $scope.list_subject_id
+        subjects: $scope.list_subjects
       }, function(data) {
         $scope.selected_request.lists.push(data);
         return $scope.selected_list = data;
       });
-      delete $scope.list_subject_id;
+      delete $scope.list_subjects;
+      spRefresh('list-subjects');
       $('#add-subject').modal('hide');
     };
     $scope.addListTutor = function() {
@@ -268,17 +273,6 @@
         spRefresh('attachment-subjects');
       }
       return rebindMasks();
-    });
-    $scope.$watch('list_subject_id', function(newVal, oldVal) {
-      if (newVal === void 0) {
-        return;
-      }
-      if (oldVal === void 0) {
-        sp('subject-select-model', 'выберите предмет');
-      }
-      if (oldVal !== void 0) {
-        return spRefresh('subject-select-model');
-      }
     });
     $scope.marker_id = 1;
     filterMarkers = function() {

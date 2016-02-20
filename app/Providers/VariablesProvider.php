@@ -8,9 +8,15 @@ class VariablesProvider extends ServiceProvider
 {
 
     const VARIABLES = [
-        'js' => ['moment.min', 'bootbox', 'bootstrap-datepicker.min', 'bootstrap-datetimepicker',
-            'inputmask', 'jquery.cookie', 'jquery.datetimepicker',
-            'jquery.fileupload', 'jquery.timepicker', 'mask', 'engine', 'laroute', 'svgmap', 'ngmap.min'
+        'js' => [
+            'moment.min',
+            'bootbox',
+            'inputmask',
+            'mask',
+            'engine',
+            'laroute',
+            'svgmap',
+            'ngmap.min'
         ],
     ];
 

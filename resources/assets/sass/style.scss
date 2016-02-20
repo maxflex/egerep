@@ -2767,7 +2767,7 @@ select.has-error:focus, input.has-error:focus, button.has-error:focus {
 }
 
 .datepicker-dropdown {
-	margin-top: 26px !important;
+	// margin-top: 26px !important;
 }
 
 .rubble-addon {
@@ -2883,4 +2883,11 @@ select.has-error:focus, input.has-error:focus, button.has-error:focus {
   .modal-dialog {
 	  margin: 15% auto;
 	}
+}
+
+
+.datepicker table tr td.active:hover, .datepicker table tr td.active:hover:hover, .datepicker table tr td.active.disabled:hover, .datepicker table tr td.active.disabled:hover:hover, .datepicker table tr td.active:focus, .datepicker table tr td.active:hover:focus, .datepicker table tr td.active.disabled:focus, .datepicker table tr td.active.disabled:hover:focus, .datepicker table tr td.active:active, .datepicker table tr td.active:hover:active, .datepicker table tr td.active.disabled:active, .datepicker table tr td.active.disabled:hover:active, .datepicker table tr td.active.active, .datepicker table tr td.active:hover.active, .datepicker table tr td.active.disabled.active, .datepicker table tr td.active.disabled:hover.active, .open .dropdown-toggle.datepicker table tr td.active, .open .dropdown-toggle.datepicker table tr td.active:hover, .open .dropdown-toggle.datepicker table tr td.active.disabled, .open .dropdown-toggle.datepicker table tr td.active.disabled:hover {
+    color: #fff;
+    background: #3276b1 !important;
+    border-color: #285e8e !important;
 }

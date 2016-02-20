@@ -38,7 +38,6 @@ angular
         $timeout ->
             $scope.users = User.query()
 
-
             $http.get 'api/tutors/list'
                 .success (tutors) ->
                     $scope.tutors = tutors
@@ -46,6 +45,7 @@ angular
             if $scope.id > 0
                 $scope.client = Client.get {id: $scope.id}, (client) ->
                     $scope.selected_request = if $scope.request_id then _.findWhere(client.requests, {id: $scope.request_id}) else client.requests[0]
+                    sp 'list-subjects', 'выберите предмет'
                     # set the default list
                     if client.subject_list isnt null
                         $scope.selected_list_id = client.subject_list[0]
@@ -69,6 +69,9 @@ angular
 
         $scope.selectAttachment = (attachment) ->
             $scope.selected_attachment = attachment
+
+        $scope.addList = ->
+            $scope.dialog('add-subject')
 
         $scope.setList = (list) ->
             $scope.selected_list = list
@@ -100,15 +103,13 @@ angular
         $scope.addListSubject = ->
             RequestList.save
                 request_id: $scope.selected_request.id
-                subjects: $scope.list_subject_id
+                subjects: $scope.list_subjects
             , (data) ->
                 $scope.selected_request.lists.push data
                 $scope.selected_list = data
-            # $scope.client.subject_list.push($scope.list_subject_id)
-            # $scope.client.lists[$scope.list_subject_id] = []
-            # $scope.selected_list_id = $scope.list_subject_id
 
-            delete $scope.list_subject_id
+            delete $scope.list_subjects
+            spRefresh 'list-subjects'
             $('#add-subject').modal 'hide'
             return
 
@@ -186,14 +187,6 @@ angular
             sp 'attachment-subjects', 'выберите предмет' if oldVal is undefined
             spRefresh 'attachment-subjects' if oldVal isnt undefined
             rebindMasks()
-
-        # refresh selectpicker on $selected_attachment update
-        $scope.$watch 'list_subject_id', (newVal, oldVal) ->
-            return if newVal is undefined
-            sp 'subject-select-model', 'выберите предмет' if oldVal is undefined
-            spRefresh 'subject-select-model' if oldVal isnt undefined
-
-
 
 
         #

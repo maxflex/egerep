@@ -12,6 +12,7 @@ return array(
     'AddListsToClient' => $baseDir . '/database/migrations/2016_01_22_152742_add_lists_to_client.php',
     'AddSvgMapToTeachers' => $baseDir . '/database/migrations/2016_01_19_131426_add_svg_map_to_teachers.php',
     'AddUserCreatedIdToRequests' => $baseDir . '/database/migrations/2016_01_22_123001_add_user_created_id_to_requests.php',
+    'AttachmentTotalLessonsMissingNullable' => $baseDir . '/database/migrations/2016_02_20_031600_attachment_total_lessons_missing_nullable.php',
     'ChangeClientSubjectListReference' => $baseDir . '/database/migrations/2016_02_19_012520_change_client_subject_list_reference.php',
     'ChangeRequestStatuses' => $baseDir . '/database/migrations/2016_02_18_223244_change_request_statuses.php',
     'ChangeSubjectIdToSubjects' => $baseDir . '/database/migrations/2016_02_19_191241_change_subject_id_to_subjects.php',

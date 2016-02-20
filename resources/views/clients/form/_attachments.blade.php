@@ -18,8 +18,9 @@
                         class="form-control bs-date" ng-model="selected_attachment.attachment_date">
                 </div>
                 <div class="form-group">
-                    <select class="form-control" ng-model="selected_attachment.grade" ng-options="grade as (grade + ' класс') for grade in [9, 10, 11]">
-                        <option value="">класс</option>
+                    <select class="form-control" ng-model='selected_attachment.grade'
+                        ng-options='+(grade_id) as label for (grade_id, label) in Grades'>
+                        <option value="">выберите класс</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -28,38 +29,6 @@
                       ng-model="selected_attachment.subjects"
                       ng-options="index as subject for (index, subject) in Subjects.all">
                     </select>
-
-                    {{-- <ui-select ng-model='selected_attachment.subjects'>
-                      <ui-select-match>
-                        <span ng-bind='selected_attachment.subjects'></span>
-                      </ui-select-match>
-                      <ui-select-options ng-repeat='(index, subject) in Subjects.all track by $index'>
-                        <span ng-bind='subject'></span>
-                      </ui-select-options>
-                    </ui-select> --}}
-                    {{-- <ui-select multiple ng-model="selected_attachment.subjects">
-                        <ui-select-match>
-                            @{{ Subjects.all[$item.index] }}
-                        </ui-select-match>
-                        <ui-select-choices repeat="subject.index as (index, subject) in Subjects.all">
-                            @{{ subject.value }}
-                        </ui-select-choices>
-                    </ui-select> --}}
-
-                    {{-- <select id='attachment-subjects'
-                        multiple
-                        ng-model="selected_attachment.subjects"
-                        ng-options="index as subject for (index, subject) in Subjects.all"
-                    > --}}
-
-                    {{-- <ol class="nya-bs-select" ng-model="selected_attachment.subjects" multiple>
-                        <li nya-bs-option="index as subject for (index, subject) in Subjects.all">
-                            <a>@{{subject}}</a>
-                        </li>
-                    </ol> --}}
-
-                    </select>
-
                 </div>
             </div>
             <div class="col-sm-3">
@@ -94,8 +63,14 @@
 
         <div class="row mb">
             <div class="col-sm-3">
-                <div class="form-group"><input type="text" class="form-control bs-date" placeholder="дата архивации"></div>
-                <div class="form-group"><input type="text" class="form-control digits-only" placeholder="всего занятий не проведено"></div>
+                <div class="form-group">
+                    <input type="text" class="form-control bs-date" placeholder="дата архивации"
+                        ng-model="selected_attachment.archive_date">
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control digits-only" placeholder="всего занятий не проведено"
+                        ng-model='selected_attachment.total_lessons_missing'>
+                </div>
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
@@ -103,7 +78,7 @@
                 </div>
             </div>
             <div class="col-sm-6">
-                
+
             </div>
         </div>
 
@@ -118,8 +93,8 @@
 
         <div class="row mb">
             <div class="col-sm-3">
-                <div class="form-group"><input type="text" class="form-control bs-date" placeholder="оценка репетитору"></div>
-                <div class="form-group"><input type="text" class="form-control digits-only" placeholder="подпись"></div>
+                <div class="form-group"><input type="text" class="form-control ditits-only" placeholder="оценка репетитору"></div>
+                <div class="form-group"><input type="text" class="form-control" placeholder="подпись"></div>
             </div>
             <div class="col-sm-3">
                 <div class="form-group">

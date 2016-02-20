@@ -154,6 +154,22 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     protected $casts = [];
 
     /**
+     * Comma-separated attributes
+     *
+     * @custom
+     * @var array
+     */
+    protected static $commaSeparated = [];
+
+    /**
+     * Dot dates attributes (15.05.1992)
+     *
+     * @custom
+     * @var array
+     */
+    protected static $dotDates = [];
+
+    /**
      * The relationships that should be touched on save.
      *
      * @var array
@@ -2490,6 +2506,54 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     }
 
     /**
+     * Get comma-separated attribute
+     * @custom
+     */
+    private static function _getCommaSeparated($value)
+    {
+        if (is_array($value)) {
+            return $value;
+        } else {
+            return empty($value) ? [] : explode(',', $value);
+        }
+    }
+
+    /**
+     * Set comma-separated attribute
+     * @custom
+     */
+    private static function _setCommaSeparated($value)
+    {
+        if (is_array($value)) {
+            return implode(',', $value);
+        } else {
+            return $value;
+        }
+    }
+
+    /**
+     * Get dot date
+     * @custom
+     */
+    private static function _getDotDate($value)
+    {
+        return date('d.m.Y', strtotime($value));
+    }
+
+    /**
+     * Set dot date
+     * @custom
+     */
+    private static function _setDotDate($value)
+    {
+        if (preg_match('/[\d]{2}[\.][\d]{2}[\.][\d]{4}/', $value)) {
+            return Carbon::createFromFormat('d.m.Y', $value)->toDateString();
+        } else {
+            return $value;
+        }
+    }
+
+    /**
      * Convert the model's attributes to an array.
      *
      * @return array
@@ -2524,6 +2588,14 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
             $attributes[$key] = $this->mutateAttributeForArray(
                 $key, $attributes[$key]
             );
+        }
+
+        // @custom
+        foreach (static::$commaSeparated as $key) {
+            $attributes[$key] = static::_getCommaSeparated($attributes[$key]);
+        }
+        foreach (static::$dotDates as $key) {
+            $attributes[$key] = static::_getDotDate($attributes[$key]);
         }
 
         // Next we will handle any casts that have been setup for this model and cast
@@ -2673,6 +2745,14 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     public function getAttributeValue($key)
     {
         $value = $this->getAttributeFromArray($key);
+
+        // @custom check for comma-separated values
+        if (in_array($key, static::$commaSeparated)) {
+            return static::_getCommaSeparated($value);
+        }
+        if (in_array($key, static::$dotDates)) {
+            return static::_getDotDate($value);
+        }
 
         // If the attribute has a get mutator, we will call that then return what
         // it returns as the value, which is useful for transforming values on
@@ -2928,6 +3008,14 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
         if ($this->isJsonCastable($key) && ! is_null($value)) {
             $value = $this->asJson($value);
+        }
+
+        // @custom check for comma-separated values
+        if (in_array($key, static::$commaSeparated)) {
+            $value = static::_setCommaSeparated($value);
+        }
+        if (in_array($key, static::$dotDates)) {
+            $value = static::_setDotDate($value);
         }
 
         $this->attributes[$key] = $value;

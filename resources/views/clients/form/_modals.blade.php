@@ -6,7 +6,7 @@
         <h4 class="modal-title">Добавление списка</h4>
       </div>
       <div class="modal-body">
-        <select class='form-control' multiple ng-model='$parent.list_subject_id' id='sp-subject-select-model'
+        <select class='form-control' multiple ng-model='$parent.list_subjects' id='sp-list-subjects' data-max-options='2'
             ng-options='subject_id as subject_name
                         for (subject_id, subject_name) in Subjects.all'
         >
@@ -15,7 +15,7 @@
       </div>
       <div class="modal-footer center">
         <button type="button" class="btn btn-primary" ng-click="addListSubject()"
-            ng-disabled="!list_subject_id">Добавить</button>
+            ng-disabled="!list_subjects">Добавить</button>
       </div>
     </div>
   </div>
