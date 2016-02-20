@@ -172,6 +172,7 @@
         $scope.selected_attachment.archive_date = moment().format('DD.MM.YYYY');
         $scope.selected_attachment.archive_date_saved = moment().format('YYYY-MM-DD HH:mm:ss');
         $scope.selected_attachment.archive_user_id = $scope.user.id;
+        $scope.selected_attachment.total_lessons_missing = null;
         $scope.selected_attachment.archive_user_login = $scope.user.login;
         return $scope.selected_attachment.archive_status = 'impossible';
       }
