@@ -80,7 +80,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control digits-only" placeholder="всего занятий не проведено"
+                    <input type="text" class="form-control" placeholder="всего занятий не проведено"
                         ng-model='selected_attachment.total_lessons_missing'>
                 </div>
             </div>
