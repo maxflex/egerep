@@ -14,8 +14,11 @@
         <div class="row">
             <div class="col-sm-3">
                 <div class="form-group">
-                    <input type="text" placeholder="дата стыковки"
-                        class="form-control bs-date" ng-model="selected_attachment.attachment_date">
+                    <div class="input-group custom">
+                      <span class="input-group-addon">дата стыковки –</span>
+                      <input type="text" placeholder="дата стыковки"
+                          class="form-control bs-date" ng-model="selected_attachment.attachment_date">
+                    </div>
                 </div>
                 <div class="form-group">
                     <select class="form-control" ng-model='selected_attachment.grade'
@@ -64,8 +67,13 @@
         <div class="row mb">
             <div class="col-sm-3">
                 <div class="form-group">
-                    <input type="text" class="form-control bs-date" placeholder="дата архивации"
-                        ng-model="selected_attachment.archive_date">
+                    <div class="form-group">
+                        <div class="input-group custom">
+                          <span class="input-group-addon">дата архивации –</span>
+                          <input type="text" class="form-control bs-date" placeholder="дата архивации"
+                              ng-model="selected_attachment.archive_date">
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <input type="text" class="form-control digits-only" placeholder="всего занятий не проведено"
@@ -93,7 +101,12 @@
 
         <div class="row mb">
             <div class="col-sm-3">
-                <div class="form-group"><input type="text" class="form-control ditits-only" placeholder="оценка репетитору"></div>
+                <div class="form-group">
+                    <select class="form-control" ng-model='selected_attachment.score'
+                        ng-options='state_id as label for (state_id, label) in ReviewState'>
+                        <option value="">оценка репетитору</option>
+                    </select>
+                </div>
                 <div class="form-group"><input type="text" class="form-control" placeholder="подпись"></div>
             </div>
             <div class="col-sm-3">

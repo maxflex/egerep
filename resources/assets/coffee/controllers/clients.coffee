@@ -14,13 +14,28 @@ angular
     #
     #   ADD/EDIT CONTROLLER
     #
-    .controller "ClientsForm", ($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestState, Subjects, Grades, Attachment) ->
+    .controller "ClientsForm", ($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestState, Subjects, Grades, Attachment, ReviewState) ->
         $scope.RequestState = RequestState
         $scope.Subjects = Subjects
         $scope.Grades = Grades
+        $scope.ReviewState = ReviewState
         $rootScope.frontend_loading = true
 
-        # @костыль
+
+        $scope.is_dragging_teacher = false
+        $scope.sortableOptions =
+            tolerance: 'pointer'
+            appendTo: '.panel-body'
+            helper: 'clone'
+            start: (e, ui) ->
+                $scope.is_dragging_teacher = true
+                $scope.$apply()
+            stop: (e, ui) ->
+                $scope.is_dragging_teacher = false
+                $scope.$apply()
+                saveSelectedList()
+
+        # @cost
         $scope.fake_user =
             id: 0
             login: 'system'
@@ -36,6 +51,15 @@ angular
 
         # get teacher
         $timeout ->
+            $('.teacher-remove-droppable').droppable
+                tolerance: 'pointer'
+                hoverClass: 'drop-hover'
+                drop: (e, ui) ->
+                    tutor_id = $(ui.draggable).data 'id'
+                    $scope.selected_list.tutor_ids = _.without($scope.selected_list.tutor_ids, tutor_id.toString())
+                    $scope.$apply()
+                    saveSelectedList()
+
             $scope.users = User.query()
 
             $http.get 'api/tutors/list'
@@ -54,6 +78,9 @@ angular
                         # if client.attachments[$scope.selected_list_id]
                         #     $scope.selected_attachment = client.attachments[$scope.selected_list_id][0]
                     $rootScope.frontendStop()
+
+        saveSelectedList = ->
+            RequestList.update $scope.selected_list
 
         $scope.attachmentExists = (tutor_id) ->
             attachment_exists = false

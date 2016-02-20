@@ -26718,6 +26718,15 @@ md-tooltip {
   -webkit-animation-name: slideOutUp;
   animation-name: slideOutUp; }
 
+.drop-delete {
+  display: inline-block;
+  color: #A94442;
+  font-weight: normal;
+  cursor: default !important; }
+
+.drop-hover {
+  font-weight: bold; }
+
 .show-on-hover {
   opacity: 0;
   transition: all linear .3s;
@@ -26849,19 +26858,22 @@ span {
   margin-bottom: 7px !important;
   position: relative !important; }
 
-.input-group.custom {
+.input-group.custom.tiny {
   width: 120px;
   margin: 0 auto; }
-  .input-group.custom .input-group-addon {
-    background-color: white !important;
-    color: #999999;
-    padding-right: 0; }
-  .input-group.custom input {
-    border-left: none !important;
-    box-shadow: none !important;
-    padding-left: 3px; }
-  .input-group.custom .form-control:focus {
-    border-color: #ccc; }
+
+.input-group.custom .input-group-addon {
+  background-color: white !important;
+  color: #999999;
+  padding-right: 0; }
+
+.input-group.custom input {
+  border-left: none !important;
+  box-shadow: none !important;
+  padding-left: 3px; }
+
+.input-group.custom .form-control:focus {
+  border-color: #ccc; }
 
 .user-pick {
   cursor: pointer;

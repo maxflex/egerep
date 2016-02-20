@@ -1,4 +1,4 @@
-angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ngAnimate'])
+angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ngAnimate', 'ui.sortable'])
     .config [
         '$compileProvider'
         ($compileProvider) ->
@@ -36,7 +36,7 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
 
         $rootScope.dialog = (id) ->
             $("##{id}").modal 'show'
-            return 
+            return
 
         $rootScope.ajaxStart = ->
             ajaxStart()

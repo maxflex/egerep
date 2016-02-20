@@ -17,19 +17,19 @@
             </div>
         </div>
         <div class="form-group">
-            <div class="input-group custom">
+            <div class="input-group custom tiny">
               <span class="input-group-addon">ТБ –</span>
               <input type="text" class="form-control digits-only" ng-model="tutor.tb">
             </div>
         </div>
         <div class="form-group">
-            <div class="input-group custom">
+            <div class="input-group custom tiny">
               <span class="input-group-addon">ЛК –</span>
               <input type="text" class="form-control digits-only" ng-model="tutor.lk">
             </div>
         </div>
         <div class="form-group">
-            <div class="input-group custom">
+            <div class="input-group custom tiny">
               <span class="input-group-addon">ЖС –</span>
               <input type="text" class="form-control digits-only" ng-model="tutor.js">
             </div>

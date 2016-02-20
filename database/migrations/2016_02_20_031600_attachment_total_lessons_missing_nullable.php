@@ -13,7 +13,7 @@ class AttachmentTotalLessonsMissingNullable extends Migration
     public function up()
     {
         Schema::table('attachments', function (Blueprint $table) {
-            // $table->integer('total_lessons_missing')->nullable()->change();
+            $table->integer('total_lessons_missing')->nullable()->change();
         });
     }
 

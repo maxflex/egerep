@@ -1,5 +1,5 @@
 (function() {
-  angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ngAnimate']).config([
+  angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ngAnimate', 'ui.sortable']).config([
     '$compileProvider', function($compileProvider) {
       return $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension|sip):/);
     }
@@ -79,12 +79,28 @@
 (function() {
   angular.module('Egerep').controller("ClientsIndex", function($scope, $timeout, Client) {
     return $scope.clients = Client.query();
-  }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestState, Subjects, Grades, Attachment) {
-    var filterMarkers;
+  }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestState, Subjects, Grades, Attachment, ReviewState) {
+    var filterMarkers, saveSelectedList;
     $scope.RequestState = RequestState;
     $scope.Subjects = Subjects;
     $scope.Grades = Grades;
+    $scope.ReviewState = ReviewState;
     $rootScope.frontend_loading = true;
+    $scope.is_dragging_teacher = false;
+    $scope.sortableOptions = {
+      tolerance: 'pointer',
+      appendTo: '.panel-body',
+      helper: 'clone',
+      start: function(e, ui) {
+        $scope.is_dragging_teacher = true;
+        return $scope.$apply();
+      },
+      stop: function(e, ui) {
+        $scope.is_dragging_teacher = false;
+        $scope.$apply();
+        return saveSelectedList();
+      }
+    };
     $scope.fake_user = {
       id: 0,
       login: 'system'
@@ -97,6 +113,17 @@
       });
     };
     $timeout(function() {
+      $('.teacher-remove-droppable').droppable({
+        tolerance: 'pointer',
+        hoverClass: 'drop-hover',
+        drop: function(e, ui) {
+          var tutor_id;
+          tutor_id = $(ui.draggable).data('id');
+          $scope.selected_list.tutor_ids = _.without($scope.selected_list.tutor_ids, tutor_id.toString());
+          $scope.$apply();
+          return saveSelectedList();
+        }
+      });
       $scope.users = User.query();
       $http.get('api/tutors/list').success(function(tutors) {
         return $scope.tutors = tutors;
@@ -116,6 +143,9 @@
         });
       }
     });
+    saveSelectedList = function() {
+      return RequestList.update($scope.selected_list);
+    };
     $scope.attachmentExists = function(tutor_id) {
       var attachment_exists;
       attachment_exists = false;
@@ -903,6 +933,21 @@
     awaiting: 'в ожидании',
     finished: 'выполненные',
     deny: 'отказы'
+  }).value('ReviewState', {
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+    6: 6,
+    7: 7,
+    8: 8,
+    9: 9,
+    10: 10,
+    11: 'не берет',
+    12: 'не помнит',
+    13: 'недоступен',
+    14: 'позвонить позже'
   }).value('Grades', {
     1: '1 класс',
     2: '2 класс',

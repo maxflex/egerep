@@ -37,5 +37,7 @@ elixir(function(mix) {
             '../bower/bootstrap-select/dist/js/bootstrap-select.js',
             '../bower/bootstrap-datepicker/dist/js/bootstrap-datepicker.js',
             '../bower/bootstrap-datepicker/dist/locales/bootstrap-datepicker.ru.min.js',
+            '../bower/jquery-ui/jquery-ui.min.js',
+            '../bower/angular-ui-sortable/sortable.min.js',
         ], 'public/js/vendor.js');
 });
