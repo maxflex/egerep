@@ -89,8 +89,13 @@
     $scope.is_dragging_teacher = false;
     $scope.sortableOptions = {
       tolerance: 'pointer',
-      appendTo: '.panel-body',
+      activeClass: 'drag-active',
       helper: 'clone',
+      sort: function(e, ui) {
+        return ui.helper.css({
+          'top': ui.position.top + $(window).scrollTop() + 'px'
+        });
+      },
       start: function(e, ui) {
         $scope.is_dragging_teacher = true;
         return $scope.$apply();

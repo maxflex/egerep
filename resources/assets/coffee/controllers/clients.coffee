@@ -25,8 +25,11 @@ angular
         $scope.is_dragging_teacher = false
         $scope.sortableOptions =
             tolerance: 'pointer'
-            appendTo: '.panel-body'
+            # appendTo: 'body'
+            activeClass: 'drag-active'
             helper: 'clone'
+            sort: (e, ui) ->
+                ui.helper.css({'top' : ui.position.top + $(window).scrollTop() + 'px'})
             start: (e, ui) ->
                 $scope.is_dragging_teacher = true
                 $scope.$apply()

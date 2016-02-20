@@ -33,6 +33,10 @@
 		font-weight: bold;
 	}
 
+	.drag-active {
+		position: absolute;
+	}
+
 	.show-on-hover {
 		opacity: 0;
 		transition: all linear .3s;
