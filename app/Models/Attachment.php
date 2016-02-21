@@ -26,13 +26,15 @@ class Attachment extends Model
         'signature',
         'review_comment',
         'review_status',
+        'review_date_saved',
+        'archive_date_saved',
     ];
     protected $casts = [
         'review_on'     => 'boolean',
         'archive_on'    => 'boolean',
         'grade'         => 'int',
     ];
-    protected $with = ['user'];
+    protected $dates = ['review_date_saved', 'archive_date_saved'];
     protected static $commaSeparated = ['subjects'];
     protected static $dotDates = ['attachment_date', 'archive_date', 'review_date'];
 
@@ -43,9 +45,16 @@ class Attachment extends Model
         return $this->belongsTo('App\Models\RequestList');
     }
 
-    public function user()
+    // ------------------------------------------------------------------------
+
+    public function getReviewUserLoginAttribute()
     {
-        return $this->belongsTo('App\Models\User');
+        return User::where('id', $this->review_user_id)->select('login')->login;
+    }
+
+    public function getArchiveUserLoginAttribute()
+    {
+        return User::where('id', $this->archive_user_id)->select('login')->login;
     }
 
     // ------------------------------------------------------------------------

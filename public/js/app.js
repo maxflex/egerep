@@ -80,7 +80,7 @@
   angular.module('Egerep').controller("ClientsIndex", function($scope, $timeout, Client) {
     return $scope.clients = Client.query();
   }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestState, Subjects, Grades, Attachment, ReviewState, ArchiveState, ReviewStatus) {
-    var filterMarkers, saveSelectedList;
+    var _cleanArchive, _cleanReview, filterMarkers, saveSelectedList;
     $scope.RequestState = RequestState;
     $scope.Subjects = Subjects;
     $scope.Grades = Grades;
@@ -159,40 +159,44 @@
       }
     };
     $scope.toggleArchive = function() {
+      _cleanArchive();
       if ($scope.selected_attachment.archive_on) {
-        $scope.selected_attachment.archive_on = false;
-        $scope.selected_attachment.archive_date = null;
-        $scope.selected_attachment.archive_date_saved = null;
-        $scope.selected_attachment.archive_user_id = null;
-        $scope.selected_attachment.archive_user_login = null;
-        $scope.selected_attachment.total_lessons_missing = null;
-        return $scope.selected_attachment.archive_comment = '';
+        return $scope.selected_attachment.archive_on = false;
       } else {
         $scope.selected_attachment.archive_on = true;
         $scope.selected_attachment.archive_date = moment().format('DD.MM.YYYY');
         $scope.selected_attachment.archive_date_saved = moment().format('YYYY-MM-DD HH:mm:ss');
         $scope.selected_attachment.archive_user_id = $scope.user.id;
-        $scope.selected_attachment.total_lessons_missing = null;
-        $scope.selected_attachment.archive_user_login = $scope.user.login;
-        return $scope.selected_attachment.archive_status = 'impossible';
+        return $scope.selected_attachment.archive_user_login = $scope.user.login;
       }
     };
+    _cleanArchive = function() {
+      $scope.selected_attachment.archive_date = null;
+      $scope.selected_attachment.archive_date_saved = null;
+      $scope.selected_attachment.archive_user_id = null;
+      $scope.selected_attachment.archive_user_login = null;
+      $scope.selected_attachment.total_lessons_missing = null;
+      $scope.selected_attachment.archive_comment = '';
+      return $scope.selected_attachment.archive_status = 'impossible';
+    };
     $scope.toggleReview = function() {
+      _cleanReview();
       if ($scope.selected_attachment.review_on) {
-        $scope.selected_attachment.review_on = false;
-        $scope.selected_attachment.review_date_saved = null;
-        $scope.selected_attachment.review_user_id = null;
-        $scope.selected_attachment.review_user_login = null;
-        $scope.selected_attachment.review_comment = '';
-        $scope.selected_attachment.signature = '';
-        return $scope.selected_attachment.review_status = 0;
+        return $scope.selected_attachment.review_on = false;
       } else {
         $scope.selected_attachment.review_on = true;
         $scope.selected_attachment.review_date_saved = moment().format('YYYY-MM-DD HH:mm:ss');
         $scope.selected_attachment.review_user_id = $scope.user.id;
-        $scope.selected_attachment.review_user_login = $scope.user.login;
-        return $scope.selected_attachment.review_status = 'unpublished';
+        return $scope.selected_attachment.review_user_login = $scope.user.login;
       }
+    };
+    _cleanReview = function() {
+      $scope.selected_attachment.review_date_saved = null;
+      $scope.selected_attachment.review_user_id = null;
+      $scope.selected_attachment.review_user_login = null;
+      $scope.selected_attachment.review_comment = '';
+      $scope.selected_attachment.signature = '';
+      return $scope.selected_attachment.review_status = 'unpublished';
     };
     $scope.attachmentExists = function(tutor_id) {
       var attachment_exists;
@@ -977,57 +981,6 @@
 }).call(this);
 
 (function() {
-  var apiPath, updateMethod;
-
-  angular.module('Egerep').factory('Attachment', function($resource) {
-    return $resource(apiPath('attachments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('RequestList', function($resource) {
-    return $resource(apiPath('lists'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Request', function($resource) {
-    return $resource(apiPath('requests'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Sms', function($resource) {
-    return $resource(apiPath('sms'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Comment', function($resource) {
-    return $resource(apiPath('comments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Client', function($resource) {
-    return $resource(apiPath('clients'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('User', function($resource) {
-    return $resource(apiPath('users'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Tutor', function($resource) {
-    return $resource(apiPath('tutors'), {
-      id: '@id'
-    }, updateMethod());
-  });
-
-  apiPath = function(entity) {
-    return "api/" + entity + "/:id";
-  };
-
-  updateMethod = function() {
-    return {
-      update: {
-        method: 'PUT'
-      }
-    };
-  };
-
-}).call(this);
-
-(function() {
   angular.module('Egerep').value('RequestState', {
     "new": 'невыполненные',
     awaiting: 'в ожидании',
@@ -1109,6 +1062,57 @@
     three_letters: ['МАТ', 'ФИЗ', 'РУС', 'ЛИТ', 'АНГ', 'ИСТ', 'ОБЩ', 'ХИМ', 'БИО', 'ИНФ'],
     short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
   });
+
+}).call(this);
+
+(function() {
+  var apiPath, updateMethod;
+
+  angular.module('Egerep').factory('Attachment', function($resource) {
+    return $resource(apiPath('attachments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('RequestList', function($resource) {
+    return $resource(apiPath('lists'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Request', function($resource) {
+    return $resource(apiPath('requests'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Sms', function($resource) {
+    return $resource(apiPath('sms'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Comment', function($resource) {
+    return $resource(apiPath('comments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Client', function($resource) {
+    return $resource(apiPath('clients'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('User', function($resource) {
+    return $resource(apiPath('users'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Tutor', function($resource) {
+    return $resource(apiPath('tutors'), {
+      id: '@id'
+    }, updateMethod());
+  });
+
+  apiPath = function(entity) {
+    return "api/" + entity + "/:id";
+  };
+
+  updateMethod = function() {
+    return {
+      update: {
+        method: 'PUT'
+      }
+    };
+  };
 
 }).call(this);
 

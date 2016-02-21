@@ -10,6 +10,7 @@ abstract class TestCase extends PHPUnit_Framework_TestCase
     use Concerns\InteractsWithContainer,
         Concerns\MakesHttpRequests,
         Concerns\ImpersonatesUsers,
+        Concerns\InteractsWithAuthentication,
         Concerns\InteractsWithConsole,
         Concerns\InteractsWithDatabase,
         Concerns\InteractsWithSession,
@@ -57,7 +58,7 @@ abstract class TestCase extends PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function setUp()
+    protected function setUp()
     {
         if (! $this->app) {
             $this->refreshApplication();
@@ -115,7 +116,7 @@ abstract class TestCase extends PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function tearDown()
+    protected function tearDown()
     {
         if (class_exists('Mockery')) {
             Mockery::close();

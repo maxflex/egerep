@@ -36,7 +36,8 @@
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
-                    <textarea style="height: 75px" cols="40" class="form-control"></textarea>
+                    <textarea style="height: 75px" cols="40" class="form-control"
+                        ng-model='selected_attachment.attachment_comment'></textarea>
                 </div>
                 <div class="form-group"><input type="text" class="form-control digits-only" placeholder="прогноз в неделю"></div>
             </div>
@@ -80,7 +81,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="всего занятий не проведено"
+                    <input type="text" class="form-control digits-only" placeholder="всего занятий не проведено"
                         ng-model='selected_attachment.total_lessons_missing'>
                 </div>
             </div>

@@ -88,38 +88,43 @@ angular
                 $scope.selected_attachment = findById($scope.selected_list.attachments, values[1])
 
         $scope.toggleArchive = ->
+            _cleanArchive()
             if $scope.selected_attachment.archive_on
                 $scope.selected_attachment.archive_on = false
-                $scope.selected_attachment.archive_date = null
-                $scope.selected_attachment.archive_date_saved = null
-                $scope.selected_attachment.archive_user_id = null
-                $scope.selected_attachment.archive_user_login = null
-                $scope.selected_attachment.total_lessons_missing = null
-                $scope.selected_attachment.archive_comment = ''
             else
                 $scope.selected_attachment.archive_on = true
                 $scope.selected_attachment.archive_date = moment().format('DD.MM.YYYY')
                 $scope.selected_attachment.archive_date_saved = moment().format('YYYY-MM-DD HH:mm:ss')
                 $scope.selected_attachment.archive_user_id = $scope.user.id
-                $scope.selected_attachment.total_lessons_missing = null
                 $scope.selected_attachment.archive_user_login = $scope.user.login
-                $scope.selected_attachment.archive_status = 'impossible'
+
+        _cleanArchive = ->
+            $scope.selected_attachment.archive_date = null
+            $scope.selected_attachment.archive_date_saved = null
+            $scope.selected_attachment.archive_user_id = null
+            $scope.selected_attachment.archive_user_login = null
+            $scope.selected_attachment.total_lessons_missing = null
+            $scope.selected_attachment.archive_comment = ''
+            $scope.selected_attachment.archive_status = 'impossible'
 
         $scope.toggleReview = ->
+            _cleanReview()
             if $scope.selected_attachment.review_on
                 $scope.selected_attachment.review_on = false
-                $scope.selected_attachment.review_date_saved = null
-                $scope.selected_attachment.review_user_id = null
-                $scope.selected_attachment.review_user_login = null
-                $scope.selected_attachment.review_comment = ''
-                $scope.selected_attachment.signature = ''
-                $scope.selected_attachment.review_status = 0
             else
                 $scope.selected_attachment.review_on = true
                 $scope.selected_attachment.review_date_saved = moment().format('YYYY-MM-DD HH:mm:ss')
                 $scope.selected_attachment.review_user_id = $scope.user.id
                 $scope.selected_attachment.review_user_login = $scope.user.login
-                $scope.selected_attachment.review_status = 'unpublished'
+
+        _cleanReview = ->
+            $scope.selected_attachment.review_date_saved = null
+            $scope.selected_attachment.review_user_id = null
+            $scope.selected_attachment.review_user_login = null
+            $scope.selected_attachment.review_comment = ''
+            $scope.selected_attachment.signature = ''
+            $scope.selected_attachment.review_status = 'unpublished'
+
 
         $scope.attachmentExists = (tutor_id) ->
             attachment_exists = false

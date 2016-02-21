@@ -28,6 +28,10 @@ trait ResetsPasswords
      */
     public function showLinkRequestForm()
     {
+        if (property_exists($this, 'linkRequestView')) {
+            return view($this->linkRequestView);
+        }
+
         if (view()->exists('auth.passwords.email')) {
             return view('auth.passwords.email');
         }
@@ -135,11 +139,15 @@ trait ResetsPasswords
 
         $email = $request->input('email');
 
+        if (property_exists($this, 'resetView')) {
+            return view($this->resetView)->with(compact('token', 'email'));
+        }
+
         if (view()->exists('auth.passwords.reset')) {
             return view('auth.passwords.reset')->with(compact('token', 'email'));
         }
 
-        return view('auth.reset')->with('token', $token);
+        return view('auth.reset')->with(compact('token', 'email'));
     }
 
     /**
@@ -161,11 +169,7 @@ trait ResetsPasswords
      */
     public function reset(Request $request)
     {
-        $this->validate($request, [
-            'token' => 'required',
-            'email' => 'required|email',
-            'password' => 'required|confirmed|min:6',
-        ]);
+        $this->validate($request, $this->getResetValidationRules());
 
         $credentials = $request->only(
             'email', 'password', 'password_confirmation', 'token'
@@ -184,6 +188,20 @@ trait ResetsPasswords
             default:
                 return $this->getResetFailureResponse($request, $response);
         }
+    }
+
+    /**
+     * Get the password reset validation rules.
+     *
+     * @return array
+     */
+    protected function getResetValidationRules()
+    {
+        return [
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|confirmed|min:6',
+        ];
     }
 
     /**
