@@ -38,8 +38,7 @@ class AttachmentsController extends Controller
      */
     public function store(Request $request)
     {
-        $attachment = Attachment::create($request->input());
-        return Attachment::find($attachment->id);
+        return Attachment::create($request->input())->fresh();
     }
 
     /**

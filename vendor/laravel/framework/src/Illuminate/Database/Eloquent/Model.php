@@ -154,6 +154,22 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     protected $casts = [];
 
     /**
+     * Comma-separated attributes
+     *
+     * @custom
+     * @var array
+     */
+    protected static $commaSeparated = [];
+
+    /**
+     * Dot dates attributes (15.05.1992)
+     *
+     * @custom
+     * @var array
+     */
+    protected static $dotDates = [];
+
+    /**
      * The relationships that should be touched on save.
      *
      * @var array
@@ -591,6 +607,53 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     }
 
     /**
+     * Get the first record matching the attributes or create it.
+     *
+     * @param  array  $attributes
+     * @return static
+     */
+    public static function firstOrCreate(array $attributes)
+    {
+        if (! is_null($instance = (new static)->newQueryWithoutScopes()->where($attributes)->first())) {
+            return $instance;
+        }
+
+        return static::create($attributes);
+    }
+
+    /**
+     * Get the first record matching the attributes or instantiate it.
+     *
+     * @param  array  $attributes
+     * @return static
+     */
+    public static function firstOrNew(array $attributes)
+    {
+        if (! is_null($instance = (new static)->newQueryWithoutScopes()->where($attributes)->first())) {
+            return $instance;
+        }
+
+        return new static($attributes);
+    }
+
+    /**
+     * Create or update a record matching the attributes, and fill it with values.
+     *
+     * @param  array  $attributes
+     * @param  array  $values
+     * @param  array  $options
+     * @return static
+     */
+    public static function updateOrCreate(array $attributes, array $values = [], array $options = [])
+    {
+        $instance = static::firstOrNew($attributes);
+
+        $instance->fill($values)->save($options);
+
+        return $instance;
+    }
+
+    /**
      * Begin querying the model.
      *
      * @return \Illuminate\Database\Eloquent\Builder
@@ -643,6 +706,22 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
         $instance = new static;
 
         return $instance->newQuery()->get($columns);
+    }
+
+    /**
+     * Find a model by its primary key or return new static.
+     *
+     * @param  mixed  $id
+     * @param  array  $columns
+     * @return \Illuminate\Support\Collection|static
+     */
+    public static function findOrNew($id, $columns = ['*'])
+    {
+        if (! is_null($model = static::find($id, $columns))) {
+            return $model;
+        }
+
+        return new static;
     }
 
     /**
@@ -1347,12 +1426,11 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      *
      * @param  string  $column
      * @param  int  $amount
-     * @param  array  $extra
      * @return int
      */
-    protected function increment($column, $amount = 1, array $extra = [])
+    protected function increment($column, $amount = 1)
     {
-        return $this->incrementOrDecrement($column, $amount, $extra, 'increment');
+        return $this->incrementOrDecrement($column, $amount, 'increment');
     }
 
     /**
@@ -1360,12 +1438,11 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      *
      * @param  string  $column
      * @param  int  $amount
-     * @param  array  $extra
      * @return int
      */
-    protected function decrement($column, $amount = 1, array $extra = [])
+    protected function decrement($column, $amount = 1)
     {
-        return $this->incrementOrDecrement($column, $amount, $extra, 'decrement');
+        return $this->incrementOrDecrement($column, $amount, 'decrement');
     }
 
     /**
@@ -1373,21 +1450,20 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      *
      * @param  string  $column
      * @param  int  $amount
-     * @param  array  $extra
      * @param  string  $method
      * @return int
      */
-    protected function incrementOrDecrement($column, $amount, $extra, $method)
+    protected function incrementOrDecrement($column, $amount, $method)
     {
         $query = $this->newQuery();
 
         if (! $this->exists) {
-            return $query->{$method}($column, $amount, $extra);
+            return $query->{$method}($column, $amount);
         }
 
         $this->incrementOrDecrementAttributeValue($column, $amount, $method);
 
-        return $query->where($this->getKeyName(), $this->getKey())->{$method}($column, $amount, $extra);
+        return $query->where($this->getKeyName(), $this->getKey())->{$method}($column, $amount);
     }
 
     /**
@@ -1415,7 +1491,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     public function update(array $attributes = [], array $options = [])
     {
         if (! $this->exists) {
-            return false;
+            return $this->newQuery()->update($attributes);
         }
 
         return $this->fill($attributes)->save($options);
@@ -1585,7 +1661,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
         // table from the database. Not all tables have to be incrementing though.
         $attributes = $this->attributes;
 
-        if ($this->getIncrementing()) {
+        if ($this->incrementing) {
             $this->insertAndSetId($query, $attributes);
         }
 
@@ -2430,6 +2506,58 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     }
 
     /**
+     * Get comma-separated attribute
+     * @custom
+     */
+    private static function _getCommaSeparated($value)
+    {
+        if (is_array($value)) {
+            return $value;
+        } else {
+            return empty($value) ? [] : explode(',', $value);
+        }
+    }
+
+    /**
+     * Set comma-separated attribute
+     * @custom
+     */
+    private static function _setCommaSeparated($value)
+    {
+        if (is_array($value)) {
+            return implode(',', $value);
+        } else {
+            return $value;
+        }
+    }
+
+    /**
+     * Get dot date
+     * @custom
+     */
+    private static function _getDotDate($value)
+    {
+        if ($value) {
+            return date('d.m.Y', strtotime($value));
+        } else {
+            return $value;
+        }
+    }
+
+    /**
+     * Set dot date
+     * @custom
+     */
+    private static function _setDotDate($value)
+    {
+        if (preg_match('/[\d]{2}[\.][\d]{2}[\.][\d]{4}/', $value)) {
+            return Carbon::createFromFormat('d.m.Y', $value)->toDateString();
+        } else {
+            return $value;
+        }
+    }
+
+    /**
      * Convert the model's attributes to an array.
      *
      * @return array
@@ -2464,6 +2592,20 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
             $attributes[$key] = $this->mutateAttributeForArray(
                 $key, $attributes[$key]
             );
+        }
+
+        // @custom
+        foreach (static::$commaSeparated as $key) {
+            if (! array_key_exists($key, $attributes)) {
+                continue;
+            }
+            $attributes[$key] = static::_getCommaSeparated($attributes[$key]);
+        }
+        foreach (static::$dotDates as $key) {
+            if (! array_key_exists($key, $attributes)) {
+                continue;
+            }
+            $attributes[$key] = static::_getDotDate($attributes[$key]);
         }
 
         // Next we will handle any casts that have been setup for this model and cast
@@ -2614,6 +2756,14 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     {
         $value = $this->getAttributeFromArray($key);
 
+        // @custom check for comma-separated values
+        if (in_array($key, static::$commaSeparated)) {
+            return static::_getCommaSeparated($value);
+        }
+        if (in_array($key, static::$dotDates)) {
+            return static::_getDotDate($value);
+        }
+
         // If the attribute has a get mutator, we will call that then return what
         // it returns as the value, which is useful for transforming values on
         // retrieval from the model to a form that is more useful for usage.
@@ -2740,7 +2890,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      * @param  array|string|null  $types
      * @return bool
      */
-    public function hasCast($key, $types = null)
+    protected function hasCast($key, $types = null)
     {
         if (array_key_exists($key, $this->getCasts())) {
             return $types ? in_array($this->getCastType($key), (array) $types, true) : true;
@@ -2754,9 +2904,9 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      *
      * @return array
      */
-    public function getCasts()
+    protected function getCasts()
     {
-        if ($this->getIncrementing()) {
+        if ($this->incrementing) {
             return array_merge([
                 $this->getKeyName() => 'int',
             ], $this->casts);
@@ -2870,6 +3020,14 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
             $value = $this->asJson($value);
         }
 
+        // @custom check for comma-separated values
+        if (in_array($key, static::$commaSeparated)) {
+            $value = static::_setCommaSeparated($value);
+        }
+        if (in_array($key, static::$dotDates)) {
+            $value = static::_setDotDate($value);
+        }
+
         $this->attributes[$key] = $value;
 
         return $this;
@@ -2945,7 +3103,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
         // If the value is in simply year, month, day format, we will instantiate the
         // Carbon instances from that format. Again, this provides for simple date
         // fields on the database, while still supporting Carbonized conversion.
-        if (preg_match('/^(\d{4})-(\d{1,2})-(\d{1,2})$/', $value)) {
+        if (preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $value)) {
             return Carbon::createFromFormat('Y-m-d', $value)->startOfDay();
         }
 
@@ -3039,9 +3197,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
         $attributes = Arr::except($this->attributes, $except);
 
-        $instance = new static;
-
-        $instance->setRawAttributes($attributes);
+        with($instance = new static)->setRawAttributes($attributes);
 
         return $instance->setRelations($this->relations);
     }
@@ -3054,6 +3210,16 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     public function getAttributes()
     {
         return $this->attributes;
+    }
+
+    /**
+     * Get all of the current attribute keys on the model.
+     *
+     * @return array
+     */
+    public function getAttributeKeys()
+    {
+        return array_keys($this->attributes);
     }
 
     /**
@@ -3240,7 +3406,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      */
     public function getConnection()
     {
-        return static::resolveConnection($this->getConnectionName());
+        return static::resolveConnection($this->connection);
     }
 
     /**

@@ -1,19 +1,19 @@
 angular.module('Egerep')
-    .value 'RequestState',
+    .value 'RequestStates',
         new: 'невыполненные'
         awaiting: 'в ожидании'
         finished: 'выполненные'
         deny: 'отказы'
 
-    .value 'ArchiveState',
+    .value 'ArchiveStates',
         impossible: 'невозможно'
         possible: 'возможно'
 
-    .value 'ReviewStatus',
+    .value 'ReviewStates',
         unpublished: 'не опубликован'
         published: 'опубликован'
 
-    .value 'ReviewState',
+    .value 'ReviewScores',
         1: 1
         2: 2
         3: 3

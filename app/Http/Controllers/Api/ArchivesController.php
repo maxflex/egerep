@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 
-use App\Models\RequestList;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Models\Archive;
 
-class RequestListsController extends Controller
+class ArchivesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,7 +17,7 @@ class RequestListsController extends Controller
      */
     public function index()
     {
-        return RequestList::all();
+        //
     }
 
     /**
@@ -38,7 +38,7 @@ class RequestListsController extends Controller
      */
     public function store(Request $request)
     {
-        return RequestList::create($request->input())->fresh();
+        return Archive::create($request->input())->fresh();
     }
 
     /**
@@ -72,7 +72,7 @@ class RequestListsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        RequestList::find($id)->update($request->input());
+        //
     }
 
     /**
@@ -83,6 +83,6 @@ class RequestListsController extends Controller
      */
     public function destroy($id)
     {
-        return RequestList::destroy($id);
+        Archive::destroy($id);
     }
 }

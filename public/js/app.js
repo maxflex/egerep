@@ -79,14 +79,14 @@
 (function() {
   angular.module('Egerep').controller("ClientsIndex", function($scope, $timeout, Client) {
     return $scope.clients = Client.query();
-  }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestState, Subjects, Grades, Attachment, ReviewState, ArchiveState, ReviewStatus) {
-    var _cleanArchive, _cleanReview, filterMarkers, saveSelectedList;
-    $scope.RequestState = RequestState;
+  }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, ReviewScores, Archive, Review) {
+    var filterMarkers, saveSelectedList;
+    $scope.RequestStates = RequestStates;
     $scope.Subjects = Subjects;
     $scope.Grades = Grades;
-    $scope.ReviewState = ReviewState;
-    $scope.ReviewStatus = ReviewStatus;
-    $scope.ArchiveState = ArchiveState;
+    $scope.ReviewStates = ReviewStates;
+    $scope.ReviewScores = ReviewScores;
+    $scope.ArchiveStates = ArchiveStates;
     $rootScope.frontend_loading = true;
     $scope.is_dragging_teacher = false;
     $scope.sortableOptions = {
@@ -159,44 +159,30 @@
       }
     };
     $scope.toggleArchive = function() {
-      _cleanArchive();
-      if ($scope.selected_attachment.archive_on) {
-        return $scope.selected_attachment.archive_on = false;
+      if ($scope.selected_attachment.archive) {
+        return Archive["delete"]($scope.selected_attachment.archive, function() {
+          return delete $scope.selected_attachment.archive;
+        });
       } else {
-        $scope.selected_attachment.archive_on = true;
-        $scope.selected_attachment.archive_date = moment().format('DD.MM.YYYY');
-        $scope.selected_attachment.archive_date_saved = moment().format('YYYY-MM-DD HH:mm:ss');
-        $scope.selected_attachment.archive_user_id = $scope.user.id;
-        return $scope.selected_attachment.archive_user_login = $scope.user.login;
+        return Archive.save({
+          attachment_id: $scope.selected_attachment.id
+        }, function(response) {
+          return $scope.selected_attachment.archive = response;
+        });
       }
-    };
-    _cleanArchive = function() {
-      $scope.selected_attachment.archive_date = null;
-      $scope.selected_attachment.archive_date_saved = null;
-      $scope.selected_attachment.archive_user_id = null;
-      $scope.selected_attachment.archive_user_login = null;
-      $scope.selected_attachment.total_lessons_missing = null;
-      $scope.selected_attachment.archive_comment = '';
-      return $scope.selected_attachment.archive_status = 'impossible';
     };
     $scope.toggleReview = function() {
-      _cleanReview();
-      if ($scope.selected_attachment.review_on) {
-        return $scope.selected_attachment.review_on = false;
+      if ($scope.selected_attachment.review) {
+        return Review["delete"]($scope.selected_attachment.review, function() {
+          return delete $scope.selected_attachment.review;
+        });
       } else {
-        $scope.selected_attachment.review_on = true;
-        $scope.selected_attachment.review_date_saved = moment().format('YYYY-MM-DD HH:mm:ss');
-        $scope.selected_attachment.review_user_id = $scope.user.id;
-        return $scope.selected_attachment.review_user_login = $scope.user.login;
+        return Review.save({
+          attachment_id: $scope.selected_attachment.id
+        }, function(response) {
+          return $scope.selected_attachment.review = response;
+        });
       }
-    };
-    _cleanReview = function() {
-      $scope.selected_attachment.review_date_saved = null;
-      $scope.selected_attachment.review_user_id = null;
-      $scope.selected_attachment.review_user_login = null;
-      $scope.selected_attachment.review_comment = '';
-      $scope.selected_attachment.signature = '';
-      return $scope.selected_attachment.review_status = 'unpublished';
     };
     $scope.attachmentExists = function(tutor_id) {
       var attachment_exists;
@@ -981,18 +967,18 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').value('RequestState', {
+  angular.module('Egerep').value('RequestStates', {
     "new": 'невыполненные',
     awaiting: 'в ожидании',
     finished: 'выполненные',
     deny: 'отказы'
-  }).value('ArchiveState', {
+  }).value('ArchiveStates', {
     impossible: 'невозможно',
     possible: 'возможно'
-  }).value('ReviewStatus', {
+  }).value('ReviewStates', {
     unpublished: 'не опубликован',
     published: 'опубликован'
-  }).value('ReviewState', {
+  }).value('ReviewScores', {
     1: 1,
     2: 2,
     3: 3,
@@ -1068,7 +1054,15 @@
 (function() {
   var apiPath, updateMethod;
 
-  angular.module('Egerep').factory('Attachment', function($resource) {
+  angular.module('Egerep').factory('Review', function($resource) {
+    return $resource(apiPath('reviews'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Archive', function($resource) {
+    return $resource(apiPath('archives'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Attachment', function($resource) {
     return $resource(apiPath('attachments'), {
       id: '@id'
     }, updateMethod());

@@ -14,13 +14,13 @@ angular
     #
     #   ADD/EDIT CONTROLLER
     #
-    .controller "ClientsForm", ($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestState, Subjects, Grades, Attachment, ReviewState, ArchiveState, ReviewStatus) ->
-        $scope.RequestState = RequestState
+    .controller "ClientsForm", ($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, ReviewScores, Archive, Review) ->
+        $scope.RequestStates = RequestStates
         $scope.Subjects = Subjects
         $scope.Grades = Grades
-        $scope.ReviewState = ReviewState
-        $scope.ReviewStatus = ReviewStatus
-        $scope.ArchiveState = ArchiveState
+        $scope.ReviewStates = ReviewStates
+        $scope.ReviewScores = ReviewScores
+        $scope.ArchiveStates = ArchiveStates
         $rootScope.frontend_loading = true
 
         # @todo: доделать позиционирование
@@ -88,42 +88,24 @@ angular
                 $scope.selected_attachment = findById($scope.selected_list.attachments, values[1])
 
         $scope.toggleArchive = ->
-            _cleanArchive()
-            if $scope.selected_attachment.archive_on
-                $scope.selected_attachment.archive_on = false
+            if $scope.selected_attachment.archive
+                Archive.delete $scope.selected_attachment.archive, ->
+                    delete $scope.selected_attachment.archive
             else
-                $scope.selected_attachment.archive_on = true
-                $scope.selected_attachment.archive_date = moment().format('DD.MM.YYYY')
-                $scope.selected_attachment.archive_date_saved = moment().format('YYYY-MM-DD HH:mm:ss')
-                $scope.selected_attachment.archive_user_id = $scope.user.id
-                $scope.selected_attachment.archive_user_login = $scope.user.login
-
-        _cleanArchive = ->
-            $scope.selected_attachment.archive_date = null
-            $scope.selected_attachment.archive_date_saved = null
-            $scope.selected_attachment.archive_user_id = null
-            $scope.selected_attachment.archive_user_login = null
-            $scope.selected_attachment.total_lessons_missing = null
-            $scope.selected_attachment.archive_comment = ''
-            $scope.selected_attachment.archive_status = 'impossible'
+                Archive.save
+                    attachment_id: $scope.selected_attachment.id
+                , (response) ->
+                    $scope.selected_attachment.archive = response
 
         $scope.toggleReview = ->
-            _cleanReview()
-            if $scope.selected_attachment.review_on
-                $scope.selected_attachment.review_on = false
+            if $scope.selected_attachment.review
+                Review.delete $scope.selected_attachment.review, ->
+                    delete $scope.selected_attachment.review
             else
-                $scope.selected_attachment.review_on = true
-                $scope.selected_attachment.review_date_saved = moment().format('YYYY-MM-DD HH:mm:ss')
-                $scope.selected_attachment.review_user_id = $scope.user.id
-                $scope.selected_attachment.review_user_login = $scope.user.login
-
-        _cleanReview = ->
-            $scope.selected_attachment.review_date_saved = null
-            $scope.selected_attachment.review_user_id = null
-            $scope.selected_attachment.review_user_login = null
-            $scope.selected_attachment.review_comment = ''
-            $scope.selected_attachment.signature = ''
-            $scope.selected_attachment.review_status = 'unpublished'
+                Review.save
+                    attachment_id: $scope.selected_attachment.id
+                , (response) ->
+                    $scope.selected_attachment.review = response
 
 
         $scope.attachmentExists = (tutor_id) ->

@@ -6,5 +6,26 @@ use Illuminate\Database\Eloquent\Model;
 
 class Archive extends Model
 {
-    //
+    protected $fillable = ['attachment_id'];
+    protected $appends = ['user_login'];
+    protected static $dotDates = ['date'];
+
+    // ------------------------------------------------------------------------
+
+    public function getUserLoginAttribute()
+    {
+        return User::where('id', $this->user_id)->pluck('login')->first();
+    }
+
+    // ------------------------------------------------------------------------
+
+    protected static function boot()
+    {
+        static::saving(function ($model) {
+            if (!$model->exists) {
+                $model->date = date('Y-m-d');
+                $model->user_id = User::fromSession()->id;
+            }
+        });
+    }
 }
