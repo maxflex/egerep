@@ -14,10 +14,13 @@ class Attachment extends Model
         'date',
         'grade',
         'subjects',
+        'archive',
+        'review',
         'comment',
+        'forecast',
     ];
     protected $casts = [
-        'grade'         => 'int',
+        'grade' => 'int',
     ];
     protected $appends = ['user_login'];
     protected $with = ['archive', 'review'];
@@ -46,6 +49,20 @@ class Attachment extends Model
     public function getUserLoginAttribute()
     {
         return User::where('id', $this->user_id)->pluck('login')->first();
+    }
+
+    public function setArchiveAttribute($archive)
+    {
+        if ($archive !== null) {
+            Archive::find($archive['id'])->update($archive);
+        }
+    }
+
+    public function setReviewAttribute($review)
+    {
+        if ($review !== null) {
+            Review::find($review['id'])->update($review);
+        }
     }
 
     // ------------------------------------------------------------------------

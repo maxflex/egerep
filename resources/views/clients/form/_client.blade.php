@@ -26,9 +26,12 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-4">
+    <div class="col-sm-1">
         <div class="form-group">
             <span class="link-like" ng-click="showMap()">метки</span> (@{{ client.markers.length }})
         </div>
+    </div>
+    <div class="col-sm-5">
+        <metro-list markers='client.markers'></metro-list>
     </div>
 </div>

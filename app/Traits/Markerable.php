@@ -25,7 +25,15 @@
         {
             $this->markers()->delete();
             foreach ($this->markers as $data) {
-                $this->markers()->create($data);
+                $new_marker = $this->markers()->create($data);
+                // сохраняем ближайшие станции метки
+                foreach ($data['metros'] as $metro) {
+                    $new_marker->metros()->create([
+                        'minutes'   => $metro['minutes'],
+                        'meters'    => $metro['meters'],
+                        'station_id'=> $metro['station']['id'],
+                    ]);
+                }
             }
             unset($this->markers);
         }

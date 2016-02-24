@@ -21,7 +21,7 @@ angular
     #
     #   ADD/EDIT CONTROLLER
     #
-    .controller "TutorsForm", ($scope, $rootScope, $timeout, $interval, Tutor, SvgMap, Subjects, Grades) ->
+    .controller "TutorsForm", ($scope, $rootScope, $timeout, $interval, Tutor, SvgMap, Subjects, Grades, ApiService) ->
         $scope.SvgMap   = SvgMap
         $scope.Subjects = Subjects
         $scope.Grades   = Grades
@@ -82,9 +82,9 @@ angular
         filterMarkers = ->
             new_markers = []
             $.each $scope.tutor.markers, (index, marker) ->
-                new_markers.push _.pick(marker, 'lat', 'lng', 'type')
+                new_markers.push _.pick(marker, 'lat', 'lng', 'type', 'metros')
             $scope.tutor.markers = new_markers
-            
+
         $scope.$on 'mapInitialized', (event, map) ->
             # Запоминаем карту после инициалицации
             $scope.gmap = map
@@ -147,6 +147,13 @@ angular
 
             # Добавляем маркер на карту
             marker.setMap($scope.gmap)
+
+            # Ищем ближайшие станции метро к маркеру
+            ApiService.exec 'metro',
+                lat: marker.lat
+                lng: marker.lng
+            .then (response) ->
+                marker.metros = response.data
 
             # Добавляем ивент удаления маркера
             $scope.bindMarkerDelete(marker)
@@ -225,15 +232,17 @@ angular
                 markers = []
                 $.each $scope.tutor.markers, (index, marker) ->
                     # Создаем маркер
-                    marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, marker.type)
+                    # @todo: сделать так, чтобы type и metros и еще дургие можно было передавать массивом в последнем параметре
+                    new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, marker.type)
+                    new_marker.metros = marker.metros
 
                     # Добавляем маркер на карту
-                    marker.setMap($scope.map)
+                    new_marker.setMap($scope.map)
 
                     # Добавляем ивент удаления маркера
-                    $scope.bindMarkerDelete(marker)
-                    $scope.bindMarkerChangeType(marker)
-                    markers.push marker
+                    $scope.bindMarkerDelete(new_marker)
+                    $scope.bindMarkerChangeType(new_marker)
+                    markers.push new_marker
                 $scope.tutor.markers = markers
 
         # Сохранить метки

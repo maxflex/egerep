@@ -25,6 +25,12 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('users', 'UsersController');
         Route::resource('comments', 'CommentsController');
         Route::resource('sms', 'SmsController');
+
+        Route::post('external/{function}', 'ExternalController@exec'); // external API controller
+
+        // Route::controllers([
+        //     'external' => 'ExternalController', // external API controller
+        // ]);
     });
 
 

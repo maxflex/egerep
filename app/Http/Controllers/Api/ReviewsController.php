@@ -83,6 +83,6 @@ class ReviewsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Review::destroy($id);
     }
 }

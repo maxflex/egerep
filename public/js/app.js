@@ -79,7 +79,7 @@
 (function() {
   angular.module('Egerep').controller("ClientsIndex", function($scope, $timeout, Client) {
     return $scope.clients = Client.query();
-  }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, ReviewScores, Archive, Review) {
+  }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, ReviewScores, Archive, Review, ApiService) {
     var filterMarkers, saveSelectedList;
     $scope.RequestStates = RequestStates;
     $scope.Subjects = Subjects;
@@ -93,6 +93,7 @@
       tolerance: 'pointer',
       activeClass: 'drag-active',
       helper: 'clone',
+      appendTo: 'body',
       start: function(e, ui) {
         $scope.is_dragging_teacher = true;
         return $scope.$apply();
@@ -348,7 +349,7 @@
       var new_markers;
       new_markers = [];
       $.each($scope.client.markers, function(index, marker) {
-        return new_markers.push(_.pick(marker, 'lat', 'lng', 'type'));
+        return new_markers.push(_.pick(marker, 'lat', 'lng', 'type', 'metros'));
       });
       return $scope.client.markers = new_markers;
     };
@@ -398,6 +399,12 @@
       marker = newMarker($scope.marker_id++, event.latLng, $scope.map);
       $scope.client.markers.push(marker);
       marker.setMap($scope.gmap);
+      ApiService.exec('metro', {
+        lat: marker.lat,
+        lng: marker.lng
+      }).then(function(response) {
+        return marker.metros = response.data;
+      });
       $scope.bindMarkerDelete(marker);
       return $scope.bindMarkerChangeType(marker);
     };
@@ -482,11 +489,13 @@
         var markers;
         markers = [];
         $.each($scope.client.markers, function(index, marker) {
-          marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, marker.type);
-          marker.setMap($scope.map);
-          $scope.bindMarkerDelete(marker);
-          $scope.bindMarkerChangeType(marker);
-          return markers.push(marker);
+          var new_marker;
+          new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, marker.type);
+          new_marker.metros = marker.metros;
+          new_marker.setMap($scope.map);
+          $scope.bindMarkerDelete(new_marker);
+          $scope.bindMarkerChangeType(new_marker);
+          return markers.push(new_marker);
         });
         return $scope.client.markers = markers;
       });
@@ -540,7 +549,7 @@
     return $scope.tutors = Tutor.query(function() {
       return $rootScope.frontendStop();
     });
-  }).controller("TutorsForm", function($scope, $rootScope, $timeout, $interval, Tutor, SvgMap, Subjects, Grades) {
+  }).controller("TutorsForm", function($scope, $rootScope, $timeout, $interval, Tutor, SvgMap, Subjects, Grades, ApiService) {
     var filterMarkers;
     $scope.SvgMap = SvgMap;
     $scope.Subjects = Subjects;
@@ -603,7 +612,7 @@
       var new_markers;
       new_markers = [];
       $.each($scope.tutor.markers, function(index, marker) {
-        return new_markers.push(_.pick(marker, 'lat', 'lng', 'type'));
+        return new_markers.push(_.pick(marker, 'lat', 'lng', 'type', 'metros'));
       });
       return $scope.tutor.markers = new_markers;
     };
@@ -653,6 +662,12 @@
       marker = newMarker($scope.marker_id++, event.latLng, $scope.map);
       $scope.tutor.markers.push(marker);
       marker.setMap($scope.gmap);
+      ApiService.exec('metro', {
+        lat: marker.lat,
+        lng: marker.lng
+      }).then(function(response) {
+        return marker.metros = response.data;
+      });
       $scope.bindMarkerDelete(marker);
       return $scope.bindMarkerChangeType(marker);
     };
@@ -734,11 +749,13 @@
         var markers;
         markers = [];
         $.each($scope.tutor.markers, function(index, marker) {
-          marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, marker.type);
-          marker.setMap($scope.map);
-          $scope.bindMarkerDelete(marker);
-          $scope.bindMarkerChangeType(marker);
-          return markers.push(marker);
+          var new_marker;
+          new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, marker.type);
+          new_marker.metros = marker.metros;
+          new_marker.setMap($scope.map);
+          $scope.bindMarkerDelete(new_marker);
+          $scope.bindMarkerChangeType(new_marker);
+          return markers.push(new_marker);
         });
         return $scope.tutor.markers = markers;
       });
@@ -846,6 +863,24 @@
       controller: function($scope) {
         return $scope.send = function() {
           return $('#email-modal').modal('show');
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('metroList', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/metro-list',
+      scope: {
+        markers: '='
+      },
+      controller: function($scope) {
+        return $scope.short = function(title) {
+          return title.slice(0, 3).toUpperCase();
         };
       }
     };
@@ -1107,6 +1142,16 @@
       }
     };
   };
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('ApiService', function($http) {
+    this.exec = function(fun, data) {
+      return $http.post("api/external/" + fun, data);
+    };
+    return this;
+  });
 
 }).call(this);
 

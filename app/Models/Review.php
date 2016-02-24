@@ -6,7 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Review extends Model
 {
-    protected $fillable = ['attachment_id'];
+    protected $fillable = [
+        'attachment_id',
+        'score',
+        'comment',
+        'state',
+        'signature',
+    ];
     protected $appends = ['user_login'];
 
     // ------------------------------------------------------------------------

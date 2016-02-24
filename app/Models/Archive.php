@@ -6,7 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Archive extends Model
 {
-    protected $fillable = ['attachment_id'];
+    protected $fillable = [
+        'attachment_id',
+        'total_lessons_missing',
+        'date',
+        'comment',
+        'state',
+    ];
     protected $appends = ['user_login'];
     protected static $dotDates = ['date'];
 

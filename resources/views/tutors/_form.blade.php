@@ -117,22 +117,26 @@
         </div>
     </div>
 
-    <div class="col-sm-3">
-        <p>
-            <span class="link-like" ng-click="SvgMap.show(tutor.svg_map)">выезд @{{ tutor.svg_map.length ? 'возможен' : 'невозможен' }}</span>
-            <span ng-show="tutor.svg_map.length">
-                (@{{ tutor.svg_map.length }} <ng-pluralize count="tutor.svg_map.length" when="{
-                    'one': 'станция',
-                    'few': 'станции',
-                    'many': 'станций',
-                }"></ng-pluralize>)
-            </span>
-        </p>
-        <p>
-            <span class="link-like" ng-click="showMap()">метки</span> (@{{ tutor.markers.length }})
-        </p>
-        <div>
-            {{-- @{{ tutor.svg_map }} --}}
+    <div class="col-sm-4">
+        <div class="row">
+            <div class="col-sm-12">
+                <span class="link-like" ng-click="SvgMap.show(tutor.svg_map)">выезд @{{ tutor.svg_map.length ? 'возможен' : 'невозможен' }}</span>
+                <span ng-show="tutor.svg_map.length">
+                    (@{{ tutor.svg_map.length }} <ng-pluralize count="tutor.svg_map.length" when="{
+                        'one': 'станция',
+                        'few': 'станции',
+                        'many': 'станций',
+                    }"></ng-pluralize>)
+                </span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <span class="link-like" ng-click="showMap()">метки</span> (@{{ tutor.markers.length }})
+            </div>
+            <div class="col-sm-9">
+                <metro-list markers='tutor.markers'></metro-list>
+            </div>
         </div>
     </div>
 </div>
