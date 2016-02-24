@@ -26,12 +26,12 @@
         </div>
     </div>
     <div class="col-sm-6">
-        <p>
+        <div class='mbs'>
             <b>Отзыв создан:</b> @{{ selected_attachment.review.user_login }} @{{ formatDateTime(selected_attachment.review.created_at) }}
-        </p>
-        <p>
+        </div>
+        <div class='mbs'>
             <b>Статус:</b> <span class="link-like"
                 ng-click="toggleEnum(selected_attachment.review, 'state', ReviewStates)">@{{ ReviewStates[selected_attachment.review.state] }}</span>
-        </p>
+        </div>
     </div>
 </div>

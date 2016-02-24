@@ -32,12 +32,12 @@
         </div>
     </div>
     <div class="col-sm-6">
-        <p>
+        <div class='mbs'>
             <b>Процесс заархивирован:</b> @{{ selected_attachment.archive.user_login }} @{{ formatDateTime(selected_attachment.archive.created_at) }}
-        </p>
-        <p>
+        </div>
+        <div class='mbs'>
             <b>Разархивация и продолжение:</b> <span class="link-like"
                 ng-click="toggleEnum(selected_attachment.archive, 'state', ArchiveStates)">@{{ ArchiveStates[selected_attachment.archive.state] }}</span>
-        </p>
+        </div>
     </div>
 </div>

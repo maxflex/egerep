@@ -26718,6 +26718,9 @@ md-tooltip {
   -webkit-animation-name: slideOutUp;
   animation-name: slideOutUp; }
 
+.mbs {
+  margin-bottom: 3px; }
+
 .drop-delete {
   display: inline-block;
   color: #A94442;

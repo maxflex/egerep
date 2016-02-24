@@ -80,7 +80,7 @@
   angular.module('Egerep').controller("ClientsIndex", function($scope, $timeout, Client) {
     return $scope.clients = Client.query();
   }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, ReviewScores, Archive, Review, ApiService) {
-    var filterMarkers, saveSelectedList;
+    var filterMarkers, saveSelectedList, unsetSelected;
     $scope.RequestStates = RequestStates;
     $scope.Subjects = Subjects;
     $scope.Grades = Grades;
@@ -277,7 +277,8 @@
       });
       return new_request.$save().then(function(data) {
         $scope.client.requests.push(data);
-        return $scope.selected_request = data;
+        $scope.selected_request = data;
+        return unsetSelected(false, true, true);
       });
     };
     $scope.removeRequest = function() {
@@ -287,10 +288,30 @@
             id: $scope.selected_request.id
           }, function() {
             $scope.client.requests = removeById($scope.client.requests, $scope.selected_request.id);
-            return $scope.selected_request = $scope.client.requests[0];
+            return unsetSelected(true, true, true);
           });
         }
       });
+    };
+    unsetSelected = function(request, list, attachment) {
+      if (request == null) {
+        request = false;
+      }
+      if (list == null) {
+        list = false;
+      }
+      if (attachment == null) {
+        attachment = false;
+      }
+      if (request) {
+        $scope.selected_request = null;
+      }
+      if (list) {
+        $scope.selected_list = null;
+      }
+      if (attachment) {
+        return $scope.selected_attachment = null;
+      }
     };
     $scope.removeList = function() {
       return bootbox.confirm('Вы уверены, что хотите удалить список?', function(response) {
@@ -299,7 +320,8 @@
             id: $scope.selected_list.id
           }, function() {
             $scope.selected_request.lists = removeById($scope.selected_request.lists, $scope.selected_list.id);
-            return delete $scope.selected_list;
+            delete $scope.selected_list;
+            return unsetSelected(false, true, true);
           });
         }
       });
@@ -311,7 +333,8 @@
             id: $scope.selected_attachment.id
           }, function() {
             $scope.selected_list.attachments = removeById($scope.selected_list.attachments, $scope.selected_attachment.id);
-            return delete $scope.selected_attachment;
+            delete $scope.selected_attachment;
+            return unsetSelected(false, false, true);
           });
         }
       });
@@ -768,6 +791,91 @@
 }).call(this);
 
 (function() {
+  angular.module('Egerep').value('RequestStates', {
+    "new": 'невыполненные',
+    awaiting: 'в ожидании',
+    finished: 'выполненные',
+    deny: 'отказы'
+  }).value('ArchiveStates', {
+    impossible: 'невозможно',
+    possible: 'возможно'
+  }).value('ReviewStates', {
+    unpublished: 'не опубликован',
+    published: 'опубликован'
+  }).value('ReviewScores', {
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+    6: 6,
+    7: 7,
+    8: 8,
+    9: 9,
+    10: 10,
+    11: 'не берет',
+    12: 'не помнит',
+    13: 'недоступен',
+    14: 'позвонить позже'
+  }).value('Grades', {
+    1: '1 класс',
+    2: '2 класс',
+    3: '3 класс',
+    4: '4 класс',
+    5: '5 класс',
+    6: '6 класс',
+    7: '7 класс',
+    8: '8 класс',
+    9: '9 класс',
+    10: '10 класс',
+    11: '11 класс',
+    12: 'студенты',
+    13: 'остальные'
+  }).value('Subjects', {
+    all: {
+      1: 'математика',
+      2: 'физика',
+      3: 'химия',
+      4: 'биология',
+      5: 'информатика',
+      6: 'русский',
+      7: 'литература',
+      8: 'обществознание',
+      9: 'история',
+      10: 'английский'
+    },
+    full: {
+      1: 'Математика',
+      2: 'Физика',
+      3: 'Химия',
+      4: 'Биология',
+      5: 'Информатика',
+      6: 'Русский язык',
+      7: 'Литература',
+      8: 'Обществознание',
+      9: 'История',
+      10: 'Английский язык'
+    },
+    dative: {
+      1: 'математике',
+      2: 'физике',
+      3: 'химии',
+      4: 'биологии',
+      5: 'информатике',
+      6: 'русскому языку',
+      7: 'литературе',
+      8: 'обществознанию',
+      9: 'истории',
+      10: 'английскому языку'
+    },
+    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
+    three_letters: ['МАТ', 'ФИЗ', 'РУС', 'ЛИТ', 'АНГ', 'ИСТ', 'ОБЩ', 'ХИМ', 'БИО', 'ИНФ'],
+    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
+  });
+
+}).call(this);
+
+(function() {
   angular.module('Egerep').directive('comments', function() {
     return {
       restrict: 'E',
@@ -879,8 +987,11 @@
         markers: '='
       },
       controller: function($scope) {
-        return $scope.short = function(title) {
+        $scope.short = function(title) {
           return title.slice(0, 3).toUpperCase();
+        };
+        return $scope.minutes = function(minutes) {
+          return Math.round(minutes);
         };
       }
     };
@@ -997,91 +1108,6 @@
         });
       }
     };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').value('RequestStates', {
-    "new": 'невыполненные',
-    awaiting: 'в ожидании',
-    finished: 'выполненные',
-    deny: 'отказы'
-  }).value('ArchiveStates', {
-    impossible: 'невозможно',
-    possible: 'возможно'
-  }).value('ReviewStates', {
-    unpublished: 'не опубликован',
-    published: 'опубликован'
-  }).value('ReviewScores', {
-    1: 1,
-    2: 2,
-    3: 3,
-    4: 4,
-    5: 5,
-    6: 6,
-    7: 7,
-    8: 8,
-    9: 9,
-    10: 10,
-    11: 'не берет',
-    12: 'не помнит',
-    13: 'недоступен',
-    14: 'позвонить позже'
-  }).value('Grades', {
-    1: '1 класс',
-    2: '2 класс',
-    3: '3 класс',
-    4: '4 класс',
-    5: '5 класс',
-    6: '6 класс',
-    7: '7 класс',
-    8: '8 класс',
-    9: '9 класс',
-    10: '10 класс',
-    11: '11 класс',
-    12: 'студенты',
-    13: 'остальные'
-  }).value('Subjects', {
-    all: {
-      1: 'математика',
-      2: 'физика',
-      3: 'химия',
-      4: 'биология',
-      5: 'информатика',
-      6: 'русский',
-      7: 'литература',
-      8: 'обществознание',
-      9: 'история',
-      10: 'английский'
-    },
-    full: {
-      1: 'Математика',
-      2: 'Физика',
-      3: 'Химия',
-      4: 'Биология',
-      5: 'Информатика',
-      6: 'Русский язык',
-      7: 'Литература',
-      8: 'Обществознание',
-      9: 'История',
-      10: 'Английский язык'
-    },
-    dative: {
-      1: 'математике',
-      2: 'физике',
-      3: 'химии',
-      4: 'биологии',
-      5: 'информатике',
-      6: 'русскому языку',
-      7: 'литературе',
-      8: 'обществознанию',
-      9: 'истории',
-      10: 'английскому языку'
-    },
-    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
-    three_letters: ['МАТ', 'ФИЗ', 'РУС', 'ЛИТ', 'АНГ', 'ИСТ', 'ОБЩ', 'ХИМ', 'БИО', 'ИНФ'],
-    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
   });
 
 }).call(this);

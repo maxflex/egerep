@@ -32,11 +32,11 @@
         </div>
     </div>
     <div class="col-sm-6">
-        <p>
+        <div class='mbs'>
             <b>Стыковку создал:</b> @{{ selected_attachment.user_login }} @{{ formatDateTime(selected_attachment.created_at) }}
-        </p>
-        <p>
+        </div>
+        <div class='mbs'>
             <b>Статус стыковки:</b> новая
-        </p>
+        </div>
     </div>
 </div>

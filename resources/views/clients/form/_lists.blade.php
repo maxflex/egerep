@@ -14,18 +14,16 @@
 
 <div class="row">
     <div class="col-sm-12">
-        <div ui-sortable='sortableOptions' ng-model="selected_list.tutor_ids">
-            <p ng-repeat="tutor_id in selected_list.tutor_ids" data-id='@{{tutor_id}}'>
-                <span class="line-number">@{{ tutor_id }}</span>
+        <div ui-sortable='sortableOptions' ng-model="selected_list.tutor_ids" class="mbs">
+            <div class='mbs' ng-repeat="tutor_id in selected_list.tutor_ids" data-id='@{{tutor_id}}'>
                 <a href="tutors/@{{ tutor_id }}/edit">@{{ tutors[tutor_id] }}</a>
                 <span ng-hide="attachmentExists(tutor_id)"
                     class="link-like link-gray" style="margin-left: 10px"
                     ng-click="newAttachment(tutor_id)">начать процесс</span>
-            </p>
+            </div>
         </div>
         <p ng-show='selected_list'>
-            <span class="line-number"></span>
-            <span class="link-like" ng-click="dialog('add-tutor')">добавить репетитора</span>
+            <span class="link-like link-gray" ng-click="dialog('add-tutor')">добавить репетитора</span>
         </p>
     </div>
 </div>

@@ -13,12 +13,12 @@
         <textarea class="form-control" rows="6" cols="40" placeholder="комментарий" ng-model="selected_request.comment"></textarea>
     </div>
     <div class="col-sm-6">
-        <p>
+        <div class='mbs'>
             <b>Заявку создал:</b>
                 @{{ getUser(selected_request.user_id_created) ? getUser(selected_request.user_id_created).login : 'system' }}
                 @{{ formatDateTime(selected_request.created_at) }}
-        </p>
-        <p>
+        </div>
+        <div class='mbs'>
             <b>Ответственный:</b>
             <span
                 class="link-like"
@@ -26,17 +26,17 @@
                 style='color: @{{ selected_request.user.color }}'>
                 @{{ selected_request.user ? selected_request.user.login : 'system' }}
             </span>
-        </p>
-        <p>
+        </div>
+        <div class='mbs'>
             <b>Статус заявки:</b> <span class="link-like"
                 ng-click="toggleEnum(selected_request, 'state', RequestStates)">@{{ RequestStates[selected_request.state] }}</a>
-        </p>
-        <p ng-show='tutor_ids.length > 0'>
+        </div>
+        <div class='mbs' ng-show='tutor_ids.length > 0'>
             <b>Отмеченные репетиторы в заявке:</b>
             <span ng-repeat="tutor_id in tutor_ids" style="display: block">
                 <a href="tutors/@{{ tutor_id }}/edit" target="_blank">@{{ tutors[tutor_id] }}</a>
             </span>
-        </p>
+        </div>
     </div>
 </div>
 

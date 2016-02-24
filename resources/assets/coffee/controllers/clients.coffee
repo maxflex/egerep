@@ -194,13 +194,20 @@ angular
                 .then (data) ->
                     $scope.client.requests.push(data)
                     $scope.selected_request = data
+                    unsetSelected(false, true, true)
 
         $scope.removeRequest = ->
             bootbox.confirm 'Вы уверены, что хотите удалить заявку?', (response) ->
                 if response is true
                     Request.delete {id: $scope.selected_request.id}, ->
                         $scope.client.requests = removeById $scope.client.requests, $scope.selected_request.id
-                        $scope.selected_request = $scope.client.requests[0]
+                        unsetSelected(true, true, true)
+
+        # Снять выбор с выбранной комбинации
+        unsetSelected = (request = false, list = false, attachment = false) ->
+            $scope.selected_request = null if request
+            $scope.selected_list = null if list
+            $scope.selected_attachment = null if attachment
 
         $scope.removeList = ->
             bootbox.confirm 'Вы уверены, что хотите удалить список?', (response) ->
@@ -208,6 +215,7 @@ angular
                     RequestList.delete {id: $scope.selected_list.id}, ->
                         $scope.selected_request.lists = removeById $scope.selected_request.lists, $scope.selected_list.id
                         delete $scope.selected_list
+                        unsetSelected(false, true, true)
 
         $scope.removeAttachment = ->
             bootbox.confirm 'Вы уверены, что хотите удалить стыковку?', (response) ->
@@ -215,6 +223,7 @@ angular
                     Attachment.delete {id: $scope.selected_attachment.id}, ->
                         $scope.selected_list.attachments = removeById $scope.selected_list.attachments, $scope.selected_attachment.id
                         delete $scope.selected_attachment
+                        unsetSelected(false, false, true)
 
         # parse textarea for tutor IDS
         $scope.$watch 'selected_request.comment', (newVal, oldVal) ->
