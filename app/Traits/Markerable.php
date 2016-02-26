@@ -28,11 +28,19 @@
                 $new_marker = $this->markers()->create($data);
                 // сохраняем ближайшие станции метки
                 foreach ($data['metros'] as $metro) {
+                    // на время переноса
                     $new_marker->metros()->create([
-                        'minutes'   => $metro['minutes'],
-                        'meters'    => $metro['meters'],
-                        'station_id'=> $metro['station']['id'],
+                        'minutes'   => $metro->minutes,
+                        'meters'    => $metro->meters,
+                        'station_id'=> $metro->station->id,
                     ]);
+                    // \на время переноса
+
+                    // $new_marker->metros()->create([
+                    //     'minutes'   => $metro['minutes'],
+                    //     'meters'    => $metro['meters'],
+                    //     'station_id'=> $metro['station']['id'],
+                    // ]);
                 }
             }
             unset($this->markers);

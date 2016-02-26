@@ -8,6 +8,8 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Tutor;
 use App\Models\User;
+use App\Models\Metro;
+use App\Models\Api;
 use Carbon\Carbon;
 
 class TransferController extends Controller
@@ -253,13 +255,19 @@ class TransferController extends Controller
                 $new_markers = [];
                 if (count($markers)) {
                     foreach ($markers as $marker) {
-                        $new_markers[] = json_encode([
+						$metros = Api::exec('metro', [
+							'lat' => $marker->lat,
+                            'lng' => $marker->lng,
+						]);
+                        $new_markers[] = [
                             'lat' => $marker->lat,
                             'lng' => $marker->lng,
                             'type' => $marker->type,
-                        ]);
+							'metros' => $metros,
+                        ];
                     }
                 }
+
                 $tutor_object = $tutor->first();
                 $tutor_object->markers = $new_markers;
                 $tutor_object->save();
@@ -330,6 +338,7 @@ class TransferController extends Controller
                     $new_user = User::create([
                         'login'     => $egerep_user->login,
                         'password'  => $egerep_user->password,
+						'color'		=> $egerep_user->color,
                         'type'      => User::USER_TYPE,
                     ]);
                     $correspondence[$egerep_user->id] = $new_user->id;
