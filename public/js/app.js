@@ -1,5 +1,5 @@
 (function() {
-  angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ngAnimate', 'ui.sortable']).config([
+  angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ngAnimate', 'ui.sortable', 'ui.bootstrap']).config([
     '$compileProvider', function($compileProvider) {
       return $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension|sip):/);
     }
@@ -690,10 +690,22 @@
       male: 'Мужской',
       female: 'Женский'
     };
-  }).controller("TutorsIndex", function($scope, $rootScope, $timeout, Tutor) {
+  }).controller("TutorsIndex", function($scope, $rootScope, $timeout, $http, Tutor) {
     $rootScope.frontend_loading = true;
-    return $scope.tutors = Tutor.query(function() {
-      return $rootScope.frontendStop();
+    $http.get('api/tutors').then(function(response) {
+      $rootScope.frontendStop();
+      $scope.data = response.data;
+      return $scope.tutors = $scope.data.data;
+    });
+    return $scope.$watch('current_page', function(newVal, oldVal) {
+      if (newVal === void 0) {
+        return;
+      }
+      return $http.get('api/tutors?page=' + newVal).then(function(response) {
+        $rootScope.frontendStop();
+        $scope.data = response.data;
+        return $scope.tutors = $scope.data.data;
+      });
     });
   }).controller("TutorsForm", function($scope, $rootScope, $timeout, $interval, Tutor, SvgMap, Subjects, Grades, ApiService) {
     var filterMarkers;

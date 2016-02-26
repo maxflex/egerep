@@ -17,7 +17,7 @@ class TutorsController extends Controller
      */
     public function index()
     {
-        return Tutor::all()->toJson();
+        return Tutor::paginate(30)->toJson();
     }
 
     /**

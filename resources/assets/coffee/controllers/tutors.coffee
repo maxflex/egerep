@@ -10,12 +10,22 @@ angular
     #
     #   LIST CONTROLLER
     #
-    .controller "TutorsIndex", ($scope, $rootScope, $timeout, Tutor) ->
+    .controller "TutorsIndex", ($scope, $rootScope, $timeout, $http, Tutor) ->
         $rootScope.frontend_loading = true
 
-        $scope.tutors = Tutor.query ->
-            $rootScope.frontendStop()
+        $http.get 'api/tutors'
+            .then (response) ->
+                $rootScope.frontendStop()
+                $scope.data = response.data
+                $scope.tutors = $scope.data.data
 
+        $scope.$watch 'current_page', (newVal, oldVal) ->
+            return if newVal is undefined
+            $http.get 'api/tutors?page=' + newVal
+                .then (response) ->
+                    $rootScope.frontendStop()
+                    $scope.data = response.data
+                    $scope.tutors = $scope.data.data
 
 
     #

@@ -43,5 +43,6 @@ elixir(function(mix) {
             '../bower/jquery-ui/ui/sortable.js',
             '../bower/jquery-ui/ui/droppable.js',
             '../bower/angular-ui-sortable/sortable.min.js',
+            '../bower/angular-bootstrap/ui-bootstrap.min.js',
         ], 'public/js/vendor.js');
 });

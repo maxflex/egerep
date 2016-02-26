@@ -14,4 +14,16 @@
         </div>
     </div>
 </div>
+
+<pagination style="margin-top: 30px"
+  ng-model="current_page"
+  total-items="data.total"
+  max-size="10"
+  items-per-page="data.per_page"
+  first-text="«"
+  last-text="»"
+  previous-text="«"
+  next-text="»"
+>
+</pagination>
 @stop
