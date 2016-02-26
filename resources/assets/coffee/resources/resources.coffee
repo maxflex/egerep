@@ -1,4 +1,7 @@
 angular.module('Egerep')
+    .factory 'Account', ($resource) ->
+        $resource apiPath('accounts'), {id: '@id'}, updateMethod()
+
     .factory 'Review', ($resource) ->
         $resource apiPath('reviews'), {id: '@id'}, updateMethod()
 

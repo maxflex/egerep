@@ -26,7 +26,7 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
 
         $rootScope.toggleEnum = (ngModel, status, ngEnum) ->
             statuses = Object.keys(ngEnum)
-            status_id = statuses.indexOf ngModel[status]
+            status_id = statuses.indexOf ngModel[status].toString()
             status_id++
             status_id = 0 if status_id > (statuses.length - 1)
             ngModel[status] = statuses[status_id]
@@ -34,8 +34,15 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
         $rootScope.formatDateTime = (date) ->
             moment(date).format "DD.MM.YY в HH:mm"
 
+        $rootScope.formatDate = (date) ->
+            moment(date).format "DD.MM.YY"
+
         $rootScope.dialog = (id) ->
             $("##{id}").modal 'show'
+            return
+
+        $rootScope.closeDialog = (id) ->
+            $("##{id}").modal 'hide'
             return
 
         $rootScope.ajaxStart = ->

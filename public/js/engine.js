@@ -75,6 +75,16 @@
 	}
 
 	/**
+	 * Стандартная дата
+	 */
+	function convertDate(date) {
+		date = date.split(".")
+		date = date.reverse()
+		date = date.join("-")
+		return date
+	}
+
+	/**
 	 * Configure plugins
 	 */
 	function configurePlugins() {

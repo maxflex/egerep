@@ -12,6 +12,8 @@ Route::group(['middleware' => ['web']], function () {
         'transfer' => 'TransferController'
     ]);
 
+    Route::get('tutors/{id}/accounts', 'AccountsController@index');
+
     Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
         Route::get('tutors/list', 'TutorsController@lists');
         Route::resource('tutors', 'TutorsController');
@@ -24,6 +26,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('clients', 'ClientsController');
         Route::resource('users', 'UsersController');
         Route::resource('comments', 'CommentsController');
+        Route::resource('accounts', 'AccountsController');
         Route::resource('sms', 'SmsController');
 
         Route::post('external/{function}', 'ExternalController@exec'); // external API controller

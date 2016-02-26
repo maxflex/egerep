@@ -58,9 +58,43 @@ class Tutor extends Model
 
     // ------------------------------------------------------------------------
 
+    public function accounts()
+    {
+        return $this->hasMany('App\Models\Account');
+    }
+
+    public function attachments()
+    {
+        return $this->hasMany('App\Models\Attachment');
+    }
+
+    // ------------------------------------------------------------------------
+
     public function getHasPhotoAttribute()
     {
         return file_exists(self::UPLOAD_DIR . $this->id . '.jpg');
+    }
+
+    /**
+     * Получить ID всех клиентов преподавателя
+     */
+    public function getClientIds()
+    {
+        $client_ids = [];
+
+        foreach ($this->attachments as $attachment) {
+            $client_ids[] = $attachment->requestList->request->client_id;
+        }
+
+        return $client_ids;
+    }
+
+    /**
+     * Получить дату первой стыковки
+     */
+    public function getFirstAttachmentDate()
+    {
+        return $this->attachments()->orderBy('date')->pluck('date')->first();
     }
 
     // ------------------------------------------------------------------------

@@ -30,7 +30,7 @@
     $rootScope.toggleEnum = function(ngModel, status, ngEnum) {
       var status_id, statuses;
       statuses = Object.keys(ngEnum);
-      status_id = statuses.indexOf(ngModel[status]);
+      status_id = statuses.indexOf(ngModel[status].toString());
       status_id++;
       if (status_id > (statuses.length - 1)) {
         status_id = 0;
@@ -40,8 +40,14 @@
     $rootScope.formatDateTime = function(date) {
       return moment(date).format("DD.MM.YY в HH:mm");
     };
+    $rootScope.formatDate = function(date) {
+      return moment(date).format("DD.MM.YY");
+    };
     $rootScope.dialog = function(id) {
       $("#" + id).modal('show');
+    };
+    $rootScope.closeDialog = function(id) {
+      $("#" + id).modal('hide');
     };
     $rootScope.ajaxStart = function() {
       ajaxStart();
@@ -72,6 +78,56 @@
         });
       }
     });
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').controller('AccountsCtrl', function($scope, Account, PaymentMethods, DebtTypes) {
+    $scope.PaymentMethods = PaymentMethods;
+    $scope.DebtTypes = DebtTypes;
+    $scope.current_scope = $scope;
+    $scope.save = function() {
+      return $.each($scope.tutor.accounts, function(index, account) {
+        return Account.update(account);
+      });
+    };
+    $scope.getFakeDates = function() {
+      var current_date, dates;
+      dates = [];
+      current_date = moment().subtract(10, 'days').format('YYYY-MM-DD');
+      while (current_date <= moment().format('YYYY-MM-DD')) {
+        dates.push(current_date);
+        current_date = moment(current_date).add(1, 'days').format('YYYY-MM-DD');
+      }
+      return dates;
+    };
+    $scope.getDates = function(index) {
+      var current_date, dates;
+      dates = [];
+      if (!index) {
+        current_date = moment($scope.first_attachment_date).format('YYYY-MM-DD');
+      } else {
+        current_date = moment($scope.tutor.accounts[index - 1].date_end).add(1, 'days').format('YYYY-MM-DD');
+      }
+      while (current_date <= $scope.tutor.accounts[index].date_end) {
+        dates.push(current_date);
+        current_date = moment(current_date).add(1, 'days').format('YYYY-MM-DD');
+      }
+      return dates;
+    };
+    $scope.addAccountDialog = function() {
+      return $scope.dialog('add-account');
+    };
+    return $scope.addAccount = function() {
+      return Account.save({
+        date_end: convertDate($scope.new_account_date_end),
+        tutor_id: $scope.tutor.id
+      }, function(new_account) {
+        $scope.tutor.accounts.push(new_account);
+        return $scope.closeDialog('add-account');
+      });
+    };
   });
 
 }).call(this);
@@ -791,91 +847,6 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').value('RequestStates', {
-    "new": 'невыполненные',
-    awaiting: 'в ожидании',
-    finished: 'выполненные',
-    deny: 'отказы'
-  }).value('ArchiveStates', {
-    impossible: 'невозможно',
-    possible: 'возможно'
-  }).value('ReviewStates', {
-    unpublished: 'не опубликован',
-    published: 'опубликован'
-  }).value('ReviewScores', {
-    1: 1,
-    2: 2,
-    3: 3,
-    4: 4,
-    5: 5,
-    6: 6,
-    7: 7,
-    8: 8,
-    9: 9,
-    10: 10,
-    11: 'не берет',
-    12: 'не помнит',
-    13: 'недоступен',
-    14: 'позвонить позже'
-  }).value('Grades', {
-    1: '1 класс',
-    2: '2 класс',
-    3: '3 класс',
-    4: '4 класс',
-    5: '5 класс',
-    6: '6 класс',
-    7: '7 класс',
-    8: '8 класс',
-    9: '9 класс',
-    10: '10 класс',
-    11: '11 класс',
-    12: 'студенты',
-    13: 'остальные'
-  }).value('Subjects', {
-    all: {
-      1: 'математика',
-      2: 'физика',
-      3: 'химия',
-      4: 'биология',
-      5: 'информатика',
-      6: 'русский',
-      7: 'литература',
-      8: 'обществознание',
-      9: 'история',
-      10: 'английский'
-    },
-    full: {
-      1: 'Математика',
-      2: 'Физика',
-      3: 'Химия',
-      4: 'Биология',
-      5: 'Информатика',
-      6: 'Русский язык',
-      7: 'Литература',
-      8: 'Обществознание',
-      9: 'История',
-      10: 'Английский язык'
-    },
-    dative: {
-      1: 'математике',
-      2: 'физике',
-      3: 'химии',
-      4: 'биологии',
-      5: 'информатике',
-      6: 'русскому языку',
-      7: 'литературе',
-      8: 'обществознанию',
-      9: 'истории',
-      10: 'английскому языку'
-    },
-    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
-    three_letters: ['МАТ', 'ФИЗ', 'РУС', 'ЛИТ', 'АНГ', 'ИСТ', 'ОБЩ', 'ХИМ', 'БИО', 'ИНФ'],
-    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
-  });
-
-}).call(this);
-
-(function() {
   angular.module('Egerep').directive('comments', function() {
     return {
       restrict: 'E',
@@ -1113,9 +1084,107 @@
 }).call(this);
 
 (function() {
+  angular.module('Egerep').value('DebtTypes', {
+    0: 'не доплатил',
+    1: 'переплатил'
+  }).value('PaymentMethods', {
+    0: 'не установлено',
+    1: 'стандартный расчет',
+    2: 'яндекс.деньги',
+    3: 'перевод на сотовый',
+    4: 'перевод на карту'
+  }).value('RequestStates', {
+    "new": 'невыполненные',
+    awaiting: 'в ожидании',
+    finished: 'выполненные',
+    deny: 'отказы'
+  }).value('ArchiveStates', {
+    impossible: 'невозможно',
+    possible: 'возможно'
+  }).value('ReviewStates', {
+    unpublished: 'не опубликован',
+    published: 'опубликован'
+  }).value('ReviewScores', {
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+    6: 6,
+    7: 7,
+    8: 8,
+    9: 9,
+    10: 10,
+    11: 'не берет',
+    12: 'не помнит',
+    13: 'недоступен',
+    14: 'позвонить позже'
+  }).value('Grades', {
+    1: '1 класс',
+    2: '2 класс',
+    3: '3 класс',
+    4: '4 класс',
+    5: '5 класс',
+    6: '6 класс',
+    7: '7 класс',
+    8: '8 класс',
+    9: '9 класс',
+    10: '10 класс',
+    11: '11 класс',
+    12: 'студенты',
+    13: 'остальные'
+  }).value('Subjects', {
+    all: {
+      1: 'математика',
+      2: 'физика',
+      3: 'химия',
+      4: 'биология',
+      5: 'информатика',
+      6: 'русский',
+      7: 'литература',
+      8: 'обществознание',
+      9: 'история',
+      10: 'английский'
+    },
+    full: {
+      1: 'Математика',
+      2: 'Физика',
+      3: 'Химия',
+      4: 'Биология',
+      5: 'Информатика',
+      6: 'Русский язык',
+      7: 'Литература',
+      8: 'Обществознание',
+      9: 'История',
+      10: 'Английский язык'
+    },
+    dative: {
+      1: 'математике',
+      2: 'физике',
+      3: 'химии',
+      4: 'биологии',
+      5: 'информатике',
+      6: 'русскому языку',
+      7: 'литературе',
+      8: 'обществознанию',
+      9: 'истории',
+      10: 'английскому языку'
+    },
+    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
+    three_letters: ['МАТ', 'ФИЗ', 'РУС', 'ЛИТ', 'АНГ', 'ИСТ', 'ОБЩ', 'ХИМ', 'БИО', 'ИНФ'],
+    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
+  });
+
+}).call(this);
+
+(function() {
   var apiPath, updateMethod;
 
-  angular.module('Egerep').factory('Review', function($resource) {
+  angular.module('Egerep').factory('Account', function($resource) {
+    return $resource(apiPath('accounts'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Review', function($resource) {
     return $resource(apiPath('reviews'), {
       id: '@id'
     }, updateMethod());

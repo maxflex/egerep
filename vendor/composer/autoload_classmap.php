@@ -22,6 +22,8 @@ return array(
     'ChangeSubjectIdToSubjects' => $baseDir . '/database/migrations/2016_02_19_191241_change_subject_id_to_subjects.php',
     'ChangeSubjectIdToSubjectsType' => $baseDir . '/database/migrations/2016_02_19_191427_change_subject_id_to_subjects_type.php',
     'ClientsSeeder' => $baseDir . '/database/seeds/ClientsSeeder.php',
+    'CreateAccountDatasTable' => $baseDir . '/database/migrations/2016_02_25_164512_create_account_datas_table.php',
+    'CreateAccountsTable' => $baseDir . '/database/migrations/2016_02_25_111853_create_accounts_table.php',
     'CreateArchivesTable' => $baseDir . '/database/migrations/2016_02_21_194446_create_archives_table.php',
     'CreateAttachmentsTable' => $baseDir . '/database/migrations/2016_01_25_093501_create_attachments_table.php',
     'CreateClientSubjectListsTable' => $baseDir . '/database/migrations/2016_01_22_232210_create_client_subject_lists_table.php',

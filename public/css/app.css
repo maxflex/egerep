@@ -26718,6 +26718,29 @@ md-tooltip {
   -webkit-animation-name: slideOutUp;
   animation-name: slideOutUp; }
 
+.accounts-data {
+  margin-bottom: 40px; }
+  .accounts-data .mbs > span {
+    display: inline-block;
+    width: 190px; }
+
+.accounts-table {
+  margin-bottom: 20px; }
+  .accounts-table input {
+    width: 100px; }
+  .accounts-table tr td {
+    border: 1px solid #999999;
+    padding: 2px 3px; }
+    .accounts-table tr td:first-of-type {
+      border-left: none;
+      text-align: center; }
+    .accounts-table tr td:last-of-type {
+      border-right: none; }
+  .accounts-table thead tr td {
+    border-top: none;
+    padding-bottom: 50px;
+    text-align: center; }
+
 .mbs {
   margin-bottom: 3px; }
 

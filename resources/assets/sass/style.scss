@@ -22,10 +22,48 @@
 	$quater_black 		: rgba(0, 0, 0, .25);
 
 
+	.accounts-data {
+		margin-bottom: 40px;
+		& .mbs {
+			& > span {
+				display: inline-block;
+				width: 190px;
+			}
+		}
+	}
+	.accounts-table {
+		& input {
+			width: 100px;
+		}
+		margin-bottom: 20px;
+		& tr {
+			& td {
+				border: 1px solid $placeholder_gray;
+				padding: 2px 3px;
+				&:first-of-type {
+					border-left: none;
+					text-align: center;
+				}
+				&:last-of-type {
+					border-right: none;
+				}
+			}
+		}
+		& thead {
+			& tr {
+				& td {
+					border-top: none;
+					padding-bottom: 50px;
+					text-align: center;
+				}
+			}
+		}
+	}
+
 	.mbs {
 		margin-bottom: 3px;
 	}
-	
+
 	.drop-delete {
 		display: inline-block;
 		color: $dark_red;
