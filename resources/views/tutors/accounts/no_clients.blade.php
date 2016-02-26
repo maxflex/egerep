@@ -3,5 +3,9 @@
 @section('controller', 'AccountsCtrl')
 
 @section('content')
-    <h4 class='center'>У этого репетитора нет клиентов</h4>
+    <div class="aligner">
+        <div class="aligner-item">
+            <h5 class='center text-gray'>У этого репетитора нет клиентов</h5>
+        </div>
+    </div>
 @endsection

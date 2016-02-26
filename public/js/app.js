@@ -40,8 +40,11 @@
     $rootScope.formatDateTime = function(date) {
       return moment(date).format("DD.MM.YY в HH:mm");
     };
-    $rootScope.formatDate = function(date) {
-      return moment(date).format("DD.MM.YY");
+    $rootScope.formatDate = function(date, full_year) {
+      if (full_year == null) {
+        full_year = false;
+      }
+      return moment(date).format("DD.MM.YY" + (full_year ? "YY" : ""));
     };
     $rootScope.dialog = function(id) {
       $("#" + id).modal('show');
@@ -84,9 +87,56 @@
 
 (function() {
   angular.module('Egerep').controller('AccountsCtrl', function($scope, Account, PaymentMethods, DebtTypes) {
+    var getAccountEndDate, getAccountStartDate, getCalendarStartDate;
     $scope.PaymentMethods = PaymentMethods;
     $scope.DebtTypes = DebtTypes;
     $scope.current_scope = $scope;
+    getAccountStartDate = function(index) {
+      if (index > 0) {
+        return moment($scope.tutor.accounts[index - 1].date_end).add(1, 'days').toDate();
+      } else {
+        return new Date($scope.first_attachment_date);
+      }
+    };
+    getAccountEndDate = function(index) {
+      if ((index + 1) === $scope.tutor.accounts.length) {
+        return '';
+      } else {
+        return moment($scope.tutor.accounts[index + 1].date_end).subtract(1, 'days').toDate();
+      }
+    };
+    $scope.changeDateDialog = function(index) {
+      $('#date-end-change').datepicker('destroy');
+      $('#date-end-change').datepicker({
+        language: 'ru',
+        autoclose: true,
+        orientation: 'bottom auto',
+        startDate: getAccountStartDate(index),
+        endDate: getAccountEndDate(index)
+      });
+      $scope.selected_account = $scope.tutor.accounts[index];
+      $scope.change_date_end = $scope.formatDate($scope.selected_account.date_end, true);
+      return $scope.dialog('change-account-date');
+    };
+    $scope.changeDate = function() {
+      $scope.selected_account.date_end = convertDate($scope.change_date_end);
+      Account.update({
+        id: $scope.selected_account.id,
+        date_end: $scope.selected_account.date_end
+      });
+      return $scope.closeDialog('change-account-date');
+    };
+    $scope.remove = function(account) {
+      return bootbox.confirm('Удалить встречу?', function(result) {
+        if (result === true) {
+          return Account["delete"]({
+            id: account.id
+          }, function() {
+            return $scope.tutor.accounts = removeById($scope.tutor.accounts, account.id);
+          });
+        }
+      });
+    };
     $scope.save = function() {
       return $.each($scope.tutor.accounts, function(index, account) {
         return Account.update(account);
@@ -116,7 +166,24 @@
       }
       return dates;
     };
+    getCalendarStartDate = function() {
+      var date_end;
+      if ($scope.tutor.accounts.length > 0) {
+        date_end = $scope.tutor.accounts[$scope.tutor.accounts.length - 1].date_end;
+        return moment(date_end).add(1, 'days').toDate();
+      } else {
+        return new Date($scope.first_attachment_date);
+      }
+    };
     $scope.addAccountDialog = function() {
+      $scope.new_account_date_end = '';
+      $('#date-end').datepicker('destroy');
+      $('#date-end').datepicker({
+        language: 'ru',
+        startDate: getCalendarStartDate(),
+        autoclose: true,
+        orientation: 'bottom auto'
+      });
       return $scope.dialog('add-account');
     };
     return $scope.addAccount = function() {

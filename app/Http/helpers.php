@@ -6,6 +6,11 @@
         echo '</pre>';
     }
 
+    function emptyObject()
+    {
+        return (object)[];
+    }
+
     /**
 	 * Форматировать дату в наш формат.
 	 *
@@ -64,7 +69,7 @@
 	function ngInit($array)
 	{
         $return = '';
-        
+
 		foreach ($array as $var_name => $var_value) {
 			// Если значение не установлено, то это пустой массив по умолчанию
 			if (!$var_value && !is_int($var_value)) {

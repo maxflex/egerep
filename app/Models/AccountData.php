@@ -19,13 +19,36 @@ class AccountData extends Model
     public function setValueAttribute($value)
     {
         $data = explode('/', $value);
-        $this->sum = $data[0];
-        $this->commission = $data[1];
+        if (count($data) >= 1) {
+            $this->sum = $data[0];
+        }
+        if (count($data) == 2) {
+            $this->commission = $data[1];
+        }
     }
 
     public function getValueAttribute()
     {
-        return $this->sum . '/' . $this->commission;
+        return $this->sum . ($this->commission ? '/' . $this->commission : '');
+    }
+
+    /**
+     * Не отображать ноль
+     */
+    public function getSumAttribute($value)
+    {
+        if (!$value) {
+            $value = null;
+        }
+        return $value;
+    }
+
+    public function getComissionAttribute($value)
+    {
+        if (!$value) {
+            $value = null;
+        }
+        return $value;
     }
 
 }

@@ -83,6 +83,6 @@ class AccountsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Account::destroy($id);
     }
 }

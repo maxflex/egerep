@@ -4,7 +4,7 @@
 @section('controller', 'TutorsForm')
 @section('title-right')
     <a href="http://www.a-perspektiva.ru/tutors/?id={{ $id }}" target="_blank">анкета на a-perspektiva.ru</a>
-    <a href="#">отчетность</a>
+    <a href="tutors/{{ $id }}/accounts">отчетность</a>
 @endsection
 
 <div class="row" ng-init="id = {{ $id }}">

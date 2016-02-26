@@ -13,6 +13,7 @@ class CreateAccountDatasTable extends Migration
     public function up()
     {
         Schema::create('account_datas', function (Blueprint $table) {
+            $table->increments('id');
             $table->integer('tutor_id')->unsigned();
 
             $table->integer('client_id')->unsigned();

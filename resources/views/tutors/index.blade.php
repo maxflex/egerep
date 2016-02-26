@@ -10,7 +10,7 @@
 <div>
     <div class="row" ng-repeat="tutor in tutors">
         <div class="col-sm-12">
-            <span ng-bind-html="laroute.link_to_route('tutors.edit', tutor.full_name, {tutors: tutor.id})"></span>
+            <a href='tutors/@{{ tutor.id }}/edit'>@{{ tutor.full_name }}</a>
         </div>
     </div>
 </div>

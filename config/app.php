@@ -160,6 +160,7 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Lord\Laroute\LarouteServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
+        'Clockwork\Support\Laravel\ClockworkServiceProvider',
     ],
 
     /*

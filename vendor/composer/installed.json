@@ -3784,5 +3784,52 @@
         ],
         "description": "Symfony DomCrawler Component",
         "homepage": "https://symfony.com"
+    },
+    {
+        "name": "itsgoingd/clockwork",
+        "version": "v1.11",
+        "version_normalized": "1.11.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/itsgoingd/clockwork.git",
+            "reference": "bbc43ceefa4146d80a300f9a81fa83cacab4e8f3"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/itsgoingd/clockwork/zipball/bbc43ceefa4146d80a300f9a81fa83cacab4e8f3",
+            "reference": "bbc43ceefa4146d80a300f9a81fa83cacab4e8f3",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.9",
+            "psr/log": "1.*"
+        },
+        "time": "2016-02-23 16:03:09",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Clockwork": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "itsgoingd",
+                "email": "itsgoingd@luzer.sk",
+                "homepage": "http://twitter.com/itsgoingd"
+            }
+        ],
+        "description": "Server-side component of Clockwork, a Chrome extension for PHP development",
+        "homepage": "http://github.com/itsgoingd/clockwork",
+        "keywords": [
+            "debugging",
+            "laravel",
+            "logging",
+            "profiling"
+        ]
     }
 ]

@@ -1,6 +1,7 @@
 	// Цвета
 	$placeholder_gray 	: #999999;
 	$blue				: #337AB7;
+	$green_main			: #158E51; // new bootstrap
 	$hover_blue			: #23527c;
 
 	$promo				: #3A6487;
@@ -22,6 +23,43 @@
 	$quater_black 		: rgba(0, 0, 0, .25);
 
 
+	// new bootstrap
+	a {
+		color: $blue;
+	}
+
+	.btn.btn-primary {
+		border-color: $green_main;
+		&:hover {
+			background-color: lighten($green_main, 10);
+			border-color: lighten($green_main, 10);
+		}
+		&:focus {
+			background-color: lighten($green_main, 10);
+			border-color: lighten($green_main, 10);
+		}
+	}
+	// \new bootstrap
+
+	.aligner {
+	  display: flex;
+	  align-items: center;
+	  justify-content: center;
+	  min-height: 600px;
+	}
+
+	.aligner-item {
+	  max-width: 50%;
+	}
+
+	.aligner-item--top {
+	  align-self: flex-start;
+	}
+
+	.aligner-item--bottom {
+	  align-self: flex-end;
+	}
+
 	.accounts-data {
 		margin-bottom: 40px;
 		& .mbs {
@@ -35,7 +73,7 @@
 		& input {
 			width: 100px;
 		}
-		margin-bottom: 20px;
+		margin-bottom: 10px;
 		& tr {
 			& td {
 				border: 1px solid $placeholder_gray;
