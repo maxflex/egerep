@@ -275,6 +275,7 @@ class TransferController extends Controller
 " . $teacher->place;
 
                 $tutor = $tutor->update([
+					'photo'				=> $teacher->photo,
                     'education'         => $teacher->university_end,
                     'achievements'      => $teacher->degrees,
                     'preferences'       => $teacher->subjects_description,
