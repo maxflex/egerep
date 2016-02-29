@@ -126,11 +126,8 @@ class TransferController extends Controller
 
                 // Общее впечатление
                 $impression =  $teacher->advanced_info . "
-
 " . $teacher->techbase_description . "
-
 " . $teacher->commrate_description . "
-
 " .$teacher->cooperation_description;
 
                 // Средний возраст
@@ -275,7 +272,6 @@ class TransferController extends Controller
 
                 // Контакты, места для занятий
                 $contacts = $teacher->contacts . "
-
 " . $teacher->place;
 
                 $tutor = $tutor->update([
