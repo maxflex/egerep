@@ -127,11 +127,11 @@ class TransferController extends Controller
                 // Общее впечатление
                 $impression =  $teacher->advanced_info . "
 
-					" . $teacher->techbase_description . "
+" . $teacher->techbase_description . "
 
-					" . $teacher->commrate_description . "
+" . $teacher->commrate_description . "
 
-					" .$teacher->cooperation_description;
+" .$teacher->cooperation_description;
 
                 // Средний возраст
                 // $start_career_year = Carbon::now()->year - $teacher->experience + 500;
@@ -276,7 +276,7 @@ class TransferController extends Controller
                 // Контакты, места для занятий
                 $contacts = $teacher->contacts . "
 
-				" . $teacher->place;
+" . $teacher->place;
 
                 $tutor = $tutor->update([
                     'education'         => $teacher->university_end,
