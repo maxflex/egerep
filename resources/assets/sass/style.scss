@@ -28,6 +28,32 @@
 		color: $blue;
 	}
 
+	#photo-edit {
+		max-width: 100%;
+		max-height: 100%;
+	}
+
+	.form-control[readonly] {
+		background-color: white;
+	}
+
+	.img-preview-container {
+		overflow: hidden;
+		// border: 3px dashed #DEDEDE;
+		border-radius: 5px;
+		height: 150px;
+		width: 120px;
+		margin: 75px auto;
+		& .img-preview {
+			height: 150px;
+			width: 120px;
+		}
+	}
+
+	.full-width {
+		width: 100%;
+	}
+
 	.btn.btn-primary {
 		border-color: $green_main;
 		&:hover {
@@ -37,6 +63,10 @@
 		&:focus {
 			background-color: lighten($green_main, 10);
 			border-color: lighten($green_main, 10);
+		}
+		&[disabled] {
+			border-color: $green_main;
+			background-color: $green_main;
 		}
 	}
 	// \new bootstrap
@@ -397,6 +427,7 @@ md-input-container {
 }
 
 .tutor-img {
+	outline: none !important;
 	border: 3px dashed #DEDEDE;
 	cursor: pointer;
 	display: inline-block;
@@ -405,7 +436,7 @@ md-input-container {
 	border-radius: 5px;
 	margin-top: 1px;
 	&:hover {
-		border-color: $blue !important;
+		border-color: $green-main !important;
 		& div {
 // 			display: block;
 			opacity: 1;
@@ -426,7 +457,7 @@ md-input-container {
 	    padding: 60px 0;
 // 	    display: none;
 		opacity: 0;
-		color: #337ab7;
+		color: $green_main;
 	}
 	& .btn-file {
 		height: 100%;

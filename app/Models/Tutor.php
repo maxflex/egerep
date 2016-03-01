@@ -50,11 +50,11 @@ class Tutor extends Model
 		'id_a_pers',
 		'departure_price'
     ];
-    protected $appends = ['has_photo'];
+    protected $appends = ['has_photo_original', 'has_photo_cropped'];
     protected $with = ['markers'];
     protected static $commaSeparated = ['svg_map', 'subjects', 'grades'];
 
-    const UPLOAD_DIR = 'img/tutors/';
+    const UPLOAD_DIR = '/img/tutors/';
 
     // ------------------------------------------------------------------------
 
@@ -70,9 +70,14 @@ class Tutor extends Model
 
     // ------------------------------------------------------------------------
 
-    public function getHasPhotoAttribute()
+    public function getHasPhotoOriginalAttribute()
     {
-        return file_exists(self::UPLOAD_DIR . $this->id . '.jpg');
+        return file_exists($this->photoPath('_original'));
+    }
+
+    public function getHasPhotoCroppedAttribute()
+    {
+        return file_exists($this->photoPath('@2x'));
     }
 
     /**
@@ -98,6 +103,11 @@ class Tutor extends Model
     }
 
     // ------------------------------------------------------------------------
+
+    public function photoPath($addon = '')
+    {
+        return public_path() . static::UPLOAD_DIR . $this->id . $addon . '.' . $this->photo_extension;
+    }
 
     protected static function boot()
     {

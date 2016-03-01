@@ -3,6 +3,8 @@
 
 @section('content')
 <center ng-app="Login" ng-controller="LoginCtrl">
+
+
 	<form class="form-signin" ng-submit="checkFields()" autocomplete="off">
 <!-- 		<h2 class="form-signin-heading">Вход в систему</h2> -->
 		<input type="text" id="inputLogin" class="form-control" placeholder="Логин" autofocus name="login" ng-model="login" autocomplete="off">

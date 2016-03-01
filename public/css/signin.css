@@ -3,17 +3,19 @@ body {
   padding-bottom: 40px;
   background-color: #eee;
   margin-top: 0 !important;
+  background-image: url('http://www.a-perspektiva.ru/images/bg3.gif');
+  background-repeat: repeat;
 }
 
 .form-signin {
-  max-width: 430px;
-  padding: 50px;
-  margin: 0 auto;
-  background-color: #E3ECF1;
-  border-radius: 10px;
-  margin-top: 140px;
-  position: relative;
-  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.4);
+    max-width: 430px;
+    padding: 50px;
+    margin: 0 auto;
+    background-color: rgba(226, 226, 226, 0.75);
+    border-radius: 10px;
+    margin-top: 140px;
+    position: relative;
+    box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.4);
 }
 .form-signin .form-signin-heading,
 .form-signin .checkbox {

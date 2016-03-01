@@ -1,19 +1,23 @@
 @include('modules.svgmap')
 @include('modules.gmap')
+@include('tutors._modals')
 
 <sms number='sms_number'></sms>
 
 <div class="row">
     <div class="col-sm-1" style="width: 157px">
+        {{-- <div class="form-group img-container">
+             <img id='image' src="img/photo/@{{ tutor.has_photo ? tutor.photo : 'no-profile-img.gif' }}">
+        </div> --}}
         <div class="form-group">
-            <div class="tutor-img" ng-class="{'border-transparent': tutor.has_photo}">
+            <div class="tutor-img" ng-class="{'border-transparent': tutor.has_photo_cropped}" ng-click="dialog('change-photo')">
                 <div>
-                    загрузить фото
+                    изменить фото
                 </div>
                 <span class="btn-file">
                     {{-- <input name="tutor_photo" type="file" id="fileupload" data-url="upload/tutor/" accept="image/jpg"> --}}
                 </span>
-                <img src="img/tutors/@{{ tutor.has_photo ? tutor.id + '_2x.jpg' : 'no-profile-img.gif' }}">
+                <img src="img/tutors/@{{ tutor.has_photo_cropped ? tutor.id + '@2x.' + tutor.photo_extension : 'no-profile-img.gif' }}?ver=@{{ picture_version }}">
             </div>
         </div>
         <div class="form-group">
@@ -105,7 +109,7 @@
             <phones entity='tutor' sms-number='sms_number'></phones>
         </div>
         <div class="form-group">
-            <email address='tutor.email'></email>
+            {{-- <email address='tutor.email'></email> --}}
             {{-- <div class="input-group">
                 <input type="text" class="form-control" ng-model="tutor.email" placeholder="email">
                 <div class="input-group-btn">

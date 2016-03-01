@@ -109,11 +109,53 @@ class TransferController extends Controller
         dd($transfered);
     }
 
+	/**
+	 * Перенести фотки
+	 */
+	public function getPhotos(Request $request)
+	{
+		$teachers = static::_getTeachers($request);
+
+		$files_copied = 0;
+
+		foreach ($teachers as $teacher) {
+			$tutor = Tutor::where('id_a_pers', $teacher->id);
+            if ($tutor->exists()) {
+				$tutor_object = $tutor->first();
+
+				$extension = @end(explode('.', $teacher->photo));
+
+				if (!empty($teacher->photo)) {
+					$files_copied++;
+					static::_copyPhotos($extension, $teacher->id, $tutor_object->id);
+					$tutor->update([
+						'photo_extension' => $extension,
+					]);
+				}
+			}
+		}
+
+		dd($files_copied);
+	}
+
+	private static function _copyPhotos($extension, $oldcrm_tutor_id, $newcrm_tutor_id)
+	{
+		@copy("/var/www/html/repetitors/htdocs/photo/" . $oldcrm_tutor_id . "." . $extension,
+			public_path() . Tutor::UPLOAD_DIR . $newcrm_tutor_id . '_original.' . $extension);
+
+		@copy("/var/www/html/repetitors/htdocs/photo/" . $oldcrm_tutor_id . ".r." . $extension,
+			public_path() . Tutor::UPLOAD_DIR . $newcrm_tutor_id . '.' . $extension);
+
+		@copy("/var/www/html/repetitors/htdocs/photo/" . $oldcrm_tutor_id . ".r." . $extension,
+			public_path() . Tutor::UPLOAD_DIR . $newcrm_tutor_id . '@2x.' . $extension);
+	}
+
     /**
      * Перенести все данные
      */
     public function getData(Request $request)
     {
+		// @todo: delete all from markers, from metros
         extract($request->input());
         $teachers = \DB::connection('egerep')->select("select * from repetitors limit {$limit} offset {$offset}");
 
@@ -275,7 +317,6 @@ class TransferController extends Controller
 " . $teacher->place;
 
                 $tutor = $tutor->update([
-					'photo'				=> $teacher->photo,
                     'education'         => $teacher->university_end,
                     'achievements'      => $teacher->degrees,
                     'preferences'       => $teacher->subjects_description,
@@ -354,4 +395,10 @@ class TransferController extends Controller
         dd($correspondence);
         return view();
     }
+
+	public static function _getTeachers($request)
+	{
+		extract($request->input());
+ 		return \DB::connection('egerep')->select("select * from repetitors limit {$limit} offset {$offset}");
+	}
 }

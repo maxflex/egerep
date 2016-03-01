@@ -16,7 +16,9 @@ class VariablesProvider extends ServiceProvider
             'engine',
             'laroute',
             'svgmap',
-            'ngmap.min'
+            'ngmap.min',
+            'jquery.fileupload',
+            'canvas-to-blob',
         ],
     ];
 

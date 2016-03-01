@@ -90,9 +90,19 @@ class TutorsController extends Controller
     /**
      * Get a list of only tutor_id => tutor full name
      */
-     public function lists()
+     public function list()
      {
          return Tutor::selectRaw("CONCAT_WS(' ', last_name, first_name, middle_name) as name, id")
             ->pluck('name', 'id');
+     }
+
+     public function deletePhoto($id)
+     {
+        $tutor = Tutor::find($id);
+        Tutor::where('id', $id)->update(['photo_extension' => '']);
+
+        @unlink($tutor->photoPath());
+        @unlink($tutor->photoPath('_original'));
+        @unlink($tutor->photoPath('@2x'));
      }
 }

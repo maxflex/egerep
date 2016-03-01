@@ -11,7 +11,8 @@
         "lord/laroute" : "2.*",
         "barryvdh/laravel-debugbar": "^2.1",
         "doctrine/dbal": "^2.5",
-        "itsgoingd/clockwork": "^1.11"
+        "itsgoingd/clockwork": "^1.11",
+        "abeautifulsite/simpleimage": "^2.6"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

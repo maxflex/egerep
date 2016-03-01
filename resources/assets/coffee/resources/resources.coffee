@@ -30,10 +30,17 @@ angular.module('Egerep')
         $resource apiPath('users'), {id: '@id'}, updateMethod()
 
     .factory 'Tutor', ($resource) ->
-        $resource apiPath('tutors'), {id: '@id'}, updateMethod()
+        $resource apiPath('tutors'), {id: '@id'},
+            update:
+                method: 'PUT'
+            deletePhoto:
+                url: apiPath('tutors', 'photo')
+                method: 'DELETE'
+            list:
+                method: 'GET'
 
-apiPath = (entity) ->
-    "api/#{entity}/:id"
+apiPath = (entity, additional = '') ->
+    "api/#{entity}/" + (if additional then additional + '/' else '') + ":id"
 
 updateMethod = ->
     update:

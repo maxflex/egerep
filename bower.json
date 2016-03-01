@@ -40,6 +40,9 @@
     "animate.css": "^3.5.1",
     "bootstrap-datepicker": "^1.6.0",
     "angular-ui-sortable": "^0.13.4",
-    "angular-bootstrap": "^1.1.2"
+    "angular-bootstrap": "^1.1.2",
+    "ng-img-crop": "ngImgCrop#^0.3.2",
+    "ng-cropper": "^0.4.1",
+    "cropper": "^2.3.0"
   }
 }

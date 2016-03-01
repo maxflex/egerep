@@ -37,10 +37,77 @@ angular
         $scope.Grades   = Grades
         $rootScope.frontend_loading = true
 
+        $scope.deletePhoto = ->
+            bootbox.confirm 'Удалить фото преподавателя?', (result) ->
+                if result is true
+                    $scope.tutor.$deletePhoto ->
+                        $scope.tutor.has_photo_cropped = false
+                        $scope.tutor.has_photo_original = false
+
+        $scope.saveCropped = ->
+            $('#photo-edit').cropper('getCroppedCanvas').toBlob (blob) ->
+                formData = new FormData
+                formData.append 'croppedImage', blob
+                formData.append 'tutor_id', $scope.tutor.id
+                $.ajax 'upload/cropped',
+                    method: 'POST'
+                    data: formData
+                    processData: false
+                    contentType: false
+                    success: ->
+                        $scope.tutor.has_photo_cropped = true
+                        $scope.picture_version++
+                        $scope.$apply()
+                        $scope.closeDialog('change-photo')
+
+        bindCropper = ->
+            $('#photo-edit').cropper 'destroy'
+            $('#photo-edit').cropper
+                aspectRatio: 4 / 5
+                minContainerHeight: 700
+                minContainerWidth: 700
+                minCropBoxWidth: 120
+                minCropBoxHeight: 150
+                preview: '.img-preview'
+                viewMode: 1
+
+        $scope.picture_version = 1;
+        bindFileUpload = ->
+        	# загрузка файла договора
+        	$('#fileupload').fileupload
+        		formData:
+        			tutor_id: $scope.tutor.id
+        		maxFileSize: 10000000, # 10 MB
+        		# начало загрузки
+        		send: ->
+        			NProgress.configure({ showSpinner: true })
+        		,
+        		# во время загрузки
+        		progress: (e, data) ->
+        		    NProgress.set(data.loaded / data.total)
+        		,
+        		# всегда по окончании загрузки (неважно, ошибка или успех)
+        		always: ->
+        		    NProgress.configure({ showSpinner: false })
+        		    ajaxEnd()
+        		,
+        		done: (i, response) ->
+                    $scope.tutor.photo_extension = response.result
+                    $scope.tutor.has_photo_original = true
+                    $scope.tutor.has_photo_cropped = false
+                    $scope.picture_version++
+                    $scope.$apply()
+                    bindCropper()
+        		,
+
         # get tutor
         $timeout ->
             if $scope.id > 0
                 $scope.tutor = Tutor.get {id: $scope.id}, ->
+                    $timeout ->
+                        bindCropper()
+                        bindFileUpload()
+                    , 1000
                     $rootScope.frontendStop()
 
         # @todo: ЗАМЕНИТЬ НА ДИРЕКТИВУ <ng-select> (уже сделано, но глючная. надо доделать)
