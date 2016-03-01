@@ -90,7 +90,7 @@ class TutorsController extends Controller
     /**
      * Get a list of only tutor_id => tutor full name
      */
-     public function list()
+     public function lists()
      {
          return Tutor::selectRaw("CONCAT_WS(' ', last_name, first_name, middle_name) as name, id")
             ->pluck('name', 'id');
