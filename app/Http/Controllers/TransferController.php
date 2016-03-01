@@ -140,13 +140,13 @@ class TransferController extends Controller
 
 	private static function _copyPhotos($extension, $oldcrm_tutor_id, $newcrm_tutor_id)
 	{
-		@copy("/var/www/html/repetitors/htdocs/photo/" . $oldcrm_tutor_id . "." . $extension,
+		@copy("/var/www/html/repetitors/htdocs/photo/photo_" . $oldcrm_tutor_id . "." . $extension,
 			public_path() . Tutor::UPLOAD_DIR . $newcrm_tutor_id . '_original.' . $extension);
 
-		@copy("/var/www/html/repetitors/htdocs/photo/" . $oldcrm_tutor_id . ".r." . $extension,
+		@copy("/var/www/html/repetitors/htdocs/photo/photo_" . $oldcrm_tutor_id . ".r." . $extension,
 			public_path() . Tutor::UPLOAD_DIR . $newcrm_tutor_id . '.' . $extension);
 
-		@copy("/var/www/html/repetitors/htdocs/photo/" . $oldcrm_tutor_id . ".r." . $extension,
+		@copy("/var/www/html/repetitors/htdocs/photo/photo_" . $oldcrm_tutor_id . ".r." . $extension,
 			public_path() . Tutor::UPLOAD_DIR . $newcrm_tutor_id . '@2x.' . $extension);
 	}
 
