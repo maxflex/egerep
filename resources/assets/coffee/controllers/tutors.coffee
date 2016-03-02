@@ -112,7 +112,6 @@ angular
         # show photo editor
         $scope.showPhotoEditor = ->
             $scope.dialog('change-photo')
-
             # rare bug fix
             $timeout ->
                 $('#photo-edit').cropper 'resize'
