@@ -485,6 +485,7 @@ class TransferController extends Controller
 					'entity_type'	=> 'tutor',
 					'comment'		=> $comment->text,
 					'created_at'	=> $comment->time,
+					'updated_at'	=> $comment->time,
 				]);
 			}
 		}
