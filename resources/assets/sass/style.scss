@@ -22,12 +22,13 @@
 	$half_black			: rgba(0, 0, 0, .5);
 	$quater_black 		: rgba(0, 0, 0, .25);
 
-	.list-group-item.active {
-		color: white !important;
-	}
-	
+
 	.pagination > li > a:focus, .pagination > li > a:hover, .pagination > li > span:focus, .pagination > li > span:hover {
 		color: darken($green_main, 10) !important;
+	}
+
+	.list-group-item.active, .pagination > li.active > a:hover, .pagination > li.focus > a:hover {
+		color: white !important;
 	}
 
 	// new bootstrap

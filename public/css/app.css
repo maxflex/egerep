@@ -26978,11 +26978,11 @@ md-tooltip {
   -webkit-animation-name: slideOutUp;
   animation-name: slideOutUp; }
 
-.list-group-item.active {
-  color: white !important; }
-
 .pagination > li > a:focus, .pagination > li > a:hover, .pagination > li > span:focus, .pagination > li > span:hover {
   color: #0e6238 !important; }
+
+.list-group-item.active, .pagination > li.active > a:hover, .pagination > li.focus > a:hover {
+  color: white !important; }
 
 a {
   color: #158E51; }
