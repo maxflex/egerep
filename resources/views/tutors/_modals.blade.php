@@ -3,7 +3,7 @@
         <div class="modal-content" style="height: 100%">
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-sm-9" style="height: 694px; border-right: 3px dashed #DEDEDE">
+                    <div class="col-sm-9" style="height: 694px">
                         <div ng-if='tutor.has_photo_original'>
                             <img src="img/tutors/@{{ tutor.id + '_original.' + tutor.photo_extension }}?ver=@{{ picture_version }}" id='photo-edit'>
                         </div>
@@ -46,7 +46,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="tutor-approved" ng-class="{'not-approved': !tutor.approved}">
+                                <div class="tutor-approved default" ng-class="{'not-approved': !tutor.approved}">
                                     @{{ tutor.approved ? 'одобрено' : 'не одобрено' }}
                                 </div>
                             </div>

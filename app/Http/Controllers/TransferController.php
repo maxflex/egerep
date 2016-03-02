@@ -356,7 +356,7 @@ class TransferController extends Controller
      */
     public function getUsers()
     {
-        $users = \DB::connection('egerep')->table('users')->select(['id', 'login', 'password'])->get();
+        $users = \DB::connection('egerep')->table('users')->select(['id', 'login', 'password', 'color'])->get();
         // dd($users);
 
         $correspondence = [];
