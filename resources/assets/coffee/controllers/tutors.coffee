@@ -13,19 +13,28 @@ angular
     .controller "TutorsIndex", ($scope, $rootScope, $timeout, $http, Tutor) ->
         $rootScope.frontend_loading = true
 
-        $http.get 'api/tutors'
-            .then (response) ->
-                $rootScope.frontendStop()
-                $scope.data = response.data
-                $scope.tutors = $scope.data.data
+        $timeout ->
+            loadTutors($scope.page)
+            $scope.current_page = $scope.page
 
-        $scope.$watch 'current_page', (newVal, oldVal) ->
-            return if newVal is undefined
-            $http.get 'api/tutors?page=' + newVal
+        $scope.pageChanged = ->
+            loadTutors($scope.current_page)
+            paginate('tutors', $scope.current_page)
+
+        loadTutors = (page) ->
+            $http.get 'api/tutors?page=' + page
                 .then (response) ->
                     $rootScope.frontendStop()
                     $scope.data = response.data
                     $scope.tutors = $scope.data.data
+
+        # $scope.$watch 'current_page', (newVal, oldVal) ->
+        #     return if newVal is undefined
+        #     $http.get 'api/tutors?page=' + newVal
+        #         .then (response) ->
+        #             $rootScope.frontendStop()
+        #             $scope.data = response.data
+        #             $scope.tutors = $scope.data.data
 
 
     #

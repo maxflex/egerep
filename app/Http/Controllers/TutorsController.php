@@ -10,9 +10,13 @@ use App\Models\Tutor;
 
 class TutorsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return view('tutors.index');
+        return view('tutors.index')->with([
+            'nginit' => ngInit([
+                'page' => $request->input('page'),
+            ]),
+        ]);
     }
 
     public function create()

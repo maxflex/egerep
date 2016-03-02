@@ -467,7 +467,12 @@ class TransferController extends Controller
 
 	/**
 	 * Перенести комментарии преподавателей
-	 * @important: перед переносом добавить pulic $timestamps = false; protected $fillable = [..., 'created_at'] в Comment.php
+	 * @important: перед переносом добавить:
+	 * ...
+	 * 		pulic $timestamps = false;
+	 *		$fillable = [..., 'created_at', 'updated_at']
+	 * ...
+	 * в Comment.php
 	 */
 	public function getTeacherComments(Request $request)
 	{

@@ -17,6 +17,7 @@
 
 <pagination style="margin-top: 30px"
   ng-model="current_page"
+  ng-change="pageChanged()"
   total-items="data.total"
   max-size="10"
   items-per-page="data.per_page"

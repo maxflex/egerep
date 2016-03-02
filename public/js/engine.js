@@ -24,12 +24,20 @@
 
 	/**
 	 * Svg map debug function.
+	 * @todo: delete this when done debugging
 	 */
 	function clickSt(id) {
 		$('iframe').contents().find('#st' + id).click();
 	}
 	function selectLine(id) {
 		return $('iframe').contents().find('#line' + id);
+	}
+
+	/**
+	 * Helper function for recording pagination history
+	 */
+	function paginate(entity, page) {
+		window.history.pushState('', '', entity + '?page=' + page)
 	}
 
 	/**
