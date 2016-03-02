@@ -110,14 +110,14 @@
         </div>
         <div class="form-group">
             {{-- <email address='tutor.email'></email> --}}
-            {{-- <div class="input-group">
+            <div class="input-group">
                 <input type="text" class="form-control" ng-model="tutor.email" placeholder="email">
                 <div class="input-group-btn">
                     <button class="btn btn-default">
                         <span class="glyphicon glyphicon-envelope no-margin-right"></span>
                     </button>
                 </div>
-            </div> --}}
+            </div>
         </div>
     </div>
 
