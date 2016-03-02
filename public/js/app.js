@@ -51,7 +51,7 @@
       }
       ngModel[status] = statuses[status_id];
       if (indexOf.call(skip_values, status_id) >= 0 && (ref2 = $rootScope.$$childHead.user.id, indexOf.call(allowed_user_ids, ref2) < 0)) {
-        return $rootScope.toggleEnum(ngModel, status, ngEnum, skip_values, true);
+        return $rootScope.toggleEnum(ngModel, status, ngEnum, skip_values, allowed_user_ids, true);
       }
     };
     $rootScope.formatDateTime = function(date) {
