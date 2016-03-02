@@ -24,12 +24,16 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
             i += step
           input
 
-        $rootScope.toggleEnum = (ngModel, status, ngEnum) ->
+          # skip_values – какие значения в enum пропускать
+          # allowed_user_ids – пользователи, которым разрешено выбирать значения
+        $rootScope.toggleEnum = (ngModel, status, ngEnum, skip_values = [], allowed_user_ids = []) ->
             statuses = Object.keys(ngEnum)
             status_id = statuses.indexOf ngModel[status].toString()
             status_id++
             status_id = 0 if status_id > (statuses.length - 1)
             ngModel[status] = statuses[status_id]
+            # if in skip_values
+            $rootScope.toggleEnum(ngModel, status, ngEnum, skip_values) if status_id in skip_values and $rootScope.$$childHead.user.id not in allowed_user_ids
 
         $rootScope.formatDateTime = (date) ->
             moment(date).format "DD.MM.YY в HH:mm"

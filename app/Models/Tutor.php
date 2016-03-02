@@ -29,7 +29,7 @@ class Tutor extends Model
 		'tb',
 		'lk',
 		'js',
-		'approved',
+		'state',
 		'contacts',
 		'price',
 		'education',

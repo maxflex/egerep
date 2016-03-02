@@ -346,25 +346,44 @@
 	}
 }
 
-.tutor-approved {
+.tutor-state {
 	width: 100%;
 	border-radius: 4px;
-	border: 1px solid #8ecba8;
 	height: 34px;
 	background-color: #8ecba8;
 	color: #045400;
 	text-align: center;
-	line-height: 30px;
+	line-height: 32px;
 	cursor: pointer;
 	outline: none;
 	transition: all linear .3s;
 	width: 120px;
     margin: 0 auto;
-	&.not-approved {
-		color: $placeholder_gray;
-		background-color: $hr_gray;
-		border-color: $hr_gray;
-	}
+}
+
+.tutor-state-0 {
+	color: $placeholder_gray;
+	background-color: $hr_gray;
+}
+.tutor-state-1 {
+	color: white;
+	background-color: $blue
+}
+.tutor-state-2 {
+	color: rgb(210, 63, 63);
+	background-color: $pink;
+}
+.tutor-state-3 {
+	color: white;
+	background-color: red;
+}
+.tutor-state-4 {
+	color: $green_main;
+	background-color: rgb(205, 241, 217);
+}
+.tutor-state-5 {
+	color: white;
+	background-color: $green_main;
 }
 
 .pointer {

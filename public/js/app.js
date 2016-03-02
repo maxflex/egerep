@@ -1,4 +1,6 @@
 (function() {
+  var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
   angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ngAnimate', 'ui.sortable', 'ui.bootstrap']).config([
     '$compileProvider', function($compileProvider) {
       return $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension|sip):/);
@@ -27,15 +29,24 @@
       }
       return input;
     };
-    $rootScope.toggleEnum = function(ngModel, status, ngEnum) {
-      var status_id, statuses;
+    $rootScope.toggleEnum = function(ngModel, status, ngEnum, skip_values, allowed_user_ids) {
+      var ref, status_id, statuses;
+      if (skip_values == null) {
+        skip_values = [];
+      }
+      if (allowed_user_ids == null) {
+        allowed_user_ids = [];
+      }
       statuses = Object.keys(ngEnum);
       status_id = statuses.indexOf(ngModel[status].toString());
       status_id++;
       if (status_id > (statuses.length - 1)) {
         status_id = 0;
       }
-      return ngModel[status] = statuses[status_id];
+      ngModel[status] = statuses[status_id];
+      if (indexOf.call(skip_values, status_id) >= 0 && (ref = $rootScope.$$childHead.user.id, indexOf.call(allowed_user_ids, ref) < 0)) {
+        return $rootScope.toggleEnum(ngModel, status, ngEnum, skip_values);
+      }
     };
     $rootScope.formatDateTime = function(date) {
       return moment(date).format("DD.MM.YY в HH:mm");
@@ -690,10 +701,11 @@
       male: 'Мужской',
       female: 'Женский'
     };
-  }).controller("TutorsIndex", function($scope, $rootScope, $timeout, $http, Tutor, User, UserService) {
+  }).controller("TutorsIndex", function($scope, $rootScope, $timeout, $http, Tutor, User, UserService, TutorStates) {
     var loadTutors;
     $scope.Tutor = Tutor;
     $scope.UserService = UserService;
+    $scope.TutorStates = TutorStates;
     $scope.users = User.query(function() {
       return $scope.users.unshift({
         login: 'system',
@@ -760,11 +772,12 @@
         responsible_user_id: new_user.id
       });
     };
-  }).controller("TutorsForm", function($scope, $rootScope, $timeout, $interval, Tutor, SvgMap, Subjects, Grades, ApiService) {
+  }).controller("TutorsForm", function($scope, $rootScope, $timeout, $interval, Tutor, SvgMap, Subjects, Grades, ApiService, TutorStates) {
     var bindCropper, bindFileUpload, filterMarkers;
     $scope.SvgMap = SvgMap;
     $scope.Subjects = Subjects;
     $scope.Grades = Grades;
+    $scope.TutorStates = TutorStates;
     $rootScope.frontend_loading = true;
     $scope.deletePhoto = function() {
       return bootbox.confirm('Удалить фото преподавателя?', function(result) {
@@ -1073,6 +1086,184 @@
 }).call(this);
 
 (function() {
+  var apiPath, updateMethod;
+
+  angular.module('Egerep').factory('Account', function($resource) {
+    return $resource(apiPath('accounts'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Review', function($resource) {
+    return $resource(apiPath('reviews'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Archive', function($resource) {
+    return $resource(apiPath('archives'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Attachment', function($resource) {
+    return $resource(apiPath('attachments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('RequestList', function($resource) {
+    return $resource(apiPath('lists'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Request', function($resource) {
+    return $resource(apiPath('requests'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Sms', function($resource) {
+    return $resource(apiPath('sms'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Comment', function($resource) {
+    return $resource(apiPath('comments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Client', function($resource) {
+    return $resource(apiPath('clients'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('User', function($resource) {
+    return $resource(apiPath('users'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Tutor', function($resource) {
+    return $resource(apiPath('tutors'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      deletePhoto: {
+        url: apiPath('tutors', 'photo'),
+        method: 'DELETE'
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  });
+
+  apiPath = function(entity, additional) {
+    if (additional == null) {
+      additional = '';
+    }
+    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
+  };
+
+  updateMethod = function() {
+    return {
+      update: {
+        method: 'PUT'
+      }
+    };
+  };
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').value('TutorStates', {
+    0: 'не установлено',
+    1: 'на проверку',
+    2: 'к закрытию',
+    3: 'закрыто',
+    4: 'к одобрению',
+    5: 'одобрено'
+  }).value('DebtTypes', {
+    0: 'не доплатил',
+    1: 'переплатил'
+  }).value('PaymentMethods', {
+    0: 'не установлено',
+    1: 'стандартный расчет',
+    2: 'яндекс.деньги',
+    3: 'перевод на сотовый',
+    4: 'перевод на карту'
+  }).value('RequestStates', {
+    "new": 'невыполненные',
+    awaiting: 'в ожидании',
+    finished: 'выполненные',
+    deny: 'отказы'
+  }).value('ArchiveStates', {
+    impossible: 'невозможно',
+    possible: 'возможно'
+  }).value('ReviewStates', {
+    unpublished: 'не опубликован',
+    published: 'опубликован'
+  }).value('ReviewScores', {
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+    6: 6,
+    7: 7,
+    8: 8,
+    9: 9,
+    10: 10,
+    11: 'не берет',
+    12: 'не помнит',
+    13: 'недоступен',
+    14: 'позвонить позже'
+  }).value('Grades', {
+    1: '1 класс',
+    2: '2 класс',
+    3: '3 класс',
+    4: '4 класс',
+    5: '5 класс',
+    6: '6 класс',
+    7: '7 класс',
+    8: '8 класс',
+    9: '9 класс',
+    10: '10 класс',
+    11: '11 класс',
+    12: 'студенты',
+    13: 'остальные'
+  }).value('Subjects', {
+    all: {
+      1: 'математика',
+      2: 'физика',
+      3: 'химия',
+      4: 'биология',
+      5: 'информатика',
+      6: 'русский',
+      7: 'литература',
+      8: 'обществознание',
+      9: 'история',
+      10: 'английский'
+    },
+    full: {
+      1: 'Математика',
+      2: 'Физика',
+      3: 'Химия',
+      4: 'Биология',
+      5: 'Информатика',
+      6: 'Русский язык',
+      7: 'Литература',
+      8: 'Обществознание',
+      9: 'История',
+      10: 'Английский язык'
+    },
+    dative: {
+      1: 'математике',
+      2: 'физике',
+      3: 'химии',
+      4: 'биологии',
+      5: 'информатике',
+      6: 'русскому языку',
+      7: 'литературе',
+      8: 'обществознанию',
+      9: 'истории',
+      10: 'английскому языку'
+    },
+    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
+    three_letters: ['МАТ', 'ФИЗ', 'РУС', 'ЛИТ', 'АНГ', 'ИСТ', 'ОБЩ', 'ХИМ', 'БИО', 'ИНФ'],
+    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
+  });
+
+}).call(this);
+
+(function() {
   angular.module('Egerep').directive('comments', function() {
     return {
       restrict: 'E',
@@ -1306,177 +1497,6 @@
       }
     };
   });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').value('DebtTypes', {
-    0: 'не доплатил',
-    1: 'переплатил'
-  }).value('PaymentMethods', {
-    0: 'не установлено',
-    1: 'стандартный расчет',
-    2: 'яндекс.деньги',
-    3: 'перевод на сотовый',
-    4: 'перевод на карту'
-  }).value('RequestStates', {
-    "new": 'невыполненные',
-    awaiting: 'в ожидании',
-    finished: 'выполненные',
-    deny: 'отказы'
-  }).value('ArchiveStates', {
-    impossible: 'невозможно',
-    possible: 'возможно'
-  }).value('ReviewStates', {
-    unpublished: 'не опубликован',
-    published: 'опубликован'
-  }).value('ReviewScores', {
-    1: 1,
-    2: 2,
-    3: 3,
-    4: 4,
-    5: 5,
-    6: 6,
-    7: 7,
-    8: 8,
-    9: 9,
-    10: 10,
-    11: 'не берет',
-    12: 'не помнит',
-    13: 'недоступен',
-    14: 'позвонить позже'
-  }).value('Grades', {
-    1: '1 класс',
-    2: '2 класс',
-    3: '3 класс',
-    4: '4 класс',
-    5: '5 класс',
-    6: '6 класс',
-    7: '7 класс',
-    8: '8 класс',
-    9: '9 класс',
-    10: '10 класс',
-    11: '11 класс',
-    12: 'студенты',
-    13: 'остальные'
-  }).value('Subjects', {
-    all: {
-      1: 'математика',
-      2: 'физика',
-      3: 'химия',
-      4: 'биология',
-      5: 'информатика',
-      6: 'русский',
-      7: 'литература',
-      8: 'обществознание',
-      9: 'история',
-      10: 'английский'
-    },
-    full: {
-      1: 'Математика',
-      2: 'Физика',
-      3: 'Химия',
-      4: 'Биология',
-      5: 'Информатика',
-      6: 'Русский язык',
-      7: 'Литература',
-      8: 'Обществознание',
-      9: 'История',
-      10: 'Английский язык'
-    },
-    dative: {
-      1: 'математике',
-      2: 'физике',
-      3: 'химии',
-      4: 'биологии',
-      5: 'информатике',
-      6: 'русскому языку',
-      7: 'литературе',
-      8: 'обществознанию',
-      9: 'истории',
-      10: 'английскому языку'
-    },
-    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
-    three_letters: ['МАТ', 'ФИЗ', 'РУС', 'ЛИТ', 'АНГ', 'ИСТ', 'ОБЩ', 'ХИМ', 'БИО', 'ИНФ'],
-    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
-  });
-
-}).call(this);
-
-(function() {
-  var apiPath, updateMethod;
-
-  angular.module('Egerep').factory('Account', function($resource) {
-    return $resource(apiPath('accounts'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Review', function($resource) {
-    return $resource(apiPath('reviews'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Archive', function($resource) {
-    return $resource(apiPath('archives'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Attachment', function($resource) {
-    return $resource(apiPath('attachments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('RequestList', function($resource) {
-    return $resource(apiPath('lists'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Request', function($resource) {
-    return $resource(apiPath('requests'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Sms', function($resource) {
-    return $resource(apiPath('sms'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Comment', function($resource) {
-    return $resource(apiPath('comments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Client', function($resource) {
-    return $resource(apiPath('clients'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('User', function($resource) {
-    return $resource(apiPath('users'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Tutor', function($resource) {
-    return $resource(apiPath('tutors'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      deletePhoto: {
-        url: apiPath('tutors', 'photo'),
-        method: 'DELETE'
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  });
-
-  apiPath = function(entity, additional) {
-    if (additional == null) {
-      additional = '';
-    }
-    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
-  };
-
-  updateMethod = function() {
-    return {
-      update: {
-        method: 'PUT'
-      }
-    };
-  };
 
 }).call(this);
 

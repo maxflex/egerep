@@ -27273,24 +27273,43 @@ span {
   .controls-line a:not(:last-child) {
     margin-right: 20px; }
 
-.tutor-approved {
+.tutor-state {
   width: 100%;
   border-radius: 4px;
-  border: 1px solid #8ecba8;
   height: 34px;
   background-color: #8ecba8;
   color: #045400;
   text-align: center;
-  line-height: 30px;
+  line-height: 32px;
   cursor: pointer;
   outline: none;
   transition: all linear .3s;
   width: 120px;
   margin: 0 auto; }
-  .tutor-approved.not-approved {
-    color: #999999;
-    background-color: #eee;
-    border-color: #eee; }
+
+.tutor-state-0 {
+  color: #999999;
+  background-color: #eee; }
+
+.tutor-state-1 {
+  color: white;
+  background-color: #337AB7; }
+
+.tutor-state-2 {
+  color: #d23f3f;
+  background-color: #ffcccc; }
+
+.tutor-state-3 {
+  color: white;
+  background-color: red; }
+
+.tutor-state-4 {
+  color: #158E51;
+  background-color: #cdf1d9; }
+
+.tutor-state-5 {
+  color: white;
+  background-color: #158E51; }
 
 .pointer {
   cursor: pointer !important; }

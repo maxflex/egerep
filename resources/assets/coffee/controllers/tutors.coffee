@@ -10,10 +10,11 @@ angular
     #
     #   LIST CONTROLLER
     #
-    .controller "TutorsIndex", ($scope, $rootScope, $timeout, $http, Tutor, User, UserService) ->
+    .controller "TutorsIndex", ($scope, $rootScope, $timeout, $http, Tutor, User, UserService, TutorStates) ->
         # @check
         $scope.Tutor = Tutor
         $scope.UserService = UserService
+        $scope.TutorStates = TutorStates
 
         $scope.users = User.query ->
             $scope.users.unshift
@@ -89,10 +90,11 @@ angular
     #
     #   ADD/EDIT CONTROLLER
     #
-    .controller "TutorsForm", ($scope, $rootScope, $timeout, $interval, Tutor, SvgMap, Subjects, Grades, ApiService) ->
+    .controller "TutorsForm", ($scope, $rootScope, $timeout, $interval, Tutor, SvgMap, Subjects, Grades, ApiService, TutorStates) ->
         $scope.SvgMap   = SvgMap
         $scope.Subjects = Subjects
         $scope.Grades   = Grades
+        $scope.TutorStates = TutorStates
         $rootScope.frontend_loading = true
 
         $scope.deletePhoto = ->

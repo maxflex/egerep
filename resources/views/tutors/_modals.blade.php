@@ -46,8 +46,8 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="tutor-approved default" ng-class="{'not-approved': !tutor.approved}">
-                                    @{{ tutor.approved ? 'одобрено' : 'не одобрено' }}
+                                <div class="tutor-state tutor-state-@{{ tutor.state }}">
+                                    @{{ TutorStates[tutor.state] }}
                                 </div>
                             </div>
                         </div>

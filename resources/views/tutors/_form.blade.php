@@ -39,8 +39,8 @@
             </div>
         </div>
         <div class="form-group">
-            <div class="tutor-approved" ng-class="{'not-approved': !tutor.approved}" ng-click="tutor.approved = !tutor.approved">
-                @{{ tutor.approved ? 'одобрено' : 'не одобрено' }}
+            <div class="tutor-state tutor-state-@{{ tutor.state }}" ng-click="toggleEnum(tutor, 'state', TutorStates, [3, 5], [108])">
+                @{{ TutorStates[tutor.state] }}
             </div>
         </div>
     </div>

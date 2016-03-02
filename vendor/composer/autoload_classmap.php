@@ -22,6 +22,7 @@ return array(
     'ChangeRequestStatuses' => $baseDir . '/database/migrations/2016_02_18_223244_change_request_statuses.php',
     'ChangeSubjectIdToSubjects' => $baseDir . '/database/migrations/2016_02_19_191241_change_subject_id_to_subjects.php',
     'ChangeSubjectIdToSubjectsType' => $baseDir . '/database/migrations/2016_02_19_191427_change_subject_id_to_subjects_type.php',
+    'ChangeTeachersApprovedColumn' => $baseDir . '/database/migrations/2016_03_02_190806_change_teachers_approved_column.php',
     'ClientsSeeder' => $baseDir . '/database/seeds/ClientsSeeder.php',
     'CreateAccountDatasTable' => $baseDir . '/database/migrations/2016_02_25_164512_create_account_datas_table.php',
     'CreateAccountsTable' => $baseDir . '/database/migrations/2016_02_25_111853_create_accounts_table.php',

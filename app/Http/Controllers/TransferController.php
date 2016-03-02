@@ -498,6 +498,38 @@ class TransferController extends Controller
 		return view();
 	}
 
+	public function getTutorStatuses(Request $request)
+	{
+		$teachers = static::_getTeachers($request);
+		$updated = 0;
+		foreach ($teachers as $teacher) {
+			$tutor = Tutor::where('id_a_pers', $teacher->id);
+			// если преподавателя нет в базе
+			if (!$tutor->exists()) {
+				$state = null;
+
+				if ($teacher->status_verified == 4 && ($teacher->fill_status == 3 || $teacher->fill_status == 6)) {
+					$state = 4; // почти одобрено
+				}
+
+				if ($teacher->status_verified == 1 && $teacher->fill_status == 4) {
+					$state = 3; // закрыто
+				}
+
+				if ($teacher->status_verified == 2 && $teacher->fill_status == 4) {
+					$state = 2; // почти закрыто
+				}
+
+				if ($state !== null) {
+					$updated++;
+					$tutor->update(['state' => $state]);
+				}
+			}
+		}
+		dd($updated);
+		return view();
+	}
+
 	private static function _getUserId($oldcrm_user_id)
 	{
 		if (@static::CO_USER_REAL[$oldcrm_user_id] !== null) {
