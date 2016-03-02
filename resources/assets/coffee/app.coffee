@@ -26,10 +26,10 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
 
           # skip_values – какие значения в enum пропускать
           # allowed_user_ids – пользователи, которым разрешено выбирать значения
-        $rootScope.toggleEnum = (ngModel, status, ngEnum, skip_values = [], allowed_user_ids = []) ->
+        $rootScope.toggleEnum = (ngModel, status, ngEnum, skip_values = [], allowed_user_ids = [], recursion = false) ->
             # если установлено значение, которое пропускается для обычных пользователей,
             # то запрещать его смену
-            return if parseInt(ngModel[status]) in skip_values and $rootScope.$$childHead.user.id not in allowed_user_ids
+            return if not recursion and parseInt(ngModel[status]) in skip_values and $rootScope.$$childHead.user.id not in allowed_user_ids
 
             statuses = Object.keys(ngEnum)
             status_id = statuses.indexOf ngModel[status].toString()
@@ -37,7 +37,7 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
             status_id = 0 if status_id > (statuses.length - 1)
             ngModel[status] = statuses[status_id]
             # if in skip_values
-            $rootScope.toggleEnum(ngModel, status, ngEnum, skip_values) if status_id in skip_values and $rootScope.$$childHead.user.id not in allowed_user_ids
+            $rootScope.toggleEnum(ngModel, status, ngEnum, skip_values, true) if status_id in skip_values and $rootScope.$$childHead.user.id not in allowed_user_ids
 
         $rootScope.formatDateTime = (date) ->
             moment(date).format "DD.MM.YY в HH:mm"
