@@ -8,7 +8,7 @@ class User extends Model
 {
     protected $connection = 'egecrm';
 
-    protected $fillable = ['login', 'password'];
+    protected $fillable = ['login', 'password', 'color', 'type'];
     public $timestamps = false;
 
     # ID of the last real user
