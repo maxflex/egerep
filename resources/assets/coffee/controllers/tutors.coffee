@@ -80,6 +80,7 @@ angular
                 minCropBoxWidth: 120
                 minCropBoxHeight: 150
                 preview: '.img-preview'
+                zoomable: false
                 viewMode: 1
                 crop: (e) ->
                     width = $('#photo-edit').cropper('getCropBoxData').width
