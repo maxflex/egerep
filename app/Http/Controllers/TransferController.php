@@ -500,7 +500,14 @@ class TransferController extends Controller
 
 	public function getTutorStatuses(Request $request)
 	{
-		$teachers = static::_getTeachers($request);
+		extract($request->input());
+ 		$teachers = \DB::connection('egerep')->select("
+			select id, fill_status, status_verified
+			from repetitors
+			where fill_status IN (3, 4, 6) and status_verified IN (1, 2, 4)
+			limit {$limit} offset {$offset}
+		");
+
 		$updated = 0;
 		foreach ($teachers as $teacher) {
 			$tutor = Tutor::where('id_a_pers', $teacher->id);
