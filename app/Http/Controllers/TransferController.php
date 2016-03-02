@@ -505,7 +505,7 @@ class TransferController extends Controller
 		foreach ($teachers as $teacher) {
 			$tutor = Tutor::where('id_a_pers', $teacher->id);
 			// если преподавателя нет в базе
-			if (!$tutor->exists()) {
+			if ($tutor->exists()) {
 				$state = null;
 
 				if ($teacher->status_verified == 4 && ($teacher->fill_status == 3 || $teacher->fill_status == 6)) {
