@@ -10,6 +10,7 @@ use App\Models\Tutor;
 use App\Models\User;
 use App\Models\Metro;
 use App\Models\Api;
+use App\Models\Comment;
 use Carbon\Carbon;
 
 class TransferController extends Controller
@@ -82,6 +83,74 @@ class TransferController extends Controller
         87 => 1217,
         88 => 1218,
     ];
+
+	// Соответствия пользователей в реальной базе
+	// в старой базе => в новой базе
+	const CO_USER_REAL = [
+		12 => 1304,
+		13 => 1305,
+		20 => 1306,
+		35 => 1307,
+		26 => 1308,
+		28 => 1309,
+		30 => 1310,
+		40 => 1311,
+		46 => 1312,
+		43 => 1313,
+		48 => 1314,
+		49 => 1315,
+		50 => 1316,
+		57 => 1317,
+		58 => 1318,
+		55 => 1319,
+		60 => 1320,
+		62 => 1321,
+		63 => 1322,
+		66 => 1323,
+		70 => 1324,
+		72 => 1325,
+		75 => 1326,
+		73 => 1327,
+		67 => 1328,
+		74 => 1329,
+		76 => 1330,
+		78 => 1331,
+		82 => 1332,
+		80 => 1333,
+		84 => 1334,
+		85 => 1335,
+		81 => 1336,
+		89 => 1337,
+		91 => 1338,
+		86 => 1339,
+		87 => 1340,
+		88 => 1341,
+		100 => 1342,
+		104 => 1343,
+		95 => 1344,
+		96 => 1345,
+		97 => 1346,
+		109 => 1347,
+		102 => 1348,
+		99 => 1349,
+		98 => 1350,
+		106 => 1351,
+		108 => 1352,
+		113 => 1353,
+		115 => 1354,
+		120 => 1355,
+		119 => 106,
+		118 => 1356,
+		117 => 1357,
+		125 => 1358,
+		123 => 104,
+		114 => 108,
+		116 => 1359,
+		121 => 1360,
+		122 => 1361,
+		124 => 102,
+		126 => 100
+	];
 
     /**
      * Перенести всех преподавателей (+фио)
@@ -395,6 +464,30 @@ class TransferController extends Controller
         dd($correspondence);
         return view();
     }
+
+	/**
+	 * Перенести комментарии преподавателей
+	 * @important: перед переносом добавить pulic $timestamps = false; protected $fillable = [..., 'created_at'] в Comment.php
+	 */
+	public function getTeacherComments(Request $request)
+	{
+		extract($request->input());
+		$comments = \DB::connection('egerep')->select("select * from repetitor_comments limit {$limit} offset {$offset}");
+
+		$comments_transfered = 0;
+		foreach ($comments as $comment) {
+			$tutor_id = Tutor::where('id_a_pers', $comment->repetitor_id)->pluck('id')->first();
+			if ($tutor_id > 0) {
+				Comment::create([
+					'user_id' 		=> static::CO_USER_REAL[$comment->user_id],
+					'entity_id'		=> $tutor_id,
+					'entity_type'	=> 'tutor',
+					'comment'		=> $comment->text,
+					'created_at'	=> $comment->time,
+				]);
+			}
+		}
+	}
 
 	public static function _getTeachers($request)
 	{
