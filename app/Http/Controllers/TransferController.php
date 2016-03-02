@@ -479,7 +479,7 @@ class TransferController extends Controller
 			$tutor_id = Tutor::where('id_a_pers', $comment->repetitor_id)->pluck('id')->first();
 			if ($tutor_id > 0) {
 				Comment::create([
-					'user_id' 		=> static::CO_USER_REAL[$comment->user_id],
+					'user_id' 		=> static::_getUserId($comment->user_id),
 					'entity_id'		=> $tutor_id,
 					'entity_type'	=> 'tutor',
 					'comment'		=> $comment->text,
@@ -489,7 +489,16 @@ class TransferController extends Controller
 		}
 	}
 
-	public static function _getTeachers($request)
+	private static function _getUserId($oldcrm_user_id)
+	{
+		if (isset(static::CO_USER_REAL[$oldcrm_user_id])) {
+			return static::CO_USER_REAL[$oldcrm_user_id];
+		} else {
+			return $oldcrm_user_id;
+		}
+	}
+
+	private static function _getTeachers($request)
 	{
 		extract($request->input());
  		return \DB::connection('egerep')->select("select * from repetitors limit {$limit} offset {$offset}");
