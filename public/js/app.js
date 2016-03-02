@@ -37,7 +37,7 @@
       if (allowed_user_ids == null) {
         allowed_user_ids = [];
       }
-      if ((ref = ngModel[status], indexOf.call(skip_values, ref) >= 0) && (ref1 = $rootScope.$$childHead.user.id, indexOf.call(allowed_user_ids, ref1) < 0)) {
+      if ((ref = parseInt(ngModel[status]), indexOf.call(skip_values, ref) >= 0) && (ref1 = $rootScope.$$childHead.user.id, indexOf.call(allowed_user_ids, ref1) < 0)) {
         return;
       }
       statuses = Object.keys(ngEnum);
