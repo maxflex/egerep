@@ -478,6 +478,7 @@ class TransferController extends Controller
 		foreach ($comments as $comment) {
 			$tutor_id = Tutor::where('id_a_pers', $comment->repetitor_id)->pluck('id')->first();
 			if ($tutor_id > 0) {
+				$comments_transfered++;
 				Comment::create([
 					'user_id' 		=> static::_getUserId($comment->user_id),
 					'entity_id'		=> $tutor_id,
@@ -487,11 +488,13 @@ class TransferController extends Controller
 				]);
 			}
 		}
+		dd($comments_transfered);
+		return view();
 	}
 
 	private static function _getUserId($oldcrm_user_id)
 	{
-		if (isset(static::CO_USER_REAL[$oldcrm_user_id])) {
+		if (@static::CO_USER_REAL[$oldcrm_user_id] !== null) {
 			return static::CO_USER_REAL[$oldcrm_user_id];
 		} else {
 			return $oldcrm_user_id;
