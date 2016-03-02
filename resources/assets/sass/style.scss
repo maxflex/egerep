@@ -22,10 +22,37 @@
 	$half_black			: rgba(0, 0, 0, .5);
 	$quater_black 		: rgba(0, 0, 0, .25);
 
+	.list-group-item.active {
+		color: white !important;
+	}
+	
+	.pagination > li > a:focus, .pagination > li > a:hover, .pagination > li > span:focus, .pagination > li > span:hover {
+		color: darken($green_main, 10) !important;
+	}
 
 	// new bootstrap
 	a {
-		color: $blue;
+		color: $green_main;
+		&:hover {
+			color: darken($green_main, 10) !important;
+		}
+	}
+
+	.tutor-list-comment {
+		height: 18px;
+		padding: 0;
+	}
+
+	#tutorList.table-divlike {
+	    & tr:not(:last-child) {
+	      border-bottom: 1px solid #ddd;
+	      padding-bottom: 3px;
+	      padding-top: 3px;
+	    }
+
+	    & tr td {
+	        padding: 7px 0!important;
+	    }
 	}
 
 	#photo-edit {
@@ -2299,11 +2326,11 @@ white-space: nowrap;
 }
 
 .link-like {
-    color: #337ab7;
+    color: $green_main;
     text-decoration: none;
     cursor: pointer;
     &:hover {
-	    color: #23527c;
+	    color: darken($green_main, 10);
 	    text-decoration: underline;
 	}
 

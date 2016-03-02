@@ -509,7 +509,6 @@ return array(
     'PHP_Token_YIELD_FROM' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'RenameAttachmentColumns' => $baseDir . '/database/migrations/2016_02_21_195713_rename_attachment_columns.php',
     'RenameIndex' => $baseDir . '/database/migrations/2016_02_19_134331_rename_index.php',
-    'RenamePhotoField' => $baseDir . '/database/migrations/2016_03_01_172747_rename_photo_field.php',
     'RequestsSeeder' => $baseDir . '/database/seeds/RequestsSeeder.php',
     'SebastianBergmann\\Comparator\\ArrayComparator' => $vendorDir . '/sebastian/comparator/src/ArrayComparator.php',
     'SebastianBergmann\\Comparator\\Comparator' => $vendorDir . '/sebastian/comparator/src/Comparator.php',

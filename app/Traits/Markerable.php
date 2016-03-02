@@ -23,6 +23,11 @@
 
         private function _saveMarkers()
         {
+            // Пересохраняем маркеры лишь в том случае, если они были изменены
+            if (is_object($this->markers)) {
+                return;
+            }
+
             $this->markers()->delete();
             foreach ($this->markers as $data) {
                 $new_marker = $this->markers()->create($data);

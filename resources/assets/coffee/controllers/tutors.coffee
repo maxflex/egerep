@@ -10,7 +10,21 @@ angular
     #
     #   LIST CONTROLLER
     #
-    .controller "TutorsIndex", ($scope, $rootScope, $timeout, $http, Tutor) ->
+    .controller "TutorsIndex", ($scope, $rootScope, $timeout, $http, Tutor, User, UserService) ->
+        # @check
+        $scope.Tutor = Tutor
+        $scope.UserService = UserService
+
+        $scope.users = User.query ->
+            $scope.users.unshift
+                login: 'system'
+                color: '#999999'
+                id: 0
+
+        $scope.yearDifference = (year) ->
+            moment().format("YYYY") - year
+        # @end
+
         $rootScope.frontend_loading = true
 
         $timeout ->
@@ -27,6 +41,41 @@ angular
                     $rootScope.frontendStop()
                     $scope.data = response.data
                     $scope.tutors = $scope.data.data
+
+        # @check
+        $scope.blurComment = (tutor) ->
+            tutor.is_being_commented = false
+            tutor.list_comment = tutor.old_list_comment
+
+        $scope.focusComment = (tutor) ->
+            tutor.is_being_commented = true
+            tutor.old_list_comment = tutor.list_comment
+
+        $scope.startComment = (tutor) ->
+            tutor.is_being_commented = true
+            tutor.old_list_comment = tutor.list_comment
+            $timeout ->
+                $("#list-comment-#{tutor.id}").focus()
+
+        $scope.saveComment =  (event, tutor) ->
+            if event.keyCode is 13
+                Tutor.update
+                    id: tutor.id
+                    list_comment: tutor.list_comment
+                , (response) ->
+                    tutor.old_list_comment = tutor.list_comment
+                    $(event.target).blur()
+
+        $scope.toggleResponsibleUser = (tutor) ->
+            new_user = _.find $scope.users, (user) ->
+                user.id > tutor.responsible_user_id
+            # if toggled to the last user, start the loop over | SYSTEM USER INSTEAD
+            new_user = $scope.users[0] if new_user is undefined
+            tutor.responsible_user_id = new_user.id
+            Tutor.update
+                id: tutor.id
+                responsible_user_id: new_user.id
+        # @end
 
         # $scope.$watch 'current_page', (newVal, oldVal) ->
         #     return if newVal is undefined

@@ -26978,8 +26978,28 @@ md-tooltip {
   -webkit-animation-name: slideOutUp;
   animation-name: slideOutUp; }
 
+.list-group-item.active {
+  color: white !important; }
+
+.pagination > li > a:focus, .pagination > li > a:hover, .pagination > li > span:focus, .pagination > li > span:hover {
+  color: #0e6238 !important; }
+
 a {
-  color: #337AB7; }
+  color: #158E51; }
+  a:hover {
+    color: #0e6238 !important; }
+
+.tutor-list-comment {
+  height: 18px;
+  padding: 0; }
+
+#tutorList.table-divlike tr:not(:last-child) {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 3px;
+  padding-top: 3px; }
+
+#tutorList.table-divlike tr td {
+  padding: 7px 0 !important; }
 
 #photo-edit {
   max-width: 100%;
@@ -28832,11 +28852,11 @@ md-input-container textarea {
   margin: 0; }
 
 .link-like {
-  color: #337ab7;
+  color: #158E51;
   text-decoration: none;
   cursor: pointer; }
   .link-like:hover {
-    color: #23527c;
+    color: #0e6238;
     text-decoration: underline; }
   .link-like.red {
     color: #a94442; }

@@ -690,8 +690,20 @@
       male: 'Мужской',
       female: 'Женский'
     };
-  }).controller("TutorsIndex", function($scope, $rootScope, $timeout, $http, Tutor) {
+  }).controller("TutorsIndex", function($scope, $rootScope, $timeout, $http, Tutor, User, UserService) {
     var loadTutors;
+    $scope.Tutor = Tutor;
+    $scope.UserService = UserService;
+    $scope.users = User.query(function() {
+      return $scope.users.unshift({
+        login: 'system',
+        color: '#999999',
+        id: 0
+      });
+    });
+    $scope.yearDifference = function(year) {
+      return moment().format("YYYY") - year;
+    };
     $rootScope.frontend_loading = true;
     $timeout(function() {
       loadTutors($scope.page);
@@ -701,11 +713,51 @@
       loadTutors($scope.current_page);
       return paginate('tutors', $scope.current_page);
     };
-    return loadTutors = function(page) {
+    loadTutors = function(page) {
       return $http.get('api/tutors?page=' + page).then(function(response) {
         $rootScope.frontendStop();
         $scope.data = response.data;
         return $scope.tutors = $scope.data.data;
+      });
+    };
+    $scope.blurComment = function(tutor) {
+      tutor.is_being_commented = false;
+      return tutor.list_comment = tutor.old_list_comment;
+    };
+    $scope.focusComment = function(tutor) {
+      tutor.is_being_commented = true;
+      return tutor.old_list_comment = tutor.list_comment;
+    };
+    $scope.startComment = function(tutor) {
+      tutor.is_being_commented = true;
+      tutor.old_list_comment = tutor.list_comment;
+      return $timeout(function() {
+        return $("#list-comment-" + tutor.id).focus();
+      });
+    };
+    $scope.saveComment = function(event, tutor) {
+      if (event.keyCode === 13) {
+        return Tutor.update({
+          id: tutor.id,
+          list_comment: tutor.list_comment
+        }, function(response) {
+          tutor.old_list_comment = tutor.list_comment;
+          return $(event.target).blur();
+        });
+      }
+    };
+    return $scope.toggleResponsibleUser = function(tutor) {
+      var new_user;
+      new_user = _.find($scope.users, function(user) {
+        return user.id > tutor.responsible_user_id;
+      });
+      if (new_user === void 0) {
+        new_user = $scope.users[0];
+      }
+      tutor.responsible_user_id = new_user.id;
+      return Tutor.update({
+        id: tutor.id,
+        responsible_user_id: new_user.id
       });
     };
   }).controller("TutorsForm", function($scope, $rootScope, $timeout, $interval, Tutor, SvgMap, Subjects, Grades, ApiService) {
@@ -1021,100 +1073,6 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').value('DebtTypes', {
-    0: 'не доплатил',
-    1: 'переплатил'
-  }).value('PaymentMethods', {
-    0: 'не установлено',
-    1: 'стандартный расчет',
-    2: 'яндекс.деньги',
-    3: 'перевод на сотовый',
-    4: 'перевод на карту'
-  }).value('RequestStates', {
-    "new": 'невыполненные',
-    awaiting: 'в ожидании',
-    finished: 'выполненные',
-    deny: 'отказы'
-  }).value('ArchiveStates', {
-    impossible: 'невозможно',
-    possible: 'возможно'
-  }).value('ReviewStates', {
-    unpublished: 'не опубликован',
-    published: 'опубликован'
-  }).value('ReviewScores', {
-    1: 1,
-    2: 2,
-    3: 3,
-    4: 4,
-    5: 5,
-    6: 6,
-    7: 7,
-    8: 8,
-    9: 9,
-    10: 10,
-    11: 'не берет',
-    12: 'не помнит',
-    13: 'недоступен',
-    14: 'позвонить позже'
-  }).value('Grades', {
-    1: '1 класс',
-    2: '2 класс',
-    3: '3 класс',
-    4: '4 класс',
-    5: '5 класс',
-    6: '6 класс',
-    7: '7 класс',
-    8: '8 класс',
-    9: '9 класс',
-    10: '10 класс',
-    11: '11 класс',
-    12: 'студенты',
-    13: 'остальные'
-  }).value('Subjects', {
-    all: {
-      1: 'математика',
-      2: 'физика',
-      3: 'химия',
-      4: 'биология',
-      5: 'информатика',
-      6: 'русский',
-      7: 'литература',
-      8: 'обществознание',
-      9: 'история',
-      10: 'английский'
-    },
-    full: {
-      1: 'Математика',
-      2: 'Физика',
-      3: 'Химия',
-      4: 'Биология',
-      5: 'Информатика',
-      6: 'Русский язык',
-      7: 'Литература',
-      8: 'Обществознание',
-      9: 'История',
-      10: 'Английский язык'
-    },
-    dative: {
-      1: 'математике',
-      2: 'физике',
-      3: 'химии',
-      4: 'биологии',
-      5: 'информатике',
-      6: 'русскому языку',
-      7: 'литературе',
-      8: 'обществознанию',
-      9: 'истории',
-      10: 'английскому языку'
-    },
-    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
-    three_letters: ['МАТ', 'ФИЗ', 'РУС', 'ЛИТ', 'АНГ', 'ИСТ', 'ОБЩ', 'ХИМ', 'БИО', 'ИНФ'],
-    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
-  });
-
-}).call(this);
-
-(function() {
   angular.module('Egerep').directive('comments', function() {
     return {
       restrict: 'E',
@@ -1352,6 +1310,100 @@
 }).call(this);
 
 (function() {
+  angular.module('Egerep').value('DebtTypes', {
+    0: 'не доплатил',
+    1: 'переплатил'
+  }).value('PaymentMethods', {
+    0: 'не установлено',
+    1: 'стандартный расчет',
+    2: 'яндекс.деньги',
+    3: 'перевод на сотовый',
+    4: 'перевод на карту'
+  }).value('RequestStates', {
+    "new": 'невыполненные',
+    awaiting: 'в ожидании',
+    finished: 'выполненные',
+    deny: 'отказы'
+  }).value('ArchiveStates', {
+    impossible: 'невозможно',
+    possible: 'возможно'
+  }).value('ReviewStates', {
+    unpublished: 'не опубликован',
+    published: 'опубликован'
+  }).value('ReviewScores', {
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+    6: 6,
+    7: 7,
+    8: 8,
+    9: 9,
+    10: 10,
+    11: 'не берет',
+    12: 'не помнит',
+    13: 'недоступен',
+    14: 'позвонить позже'
+  }).value('Grades', {
+    1: '1 класс',
+    2: '2 класс',
+    3: '3 класс',
+    4: '4 класс',
+    5: '5 класс',
+    6: '6 класс',
+    7: '7 класс',
+    8: '8 класс',
+    9: '9 класс',
+    10: '10 класс',
+    11: '11 класс',
+    12: 'студенты',
+    13: 'остальные'
+  }).value('Subjects', {
+    all: {
+      1: 'математика',
+      2: 'физика',
+      3: 'химия',
+      4: 'биология',
+      5: 'информатика',
+      6: 'русский',
+      7: 'литература',
+      8: 'обществознание',
+      9: 'история',
+      10: 'английский'
+    },
+    full: {
+      1: 'Математика',
+      2: 'Физика',
+      3: 'Химия',
+      4: 'Биология',
+      5: 'Информатика',
+      6: 'Русский язык',
+      7: 'Литература',
+      8: 'Обществознание',
+      9: 'История',
+      10: 'Английский язык'
+    },
+    dative: {
+      1: 'математике',
+      2: 'физике',
+      3: 'химии',
+      4: 'биологии',
+      5: 'информатике',
+      6: 'русскому языку',
+      7: 'литературе',
+      8: 'обществознанию',
+      9: 'истории',
+      10: 'английскому языку'
+    },
+    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
+    three_letters: ['МАТ', 'ФИЗ', 'РУС', 'ЛИТ', 'АНГ', 'ИСТ', 'ОБЩ', 'ХИМ', 'БИО', 'ИНФ'],
+    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
+  });
+
+}).call(this);
+
+(function() {
   var apiPath, updateMethod;
 
   angular.module('Egerep').factory('Account', function($resource) {
@@ -1539,6 +1591,18 @@
     this.save = function() {
       $('#svg-modal').modal('hide');
       return this.map.save();
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('UserService', function() {
+    this.getUser = function(user_id, users) {
+      return _.findWhere(users, {
+        id: parseInt(user_id)
+      });
     };
     return this;
   });

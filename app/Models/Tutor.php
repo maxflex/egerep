@@ -48,7 +48,9 @@ class Tutor extends Model
 		'subjects',
 		'grades',
 		'id_a_pers',
-		'departure_price'
+		'departure_price',
+        'list_comment',
+        'responsible_user_id',
     ];
     protected $appends = ['has_photo_original', 'has_photo_cropped'];
     protected $with = ['markers'];
