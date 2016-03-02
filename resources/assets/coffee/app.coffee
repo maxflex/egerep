@@ -27,6 +27,10 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
           # skip_values – какие значения в enum пропускать
           # allowed_user_ids – пользователи, которым разрешено выбирать значения
         $rootScope.toggleEnum = (ngModel, status, ngEnum, skip_values = [], allowed_user_ids = []) ->
+            # если установлено значение, которое пропускается для обычных пользователей,
+            # то запрещать его смену
+            return if ngModel[status] in skip_values and $rootScope.$$childHead.user.id not in allowed_user_ids
+
             statuses = Object.keys(ngEnum)
             status_id = statuses.indexOf ngModel[status].toString()
             status_id++
