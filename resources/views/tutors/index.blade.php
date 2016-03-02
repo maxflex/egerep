@@ -22,7 +22,7 @@
 		<td style="width:300px"><a href='tutors/@{{ tutor.id }}/edit'>@{{ tutor.full_name }}</a></td>
 		<td style="width:100px">@{{ tutor.approved ? "одобрено" : "с сайта" }}</td>
 		<td style="width:100px">
-            <span ng-show='tutor.birth_year'>
+            <span ng-show='tutor.birth_year > 999'>
                 @{{ yearDifference(tutor.birth_year) }} <ng-pluralize count="yearDifference(tutor.birth_year)" when="{
                     'one': 'год',
                     'few': 'года',
