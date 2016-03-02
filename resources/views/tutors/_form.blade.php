@@ -10,14 +10,14 @@
              <img id='image' src="img/photo/@{{ tutor.has_photo ? tutor.photo : 'no-profile-img.gif' }}">
         </div> --}}
         <div class="form-group">
-            <div class="tutor-img" ng-class="{'border-transparent': tutor.has_photo_cropped}" ng-click="dialog('change-photo')">
+            <div class="tutor-img" ng-class="{'border-transparent': tutor.has_photo_cropped}" ng-click="showPhotoEditor()">
                 <div>
                     изменить фото
                 </div>
                 <span class="btn-file">
                     {{-- <input name="tutor_photo" type="file" id="fileupload" data-url="upload/tutor/" accept="image/jpg"> --}}
                 </span>
-                <img src="img/tutors/@{{ tutor.has_photo_cropped ? tutor.id + '@2x.' + tutor.photo_extension : 'no-profile-img.gif' }}?ver=@{{ picture_version }}">
+                <img ng-if='tutor.id' src="img/tutors/@{{ tutor.has_photo_cropped ? tutor.id + '@2x.' + tutor.photo_extension : 'no-profile-img.gif' }}?ver=@{{ picture_version }}">
             </div>
         </div>
         <div class="form-group">

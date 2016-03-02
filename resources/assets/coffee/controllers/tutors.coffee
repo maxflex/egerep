@@ -49,12 +49,14 @@ angular
                 formData = new FormData
                 formData.append 'croppedImage', blob
                 formData.append 'tutor_id', $scope.tutor.id
+                ajaxStart()
                 $.ajax 'upload/cropped',
                     method: 'POST'
                     data: formData
                     processData: false
                     contentType: false
                     success: ->
+                        ajaxEnd()
                         $scope.tutor.has_photo_cropped = true
                         $scope.picture_version++
                         $scope.$apply()
@@ -70,6 +72,13 @@ angular
                 minCropBoxHeight: 150
                 preview: '.img-preview'
                 viewMode: 1
+                crop: (e) ->
+                    width = $('#photo-edit').cropper('getCropBoxData').width
+                    if width >= 240
+                        $('.cropper-line, .cropper-point').css 'background-color', '#158E51'
+                    else
+                        $('.cropper-line, .cropper-point').css 'background-color', '#D9534F'
+                        # $('.cropper-line, .cropper-point').css 'background-color', '#39f'
 
         $scope.picture_version = 1;
         bindFileUpload = ->
@@ -99,6 +108,15 @@ angular
                     $scope.$apply()
                     bindCropper()
         		,
+
+        # show photo editor
+        $scope.showPhotoEditor = ->
+            $scope.dialog('change-photo')
+
+            # rare bug fix
+            $timeout ->
+                $('#photo-edit').cropper 'resize'
+            , 100
 
         # get tutor
         $timeout ->

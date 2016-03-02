@@ -65,414 +65,6 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').directive('comments', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/comments',
-      scope: {
-        user: '=',
-        entityId: '=',
-        entityType: '@'
-      },
-      controller: function($scope, $timeout, Comment) {
-        $scope.$watch('entityId', function(newVal, oldVal) {
-          return $scope.comments = Comment.query({
-            entity_type: $scope.entityType,
-            entity_id: newVal
-          });
-        });
-        $scope.formatDateTime = function(date) {
-          return moment(date).format("DD.MM.YY в HH:mm");
-        };
-        $scope.startCommenting = function(event) {
-          $scope.start_commenting = true;
-          return $timeout(function() {
-            return $(event.target).parent().find('input').focus();
-          });
-        };
-        $scope.endCommenting = function() {
-          $scope.comment = '';
-          return $scope.start_commenting = false;
-        };
-        $scope.remove = function(comment) {
-          $scope.comments = _.without($scope.comments, _.findWhere($scope.comments, {
-            id: comment.id
-          }));
-          return comment.$remove();
-        };
-        $scope.edit = function(comment, event) {
-          var element, old_text;
-          old_text = comment.comment;
-          element = $(event.target);
-          element.unbind('keydown').unbind('blur');
-          element.attr('contenteditable', 'true').focus().on('keydown', function(e) {
-            console.log(old_text);
-            if (e.keyCode === 13) {
-              $(this).removeAttr('contenteditable').blur();
-              comment.comment = $(this).text();
-              comment.$update();
-            }
-            if (e.keyCode === 27) {
-              return $(this).blur();
-            }
-          }).on('blur', function(e) {
-            if (element.attr('contenteditable')) {
-              console.log(old_text);
-              return element.removeAttr('contenteditable').html(old_text);
-            }
-          });
-        };
-        return $scope.submitComment = function(event) {
-          var new_comment;
-          if (event.keyCode === 13) {
-            new_comment = new Comment({
-              comment: $scope.comment,
-              user_id: $scope.user.id,
-              entity_id: $scope.entityId,
-              entity_type: $scope.entityType
-            });
-            new_comment.$save().then(function(response) {
-              console.log(response);
-              new_comment.user = $scope.user;
-              new_comment.id = response.id;
-              return $scope.comments.push(new_comment);
-            });
-            $scope.endCommenting();
-          }
-          if (event.keyCode === 27) {
-            return $(event.target).blur();
-          }
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('email', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/email',
-      scope: {
-        address: '='
-      },
-      controller: function($scope) {
-        return $scope.send = function() {
-          return $('#email-modal').modal('show');
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('metroList', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/metro-list',
-      scope: {
-        markers: '='
-      },
-      controller: function($scope) {
-        $scope.short = function(title) {
-          return title.slice(0, 3).toUpperCase();
-        };
-        return $scope.minutes = function(minutes) {
-          return Math.round(minutes);
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('phones', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/phones',
-      scope: {
-        entity: '='
-      },
-      controller: function($scope, $timeout, $rootScope) {
-        $rootScope.dataLoaded.promise.then(function(data) {
-          return $scope.level = $scope.entity.phone3 ? 3 : $scope.entity.phone2 ? 2 : 1;
-        });
-        $scope.nextLevel = function() {
-          return $scope.level++;
-        };
-        $scope.phoneMaskControl = function(event) {
-          var el, phone_id;
-          el = $(event.target);
-          phone_id = el.attr('ng-model').split('.')[1];
-          return $scope.entity[phone_id] = $(event.target).val();
-        };
-        $scope.isFull = function(number) {
-          if (number === void 0 || number === "") {
-            return false;
-          }
-          return !number.match(/_/);
-        };
-        $scope.isMobile = function(number) {
-          return parseInt(number[4]) === 9 || parseInt(number[1]) === 9;
-        };
-        $scope.sms = function(number) {
-          $('#sms-modal').modal('show');
-          return $scope.$parent.sms_number = number;
-        };
-        return $scope.call = function(number) {
-          return location.href = "sip:" + number.replace(/[^0-9]/g, '');
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('ngSelect', function() {
-    return {
-      restrict: 'E',
-      replace: true,
-      scope: {
-        object: '=',
-        model: '=',
-        title: '@'
-      },
-      templateUrl: 'directives/ngselect',
-      controller: function($scope, $element, $attrs, $timeout) {
-        $scope.title = $attrs.title;
-        $scope.multiple = $attrs.hasOwnProperty('multiple');
-        return $scope.$watch('model', function(newVal, oldVal) {
-          console.log(newVal, oldVal);
-          if (newVal === void 0) {
-            return;
-          }
-          if (oldVal === void 0) {
-            spe($element, 'предмет');
-          }
-          if (oldVal !== void 0) {
-            return spRefresh($element);
-          }
-        });
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('sms', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/sms',
-      scope: {
-        number: '='
-      },
-      controller: function($scope, $timeout, Sms) {
-        $scope.mass = false;
-        $scope.smsCount = function() {
-          return SmsCounter.count($scope.message || '').messages;
-        };
-        $scope.send = function() {
-          var sms;
-          if ($scope.message) {
-            sms = new Sms({
-              message: $scope.message,
-              to: $scope.number,
-              mass: $scope.mass
-            });
-            return sms.$save();
-          }
-        };
-        return $scope.$watch('number', function(newVal, oldVal) {
-          console.log($scope.$parent.formatDateTime($scope.created_at));
-          if (newVal) {
-            return $scope.history = Sms.query({
-              number: newVal
-            });
-          }
-        });
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').value('DebtTypes', {
-    0: 'не доплатил',
-    1: 'переплатил'
-  }).value('PaymentMethods', {
-    0: 'не установлено',
-    1: 'стандартный расчет',
-    2: 'яндекс.деньги',
-    3: 'перевод на сотовый',
-    4: 'перевод на карту'
-  }).value('RequestStates', {
-    "new": 'невыполненные',
-    awaiting: 'в ожидании',
-    finished: 'выполненные',
-    deny: 'отказы'
-  }).value('ArchiveStates', {
-    impossible: 'невозможно',
-    possible: 'возможно'
-  }).value('ReviewStates', {
-    unpublished: 'не опубликован',
-    published: 'опубликован'
-  }).value('ReviewScores', {
-    1: 1,
-    2: 2,
-    3: 3,
-    4: 4,
-    5: 5,
-    6: 6,
-    7: 7,
-    8: 8,
-    9: 9,
-    10: 10,
-    11: 'не берет',
-    12: 'не помнит',
-    13: 'недоступен',
-    14: 'позвонить позже'
-  }).value('Grades', {
-    1: '1 класс',
-    2: '2 класс',
-    3: '3 класс',
-    4: '4 класс',
-    5: '5 класс',
-    6: '6 класс',
-    7: '7 класс',
-    8: '8 класс',
-    9: '9 класс',
-    10: '10 класс',
-    11: '11 класс',
-    12: 'студенты',
-    13: 'остальные'
-  }).value('Subjects', {
-    all: {
-      1: 'математика',
-      2: 'физика',
-      3: 'химия',
-      4: 'биология',
-      5: 'информатика',
-      6: 'русский',
-      7: 'литература',
-      8: 'обществознание',
-      9: 'история',
-      10: 'английский'
-    },
-    full: {
-      1: 'Математика',
-      2: 'Физика',
-      3: 'Химия',
-      4: 'Биология',
-      5: 'Информатика',
-      6: 'Русский язык',
-      7: 'Литература',
-      8: 'Обществознание',
-      9: 'История',
-      10: 'Английский язык'
-    },
-    dative: {
-      1: 'математике',
-      2: 'физике',
-      3: 'химии',
-      4: 'биологии',
-      5: 'информатике',
-      6: 'русскому языку',
-      7: 'литературе',
-      8: 'обществознанию',
-      9: 'истории',
-      10: 'английскому языку'
-    },
-    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
-    three_letters: ['МАТ', 'ФИЗ', 'РУС', 'ЛИТ', 'АНГ', 'ИСТ', 'ОБЩ', 'ХИМ', 'БИО', 'ИНФ'],
-    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
-  });
-
-}).call(this);
-
-(function() {
-  var apiPath, updateMethod;
-
-  angular.module('Egerep').factory('Account', function($resource) {
-    return $resource(apiPath('accounts'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Review', function($resource) {
-    return $resource(apiPath('reviews'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Archive', function($resource) {
-    return $resource(apiPath('archives'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Attachment', function($resource) {
-    return $resource(apiPath('attachments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('RequestList', function($resource) {
-    return $resource(apiPath('lists'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Request', function($resource) {
-    return $resource(apiPath('requests'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Sms', function($resource) {
-    return $resource(apiPath('sms'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Comment', function($resource) {
-    return $resource(apiPath('comments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Client', function($resource) {
-    return $resource(apiPath('clients'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('User', function($resource) {
-    return $resource(apiPath('users'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Tutor', function($resource) {
-    return $resource(apiPath('tutors'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      deletePhoto: {
-        url: apiPath('tutors', 'photo'),
-        method: 'DELETE'
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  });
-
-  apiPath = function(entity, additional) {
-    if (additional == null) {
-      additional = '';
-    }
-    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
-  };
-
-  updateMethod = function() {
-    return {
-      update: {
-        method: 'PUT'
-      }
-    };
-  };
-
-}).call(this);
-
-(function() {
   angular.module('Egerep').factory('Model', function($resource) {
     return $resource('api/models/:id', {}, {
       update: {
@@ -1137,12 +729,14 @@
         formData = new FormData;
         formData.append('croppedImage', blob);
         formData.append('tutor_id', $scope.tutor.id);
+        ajaxStart();
         return $.ajax('upload/cropped', {
           method: 'POST',
           data: formData,
           processData: false,
           contentType: false,
           success: function() {
+            ajaxEnd();
             $scope.tutor.has_photo_cropped = true;
             $scope.picture_version++;
             $scope.$apply();
@@ -1160,7 +754,16 @@
         minCropBoxWidth: 120,
         minCropBoxHeight: 150,
         preview: '.img-preview',
-        viewMode: 1
+        viewMode: 1,
+        crop: function(e) {
+          var width;
+          width = $('#photo-edit').cropper('getCropBoxData').width;
+          if (width >= 240) {
+            return $('.cropper-line, .cropper-point').css('background-color', '#158E51');
+          } else {
+            return $('.cropper-line, .cropper-point').css('background-color', '#D9534F');
+          }
+        }
       });
     };
     $scope.picture_version = 1;
@@ -1193,6 +796,12 @@
           return bindCropper();
         }
       });
+    };
+    $scope.showPhotoEditor = function() {
+      $scope.dialog('change-photo');
+      return $timeout(function() {
+        return $('#photo-edit').cropper('resize');
+      }, 100);
     };
     $timeout(function() {
       if ($scope.id > 0) {
@@ -1406,6 +1015,414 @@
     return $scope.saveMarkers = function() {
       return $('#gmap-modal').modal('hide');
     };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('comments', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/comments',
+      scope: {
+        user: '=',
+        entityId: '=',
+        entityType: '@'
+      },
+      controller: function($scope, $timeout, Comment) {
+        $scope.$watch('entityId', function(newVal, oldVal) {
+          return $scope.comments = Comment.query({
+            entity_type: $scope.entityType,
+            entity_id: newVal
+          });
+        });
+        $scope.formatDateTime = function(date) {
+          return moment(date).format("DD.MM.YY в HH:mm");
+        };
+        $scope.startCommenting = function(event) {
+          $scope.start_commenting = true;
+          return $timeout(function() {
+            return $(event.target).parent().find('input').focus();
+          });
+        };
+        $scope.endCommenting = function() {
+          $scope.comment = '';
+          return $scope.start_commenting = false;
+        };
+        $scope.remove = function(comment) {
+          $scope.comments = _.without($scope.comments, _.findWhere($scope.comments, {
+            id: comment.id
+          }));
+          return comment.$remove();
+        };
+        $scope.edit = function(comment, event) {
+          var element, old_text;
+          old_text = comment.comment;
+          element = $(event.target);
+          element.unbind('keydown').unbind('blur');
+          element.attr('contenteditable', 'true').focus().on('keydown', function(e) {
+            console.log(old_text);
+            if (e.keyCode === 13) {
+              $(this).removeAttr('contenteditable').blur();
+              comment.comment = $(this).text();
+              comment.$update();
+            }
+            if (e.keyCode === 27) {
+              return $(this).blur();
+            }
+          }).on('blur', function(e) {
+            if (element.attr('contenteditable')) {
+              console.log(old_text);
+              return element.removeAttr('contenteditable').html(old_text);
+            }
+          });
+        };
+        return $scope.submitComment = function(event) {
+          var new_comment;
+          if (event.keyCode === 13) {
+            new_comment = new Comment({
+              comment: $scope.comment,
+              user_id: $scope.user.id,
+              entity_id: $scope.entityId,
+              entity_type: $scope.entityType
+            });
+            new_comment.$save().then(function(response) {
+              console.log(response);
+              new_comment.user = $scope.user;
+              new_comment.id = response.id;
+              return $scope.comments.push(new_comment);
+            });
+            $scope.endCommenting();
+          }
+          if (event.keyCode === 27) {
+            return $(event.target).blur();
+          }
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('email', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/email',
+      scope: {
+        address: '='
+      },
+      controller: function($scope) {
+        return $scope.send = function() {
+          return $('#email-modal').modal('show');
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('metroList', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/metro-list',
+      scope: {
+        markers: '='
+      },
+      controller: function($scope) {
+        $scope.short = function(title) {
+          return title.slice(0, 3).toUpperCase();
+        };
+        return $scope.minutes = function(minutes) {
+          return Math.round(minutes);
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('phones', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/phones',
+      scope: {
+        entity: '='
+      },
+      controller: function($scope, $timeout, $rootScope) {
+        $rootScope.dataLoaded.promise.then(function(data) {
+          return $scope.level = $scope.entity.phone3 ? 3 : $scope.entity.phone2 ? 2 : 1;
+        });
+        $scope.nextLevel = function() {
+          return $scope.level++;
+        };
+        $scope.phoneMaskControl = function(event) {
+          var el, phone_id;
+          el = $(event.target);
+          phone_id = el.attr('ng-model').split('.')[1];
+          return $scope.entity[phone_id] = $(event.target).val();
+        };
+        $scope.isFull = function(number) {
+          if (number === void 0 || number === "") {
+            return false;
+          }
+          return !number.match(/_/);
+        };
+        $scope.isMobile = function(number) {
+          return parseInt(number[4]) === 9 || parseInt(number[1]) === 9;
+        };
+        $scope.sms = function(number) {
+          $('#sms-modal').modal('show');
+          return $scope.$parent.sms_number = number;
+        };
+        return $scope.call = function(number) {
+          return location.href = "sip:" + number.replace(/[^0-9]/g, '');
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('ngSelect', function() {
+    return {
+      restrict: 'E',
+      replace: true,
+      scope: {
+        object: '=',
+        model: '=',
+        title: '@'
+      },
+      templateUrl: 'directives/ngselect',
+      controller: function($scope, $element, $attrs, $timeout) {
+        $scope.title = $attrs.title;
+        $scope.multiple = $attrs.hasOwnProperty('multiple');
+        return $scope.$watch('model', function(newVal, oldVal) {
+          console.log(newVal, oldVal);
+          if (newVal === void 0) {
+            return;
+          }
+          if (oldVal === void 0) {
+            spe($element, 'предмет');
+          }
+          if (oldVal !== void 0) {
+            return spRefresh($element);
+          }
+        });
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('sms', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/sms',
+      scope: {
+        number: '='
+      },
+      controller: function($scope, $timeout, Sms) {
+        $scope.mass = false;
+        $scope.smsCount = function() {
+          return SmsCounter.count($scope.message || '').messages;
+        };
+        $scope.send = function() {
+          var sms;
+          if ($scope.message) {
+            sms = new Sms({
+              message: $scope.message,
+              to: $scope.number,
+              mass: $scope.mass
+            });
+            return sms.$save();
+          }
+        };
+        return $scope.$watch('number', function(newVal, oldVal) {
+          console.log($scope.$parent.formatDateTime($scope.created_at));
+          if (newVal) {
+            return $scope.history = Sms.query({
+              number: newVal
+            });
+          }
+        });
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  var apiPath, updateMethod;
+
+  angular.module('Egerep').factory('Account', function($resource) {
+    return $resource(apiPath('accounts'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Review', function($resource) {
+    return $resource(apiPath('reviews'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Archive', function($resource) {
+    return $resource(apiPath('archives'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Attachment', function($resource) {
+    return $resource(apiPath('attachments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('RequestList', function($resource) {
+    return $resource(apiPath('lists'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Request', function($resource) {
+    return $resource(apiPath('requests'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Sms', function($resource) {
+    return $resource(apiPath('sms'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Comment', function($resource) {
+    return $resource(apiPath('comments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Client', function($resource) {
+    return $resource(apiPath('clients'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('User', function($resource) {
+    return $resource(apiPath('users'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Tutor', function($resource) {
+    return $resource(apiPath('tutors'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      deletePhoto: {
+        url: apiPath('tutors', 'photo'),
+        method: 'DELETE'
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  });
+
+  apiPath = function(entity, additional) {
+    if (additional == null) {
+      additional = '';
+    }
+    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
+  };
+
+  updateMethod = function() {
+    return {
+      update: {
+        method: 'PUT'
+      }
+    };
+  };
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').value('DebtTypes', {
+    0: 'не доплатил',
+    1: 'переплатил'
+  }).value('PaymentMethods', {
+    0: 'не установлено',
+    1: 'стандартный расчет',
+    2: 'яндекс.деньги',
+    3: 'перевод на сотовый',
+    4: 'перевод на карту'
+  }).value('RequestStates', {
+    "new": 'невыполненные',
+    awaiting: 'в ожидании',
+    finished: 'выполненные',
+    deny: 'отказы'
+  }).value('ArchiveStates', {
+    impossible: 'невозможно',
+    possible: 'возможно'
+  }).value('ReviewStates', {
+    unpublished: 'не опубликован',
+    published: 'опубликован'
+  }).value('ReviewScores', {
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+    6: 6,
+    7: 7,
+    8: 8,
+    9: 9,
+    10: 10,
+    11: 'не берет',
+    12: 'не помнит',
+    13: 'недоступен',
+    14: 'позвонить позже'
+  }).value('Grades', {
+    1: '1 класс',
+    2: '2 класс',
+    3: '3 класс',
+    4: '4 класс',
+    5: '5 класс',
+    6: '6 класс',
+    7: '7 класс',
+    8: '8 класс',
+    9: '9 класс',
+    10: '10 класс',
+    11: '11 класс',
+    12: 'студенты',
+    13: 'остальные'
+  }).value('Subjects', {
+    all: {
+      1: 'математика',
+      2: 'физика',
+      3: 'химия',
+      4: 'биология',
+      5: 'информатика',
+      6: 'русский',
+      7: 'литература',
+      8: 'обществознание',
+      9: 'история',
+      10: 'английский'
+    },
+    full: {
+      1: 'Математика',
+      2: 'Физика',
+      3: 'Химия',
+      4: 'Биология',
+      5: 'Информатика',
+      6: 'Русский язык',
+      7: 'Литература',
+      8: 'Обществознание',
+      9: 'История',
+      10: 'Английский язык'
+    },
+    dative: {
+      1: 'математике',
+      2: 'физике',
+      3: 'химии',
+      4: 'биологии',
+      5: 'информатике',
+      6: 'русскому языку',
+      7: 'литературе',
+      8: 'обществознанию',
+      9: 'истории',
+      10: 'английскому языку'
+    },
+    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
+    three_letters: ['МАТ', 'ФИЗ', 'РУС', 'ЛИТ', 'АНГ', 'ИСТ', 'ОБЩ', 'ХИМ', 'БИО', 'ИНФ'],
+    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
   });
 
 }).call(this);
