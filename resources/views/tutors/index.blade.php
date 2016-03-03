@@ -45,7 +45,7 @@
 		</td>
 		<td>
 		    <span ng-click="startComment(tutor)" class="glyphicon glyphicon-pencil opacity-pointer" ng-hide="tutor.list_comment || tutor.is_being_commented"></span>
-            <input type="text" class='no-border-outline tutor-list-comment' id='list-comment-@{{ tutor.id }}' maxlength="64"
+            <input type="text" class='no-border-outline tutor-list-comment' id='list-comment-@{{ tutor.id }}' maxlength="64" placeholder="введите комментарий..."
                 ng-model='tutor.list_comment'
                 ng-show='tutor.list_comment || tutor.is_being_commented'
                 ng-blur='blurComment(tutor)'
