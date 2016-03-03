@@ -110,7 +110,6 @@ angular
                 , (response) ->
                     $scope.selected_attachment.review = response
 
-
         $scope.attachmentExists = (tutor_id) ->
             attachment_exists = false
             $.each $scope.client.requests, (index, request) ->

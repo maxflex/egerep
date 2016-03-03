@@ -23,7 +23,7 @@
             </div>
         </div>
         <p ng-show='selected_list'>
-            <span class="link-like link-gray" ng-click="dialog('add-tutor')">добавить репетитора</span>
+            <a class="link-gray" href='tutors/add/@{{ selected_list.id }}'>добавить репетитора</a>
         </p>
     </div>
 </div>

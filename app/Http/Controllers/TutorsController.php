@@ -43,4 +43,9 @@ class TutorsController extends Controller
         // ]);
         return view('tutors.edit')->with(compact('id'));
     }
+
+    public function addToList($id)
+    {
+        return view('tutors.add-to-list.index');
+    }
 }

@@ -23,6 +23,25 @@
 	$quater_black 		: rgba(0, 0, 0, .25);
 
 
+	.double-input {
+		display: flex;
+		& div {
+			width: 50%;
+			&:first-child {
+				& input {
+					border-right: none;
+					border-radius: 0;
+				}
+			}
+			&:last-child {
+				& span {
+					border-left: none;
+					border-radius: 0;
+				}
+			}
+		}
+	}
+
 	.pagination > li > a:focus, .pagination > li > a:hover, .pagination > li > span:focus, .pagination > li > span:hover {
 		color: darken($green_main, 10) !important;
 	}
@@ -2363,7 +2382,7 @@ white-space: nowrap;
 	color: $placeholder_gray;
 	text-decoration: none;
 	&:hover {
-		color: $placeholder_gray;
+		color: $placeholder_gray !important;
 		text-decoration: underline;
 	}
 }

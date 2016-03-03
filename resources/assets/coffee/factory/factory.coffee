@@ -1,4 +1,12 @@
 angular.module('Egerep')
+    .value 'Destinations',
+        r_k: 'репетитор едет к клиенту'
+        k_r: 'клиент едет к репетитору'
+
+    .value 'Genders',
+        male: 'мужской'
+        female: 'женский'
+
     .value 'TutorStates',
         0: 'не установлено'
         1: 'на проверку'
@@ -10,6 +18,7 @@ angular.module('Egerep')
     .value 'DebtTypes',
         0: 'не доплатил'
         1: 'переплатил'
+
     .value 'PaymentMethods',
         0: 'не установлено'
         1: 'стандартный расчет'

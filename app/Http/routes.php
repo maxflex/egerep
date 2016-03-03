@@ -13,12 +13,14 @@ Route::group(['middleware' => ['web']], function () {
         'upload'    => 'UploadController',
     ]);
 
+    # Добавление из списка
+    Route::get('tutors/add/{id}', 'TutorsController@addToList');
+
     Route::get('tutors/{id}/accounts', 'AccountsController@index');
 
     Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
         Route::get('tutors/list', 'TutorsController@lists');
         Route::delete('tutors/photo/{id}', 'TutorsController@deletePhoto');
-        
         Route::resource('tutors', 'TutorsController');
 
         Route::resource('requests', 'RequestsController');

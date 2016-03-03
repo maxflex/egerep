@@ -1,11 +1,5 @@
 angular
     .module 'Egerep'
-    .run ($rootScope) ->
-        $rootScope.genders =
-            male: 'Мужской'
-            female: 'Женский'
-
-
 
     #
     #   LIST CONTROLLER
@@ -15,7 +9,6 @@ angular
         $scope.Tutor = Tutor
         $scope.UserService = UserService
         $scope.TutorStates = TutorStates
-
         $scope.users = User.query ->
             $scope.users.unshift
                 login: 'system'
@@ -90,10 +83,11 @@ angular
     #
     #   ADD/EDIT CONTROLLER
     #
-    .controller "TutorsForm", ($scope, $rootScope, $timeout, $interval, Tutor, SvgMap, Subjects, Grades, ApiService, TutorStates) ->
+    .controller "TutorsForm", ($scope, $rootScope, $timeout, $interval, Tutor, SvgMap, Subjects, Grades, ApiService, TutorStates, Genders) ->
         $scope.SvgMap   = SvgMap
         $scope.Subjects = Subjects
         $scope.Grades   = Grades
+        $scope.Genders  = Genders
         $scope.TutorStates = TutorStates
         $rootScope.frontend_loading = true
 

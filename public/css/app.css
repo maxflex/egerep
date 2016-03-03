@@ -26978,6 +26978,19 @@ md-tooltip {
   -webkit-animation-name: slideOutUp;
   animation-name: slideOutUp; }
 
+.double-input {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex; }
+  .double-input div {
+    width: 50%; }
+    .double-input div:first-child input {
+      border-right: none;
+      border-radius: 0; }
+    .double-input div:last-child span {
+      border-left: none;
+      border-radius: 0; }
+
 .pagination > li > a:focus, .pagination > li > a:hover, .pagination > li > span:focus, .pagination > li > span:hover {
   color: #0e6238 !important; }
 
@@ -28884,7 +28897,7 @@ md-input-container textarea {
   color: #999999;
   text-decoration: none; }
   .link-gray:hover {
-    color: #999999;
+    color: #999999 !important;
     text-decoration: underline; }
 
 .bootstrap-select .btn:focus, .selectpicker a {
