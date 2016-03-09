@@ -4,16 +4,14 @@ angular
     #
     #   LIST CONTROLLER
     #
-    .controller "TutorsIndex", ($scope, $rootScope, $timeout, $http, Tutor, User, UserService, TutorStates) ->
+    .controller "TutorsIndex", ($scope, $rootScope, $timeout, $http, Tutor, TutorStates) ->
         # @check
         $scope.Tutor = Tutor
-        $scope.UserService = UserService
         $scope.TutorStates = TutorStates
-        $scope.users = User.query ->
-            $scope.users.unshift
-                login: 'system'
-                color: '#999999'
-                id: 0
+
+        $scope.fake_user =
+            login: 'system'
+            id: 0
 
         $scope.yearDifference = (year) ->
             moment().format("YYYY") - year
@@ -61,14 +59,11 @@ angular
                     $(event.target).blur()
 
         $scope.toggleResponsibleUser = (tutor) ->
-            new_user = _.find $scope.users, (user) ->
-                user.id > tutor.responsible_user_id
-            # if toggled to the last user, start the loop over | SYSTEM USER INSTEAD
-            new_user = $scope.users[0] if new_user is undefined
-            tutor.responsible_user_id = new_user.id
+            # tutor.responsible_user - related object
+            tutor.responsible_user = if $scope.user.id == tutor.responsible_user_id then $scope.fake_user else $scope.user
             Tutor.update
                 id: tutor.id
-                responsible_user_id: new_user.id
+                responsible_user_id: tutor.responsible_user.id
         # @end
 
         # $scope.$watch 'current_page', (newVal, oldVal) ->

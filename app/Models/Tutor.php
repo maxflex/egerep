@@ -70,6 +70,11 @@ class Tutor extends Model
         return $this->hasMany('App\Models\Attachment');
     }
 
+	public function responsibleUser()
+	{
+		return $this->belongsTo('App\Models\User');
+	}
+
     // ------------------------------------------------------------------------
 
     public function getHasPhotoOriginalAttribute()
