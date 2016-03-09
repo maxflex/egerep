@@ -61,6 +61,7 @@ angular
         $scope.toggleResponsibleUser = (tutor) ->
             # tutor.responsible_user - related object
             tutor.responsible_user = if $scope.user.id == tutor.responsible_user_id then $scope.fake_user else $scope.user
+            tutor.responsible_user_id = tutor.responsible_user.id
             Tutor.update
                 id: tutor.id
                 responsible_user_id: tutor.responsible_user.id
