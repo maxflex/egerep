@@ -141,8 +141,11 @@ angular
             if not $scope.selected_request.user
                 $scope.selected_request.user = $scope.fake_user
 
-            new_user = _.find $scope.users, (user) ->
-                user.id > $scope.selected_request.user.id
+#            new_user = _.find $scope.users, (user) ->
+#                user.id > $scope.selected_request.user.id
+
+            new_user = if $scope.user.id == $scope.selected_request.user_id then $scope.fake_user else $scope.user
+
             # if toggeled to the last user, start the loop over | SYSTEM USER INSTEAD
             # new_user = $scope.users[0] if new_user is undefined
             $scope.selected_request.user = new_user

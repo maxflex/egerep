@@ -19,7 +19,7 @@ class TutorsController extends Controller
     {
 		    return Tutor::with([
 						'responsibleUser' => function ($query) {
-							$query->select('id','login');
+							$query->select('id','login', 'color');
 						}
 					])
 					->paginate(30)->toJson();
