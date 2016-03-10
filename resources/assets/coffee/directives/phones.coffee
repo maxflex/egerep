@@ -3,12 +3,22 @@ angular.module('Egerep').directive 'phones', ->
     templateUrl: 'directives/phones'
     scope:
         entity: '='
+<<<<<<< HEAD
     controller: ($scope, $timeout, $rootScope, PhoneService) ->
         $scope.PhoneService = PhoneService
 
         # level depth on + (phone1, phone2, phone3)
         $rootScope.dataLoaded.promise.then (data) ->
             $scope.level = $scope.entity.phones.length
+=======
+    controller: ($scope, $timeout, $rootScope, Tutor) ->
+        # level depth on + (phone1, phone2, phone3, phone4)
+        $rootScope.dataLoaded.promise.then (data) ->
+            $scope.level = if $scope.entity.phone4 then 4 else if $scope.entity.phone3 then 3 else if $scope.entity.phone2 then 2 else 1
+        # $timeout ->
+        #     $scope.level = if $scope.entity.phone3 then 3 else if $scope.entity.phone2 then 2 else 1
+        # , 100
+>>>>>>> e20164e36a780f1872a5a66b48d970bd8af6eea8
 
         $scope.nextLevel = ->
             $scope.level++
@@ -31,3 +41,35 @@ angular.module('Egerep').directive 'phones', ->
         $scope.sms = (number) ->
             $('#sms-modal').modal 'show'
             $scope.$parent.sms_number = number
+<<<<<<< HEAD
+=======
+
+        # позвонить
+        $scope.call = (number) ->
+            location.href = "sip:" + number.replace(/[^0-9]/g, '')
+
+        $scope.startPhoneComment = (phone_field) ->
+            $scope.entity.is_being_commented[phone_field] = true
+            $scope.entity.phone_old_comment = $scope.entity[phone_field]
+            $timeout ->
+                $("##{phone_field}").focus()
+
+        $scope.blurPhoneComment = (phone_field) ->
+            $scope.entity.is_being_commented[phone_field] = false
+            $scope.entity[phone_field] = $scope.entity.phone_old_comment
+
+        $scope.focusPhoneComment = (phone_field) ->
+            $scope.entity.is_being_commented[phone_field] = true
+            $scope.entity.phone_old_comment = $scope.entity[phone_field]
+
+
+        # @todo phone_field не правильно определяется. вместо phone_field надо ставить phone_comment,phone2_comment,phone3_comment,phone3_comment
+        $scope.savePhoneComment =  (event, phone_field) ->
+            if event.keyCode is 13
+                Tutor.update
+                    id: $scope.entity.id
+                    phone_field: $scope.entity[phone_field]
+                , (response) ->
+                    $scope.entity.phone_old_comment = $scope.entity[phone_field]
+                    $(event.target).blur()
+>>>>>>> e20164e36a780f1872a5a66b48d970bd8af6eea8

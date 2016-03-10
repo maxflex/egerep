@@ -176,6 +176,7 @@ angular
                         bindFileUpload()
                     , 1000
                     $rootScope.frontendStop()
+                    $scope.tutor.is_being_commented = []
 
         # @todo: ЗАМЕНИТЬ НА ДИРЕКТИВУ <ng-select> (уже сделано, но глючная. надо доделать)
         # refresh selectpicker on update
@@ -210,7 +211,30 @@ angular
                 .then (response) ->
                     $scope.saving = false
 
+        # email commenting
+        $scope.startEmailComment = ->
+            $scope.tutor.is_being_email_commented = true
+            $scope.tutor.email_old_comment = $scope.tutor.email_comment
+            $timeout ->
+                $("#email_comment").focus()
 
+        $scope.blurEmailComment = ->
+            $scope.tutor.is_being_email_commented = false
+            $scope.tutor.email_comment = $scope.tutor.email_old_comment
+
+        $scope.focusEmailComment = ->
+            $scope.tutor.is_being_email_commented = true
+            $scope.tutor.email_old_comment = $scope.tutor.email_comment
+
+        $scope.saveEmailComment =  (event) ->
+            if event.keyCode is 13
+                Tutor.update
+                    id: $scope.tutor.id
+                    email_comment: $scope.tutor.email_comment
+                , (response) ->
+                    $scope.tutor.email_old_comment = $scope.tutor.email_comment
+                    $(event.target).blur()
+        # @email comment end
 
 
 

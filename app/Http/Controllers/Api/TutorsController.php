@@ -17,7 +17,7 @@ class TutorsController extends Controller
      */
     public function index()
     {
-		return Tutor::with([
+		    return Tutor::with([
 						'responsibleUser' => function ($query) {
 							$query->select('id','login');
 						}

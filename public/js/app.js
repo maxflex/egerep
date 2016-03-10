@@ -841,18 +841,14 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').controller("TutorsIndex", function($scope, $rootScope, $timeout, $http, Tutor, User, UserService, TutorStates) {
+  angular.module('Egerep').controller("TutorsIndex", function($scope, $rootScope, $timeout, $http, Tutor, TutorStates) {
     var loadTutors;
     $scope.Tutor = Tutor;
-    $scope.UserService = UserService;
     $scope.TutorStates = TutorStates;
-    $scope.users = User.query(function() {
-      return $scope.users.unshift({
-        login: 'system',
-        color: '#999999',
-        id: 0
-      });
-    });
+    $scope.fake_user = {
+      login: 'system',
+      id: 0
+    };
     $scope.yearDifference = function(year) {
       return moment().format("YYYY") - year;
     };
@@ -899,17 +895,11 @@
       }
     };
     return $scope.toggleResponsibleUser = function(tutor) {
-      var new_user;
-      new_user = _.find($scope.users, function(user) {
-        return user.id > tutor.responsible_user_id;
-      });
-      if (new_user === void 0) {
-        new_user = $scope.users[0];
-      }
-      tutor.responsible_user_id = new_user.id;
+      tutor.responsible_user = $scope.user.id === tutor.responsible_user_id ? $scope.fake_user : $scope.user;
+      tutor.responsible_user_id = tutor.responsible_user.id;
       return Tutor.update({
         id: tutor.id,
-        responsible_user_id: new_user.id
+        responsible_user_id: tutor.responsible_user.id
       });
     };
   }).controller("TutorsForm", function($scope, $rootScope, $timeout, $interval, Tutor, SvgMap, Subjects, Grades, ApiService, TutorStates, Genders) {
@@ -1019,7 +1009,8 @@
             bindCropper();
             return bindFileUpload();
           }, 1000);
-          return $rootScope.frontendStop();
+          $rootScope.frontendStop();
+          return $scope.tutor.is_being_commented = [];
         });
       }
     });
@@ -1065,6 +1056,32 @@
       return $scope.tutor.$update().then(function(response) {
         return $scope.saving = false;
       });
+    };
+    $scope.startEmailComment = function() {
+      $scope.tutor.is_being_email_commented = true;
+      $scope.tutor.email_old_comment = $scope.tutor.email_comment;
+      return $timeout(function() {
+        return $("#email_comment").focus();
+      });
+    };
+    $scope.blurEmailComment = function() {
+      $scope.tutor.is_being_email_commented = false;
+      return $scope.tutor.email_comment = $scope.tutor.email_old_comment;
+    };
+    $scope.focusEmailComment = function() {
+      $scope.tutor.is_being_email_commented = true;
+      return $scope.tutor.email_old_comment = $scope.tutor.email_comment;
+    };
+    $scope.saveEmailComment = function(event) {
+      if (event.keyCode === 13) {
+        return Tutor.update({
+          id: $scope.tutor.id,
+          email_comment: $scope.tutor.email_comment
+        }, function(response) {
+          $scope.tutor.email_old_comment = $scope.tutor.email_comment;
+          return $(event.target).blur();
+        });
+      }
     };
     $scope.marker_id = 1;
     filterMarkers = function() {
@@ -1227,6 +1244,113 @@
 }).call(this);
 
 (function() {
+  angular.module('Egerep').value('Destinations', {
+    r_k: 'репетитор едет к клиенту',
+    k_r: 'клиент едет к репетитору'
+  }).value('Genders', {
+    male: 'мужской',
+    female: 'женский'
+  }).value('TutorStates', {
+    0: 'не установлено',
+    1: 'на проверку',
+    2: 'к закрытию',
+    3: 'закрыто',
+    4: 'к одобрению',
+    5: 'одобрено'
+  }).value('DebtTypes', {
+    0: 'не доплатил',
+    1: 'переплатил'
+  }).value('PaymentMethods', {
+    0: 'не установлено',
+    1: 'стандартный расчет',
+    2: 'яндекс.деньги',
+    3: 'перевод на сотовый',
+    4: 'перевод на карту'
+  }).value('RequestStates', {
+    "new": 'невыполненные',
+    awaiting: 'в ожидании',
+    finished: 'выполненные',
+    deny: 'отказы'
+  }).value('ArchiveStates', {
+    impossible: 'невозможно',
+    possible: 'возможно'
+  }).value('ReviewStates', {
+    unpublished: 'не опубликован',
+    published: 'опубликован'
+  }).value('ReviewScores', {
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+    6: 6,
+    7: 7,
+    8: 8,
+    9: 9,
+    10: 10,
+    11: 'не берет',
+    12: 'не помнит',
+    13: 'недоступен',
+    14: 'позвонить позже'
+  }).value('Grades', {
+    1: '1 класс',
+    2: '2 класс',
+    3: '3 класс',
+    4: '4 класс',
+    5: '5 класс',
+    6: '6 класс',
+    7: '7 класс',
+    8: '8 класс',
+    9: '9 класс',
+    10: '10 класс',
+    11: '11 класс',
+    12: 'студенты',
+    13: 'остальные'
+  }).value('Subjects', {
+    all: {
+      1: 'математика',
+      2: 'физика',
+      3: 'химия',
+      4: 'биология',
+      5: 'информатика',
+      6: 'русский',
+      7: 'литература',
+      8: 'обществознание',
+      9: 'история',
+      10: 'английский'
+    },
+    full: {
+      1: 'Математика',
+      2: 'Физика',
+      3: 'Химия',
+      4: 'Биология',
+      5: 'Информатика',
+      6: 'Русский язык',
+      7: 'Литература',
+      8: 'Обществознание',
+      9: 'История',
+      10: 'Английский язык'
+    },
+    dative: {
+      1: 'математике',
+      2: 'физике',
+      3: 'химии',
+      4: 'биологии',
+      5: 'информатике',
+      6: 'русскому языку',
+      7: 'литературе',
+      8: 'обществознанию',
+      9: 'истории',
+      10: 'английскому языку'
+    },
+    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
+    three_letters: ['МАТ', 'ФИЗ', 'РУС', 'ЛИТ', 'АНГ', 'ИСТ', 'ОБЩ', 'ХИМ', 'БИО', 'ИНФ'],
+    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
+  });
+
+}).call(this);
+
+(function() {
   angular.module('Egerep').directive('comments', function() {
     return {
       restrict: 'E',
@@ -1369,475 +1493,6 @@
         });
       }
     };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('phones', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/phones',
-      scope: {
-        entity: '='
-      },
-      controller: function($scope, $timeout, $rootScope, PhoneService) {
-        $scope.PhoneService = PhoneService;
-        $rootScope.dataLoaded.promise.then(function(data) {
-          return $scope.level = $scope.entity.phones.length;
-        });
-        $scope.nextLevel = function() {
-          return $scope.level++;
-        };
-        $scope.phoneMaskControl = function(event) {
-          var el, phone_id;
-          el = $(event.target);
-          phone_id = el.attr('ng-model').split('.')[1];
-          return $scope.entity[phone_id] = $(event.target).val();
-        };
-        $scope.isFull = function(number) {
-          if (number === void 0 || number === "") {
-            return false;
-          }
-          return !number.match(/_/);
-        };
-        $scope.isMobile = function(number) {
-          return parseInt(number[4]) === 9 || parseInt(number[1]) === 9;
-        };
-        return $scope.sms = function(number) {
-          $('#sms-modal').modal('show');
-          return $scope.$parent.sms_number = number;
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('plural', function() {
-    return {
-      restrict: 'E',
-      scope: {
-        count: '=',
-        type: '@',
-        noneText: '@'
-      },
-      templateUrl: 'directives/plural',
-      controller: function($scope, $element, $attrs, $timeout) {
-        return $scope.when = {
-          'age': ['год', 'года', 'лет'],
-          'student': ['ученик', 'ученика', 'учеников']
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('ngSelect', function() {
-    return {
-      restrict: 'E',
-      replace: true,
-      scope: {
-        object: '=',
-        model: '=',
-        noneText: '@'
-      },
-      templateUrl: 'directives/ngselect',
-      controller: function($scope, $element, $attrs) {
-        if (!$scope.noneText) {
-          return $scope.model = _.first(Object.keys($scope.object));
-        }
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('sms', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/sms',
-      scope: {
-        number: '='
-      },
-      controller: function($scope, $timeout, Sms) {
-        $scope.mass = false;
-        $scope.smsCount = function() {
-          return SmsCounter.count($scope.message || '').messages;
-        };
-        $scope.send = function() {
-          var sms;
-          if ($scope.message) {
-            sms = new Sms({
-              message: $scope.message,
-              to: $scope.number,
-              mass: $scope.mass
-            });
-            return sms.$save();
-          }
-        };
-        return $scope.$watch('number', function(newVal, oldVal) {
-          console.log($scope.$parent.formatDateTime($scope.created_at));
-          if (newVal) {
-            return $scope.history = Sms.query({
-              number: newVal
-            });
-          }
-        });
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('tutorPhoto', function() {
-    return {
-      restrict: 'E',
-      replace: true,
-      scope: {
-        tutor: '=',
-        version: '='
-      },
-      templateUrl: 'directives/tutor-photo'
-    };
-  });
-
-}).call(this);
-
-(function() {
-  var apiPath, updateMethod;
-
-  angular.module('Egerep').factory('Account', function($resource) {
-    return $resource(apiPath('accounts'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Review', function($resource) {
-    return $resource(apiPath('reviews'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Archive', function($resource) {
-    return $resource(apiPath('archives'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Attachment', function($resource) {
-    return $resource(apiPath('attachments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('RequestList', function($resource) {
-    return $resource(apiPath('lists'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Request', function($resource) {
-    return $resource(apiPath('requests'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Sms', function($resource) {
-    return $resource(apiPath('sms'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Comment', function($resource) {
-    return $resource(apiPath('comments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Client', function($resource) {
-    return $resource(apiPath('clients'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('User', function($resource) {
-    return $resource(apiPath('users'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Tutor', function($resource) {
-    return $resource(apiPath('tutors'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      deletePhoto: {
-        url: apiPath('tutors', 'photo'),
-        method: 'DELETE'
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  });
-
-  apiPath = function(entity, additional) {
-    if (additional == null) {
-      additional = '';
-    }
-    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
-  };
-
-  updateMethod = function() {
-    return {
-      update: {
-        method: 'PUT'
-      }
-    };
-  };
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').value('Destinations', {
-    r_k: 'репетитор едет к клиенту',
-    k_r: 'клиент едет к репетитору'
-  }).value('Genders', {
-    male: 'мужской',
-    female: 'женский'
-  }).value('TutorStates', {
-    0: 'не установлено',
-    1: 'на проверку',
-    2: 'к закрытию',
-    3: 'закрыто',
-    4: 'к одобрению',
-    5: 'одобрено'
-  }).value('DebtTypes', {
-    0: 'не доплатил',
-    1: 'переплатил'
-  }).value('PaymentMethods', {
-    0: 'не установлено',
-    1: 'стандартный расчет',
-    2: 'яндекс.деньги',
-    3: 'перевод на сотовый',
-    4: 'перевод на карту'
-  }).value('RequestStates', {
-    "new": 'невыполненные',
-    awaiting: 'в ожидании',
-    finished: 'выполненные',
-    deny: 'отказы'
-  }).value('ArchiveStates', {
-    impossible: 'невозможно',
-    possible: 'возможно'
-  }).value('ReviewStates', {
-    unpublished: 'не опубликован',
-    published: 'опубликован'
-  }).value('ReviewScores', {
-    1: 1,
-    2: 2,
-    3: 3,
-    4: 4,
-    5: 5,
-    6: 6,
-    7: 7,
-    8: 8,
-    9: 9,
-    10: 10,
-    11: 'не берет',
-    12: 'не помнит',
-    13: 'недоступен',
-    14: 'позвонить позже'
-  }).value('Grades', {
-    1: '1 класс',
-    2: '2 класс',
-    3: '3 класс',
-    4: '4 класс',
-    5: '5 класс',
-    6: '6 класс',
-    7: '7 класс',
-    8: '8 класс',
-    9: '9 класс',
-    10: '10 класс',
-    11: '11 класс',
-    12: 'студенты',
-    13: 'остальные'
-  }).value('Subjects', {
-    all: {
-      1: 'математика',
-      2: 'физика',
-      3: 'химия',
-      4: 'биология',
-      5: 'информатика',
-      6: 'русский',
-      7: 'литература',
-      8: 'обществознание',
-      9: 'история',
-      10: 'английский'
-    },
-    full: {
-      1: 'Математика',
-      2: 'Физика',
-      3: 'Химия',
-      4: 'Биология',
-      5: 'Информатика',
-      6: 'Русский язык',
-      7: 'Литература',
-      8: 'Обществознание',
-      9: 'История',
-      10: 'Английский язык'
-    },
-    dative: {
-      1: 'математике',
-      2: 'физике',
-      3: 'химии',
-      4: 'биологии',
-      5: 'информатике',
-      6: 'русскому языку',
-      7: 'литературе',
-      8: 'обществознанию',
-      9: 'истории',
-      10: 'английскому языку'
-    },
-    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
-    three_letters: ['МАТ', 'ФИЗ', 'РУС', 'ЛИТ', 'АНГ', 'ИСТ', 'ОБЩ', 'ХИМ', 'БИО', 'ИНФ'],
-    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('ApiService', function($http) {
-    this.exec = function(fun, data) {
-      return $http.post("api/external/" + fun, data);
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('PhoneService', function($http) {
-    this.call = function(number) {
-      return location.href = "sip:" + number.replace(/[^0-9]/g, '');
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('SvgMap', function() {
-    this.map = new SVGMap({
-      iframeId: 'map',
-      clicable: true,
-      places: [],
-      placesHash: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 180, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211],
-      groups: [
-        {
-          "id": "1",
-          "title": "внутри кольца",
-          "points": [4, 8, 12, 15, 18, 19, 38, 47, 48, 51, 54, 56, 58, 60, 63, 66, 68, 71, 74, 82, 83, 86, 90, 91, 92, 102, 104, 109, 111, 120, 122, 126, 129, 131, 132, 133, 137, 138, 140, 153, 156, 157, 158, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 198, 199]
-        }, {
-          "id": "2",
-          "title": "красная север",
-          "points": [55, 106, 124, 145, 154]
-        }, {
-          "id": "3",
-          "title": "красная юг",
-          "points": [33, 108, 125, 148, 151, 164, 209, 210]
-        }, {
-          "id": "4",
-          "title": "зеленая север",
-          "points": [9, 28, 29, 36, 112, 123]
-        }, {
-          "id": "5",
-          "title": "зеленая юг",
-          "points": [2, 39, 44, 46, 50, 53, 88, 152, 197, 202, 204]
-        }, {
-          "id": "6",
-          "title": "синяя запад",
-          "points": [32, 59, 62, 75, 76, 77, 93, 121, 127, 186, 203]
-        }, {
-          "id": "7",
-          "title": "синяя восток",
-          "points": [13, 42, 94, 95, 119, 161, 163]
-        }, {
-          "id": "8",
-          "title": "голубая",
-          "points": [11, 62, 64, 99, 128, 149, 150, 186]
-        }, {
-          "id": "9",
-          "title": "оранжевая север",
-          "points": [5, 10, 20, 26, 72, 113, 117]
-        }, {
-          "id": "10",
-          "title": "оранжевая юг",
-          "points": [3, 16, 43, 52, 65, 84, 85, 110, 135, 159, 166]
-        }, {
-          "id": "11",
-          "title": "фиолетовая север",
-          "points": [14, 87, 100, 103, 130, 141, 142, 162]
-        }, {
-          "id": "12",
-          "title": "фиолетовая юг",
-          "points": [30, 35, 57, 61, 107, 115, 134, 205, 206, 211]
-        }, {
-          "id": "13",
-          "title": "желтая",
-          "points": [1, 81, 96, 101, 114, 160, 180]
-        }, {
-          "id": "14",
-          "title": "серая север",
-          "points": [6, 17, 27, 37, 89, 97, 116, 136]
-        }, {
-          "id": "15",
-          "title": "серая юг",
-          "points": [7, 23, 45, 78, 79, 80, 105, 118, 139, 143, 147, 155, 165]
-        }, {
-          "id": "16",
-          "title": "светло-зеленая",
-          "points": [21, 31, 41, 49, 53, 57, 67, 70, 98, 101, 107, 114, 200, 201, 202]
-        }, {
-          "id": "17",
-          "title": "бутовская",
-          "points": [22, 23, 24, 84, 144, 146, 147, 207, 208]
-        }, {
-          "id": "18",
-          "title": "каховская",
-          "points": [25, 45, 46, 118, 197]
-        }
-      ]
-    });
-    this.show = function(points) {
-      var map;
-      $('#svg-modal').modal('show');
-      map = this.map;
-      map.init();
-      map.selected = {};
-      map.deselectAll();
-      map.select(points);
-      $(".legend a").unbind('click');
-      return $(".legend a").on('click', function() {
-        var id;
-        id = $(this).attr("data-rel");
-        return map.toggleGroup(id);
-      });
-    };
-    this.save = function() {
-      $('#svg-modal').modal('hide');
-      return this.map.save();
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('TutorService', function($http) {
-    this.getFiltered = function(search_data) {
-      return $http.post('api/tutors/filtered', search_data);
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('UserService', function() {
-    this.getUser = function(user_id, users) {
-      return _.findWhere(users, {
-        id: parseInt(user_id)
-      });
-    };
-    return this;
   });
 
 }).call(this);

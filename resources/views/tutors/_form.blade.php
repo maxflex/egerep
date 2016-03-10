@@ -76,7 +76,7 @@
 
         <div class="form-group">
             <input type="text" class="form-control digits-year" ng-model="tutor.start_career_year" placeholder="начало карьеры">
-            <span class="inside-input" ng-show="tutor.start_career_year > 999">– педагогический стаж @{{ yearDifference(tutor.start_career_year) }}
+            <span class="inside-input" ng-show="tutor.start_career_year > 999">– педстаж @{{ yearDifference(tutor.start_career_year) }}
                 <ng-pluralize count="yearDifference(tutor.start_career_year)" when="{
                     'one': 'год',
                     'few': 'года',
@@ -104,7 +104,7 @@
         </div>
     </div>
 
-    <div class="col-sm-3">
+    <div class="col-sm-4">
         <div class="form-group">
             <phones entity='tutor' sms-number='sms_number'></phones>
         </div>
@@ -112,16 +112,28 @@
             {{-- <email address='tutor.email'></email> --}}
             <div class="input-group">
                 <input type="text" class="form-control" ng-model="tutor.email" placeholder="email">
+                 <div class="email_comment_holder">
+                     <span class="glyphicon glyphicon-pencil opacity-pointer"
+                         ng-click='startEmailComment()'
+                         ng-hide='tutor.email_comment || tutor.is_being_email_commented'></span>
+                     <input type="text" id="email_comment" class="no-border-outline" maxlength="64" placeholder="введите комментарий..."
+                         ng-model='tutor.email_comment'
+                         ng-show='tutor.email_comment || tutor.is_being_email_commented'
+                         ng-blur='blurEmailComment()'
+                         ng-focus='focusEmailComment()'
+                         ng-keyup='saveEmailComment($event)'>
+                 </div>
                 <div class="input-group-btn">
                     <button class="btn btn-default">
                         <span class="glyphicon small glyphicon-envelope no-margin-right"></span>
                     </button>
                 </div>
+
             </div>
         </div>
     </div>
 
-    <div class="col-sm-4">
+    <div class="col-sm-3">
         <div class="row">
             <div class="col-sm-12">
                 <span class="link-like" ng-click="SvgMap.show(tutor.svg_map)">выезд @{{ tutor.svg_map.length ? 'возможен' : 'невозможен' }}</span>
@@ -191,7 +203,7 @@
             <textarea class="md-input" ng-model="tutor.impression"></textarea>
         </md-input-container>
         <md-input-container class="md-block" style="margin-top: 20px">
-            <label>Расписание</label>
+            <label>Расписание и загрузка в течение года</label>
             <textarea class="md-input" ng-model="tutor.schedule"></textarea>
         </md-input-container>
 
