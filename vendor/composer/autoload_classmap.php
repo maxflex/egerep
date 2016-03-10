@@ -11,6 +11,7 @@ return array(
     'AddForecastToAttachment' => $baseDir . '/database/migrations/2016_02_23_224011_add_forecast_to_attachment.php',
     'AddGradesToTeachers' => $baseDir . '/database/migrations/2016_02_15_193218_add_grades_to_teachers.php',
     'AddListsToClient' => $baseDir . '/database/migrations/2016_01_22_152742_add_lists_to_client.php',
+    'AddPhone4ToClients' => $baseDir . '/database/migrations/2016_03_10_160148_add_phone4_to_clients.php',
     'AddPhotoToTutors' => $baseDir . '/database/migrations/2016_02_29_140442_add_photo_to_tutors.php',
     'AddSvgMapToTeachers' => $baseDir . '/database/migrations/2016_01_19_131426_add_svg_map_to_teachers.php',
     'AddSwitchesToAttachments' => $baseDir . '/database/migrations/2016_02_20_135309_add_switches_to_attachments.php',
@@ -548,6 +549,7 @@ return array(
     'SebastianBergmann\\RecursionContext\\InvalidArgumentException' => $vendorDir . '/sebastian/recursion-context/src/InvalidArgumentException.php',
     'SebastianBergmann\\Version' => $vendorDir . '/sebastian/version/src/Version.php',
     'SeparateReviewsAndArchiveFromAttachment' => $baseDir . '/database/migrations/2016_02_21_195051_separate_reviews_and_archive_from_attachment.php',
+    'TeacherProfileUpdate' => $baseDir . '/database/migrations/2016_03_09_142848_teacher_profile_update.php',
     'TestCase' => $baseDir . '/tests/TestCase.php',
     'Text_Template' => $vendorDir . '/phpunit/php-text-template/src/Template.php',
 );

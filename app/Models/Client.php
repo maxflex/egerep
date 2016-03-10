@@ -4,19 +4,18 @@ namespace App\Models;
 
 use Log;
 use App\Traits\Markerable;
+use App\Traits\Person;
 use Illuminate\Database\Eloquent\Model;
 
 class Client extends Model
 {
     use Markerable;
+    use Person;
 
     protected $with = ['requests', 'markers'];
 
     protected $fillable = [
         'name',
-        'phone',
-        'phone2',
-        'phone3',
         'grade',
         'address',
         'requests',

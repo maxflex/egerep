@@ -17,12 +17,12 @@ class TutorsController extends Controller
      */
     public function index()
     {
-		    return Tutor::with([
-						'responsibleUser' => function ($query) {
-							$query->select('id','login', 'color');
-						}
-					])
-					->paginate(30)->toJson();
+	    return Tutor::with([
+					'responsibleUser' => function ($query) {
+						$query->select('id','login', 'color');
+					}
+				])
+				->paginate(30)->toJson();
     }
 
     /**

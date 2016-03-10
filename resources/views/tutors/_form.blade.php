@@ -60,7 +60,7 @@
         <div class="form-group">
             <select class="form-control"
                 ng-model="tutor.gender"
-                ng-options="gender as label for (gender, label) in genders" placeholder="пол"></select>
+                ng-options="gender as label for (gender, label) in Genders" placeholder="пол"></select>
         </div>
 
         <div class="form-group">
@@ -93,47 +93,23 @@
         </div>
 
         <div class="form-group">
-            {{-- <ng-select object='Grades' model='tutor.grades' title='тести' multiple></ng-select> --}}
             <select class="form-control" multiple id='sp-tutor-grades' ng-model='tutor.grades'
                 ng-options="grade_id as label for (grade_id, label) in Grades">
             </select>
-            {{-- <select class="form-control" multiple
-                ng-model="tutor.grades"
-                ng-options="object_id as label for (object_id, label) in Grades">
-            </select> --}}
         </div>
     </div>
 
-    <div class="col-sm-4">
-        <div class="form-group">
-            <phones entity='tutor' sms-number='sms_number'></phones>
-        </div>
-        <div class="form-group">
-            {{-- <email address='tutor.email'></email> --}}
-            <div class="input-group">
-                <input type="text" class="form-control" ng-model="tutor.email" placeholder="email">
-                 <div class="email_comment_holder">
-                     <span class="glyphicon glyphicon-pencil opacity-pointer"
-                         ng-click='startEmailComment()'
-                         ng-hide='tutor.email_comment || tutor.is_being_email_commented'></span>
-                     <input type="text" id="email_comment" class="no-border-outline" maxlength="64" placeholder="введите комментарий..."
-                         ng-model='tutor.email_comment'
-                         ng-show='tutor.email_comment || tutor.is_being_email_commented'
-                         ng-blur='blurEmailComment()'
-                         ng-focus='focusEmailComment()'
-                         ng-keyup='saveEmailComment($event)'>
-                 </div>
-                <div class="input-group-btn">
-                    <button class="btn btn-default">
-                        <span class="glyphicon small glyphicon-envelope no-margin-right"></span>
-                    </button>
+    <div class="col-sm-7">
+        <div class="row">
+            <div class="col-sm-7">
+                <div class="form-group">
+                    <phones entity='tutor' sms-number='sms_number'></phones>
                 </div>
-
+                <div class="form-group">
+                    <email entity='tutor'></email>
+                </div>
             </div>
         </div>
-    </div>
-
-    <div class="col-sm-3">
         <div class="row">
             <div class="col-sm-12">
                 <span class="link-like" ng-click="SvgMap.show(tutor.svg_map)">выезд @{{ tutor.svg_map.length ? 'возможен' : 'невозможен' }}</span>

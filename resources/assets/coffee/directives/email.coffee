@@ -2,7 +2,7 @@ angular.module('Egerep').directive 'email', ->
     restrict: 'E'
     templateUrl: 'directives/email'
     scope:
-        address: '='
+        entity: '='
     controller: ($scope) ->
         $scope.send = ->
             $('#email-modal').modal 'show'

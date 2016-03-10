@@ -13,13 +13,13 @@ class TeacherProfileUpdate extends Migration
     public function up()
     {
         Schema::connection('egecrm')->table('teachers', function (Blueprint $table) {
-			$table->string('phone4', 255)->after('phone3');
-			$table->string('phone_comment', 64)->after('phone');
-			$table->string('phone2_comment', 64)->after('phone2');
-			$table->string('phone3_comment', 64)->after('phone3');
-			$table->string('phone4_comment', 64)->after('phone4');
-			$table->string('email_comment', 64)->after('email');
-		});
+    			$table->string('phone4', 255)->after('phone3');
+    			$table->string('phone_comment', 64)->after('phone');
+    			$table->string('phone2_comment', 64)->after('phone2');
+    			$table->string('phone3_comment', 64)->after('phone3');
+    			$table->string('phone4_comment', 64)->after('phone4');
+    			$table->string('email_comment', 64)->after('email');
+    		});
     }
 
     /**

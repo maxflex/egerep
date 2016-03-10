@@ -34,7 +34,6 @@ angular
                     $scope.data = response.data
                     $scope.tutors = $scope.data.data
 
-        # @check
         $scope.blurComment = (tutor) ->
             tutor.is_being_commented = false
             tutor.list_comment = tutor.old_list_comment
@@ -65,15 +64,6 @@ angular
             Tutor.update
                 id: tutor.id
                 responsible_user_id: tutor.responsible_user.id
-        # @end
-
-        # $scope.$watch 'current_page', (newVal, oldVal) ->
-        #     return if newVal is undefined
-        #     $http.get 'api/tutors?page=' + newVal
-        #         .then (response) ->
-        #             $rootScope.frontendStop()
-        #             $scope.data = response.data
-        #             $scope.tutors = $scope.data.data
 
 
     #
@@ -176,7 +166,7 @@ angular
                         bindFileUpload()
                     , 1000
                     $rootScope.frontendStop()
-                    $scope.tutor.is_being_commented = []
+                    # $scope.tutor.is_being_commented = []
 
         # @todo: ЗАМЕНИТЬ НА ДИРЕКТИВУ <ng-select> (уже сделано, но глючная. надо доделать)
         # refresh selectpicker on update
@@ -210,36 +200,6 @@ angular
             $scope.tutor.$update()
                 .then (response) ->
                     $scope.saving = false
-
-        # email commenting
-        $scope.startEmailComment = ->
-            $scope.tutor.is_being_email_commented = true
-            $scope.tutor.email_old_comment = $scope.tutor.email_comment
-            $timeout ->
-                $("#email_comment").focus()
-
-        $scope.blurEmailComment = ->
-            $scope.tutor.is_being_email_commented = false
-            $scope.tutor.email_comment = $scope.tutor.email_old_comment
-
-        $scope.focusEmailComment = ->
-            $scope.tutor.is_being_email_commented = true
-            $scope.tutor.email_old_comment = $scope.tutor.email_comment
-
-        $scope.saveEmailComment =  (event) ->
-            if event.keyCode is 13
-                Tutor.update
-                    id: $scope.tutor.id
-                    email_comment: $scope.tutor.email_comment
-                , (response) ->
-                    $scope.tutor.email_old_comment = $scope.tutor.email_comment
-                    $(event.target).blur()
-        # @email comment end
-
-
-
-
-
 
 
         #

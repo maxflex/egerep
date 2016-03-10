@@ -19,7 +19,7 @@
             </select> --}}
         </div>
     </div>
-    <div class="col-sm-3">
+    <div class="col-sm-4">
         <div class="form-group">
             <div ng-if='client !== undefined'>
                 <phones entity="client"></phones>
@@ -31,7 +31,7 @@
             <span class="link-like" ng-click="showMap()">метки</span> (@{{ client.markers.length }})
         </div>
     </div>
-    <div class="col-sm-5">
+    <div class="col-sm-4">
         <metro-list markers='client.markers'></metro-list>
     </div>
 </div>

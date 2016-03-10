@@ -9,12 +9,18 @@
      */
     trait Person
     {
-        public static $phone_fields = ['phone', 'phone2', 'phone3'];
+        public static $phone_fields = ['phone', 'phone2', 'phone3', 'phone4'];
 
         public function __construct(array $options = [])
         {
-            $this->appends[] = 'full_name';
-            $this->appends[] = 'phones';
+            // добавить полное имя и массив телефонов в $appends = []
+            $this->appends = array_merge($this->appends, ['full_name', 'phones']);
+
+            // добавить телефоны и комментарии к fillable
+            foreach (static::$phone_fields as $phone_field) {
+                $this->fillable[] = $phone_field;
+                $this->fillable[] = $phone_field . '_comment';
+            }
 
             parent::__construct($options);
         }

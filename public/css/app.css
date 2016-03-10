@@ -26978,6 +26978,12 @@ md-tooltip {
   -webkit-animation-name: slideOutUp;
   animation-name: slideOutUp; }
 
+.comment-inside-input {
+  position: absolute;
+  top: 8px;
+  z-index: 999;
+  left: 150px; }
+
 .remove-space {
   margin-left: -4px; }
 
@@ -27033,9 +27039,12 @@ a {
   a:hover {
     color: #0e6238 !important; }
 
-.tutor-list-comment {
+.tutor-list-comment, .phone-comment {
   height: 18px;
   padding: 0; }
+
+.phone-comment {
+  width: 110px; }
 
 #tutorList.table-divlike tr:not(:last-child) {
   border-bottom: 1px solid #ddd;

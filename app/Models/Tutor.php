@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Log;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Marker;
 use App\Traits\Markerable;
@@ -20,14 +19,6 @@ class Tutor extends Model
 		'last_name',
 		'middle_name',
 		'email',
-		'phone',
-		'phone2',
-		'phone3',
-		'phone4',
-		'phone_comment',
-		'phone2_comment',
-		'phone3_comment',
-		'phone4_comment',
 		'email_comment',
 		'gender',
 		'birth_year',
