@@ -15,6 +15,20 @@
     </div>
 </div> --}}
 
+<div class="row mb">
+    <div class="col-sm-3">
+        {{-- <ng-select object='TutorStates' model='state' none-text='статус'></ng-select> --}}
+        <select class="form-control" ng-model='state' ng-change="changeState()">
+            <option value="">статус</option>
+            <option disabled>──────────────</option>
+            <option
+                ng-repeat="(id_state, label) in TutorStates"
+                value="@{{ id_state }}"
+            >@{{ label }}</option>
+        </select>
+    </div>
+</div>
+
 <table id="tutorList" class="table table-divlike" style="position: relative">
 	<tr ng-repeat="tutor in tutors"
 		data-id="@{{tutor.id}}">
@@ -56,8 +70,8 @@
 	</tr>
 </table>
 
-<div ng-show="search && !tutors.length">
-    <p align="center">Нет результатов</p>
+<div ng-show="!tutors.length">
+    <p align="center" class='text-gray' style="margin: 200px 0">Нет результатов</p>
 </div>
 
 <pagination style="margin-top: 30px"

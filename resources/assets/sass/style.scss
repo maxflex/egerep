@@ -29,6 +29,12 @@
 		left: 150px;
 	}
 
+	email {
+		& .comment-inside-input {
+			left: 224px;
+		}
+	}
+
 	.remove-space {
 		margin-left: -4px;
 	}

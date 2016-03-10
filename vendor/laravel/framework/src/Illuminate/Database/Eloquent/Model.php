@@ -2514,7 +2514,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
         if (is_array($value)) {
             return $value;
         } else {
-            return empty($value) ? [] : explode(',', $value);
+            return empty($value) ? [] : array_map('intval', explode(',', $value));
         }
     }
 
@@ -3396,7 +3396,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     public function hideRelation($relation)
     {
         unset($this->relations[$relation]);
-        
+
         return $this;
     }
 

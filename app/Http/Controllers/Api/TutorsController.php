@@ -22,6 +22,7 @@ class TutorsController extends Controller
                             $query->select('id','login', 'color');
                          }
                       ])
+                      ->searchByState($request->input('state'))
                       ->searchByLastNameAndPhone($request->input('search'))
                       ->paginate(30)->toJson();
     }

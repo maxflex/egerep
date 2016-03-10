@@ -8,6 +8,7 @@ angular
         # @check
         $scope.Tutor = Tutor
         $scope.TutorStates = TutorStates
+        $scope.state = localStorage.getItem('tutors_index_state')
 
         $scope.fake_user =
             login: 'system'
@@ -19,6 +20,10 @@ angular
 
         $rootScope.frontend_loading = true
 
+        $scope.changeState = ->
+            localStorage.setItem('tutors_index_state', $scope.state)
+            loadTutors($scope.current_page)
+
         $timeout ->
             loadTutors($scope.page)
             $scope.current_page = $scope.page
@@ -28,7 +33,11 @@ angular
             paginate('tutors', $scope.current_page)
 
         loadTutors = (page) ->
-            $http.get 'api/tutors?page=' + page + ('&search=' + ($scope.search or ''))
+            params = '?page=' + page
+            params += "&search=#{ $scope.search }" if $scope.search
+            params += "&state=#{ $scope.state }" if $scope.state isnt null and $scope.state isnt ''
+
+            $http.get "api/tutors#{ params }"
                 .then (response) ->
                     $rootScope.frontendStop()
                     $scope.data = response.data
@@ -76,6 +85,44 @@ angular
         $scope.Genders  = Genders
         $scope.TutorStates = TutorStates
         $rootScope.frontend_loading = true
+
+        # разбить "1 класс, 2 класс, 3 класс" на "1-3 классы"
+        $scope.shortenGrades = ->
+            a = $scope.tutor.grades
+            if a.length < 1
+                console.log 'qutting'
+                return
+            limit = a.length - 1
+            combo_end = -1
+            pairs = []
+            i = 0
+            while i <= limit
+                combo_start = a[i]
+
+                if combo_start > 11
+                    i++
+                    console.log Grades, combo_start
+                    pairs.push Grades[combo_start]
+                    continue
+
+                if combo_start <= combo_end
+                    i++
+                    continue
+
+                j = i
+                while j <= limit
+                    combo_end = a[j]
+                    if a[j + 1] - combo_end > 1
+                        break
+                    j++
+                if combo_start != combo_end
+                    pairs.push combo_start + '–' + combo_end + ' классы'
+                else
+                    pairs.push combo_start + ' класс'
+                i++
+            $timeout ->
+                $('#sp-tutor-grades').parent().find('.filter-option').html pairs.join ', '
+            return
 
         $scope.deletePhoto = ->
             bootbox.confirm 'Удалить фото преподавателя?', (result) ->
@@ -172,14 +219,17 @@ angular
         # refresh selectpicker on update
         $scope.$watch 'tutor.subjects', (newVal, oldVal) ->
             return if newVal is undefined
-            sp 'tutor-subjects', 'предмет' if oldVal is undefined
+            sp 'tutor-subjects', 'предмет', '+' if oldVal is undefined
             spRefresh 'tutor-subjects' if oldVal isnt undefined
 
         # refresh selectpicker on update
         $scope.$watch 'tutor.grades', (newVal, oldVal) ->
             return if newVal is undefined
             sp 'tutor-grades', 'классы' if oldVal is undefined
-            spRefresh 'tutor-grades' if oldVal isnt undefined
+            # spRefresh 'tutor-grades' if oldVal isnt undefined
+            $timeout ->
+                $scope.shortenGrades()
+
 
         $scope.svgSave = ->
             $scope.tutor.svg_map = SvgMap.save()

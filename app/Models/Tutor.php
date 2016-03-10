@@ -149,4 +149,14 @@ class Tutor extends Model
 
         }
     }
+
+    /**
+     * Search by status
+     */
+    public function scopeSearchByState($query, $state)
+    {
+        if (isset($state)) {
+            return $query->where('state', $state);
+        }
+    }
 }

@@ -843,6 +843,7 @@
     var loadTutors;
     $scope.Tutor = Tutor;
     $scope.TutorStates = TutorStates;
+    $scope.state = localStorage.getItem('tutors_index_state');
     $scope.fake_user = {
       login: 'system',
       id: 0
@@ -851,6 +852,10 @@
       return moment().format("YYYY") - year;
     };
     $rootScope.frontend_loading = true;
+    $scope.changeState = function() {
+      localStorage.setItem('tutors_index_state', $scope.state);
+      return loadTutors($scope.current_page);
+    };
     $timeout(function() {
       loadTutors($scope.page);
       return $scope.current_page = $scope.page;
@@ -860,7 +865,15 @@
       return paginate('tutors', $scope.current_page);
     };
     loadTutors = function(page) {
-      return $http.get('api/tutors?page=' + page + ('&search=' + ($scope.search || ''))).then(function(response) {
+      var params;
+      params = '?page=' + page;
+      if ($scope.search) {
+        params += "&search=" + $scope.search;
+      }
+      if ($scope.state !== null && $scope.state !== '') {
+        params += "&state=" + $scope.state;
+      }
+      return $http.get("api/tutors" + params).then(function(response) {
         $rootScope.frontendStop();
         $scope.data = response.data;
         return $scope.tutors = $scope.data.data;
@@ -908,6 +921,48 @@
     $scope.Genders = Genders;
     $scope.TutorStates = TutorStates;
     $rootScope.frontend_loading = true;
+    $scope.shortenGrades = function() {
+      var a, combo_end, combo_start, i, j, limit, pairs;
+      a = $scope.tutor.grades;
+      if (a.length < 1) {
+        console.log('qutting');
+        return;
+      }
+      limit = a.length - 1;
+      combo_end = -1;
+      pairs = [];
+      i = 0;
+      while (i <= limit) {
+        combo_start = a[i];
+        if (combo_start > 11) {
+          i++;
+          console.log(Grades, combo_start);
+          pairs.push(Grades[combo_start]);
+          continue;
+        }
+        if (combo_start <= combo_end) {
+          i++;
+          continue;
+        }
+        j = i;
+        while (j <= limit) {
+          combo_end = a[j];
+          if (a[j + 1] - combo_end > 1) {
+            break;
+          }
+          j++;
+        }
+        if (combo_start !== combo_end) {
+          pairs.push(combo_start + '–' + combo_end + ' классы');
+        } else {
+          pairs.push(combo_start + ' класс');
+        }
+        i++;
+      }
+      $timeout(function() {
+        return $('#sp-tutor-grades').parent().find('.filter-option').html(pairs.join(', '));
+      });
+    };
     $scope.deletePhoto = function() {
       return bootbox.confirm('Удалить фото преподавателя?', function(result) {
         if (result === true) {
@@ -1016,7 +1071,7 @@
         return;
       }
       if (oldVal === void 0) {
-        sp('tutor-subjects', 'предмет');
+        sp('tutor-subjects', 'предмет', '+');
       }
       if (oldVal !== void 0) {
         return spRefresh('tutor-subjects');
@@ -1029,9 +1084,9 @@
       if (oldVal === void 0) {
         sp('tutor-grades', 'классы');
       }
-      if (oldVal !== void 0) {
-        return spRefresh('tutor-grades');
-      }
+      return $timeout(function() {
+        return $scope.shortenGrades();
+      });
     });
     $scope.svgSave = function() {
       return $scope.tutor.svg_map = SvgMap.save();
@@ -1215,6 +1270,83 @@
 }).call(this);
 
 (function() {
+  var apiPath, updateMethod;
+
+  angular.module('Egerep').factory('Account', function($resource) {
+    return $resource(apiPath('accounts'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Review', function($resource) {
+    return $resource(apiPath('reviews'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Archive', function($resource) {
+    return $resource(apiPath('archives'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Attachment', function($resource) {
+    return $resource(apiPath('attachments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('RequestList', function($resource) {
+    return $resource(apiPath('lists'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Request', function($resource) {
+    return $resource(apiPath('requests'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Sms', function($resource) {
+    return $resource(apiPath('sms'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Comment', function($resource) {
+    return $resource(apiPath('comments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Client', function($resource) {
+    return $resource(apiPath('clients'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('User', function($resource) {
+    return $resource(apiPath('users'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Tutor', function($resource) {
+    return $resource(apiPath('tutors'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      deletePhoto: {
+        url: apiPath('tutors', 'photo'),
+        method: 'DELETE'
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  });
+
+  apiPath = function(entity, additional) {
+    if (additional == null) {
+      additional = '';
+    }
+    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
+  };
+
+  updateMethod = function() {
+    return {
+      update: {
+        method: 'PUT'
+      }
+    };
+  };
+
+}).call(this);
+
+(function() {
   angular.module('Egerep').value('Destinations', {
     r_k: 'репетитор едет к клиенту',
     k_r: 'клиент едет к репетитору'
@@ -1315,7 +1447,18 @@
       10: 'английскому языку'
     },
     short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
-    three_letters: ['МАТ', 'ФИЗ', 'РУС', 'ЛИТ', 'АНГ', 'ИСТ', 'ОБЩ', 'ХИМ', 'БИО', 'ИНФ'],
+    three_letters: {
+      1: 'МАТ',
+      2: 'ФИЗ',
+      3: 'ХИМ',
+      4: 'БИО',
+      5: 'ИНФ',
+      6: 'РУС',
+      7: 'ЛИТ',
+      8: 'ОБЩ',
+      9: 'ИСТ',
+      10: 'АНГ'
+    },
     short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
   });
 
@@ -1635,83 +1778,6 @@
       templateUrl: 'directives/tutor-photo'
     };
   });
-
-}).call(this);
-
-(function() {
-  var apiPath, updateMethod;
-
-  angular.module('Egerep').factory('Account', function($resource) {
-    return $resource(apiPath('accounts'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Review', function($resource) {
-    return $resource(apiPath('reviews'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Archive', function($resource) {
-    return $resource(apiPath('archives'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Attachment', function($resource) {
-    return $resource(apiPath('attachments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('RequestList', function($resource) {
-    return $resource(apiPath('lists'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Request', function($resource) {
-    return $resource(apiPath('requests'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Sms', function($resource) {
-    return $resource(apiPath('sms'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Comment', function($resource) {
-    return $resource(apiPath('comments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Client', function($resource) {
-    return $resource(apiPath('clients'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('User', function($resource) {
-    return $resource(apiPath('users'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Tutor', function($resource) {
-    return $resource(apiPath('tutors'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      deletePhoto: {
-        url: apiPath('tutors', 'photo'),
-        method: 'DELETE'
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  });
-
-  apiPath = function(entity, additional) {
-    if (additional == null) {
-      additional = '';
-    }
-    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
-  };
-
-  updateMethod = function() {
-    return {
-      update: {
-        method: 'PUT'
-      }
-    };
-  };
 
 }).call(this);
 

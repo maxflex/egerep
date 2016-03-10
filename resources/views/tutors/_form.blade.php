@@ -88,13 +88,13 @@
         <div class="form-group">
             <select class="form-control" multiple id='sp-tutor-subjects'
                 ng-model="tutor.subjects"
-                ng-options="subject_id as subject for (subject_id, subject) in Subjects.all">
+                ng-options="+(subject_id) as subject for (subject_id, subject) in Subjects.three_letters">
             </select>
         </div>
 
         <div class="form-group">
             <select class="form-control" multiple id='sp-tutor-grades' ng-model='tutor.grades'
-                ng-options="grade_id as label for (grade_id, label) in Grades">
+                ng-options="+(grade_id) as label for (grade_id, label) in Grades">
             </select>
         </div>
     </div>

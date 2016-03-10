@@ -15,8 +15,8 @@ class TutorsController extends Controller
     {
         return view('tutors.index')->with(
             ngInit([
-                'page' => $request->input('page'),
-                'search' => $request->input('text'),
+                'page'      => $request->input('page'),
+                'search'    => $request->input('text'),
             ])
         );
     }

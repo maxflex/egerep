@@ -43,10 +43,11 @@
 	/**
 	 * Helper funciton for selectpicker
 	 */
-	function sp(id, placeholder) {
+	function sp(id, placeholder, multipleSeparator) {
 		setTimeout(function() {
 			$('#sp-' + id).selectpicker({
-				noneSelectedText: placeholder
+				noneSelectedText: placeholder,
+				multipleSeparator: multipleSeparator === undefined ? ', ' : multipleSeparator
 			})
 		}, 50)
 	}
