@@ -8,7 +8,7 @@
 @endsection
 
 @section('content')
-<div class="row">
+<div class="row mb">
     <div class="col-sm-3">
         <div class="form-group">
             <div class="input-group custom">
@@ -94,14 +94,14 @@
         </div>
         <div class="form-group">
             <ng-select model='search.destination' object='Destinations'></ng-select>
-            {{-- <ng-multi model='search.destination' object='Destinations' none-text='фояр лапута'></ng-multi> --}}
         </div>
         {{-- <div class="form-group" style="visibility: hidden">
             <input type="text" class="form-control digits-only">
         </div> --}}
         <div class="form-group">
-            <button class="btn btn-primary full-width">найти</button>
+            <button class="btn btn-primary full-width" ng-click='find()'>найти</button>
         </div>
     </div>
 </div>
+@include('tutors.add-to-list.gmap')
 @stop

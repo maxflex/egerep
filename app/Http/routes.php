@@ -20,6 +20,7 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
         Route::get('tutors/list', 'TutorsController@lists');
+        Route::post('tutors/filtered', 'TutorsController@filtered');
         Route::delete('tutors/photo/{id}', 'TutorsController@deletePhoto');
         Route::resource('tutors', 'TutorsController');
 

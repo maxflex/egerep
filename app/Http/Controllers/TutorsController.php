@@ -7,16 +7,15 @@ use Log;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Tutor;
+use App\Models\RequestList;
 
 class TutorsController extends Controller
 {
     public function index(Request $request)
     {
-        return view('tutors.index')->with([
-            'nginit' => ngInit([
-                'page' => $request->input('page'),
-            ]),
-        ]);
+        return view('tutors.index')->with(ngInit([
+            'page' => $request->input('page'),
+        ]));
     }
 
     public function create()
@@ -46,6 +45,11 @@ class TutorsController extends Controller
 
     public function addToList($id)
     {
-        return view('tutors.add-to-list.index');
+        $list = RequestList::find($id);
+
+        return view('tutors.add-to-list.index')->with(ngInit([
+            'list'      => $list,
+            'client'    => $list->request->client,
+        ]));
     }
 }

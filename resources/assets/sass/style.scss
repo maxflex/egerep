@@ -22,6 +22,45 @@
 	$half_black			: rgba(0, 0, 0, .5);
 	$quater_black 		: rgba(0, 0, 0, .25);
 
+	.remove-space {
+		margin-left: -4px;
+	}
+
+	.map-tutor-list {
+		background: rgba(255, 255, 255, 0.9);
+		height: 100%;
+		width: 350px;
+		position: absolute;
+		top: 0;
+		right: 0;
+		padding: 10px 5px;
+		overflow: scroll;
+		&.ng-hide-add, &.ng-hide-remove {
+			transition: all linear .2s;
+		}
+		&.ng-hide {
+			right: -250px;
+		}
+		& .ava {
+			height: 65px;
+			vertical-align: top;
+			margin-right: 5px;
+			float: left;
+		}
+		& > div {
+			margin-bottom: 7px;
+			display: inline-block;
+			width: 100%;
+		}
+
+		& .info-line {
+		    width: calc(100% - 70px);
+			display: inline-block;
+			& .glyphicon {
+				top: 3px;
+			}
+		}
+	}
 
 	.double-input {
 		display: flex;

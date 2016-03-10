@@ -52,7 +52,7 @@ class Tutor extends Model
         'list_comment',
         'responsible_user_id',
     ];
-    protected $appends = ['has_photo_original', 'has_photo_cropped'];
+    protected $appends = ['has_photo_original', 'has_photo_cropped', 'age'];
     protected $with = ['markers'];
     protected static $commaSeparated = ['svg_map', 'subjects', 'grades'];
 
@@ -87,6 +87,18 @@ class Tutor extends Model
         return file_exists($this->photoPath('@2x'));
     }
 
+    public function getAgeAttribute()
+    {
+        return date('Y') - $this->birth_year;
+    }
+
+    public function getClientsCountAttribute()
+    {
+        return count($this->getClientIds());
+    }
+
+    // ------------------------------------------------------------------------
+
     /**
      * Получить ID всех клиентов преподавателя
      */
@@ -108,8 +120,6 @@ class Tutor extends Model
     {
         return $this->attachments()->orderBy('date')->pluck('date')->first();
     }
-
-    // ------------------------------------------------------------------------
 
     public function photoPath($addon = '')
     {

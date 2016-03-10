@@ -3387,6 +3387,20 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     }
 
     /**
+     * Hide the specific relationship in the model.
+     *
+     * @custom
+     * @param  string  $relation
+     * @return $this
+     */
+    public function hideRelation($relation)
+    {
+        unset($this->relations[$relation]);
+        
+        return $this;
+    }
+
+    /**
      * Set the entire relations array on the model.
      *
      * @param  array  $relations

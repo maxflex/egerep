@@ -9,15 +9,34 @@
      */
     trait Person
     {
+        public static $phone_fields = ['phone', 'phone2', 'phone3'];
+
         public function __construct(array $options = [])
         {
             $this->appends[] = 'full_name';
+            $this->appends[] = 'phones';
+
             parent::__construct($options);
         }
 
         public function getFullNameAttribute()
         {
             return $this->getName();
+        }
+
+        /**
+         * Номера телефонов в виде массива
+         */
+        public function getPhonesAttribute()
+        {
+            $phones = [];
+            foreach (static::$phone_fields as $phone_field) {
+                $phone = $this->{$phone_field};
+                if (! empty($phone)) {
+                    $phones[] = $phone;
+                }
+            }
+            return $phones;
         }
 
         /**

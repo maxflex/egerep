@@ -14,6 +14,14 @@
             return $this->morphMany('App\Models\Marker', 'markerable');
         }
 
+        /**
+         * Получить маркеры по типу
+         */
+        public function getMarkers($type)
+        {
+            return $this->markers()->where('type', $type)->get();
+        }
+
         public function save(array $options = [])
         {
             $this->_saveMarkers();

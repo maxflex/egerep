@@ -217,12 +217,140 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').controller('AddToList', function($scope, Genders, Grades, Subjects, TutorStates, Destinations) {
-    $scope.Genders = Genders;
-    $scope.Grades = Grades;
-    $scope.Subjects = Subjects;
-    $scope.TutorStates = TutorStates;
-    return $scope.Destinations = Destinations;
+  var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+  angular.module('Egerep').controller('AddToList', function($scope, Genders, Grades, Subjects, TutorStates, Destinations, TutorService, PhoneService, RequestList) {
+    var TRANSPARENT_MARKER, bindTutorMarkerEvents, findIntersectingMetros, repaintChosen, showClientOnMap, showTutorsOnMap, unsetAllMarkers;
+    bindArguments($scope, arguments);
+    TRANSPARENT_MARKER = 0.3;
+    angular.element(document).ready(function() {
+      return $scope.list = new RequestList($scope.list);
+    });
+    $scope.find = function() {
+      return TutorService.getFiltered($scope.search).then(function(response) {
+        $scope.tutors = response.data;
+        showTutorsOnMap();
+        findIntersectingMetros();
+        return repaintChosen();
+      });
+    };
+    showTutorsOnMap = function() {
+      unsetAllMarkers();
+      $scope.marker_id = 1;
+      $scope.tutor_list = [];
+      $scope.markers = [];
+      return $scope.tutors.forEach(function(tutor) {
+        console.log(tutor.markers);
+        return tutor.markers.forEach(function(marker) {
+          var new_marker;
+          new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, marker.type);
+          new_marker.metros = marker.metros;
+          new_marker.tutor = tutor;
+          new_marker.setMap($scope.map);
+          bindTutorMarkerEvents(new_marker);
+          return $scope.markers.push(new_marker);
+        });
+      });
+    };
+    showClientOnMap = function() {
+      return $scope.client.markers.forEach(function(marker) {
+        var new_marker;
+        new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, 'white');
+        new_marker.metros = marker.metros;
+        return new_marker.setMap($scope.map);
+      });
+    };
+    unsetAllMarkers = function() {
+      if ($scope.markers === void 0) {
+        return;
+      }
+      return $scope.markers.forEach(function(marker) {
+        return marker.setMap(null);
+      });
+    };
+    findIntersectingMetros = function() {
+      if ($scope.search.destination === 'r_k') {
+        $scope.markers.forEach(function(marker) {
+          marker.intersecting = false;
+          return $scope.client.markers.forEach(function(client_marker) {
+            return client_marker.metros.forEach(function(client_metro) {
+              var ref;
+              if (ref = client_metro.station_id.toString(), indexOf.call(marker.tutor.svg_map, ref) >= 0) {
+                marker.intersecting = true;
+              }
+            });
+          });
+        });
+        return $scope.markers.forEach(function(marker) {
+          if (!marker.intersecting) {
+            return marker.setOpacity(TRANSPARENT_MARKER);
+          }
+        });
+      }
+    };
+    bindTutorMarkerEvents = function(marker) {
+      google.maps.event.addListener(marker, 'click', function(event) {
+        var ref;
+        if (ref = marker.tutor, indexOf.call($scope.tutor_list, ref) >= 0) {
+          $scope.tutor_list = removeById($scope.tutor_list, marker.tutor.id);
+        } else {
+          $scope.hovered_tutor = null;
+          $scope.tutor_list.push(marker.tutor);
+        }
+        return $scope.$apply();
+      });
+      google.maps.event.addListener(marker, 'mouseover', function(event) {
+        var ref;
+        if (ref = marker.tutor, indexOf.call($scope.tutor_list, ref) >= 0) {
+          return;
+        }
+        $scope.hovered_tutor = marker.tutor;
+        return $scope.$apply();
+      });
+      google.maps.event.addListener(marker, 'mouseout', function(event) {
+        $scope.hovered_tutor = null;
+        return $scope.$apply();
+      });
+      return google.maps.event.addListener(marker, 'dblclick', function(event) {
+        var tutor_id;
+        tutor_id = parseInt(marker.tutor.id);
+        if (indexOf.call($scope.list.tutor_ids, tutor_id) >= 0) {
+          $scope.list.tutor_ids = _.without($scope.list.tutor_ids, tutor_id);
+        } else {
+          $scope.list.tutor_ids.push(tutor_id);
+        }
+        repaintChosen();
+        return $scope.list.$update();
+      });
+    };
+    repaintChosen = function() {
+      return $scope.markers.forEach(function(marker) {
+        var ref, ref1;
+        if ((ref = marker.tutor.id, indexOf.call($scope.list.tutor_ids, ref) >= 0) && !marker.chosen) {
+          marker.chosen = true;
+          marker.setOpacity(1);
+          marker.setIcon(ICON_BLUE);
+        }
+        if ((ref1 = marker.tutor.id, indexOf.call($scope.list.tutor_ids, ref1) < 0) && marker.chosen) {
+          marker.chosen = false;
+          marker.setOpacity(marker.intersecting ? 1 : TRANSPARENT_MARKER);
+          return marker.setIcon(getMarkerType(marker.type));
+        }
+      });
+    };
+    return $scope.$on('mapInitialized', function(event, map) {
+      var INIT_COORDS;
+      $scope.gmap = map;
+      INIT_COORDS = {
+        lat: 55.7387,
+        lng: 37.6032
+      };
+      $scope.RECOM_BOUNDS = new google.maps.LatLngBounds(new google.maps.LatLng(INIT_COORDS.lat - 0.5, INIT_COORDS.lng - 0.5), new google.maps.LatLng(INIT_COORDS.lat + 0.5, INIT_COORDS.lng + 0.5));
+      $scope.geocoder = new google.maps.Geocoder;
+      $scope.gmap.setCenter(new google.maps.LatLng(55.7387, 37.6032));
+      $scope.gmap.setZoom(11);
+      return showClientOnMap();
+    });
   });
 
 }).call(this);
@@ -1253,9 +1381,10 @@
       scope: {
         entity: '='
       },
-      controller: function($scope, $timeout, $rootScope) {
+      controller: function($scope, $timeout, $rootScope, PhoneService) {
+        $scope.PhoneService = PhoneService;
         $rootScope.dataLoaded.promise.then(function(data) {
-          return $scope.level = $scope.entity.phone3 ? 3 : $scope.entity.phone2 ? 2 : 1;
+          return $scope.level = $scope.entity.phones.length;
         });
         $scope.nextLevel = function() {
           return $scope.level++;
@@ -1275,12 +1404,30 @@
         $scope.isMobile = function(number) {
           return parseInt(number[4]) === 9 || parseInt(number[1]) === 9;
         };
-        $scope.sms = function(number) {
+        return $scope.sms = function(number) {
           $('#sms-modal').modal('show');
           return $scope.$parent.sms_number = number;
         };
-        return $scope.call = function(number) {
-          return location.href = "sip:" + number.replace(/[^0-9]/g, '');
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('plural', function() {
+    return {
+      restrict: 'E',
+      scope: {
+        count: '=',
+        type: '@',
+        noneText: '@'
+      },
+      templateUrl: 'directives/plural',
+      controller: function($scope, $element, $attrs, $timeout) {
+        return $scope.when = {
+          'age': ['год', 'года', 'лет'],
+          'student': ['ученик', 'ученика', 'учеников']
         };
       }
     };
@@ -1344,6 +1491,98 @@
       }
     };
   });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('tutorPhoto', function() {
+    return {
+      restrict: 'E',
+      replace: true,
+      scope: {
+        tutor: '=',
+        version: '='
+      },
+      templateUrl: 'directives/tutor-photo'
+    };
+  });
+
+}).call(this);
+
+(function() {
+  var apiPath, updateMethod;
+
+  angular.module('Egerep').factory('Account', function($resource) {
+    return $resource(apiPath('accounts'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Review', function($resource) {
+    return $resource(apiPath('reviews'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Archive', function($resource) {
+    return $resource(apiPath('archives'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Attachment', function($resource) {
+    return $resource(apiPath('attachments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('RequestList', function($resource) {
+    return $resource(apiPath('lists'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Request', function($resource) {
+    return $resource(apiPath('requests'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Sms', function($resource) {
+    return $resource(apiPath('sms'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Comment', function($resource) {
+    return $resource(apiPath('comments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Client', function($resource) {
+    return $resource(apiPath('clients'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('User', function($resource) {
+    return $resource(apiPath('users'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Tutor', function($resource) {
+    return $resource(apiPath('tutors'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      deletePhoto: {
+        url: apiPath('tutors', 'photo'),
+        method: 'DELETE'
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  });
+
+  apiPath = function(entity, additional) {
+    if (additional == null) {
+      additional = '';
+    }
+    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
+  };
+
+  updateMethod = function() {
+    return {
+      update: {
+        method: 'PUT'
+      }
+    };
+  };
 
 }).call(this);
 
@@ -1455,86 +1694,19 @@
 }).call(this);
 
 (function() {
-  var apiPath, updateMethod;
-
-  angular.module('Egerep').factory('Account', function($resource) {
-    return $resource(apiPath('accounts'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Review', function($resource) {
-    return $resource(apiPath('reviews'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Archive', function($resource) {
-    return $resource(apiPath('archives'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Attachment', function($resource) {
-    return $resource(apiPath('attachments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('RequestList', function($resource) {
-    return $resource(apiPath('lists'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Request', function($resource) {
-    return $resource(apiPath('requests'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Sms', function($resource) {
-    return $resource(apiPath('sms'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Comment', function($resource) {
-    return $resource(apiPath('comments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Client', function($resource) {
-    return $resource(apiPath('clients'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('User', function($resource) {
-    return $resource(apiPath('users'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Tutor', function($resource) {
-    return $resource(apiPath('tutors'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      deletePhoto: {
-        url: apiPath('tutors', 'photo'),
-        method: 'DELETE'
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  });
-
-  apiPath = function(entity, additional) {
-    if (additional == null) {
-      additional = '';
-    }
-    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
-  };
-
-  updateMethod = function() {
-    return {
-      update: {
-        method: 'PUT'
-      }
+  angular.module('Egerep').service('ApiService', function($http) {
+    this.exec = function(fun, data) {
+      return $http.post("api/external/" + fun, data);
     };
-  };
+    return this;
+  });
 
 }).call(this);
 
 (function() {
-  angular.module('Egerep').service('ApiService', function($http) {
-    this.exec = function(fun, data) {
-      return $http.post("api/external/" + fun, data);
+  angular.module('Egerep').service('PhoneService', function($http) {
+    this.call = function(number) {
+      return location.href = "sip:" + number.replace(/[^0-9]/g, '');
     };
     return this;
   });
@@ -1642,6 +1814,16 @@
     this.save = function() {
       $('#svg-modal').modal('hide');
       return this.map.save();
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('TutorService', function($http) {
+    this.getFiltered = function(search_data) {
+      return $http.post('api/tutors/filtered', search_data);
     };
     return this;
   });

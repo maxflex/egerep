@@ -26978,6 +26978,37 @@ md-tooltip {
   -webkit-animation-name: slideOutUp;
   animation-name: slideOutUp; }
 
+.remove-space {
+  margin-left: -4px; }
+
+.map-tutor-list {
+  background: rgba(255, 255, 255, 0.9);
+  height: 100%;
+  width: 350px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px 5px;
+  overflow: scroll; }
+  .map-tutor-list.ng-hide-add, .map-tutor-list.ng-hide-remove {
+    transition: all linear .2s; }
+  .map-tutor-list.ng-hide {
+    right: -250px; }
+  .map-tutor-list .ava {
+    height: 65px;
+    vertical-align: top;
+    margin-right: 5px;
+    float: left; }
+  .map-tutor-list > div {
+    margin-bottom: 7px;
+    display: inline-block;
+    width: 100%; }
+  .map-tutor-list .info-line {
+    width: calc(100% - 70px);
+    display: inline-block; }
+    .map-tutor-list .info-line .glyphicon {
+      top: 3px; }
+
 .double-input {
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -27569,7 +27600,7 @@ md-input-container label {
     margin: 50px 0; }
 
 body {
-  margin-top: 20px !important;
+  padding-top: 20px !important;
   overflow-x: hidden; }
 
 .badge-danger {

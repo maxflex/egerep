@@ -20,13 +20,10 @@ class AccountsController extends Controller
             return view('tutors.accounts.no_clients');
         }
 
-        $nginit = ngInit([
+        return view('tutors.accounts.index')->with(ngInit([
             'tutor'                 => Tutor::where('id', $id)->with(['accounts'])->first(),
             'client_ids'            => $tutor->getClientIds(),
             'first_attachment_date' => $tutor->getFirstAttachmentDate(),
-            // 'data'                  => AccountData::getSorted($id),
-        ]);
-
-        return view('tutors.accounts.index')->with(compact('nginit'));
+        ]));
     }
 }

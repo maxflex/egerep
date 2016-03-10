@@ -40,7 +40,7 @@
      */
     function throughNumbers(&$object, $func)
     {
-        foreach (['phone', 'phone2', 'phone3'] as $phone_field) {
+        foreach (App\Traits\Person::$phone_fields as $phone_field) {
             $object->{$phone_field} = $func($object->{$phone_field});
         }
     }
@@ -81,5 +81,5 @@
 			$return .= $var_name." = ". $var_value ."; ";
 		}
 
-		return $return;
+		return ['nginit' => $return];
 	}
