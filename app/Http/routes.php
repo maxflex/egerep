@@ -18,6 +18,10 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::get('tutors/{id}/accounts', 'AccountsController@index');
 
+	# Поиск по преподам
+	Route::post('search', 'TutorsController@index');
+
+
     Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
         Route::get('tutors/list', 'TutorsController@lists');
         Route::delete('tutors/photo/{id}', 'TutorsController@deletePhoto');

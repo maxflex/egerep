@@ -56,6 +56,10 @@
 	</tr>
 </table>
 
+<div ng-show="search && !tutors.length">
+    <p align="center">Нет результатов</p>
+</div>
+
 <pagination style="margin-top: 30px"
   ng-model="current_page"
   ng-change="pageChanged()"
@@ -66,6 +70,7 @@
   last-text="»"
   previous-text="«"
   next-text="»"
+  ng-show="tutors.length"
 >
 </pagination>
 @stop

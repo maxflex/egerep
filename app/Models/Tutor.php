@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Requests\Request;
 use Log;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Marker;
@@ -127,5 +128,23 @@ class Tutor extends Model
         static::saving(function($model) {
             cleanNumbers($model);
         });
+    }
+
+    /**
+     * @param QueryBuilder $query        Query Builder.
+     * @param string $searchText         Last name or phone of tutor.
+     * @return QueryBuilder              QueryBuilder instance.
+     *
+     * @todo Add phone4 field after Task #738 migrations!
+     */
+    public function scopeSearchByLastNameAndPhone($query, $searchText)
+    {
+        if ($searchText) {
+            return $query->whereRaw("lower(last_name) like lower('%{$searchText}%')")
+                         ->orWhere("phone", "like", "%{$searchText}%")
+                         ->orWhere("phone2", "like", "%{$searchText}%")
+                         ->orWhere("phone3", "like", "%{$searchText}%");
+
+        }
     }
 }

@@ -15,14 +15,15 @@ class TutorsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-		return Tutor::with([
-						'responsibleUser' => function ($query) {
-							$query->select('id','login', 'color');
-						}
-					])
-					->paginate(30)->toJson();
+        return Tutor::with([
+                         'responsibleUser' => function ($query) {
+                            $query->select('id','login', 'color');
+                         }
+                      ])
+                      ->searchByLastNameAndPhone($request->input('search'))
+                      ->paginate(30)->toJson();
     }
 
     /**
