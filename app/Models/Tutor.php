@@ -23,6 +23,12 @@ class Tutor extends Model
 		'phone',
 		'phone2',
 		'phone3',
+		'phone4',
+		'phone_comment',
+		'phone2_comment',
+		'phone3_comment',
+		'phone4_comment',
+		'email_comment',
 		'gender',
 		'birth_year',
 		'start_career_year',
@@ -50,7 +56,7 @@ class Tutor extends Model
 		'id_a_pers',
 		'departure_price',
         'list_comment',
-        'responsible_user_id',
+        'responsible_user_id'
     ];
     protected $appends = ['has_photo_original', 'has_photo_cropped'];
     protected $with = ['markers'];
