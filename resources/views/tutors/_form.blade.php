@@ -145,6 +145,62 @@
             <textarea class="md-input" ng-model="tutor.price"></textarea>
         </md-input-container>
 
+        <div class="greenField" style="border-left:5px solid #1C874F; background:#DBECE3;padding-left:10px;">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <md-input-container class="md-block" style="margin-top: 20px">
+                                <label>Опубликованная цена</label>
+                                <textarea class="md-input digits-only" ng-model="tutor.public_price"></textarea>
+                            </md-input-container>
+                        </div>
+                        <div class="col-sm-3" style="text-align:right;">
+                            <span class="ng-grey" style="position: relative; top: 27px" ng-show='tutor.public_price > 0'>
+                                <ng-pluralize count='tutor.public_price' when="{
+                                                                             'one': 'рубль',
+                                                                             'few': 'рубля',
+                                                                             'many': 'рублей'
+                                                                        }"></ng-pluralize> за
+                            </span>
+                        </div>
+                        <div class="col-sm-1">
+                            <md-input-container class="md-block" style="margin-top: 20px">
+                                <textarea class="md-input digits-only" ng-model="tutor.lesson_length" ng-show='tutor.public_price > 0'></textarea>
+                            </md-input-container>
+                        </div>
+                        <div class="col-sm-3">
+                            <span class="ng-grey" style="position: relative; top: 27px" ng-show='tutor.public_price > 0'> минут </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6" ng-show='tutor.svg_map.length'>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <md-input-container class="md-block" style="margin-top: 20px">
+                                <label>Минимальная стоимость выезда</label>
+                                <textarea class="md-input digits-only" ng-model="tutor.departure_price"></textarea>
+                            </md-input-container>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="ng-grey" style="position: relative; top: 27px" ng-show='tutor.public_price > 0'>
+                                <ng-pluralize count='tutor.departure_price' when="{
+                                    'one': 'рубль',
+                                    'few': 'рубля',
+                                    'many': 'рублей'
+                                }"></ng-pluralize>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <md-input-container class="md-block" style="margin-top: 20px">
+                <label>Опубликованное описание</label>
+                <textarea class="md-input" ng-model="tutor.public_desc"></textarea>
+            </md-input-container>
+
+        </div>
+
         <h4>ОБЩИЕ СВЕДЕНИЯ</h4>
         <md-input-container class="md-block" style="margin-top: 20px">
             <label>Образование (вуз, факультет, аспирантура, с годами)</label>
@@ -155,24 +211,24 @@
             <textarea class="md-input" ng-model="tutor.achievements"></textarea>
         </md-input-container>
         <md-input-container class="md-block" style="margin-top: 20px">
-            <label>Предпочтения по предметам, опыт подготовки к ЕГЭ и ОГЭ</label>
-            <textarea class="md-input" ng-model="tutor.preferences"></textarea>
-        </md-input-container>
-        <md-input-container class="md-block" style="margin-top: 20px">
-            <label>Опыт работы преподавателем в учебных заведениях</label>
+            <label>Опыт работы преподавателем в учебных заведениях, настоящее место работы</label>
             <textarea class="md-input" ng-model="tutor.experience"></textarea>
         </md-input-container>
-        <md-input-container class="md-block" style="margin-top: 20px">
-            <label>Настоящее место работы</label>
-            <textarea class="md-input" ng-model="tutor.current_work"></textarea>
-        </md-input-container>
+        {{--<md-input-container class="md-block" style="margin-top: 20px">--}}
+            {{--<label>Настоящее место работы</label>--}}
+            {{--<textarea class="md-input" ng-model="tutor.current_work"></textarea>--}}
+        {{--</md-input-container>--}}
         <md-input-container class="md-block" style="margin-top: 20px">
             <label>Опыт работы репетитором</label>
             <textarea class="md-input" ng-model="tutor.tutoring_experience"></textarea>
         </md-input-container>
         <md-input-container class="md-block" style="margin-top: 20px">
-            <label>Категории учеников</label>
+            <label>Категории учеников, предпочтения по уровню и классам</label>
             <textarea class="md-input" ng-model="tutor.students_category"></textarea>
+        </md-input-container>
+        <md-input-container class="md-block" style="margin-top: 20px">
+            <label>Предпочтения по предметам, опыт подготовки к ЕГЭ и ОГЭ</label>
+            <textarea class="md-input" ng-model="tutor.preferences"></textarea>
         </md-input-container>
         <md-input-container class="md-block" style="margin-top: 20px">
             <label>Общее впечатление как о преподавателе и о человеке</label>
@@ -182,52 +238,6 @@
             <label>Расписание и загрузка в течение года</label>
             <textarea class="md-input" ng-model="tutor.schedule"></textarea>
         </md-input-container>
-
-        <h4>ИНФОРМАЦИЯ НА САЙТЕ</h4>
-        <md-input-container class="md-block" style="margin-top: 20px">
-            <label>Опубликованное описание</label>
-            <textarea class="md-input" ng-model="tutor.public_desc"></textarea>
-        </md-input-container>
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <md-input-container class="md-block" style="margin-top: 20px">
-                            <label>Опубликованная цена</label>
-                            <textarea class="md-input digits-only" ng-model="tutor.public_price"></textarea>
-                        </md-input-container>
-                    </div>
-                    <div class="col-sm-6">
-                        <span class="ng-grey" style="position: relative; top: 27px" ng-show='tutor.public_price > 0'>
-                            <ng-pluralize count='tutor.public_price' when="{
-                                'one': 'рубль',
-                                'few': 'рубля',
-                                'many': 'рублей'
-                            }"></ng-pluralize> за 90 минут
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6" ng-show='tutor.svg_map.length'>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <md-input-container class="md-block" style="margin-top: 20px">
-                            <label>Минимальная стоимость выезда</label>
-                            <textarea class="md-input digits-only" ng-model="tutor.departure_price"></textarea>
-                        </md-input-container>
-                    </div>
-                    <div class="col-sm-6">
-                        <span class="ng-grey" style="position: relative; top: 27px" ng-show='tutor.public_price > 0'>
-                            <ng-pluralize count='tutor.departure_price' when="{
-                                'one': 'рубль',
-                                'few': 'рубля',
-                                'many': 'рублей'
-                            }"></ng-pluralize>
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <h4>КОММЕНТАРИИ</h4>
         <comments entity-type='tutor' entity-id='{{ $id }}' user='{{ $user }}'></comments>

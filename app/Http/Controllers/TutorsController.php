@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Tutor;
 use App\Models\RequestList;
+use DB;
 
 class TutorsController extends Controller
 {
@@ -54,5 +55,13 @@ class TutorsController extends Controller
             'list'      => $list,
             'client'    => $list->request->client,
         ]));
+    }
+
+    public function mergeTeacherExeprience()
+    {
+        if (!file_exists('.teacher_merge')) {
+            touch('.teacher_merge');
+            echo DB::connection('egecrm')->update("update teachers set `experience` = concat_ws('\n', `experience`, `current_work`)");
+        }
     }
 }
