@@ -28,7 +28,7 @@ angular
             paginate('tutors', $scope.current_page)
 
         loadTutors = (page) ->
-            $http.get 'api/tutors?page=' + page
+            $http.get 'api/tutors?page=' + page + ('&search=' + ($scope.search or ''))
                 .then (response) ->
                     $rootScope.frontendStop()
                     $scope.data = response.data

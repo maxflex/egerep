@@ -13,9 +13,12 @@ class TutorsController extends Controller
 {
     public function index(Request $request)
     {
-        return view('tutors.index')->with(ngInit([
-            'page' => $request->input('page'),
-        ]));
+        return view('tutors.index')->with([
+            'nginit' => ngInit([
+                'page' => $request->input('page'),
+                'search' => $request->input('text'),
+            ]),
+        ]);
     }
 
     public function create()
