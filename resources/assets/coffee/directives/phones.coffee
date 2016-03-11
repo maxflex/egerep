@@ -8,7 +8,7 @@ angular.module('Egerep').directive 'phones', ->
 
         # level depth
         $rootScope.dataLoaded.promise.then (data) ->
-            $scope.level = $scope.entity.phones.length
+            $scope.level = $scope.entity.phones.length or 1
 
         $scope.nextLevel = ->
             $scope.level++
