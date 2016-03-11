@@ -26978,6 +26978,12 @@ md-tooltip {
   -webkit-animation-name: slideOutUp;
   animation-name: slideOutUp; }
 
+.green-section {
+  border-left: 5px solid #1C874F;
+  background: #DBECE3;
+  padding-left: 10px;
+  padding-bottom: 1px; }
+
 .comment-inside-input {
   position: absolute;
   top: 8px;

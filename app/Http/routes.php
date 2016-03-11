@@ -11,6 +11,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::controllers([
         'transfer'  => 'TransferController',
         'upload'    => 'UploadController',
+        'command'   => 'CommandsController',
     ]);
 
     # Добавление из списка
@@ -20,8 +21,6 @@ Route::group(['middleware' => ['web']], function () {
 
 	# Поиск по преподам
 	Route::post('search', 'TutorsController@index');
-    # слияние опыта работы преподов с текушей работой
-    Route::get('mergeTeacherExperience', 'TutorsController@mergeTeacherExeprience');
 
     Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
         Route::get('tutors/list', 'TutorsController@lists');

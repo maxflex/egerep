@@ -13,7 +13,7 @@ class AddLessonLength extends Migration
     public function up()
     {
         Schema::connection('egecrm')->table('teachers', function (Blueprint $table) {
-            $table->integer('lesson_length')->default(90);
+            $table->integer('lesson_duration')->default(90);
         });
     }
 

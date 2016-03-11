@@ -47,7 +47,7 @@
 		setTimeout(function() {
 			$('#sp-' + id).selectpicker({
 				noneSelectedText: placeholder,
-				multipleSeparator: multipleSeparator === undefined ? ', ' : multipleSeparator
+				multipleSeparator: multipleSeparator === undefined ? ', ' : multipleSeparator,
 			})
 		}, 50)
 	}

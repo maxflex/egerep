@@ -145,7 +145,7 @@
             <textarea class="md-input" ng-model="tutor.price"></textarea>
         </md-input-container>
 
-        <div class="greenField" style="border-left:5px solid #1C874F; background:#DBECE3;padding-left:10px;">
+        <section class='green-section'>
             <div class="row">
                 <div class="col-sm-6">
                     <div class="row">
@@ -164,14 +164,18 @@
                                                                         }"></ng-pluralize> за
                             </span>
                         </div>
-                        <div class="col-sm-1">
-                            <md-input-container class="md-block" style="margin-top: 20px">
-                                <textarea class="md-input digits-only" ng-model="tutor.lesson_length" ng-show='tutor.public_price > 0'></textarea>
-                            </md-input-container>
-                        </div>
-                        <div class="col-sm-3">
-                            <span class="ng-grey" style="position: relative; top: 27px" ng-show='tutor.public_price > 0'> минут </span>
-                        </div>
+                        <section ng-show='tutor.public_price > 0'>
+                            <div class="col-sm-2">
+                                <md-input-container class="md-block">
+                                    <textarea class="md-input digits-only" ng-model="tutor.lesson_duration"></textarea>
+                                </md-input-container>
+                            </div>
+                            <div class="col-sm-3">
+                                <span class="ng-grey" style="position: relative; top: 27px">
+                                    <plural count='tutor.lesson_duration' type='minute' text-only></plural>
+                                </span>
+                            </div>
+                        </section>
                     </div>
                 </div>
                 <div class="col-sm-6" ng-show='tutor.svg_map.length'>
@@ -194,12 +198,11 @@
                     </div>
                 </div>
             </div>
-            <md-input-container class="md-block" style="margin-top: 20px">
+            <md-input-container class="md-block" style="margin: 20px 0 5px">
                 <label>Опубликованное описание</label>
                 <textarea class="md-input" ng-model="tutor.public_desc"></textarea>
             </md-input-container>
-
-        </div>
+        </section>
 
         <h4>ОБЩИЕ СВЕДЕНИЯ</h4>
         <md-input-container class="md-block" style="margin-top: 20px">

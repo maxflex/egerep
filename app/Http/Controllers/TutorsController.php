@@ -41,9 +41,6 @@ class TutorsController extends Controller
 
     public function edit($id)
     {
-        // $nginit = ngInit([
-        //     'tutor' => Tutor::find($id)
-        // ]);
         return view('tutors.edit')->with(compact('id'));
     }
 
@@ -55,13 +52,5 @@ class TutorsController extends Controller
             'list'      => $list,
             'client'    => $list->request->client,
         ]));
-    }
-
-    public function mergeTeacherExeprience()
-    {
-        if (!file_exists('.teacher_merge')) {
-            touch('.teacher_merge');
-            echo DB::connection('egecrm')->update("update teachers set `experience` = concat_ws('\n', `experience`, `current_work`)");
-        }
     }
 }

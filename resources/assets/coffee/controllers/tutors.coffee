@@ -89,6 +89,7 @@ angular
         # разбить "1 класс, 2 класс, 3 класс" на "1-3 классы"
         $scope.shortenGrades = ->
             a = $scope.tutor.grades
+            # debugger
             if a.length < 1
                 console.log 'qutting'
                 return
@@ -225,10 +226,15 @@ angular
         # refresh selectpicker on update
         $scope.$watch 'tutor.grades', (newVal, oldVal) ->
             return if newVal is undefined
-            sp 'tutor-grades', 'классы' if oldVal is undefined
+            if oldVal is undefined
+                sp 'tutor-grades', 'классы'
+                $timeout ->
+                    $scope.shortenGrades()
+                , 50
+            else
+                $timeout ->
+                    $scope.shortenGrades()
             # spRefresh 'tutor-grades' if oldVal isnt undefined
-            $timeout ->
-                $scope.shortenGrades()
 
 
         $scope.svgSave = ->
