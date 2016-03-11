@@ -144,7 +144,7 @@ angular
 #            new_user = _.find $scope.users, (user) ->
 #                user.id > $scope.selected_request.user.id
 
-            new_user = if $scope.user.id == $scope.selected_request.user_id then $scope.fake_user else $scope.user
+            new_user = if parseInt($scope.user.id) is parseInt($scope.selected_request.user_id) then $scope.fake_user else $scope.user
 
             # if toggeled to the last user, start the loop over | SYSTEM USER INSTEAD
             # new_user = $scope.users[0] if new_user is undefined

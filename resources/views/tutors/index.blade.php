@@ -51,7 +51,6 @@
         <td style="width:100px">
             <span
                 class="link-like"
-                ng-model="tutor.responsible_user_id"
                 ng-click='toggleResponsibleUser(tutor)'
                 style='color: @{{ (tutor.responsible_user ? tutor.responsible_user : fake_user).color }}'>
                 @{{ tutor.responsible_user ? tutor.responsible_user.login : fake_user.login }}
