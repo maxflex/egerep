@@ -44,7 +44,7 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-3" style='width: 19%'>
+    <div class="col-sm-3" style='width: 19.5%'>
         <div class="form-group">
             <input type="text" class="form-control" ng-model="tutor.last_name" placeholder="фамилия">
         </div>
