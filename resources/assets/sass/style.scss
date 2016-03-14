@@ -30,22 +30,29 @@
 	}
 
 	.comment-inside-input {
+		width: 70%;
 		position: absolute;
 		top: 8px;
 		z-index: 999;
 		left: 170px;
 	}
 
+	.phone-comment {
+	  width: 100%;
+	}
+
 	email {
 		& .comment-inside-input {
+		  	width: 70%!important;
 			top: 7px;
 			& input {
 				top: -1px;
 			    position: relative;
+				width: 100%;
 			}
 		}
 		& .phone-comment {
-			width: 288px !important;
+			width: 100%;
 		}
 
 		& .input-group {
@@ -147,9 +154,6 @@
 	.tutor-list-comment, .phone-comment {
 		height: 18px;
 		padding: 0;
-	}
-	.phone-comment {
-		width: 218px;
 	}
 
 	#tutorList.table-divlike {
