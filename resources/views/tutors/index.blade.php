@@ -49,12 +49,7 @@
 		<td style="width:50px">@{{ tutor.lk }}</td>
 		<td style="width:50px">@{{ tutor.js }}</td>
         <td style="width:100px">
-            <span
-                class="link-like"
-                ng-click='toggleResponsibleUser(tutor)'
-                style='color: @{{ (tutor.responsible_user ? tutor.responsible_user : fake_user).color }}'>
-                @{{ tutor.responsible_user ? tutor.responsible_user.login : fake_user.login }}
-            </span>
+            <user-switch entity='tutor' user-id='responsible_user_id' resource='Tutor'>
 		</td>
 		<td>
 		    <span ng-click="startComment(tutor)" class="glyphicon glyphicon-pencil opacity-pointer" ng-hide="tutor.list_comment || tutor.is_being_commented"></span>

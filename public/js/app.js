@@ -358,14 +358,9 @@
 (function() {
   angular.module('Egerep').controller("ClientsIndex", function($scope, $timeout, Client) {
     return $scope.clients = Client.query();
-  }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, ReviewScores, Archive, Review, ApiService) {
+  }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, ReviewScores, Archive, Review, ApiService, UserService) {
     var filterMarkers, saveSelectedList, unsetSelected;
-    $scope.RequestStates = RequestStates;
-    $scope.Subjects = Subjects;
-    $scope.Grades = Grades;
-    $scope.ReviewStates = ReviewStates;
-    $scope.ReviewScores = ReviewScores;
-    $scope.ArchiveStates = ArchiveStates;
+    bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
     $scope.is_dragging_teacher = false;
     $scope.sortableOptions = {
@@ -839,19 +834,16 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').controller("TutorsIndex", function($scope, $rootScope, $timeout, $http, Tutor, TutorStates) {
+  angular.module('Egerep').controller("TutorsIndex", function($scope, $rootScope, $timeout, $http, Tutor, TutorStates, UserService) {
     var loadTutors;
+    $rootScope.frontend_loading = true;
     $scope.Tutor = Tutor;
     $scope.TutorStates = TutorStates;
     $scope.state = localStorage.getItem('tutors_index_state');
-    $scope.fake_user = {
-      login: 'system',
-      id: 0
-    };
+    $scope.UserService = UserService;
     $scope.yearDifference = function(year) {
       return moment().format("YYYY") - year;
     };
-    $rootScope.frontend_loading = true;
     $scope.changeState = function() {
       localStorage.setItem('tutors_index_state', $scope.state);
       return loadTutors($scope.current_page);
@@ -894,7 +886,7 @@
         return $("#list-comment-" + tutor.id).focus();
       });
     };
-    $scope.saveComment = function(event, tutor) {
+    return $scope.saveComment = function(event, tutor) {
       if (event.keyCode === 13) {
         return Tutor.update({
           id: tutor.id,
@@ -904,17 +896,6 @@
           return $(event.target).blur();
         });
       }
-    };
-    return $scope.toggleResponsibleUser = function(tutor) {
-      var new_responsible_user;
-      new_responsible_user = parseInt($scope.user.id) === parseInt(tutor.responsible_user_id) ? $scope.fake_user : $scope.user;
-      return Tutor.update({
-        id: tutor.id,
-        responsible_user_id: new_responsible_user.id
-      }, function() {
-        tutor.responsible_user = new_responsible_user;
-        return tutor.responsible_user_id = tutor.responsible_user.id;
-      });
     };
   }).controller("TutorsForm", function($scope, $rootScope, $timeout, $interval, Tutor, SvgMap, Subjects, Grades, ApiService, TutorStates, Genders) {
     var bindCropper, bindFileUpload, filterMarkers;
@@ -1596,79 +1577,20 @@
 }).call(this);
 
 (function() {
-  var apiPath, updateMethod;
-
-  angular.module('Egerep').factory('Account', function($resource) {
-    return $resource(apiPath('accounts'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Review', function($resource) {
-    return $resource(apiPath('reviews'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Archive', function($resource) {
-    return $resource(apiPath('archives'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Attachment', function($resource) {
-    return $resource(apiPath('attachments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('RequestList', function($resource) {
-    return $resource(apiPath('lists'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Request', function($resource) {
-    return $resource(apiPath('requests'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Sms', function($resource) {
-    return $resource(apiPath('sms'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Comment', function($resource) {
-    return $resource(apiPath('comments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Client', function($resource) {
-    return $resource(apiPath('clients'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('User', function($resource) {
-    return $resource(apiPath('users'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Tutor', function($resource) {
-    return $resource(apiPath('tutors'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      deletePhoto: {
-        url: apiPath('tutors', 'photo'),
-        method: 'DELETE'
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  });
-
-  apiPath = function(entity, additional) {
-    if (additional == null) {
-      additional = '';
-    }
-    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
-  };
-
-  updateMethod = function() {
+  angular.module('Egerep').directive('userSwitch', function() {
     return {
-      update: {
-        method: 'PUT'
+      restrict: 'E',
+      scope: {
+        entity: '=',
+        resource: '=',
+        userId: '@'
+      },
+      templateUrl: 'directives/user-switch',
+      controller: function($scope) {
+        return $scope.UserService = $scope.$parent.UserService;
       }
     };
-  };
+  });
 
 }).call(this);
 
@@ -1787,6 +1709,83 @@
     },
     short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
   });
+
+}).call(this);
+
+(function() {
+  var apiPath, updateMethod;
+
+  angular.module('Egerep').factory('Account', function($resource) {
+    return $resource(apiPath('accounts'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Review', function($resource) {
+    return $resource(apiPath('reviews'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Archive', function($resource) {
+    return $resource(apiPath('archives'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Attachment', function($resource) {
+    return $resource(apiPath('attachments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('RequestList', function($resource) {
+    return $resource(apiPath('lists'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Request', function($resource) {
+    return $resource(apiPath('requests'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Sms', function($resource) {
+    return $resource(apiPath('sms'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Comment', function($resource) {
+    return $resource(apiPath('comments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Client', function($resource) {
+    return $resource(apiPath('clients'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('User', function($resource) {
+    return $resource(apiPath('users'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Tutor', function($resource) {
+    return $resource(apiPath('tutors'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      deletePhoto: {
+        url: apiPath('tutors', 'photo'),
+        method: 'DELETE'
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  });
+
+  apiPath = function(entity, additional) {
+    if (additional == null) {
+      additional = '';
+    }
+    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
+  };
+
+  updateMethod = function() {
+    return {
+      update: {
+        method: 'PUT'
+      }
+    };
+  };
 
 }).call(this);
 
@@ -1928,11 +1927,49 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').service('UserService', function() {
-    this.getUser = function(user_id, users) {
-      return _.findWhere(users, {
-        id: parseInt(user_id)
-      });
+  angular.module('Egerep').service('UserService', function(User, $rootScope, $timeout) {
+    var system_user;
+    this.users = User.query();
+    $timeout((function(_this) {
+      return function() {
+        return _this.current_user = $rootScope.$$childTail.user;
+      };
+    })(this));
+    system_user = {
+      color: '#999999',
+      login: 'system',
+      id: 0
+    };
+    this.getUser = function(user_id) {
+      return _.findWhere(this.users, {
+        id: user_id
+      }) || system_user;
+    };
+    this.getLogin = function(user_id) {
+      return this.getUser(user_id).login;
+    };
+    this.getColor = function(user_id) {
+      return this.getUser(user_id).color;
+    };
+    this.toggle = function(entity, user_id, Resource) {
+      var new_user_id, obj;
+      if (Resource == null) {
+        Resource = false;
+      }
+      new_user_id = entity[user_id] ? 0 : this.current_user.id;
+      if (Resource) {
+        return Resource.update((
+          obj = {
+            id: entity.id
+          },
+          obj["" + user_id] = new_user_id,
+          obj
+        ), function() {
+          return entity[user_id] = new_user_id;
+        });
+      } else {
+        return entity[user_id] = new_user_id;
+      }
     };
     return this;
   });

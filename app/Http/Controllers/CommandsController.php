@@ -15,7 +15,15 @@ class CommandsController extends Controller
         echo \DB::connection('egecrm')->update("
             UPDATE teachers
             SET experience = concat_ws('\n', experience, current_work)
-            WHERE current_work != ''
+            WHERE current_work != '' AND experience != ''
+         ");
+
+        echo ' | ';
+        
+        echo \DB::connection('egecrm')->update("
+            UPDATE teachers
+            SET experience = current_work
+            WHERE current_work != '' AND experience = ''
          ");
     }
 }

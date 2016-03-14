@@ -4,21 +4,15 @@ angular
     #
     #   LIST CONTROLLER
     #
-    .controller "TutorsIndex", ($scope, $rootScope, $timeout, $http, Tutor, TutorStates) ->
-        # @check
+    .controller "TutorsIndex", ($scope, $rootScope, $timeout, $http, Tutor, TutorStates, UserService) ->
+        $rootScope.frontend_loading = true
         $scope.Tutor = Tutor
         $scope.TutorStates = TutorStates
         $scope.state = localStorage.getItem('tutors_index_state')
-
-        $scope.fake_user =
-            login: 'system'
-            id: 0
+        $scope.UserService = UserService
 
         $scope.yearDifference = (year) ->
             moment().format("YYYY") - year
-        # @end
-
-        $rootScope.frontend_loading = true
 
         $scope.changeState = ->
             localStorage.setItem('tutors_index_state', $scope.state)
@@ -65,17 +59,6 @@ angular
                 , (response) ->
                     tutor.old_list_comment = tutor.list_comment
                     $(event.target).blur()
-
-        $scope.toggleResponsibleUser = (tutor) ->
-            new_responsible_user = if parseInt($scope.user.id) is parseInt(tutor.responsible_user_id) then $scope.fake_user else $scope.user
-            Tutor.update
-                id: tutor.id
-                responsible_user_id: new_responsible_user.id
-            , ->
-                # tutor.responsible_user - related object
-                tutor.responsible_user    = new_responsible_user
-                tutor.responsible_user_id = tutor.responsible_user.id
-
 
     #
     #   ADD/EDIT CONTROLLER

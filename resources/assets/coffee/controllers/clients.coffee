@@ -14,13 +14,8 @@ angular
     #
     #   ADD/EDIT CONTROLLER
     #
-    .controller "ClientsForm", ($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, ReviewScores, Archive, Review, ApiService) ->
-        $scope.RequestStates = RequestStates
-        $scope.Subjects = Subjects
-        $scope.Grades = Grades
-        $scope.ReviewStates = ReviewStates
-        $scope.ReviewScores = ReviewScores
-        $scope.ArchiveStates = ArchiveStates
+    .controller "ClientsForm", ($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, ReviewScores, Archive, Review, ApiService, UserService) ->
+        bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
         # @todo: доделать позиционирование

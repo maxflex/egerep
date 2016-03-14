@@ -17,14 +17,9 @@ class TutorsController extends Controller
      */
     public function index(Request $request)
     {
-        return Tutor::with([
-                         'responsibleUser' => function ($query) {
-                            $query->select('id','login', 'color');
-                         }
-                      ])
-                      ->searchByState($request->input('state'))
-                      ->searchByLastNameAndPhone($request->input('search'))
-                      ->paginate(30)->toJson();
+        return Tutor::searchByState($request->input('state'))
+                        ->searchByLastNameAndPhone($request->input('search'))
+                        ->paginate(30)->toJson();
     }
 
     /**

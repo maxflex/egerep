@@ -90,7 +90,11 @@
 		function_arguments = getArguments(arguments.callee)
 
 		for (i = 1; i < arguments.length; i++) {
-			scope[function_arguments[i]] = arguments[i]
+			function_name = function_arguments[i]
+			if (function_name[0] === '$') {
+				continue
+			}
+			scope[function_name] = arguments[i]
 		}
 	}
 
