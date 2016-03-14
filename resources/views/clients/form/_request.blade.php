@@ -20,12 +20,7 @@
         </div>
         <div class='mbs'>
             <b>Ответственный:</b>
-            <span
-                class="link-like"
-                ng-click='toggleUser()'
-                style='color: @{{ selected_request.user.color }}'>
-                @{{ selected_request.user ? selected_request.user.login : 'system' }}
-            </span>
+            <user-switch entity='selected_request' user-id='user_id' resource='Request'>
         </div>
         <div class='mbs'>
             <b>Статус заявки:</b> <span class="link-like"

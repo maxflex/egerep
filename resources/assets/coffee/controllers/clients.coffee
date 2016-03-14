@@ -131,25 +131,6 @@ angular
             $scope.selected_request = request
             delete $scope.selected_list
 
-        $scope.toggleUser = ->
-            # @костыль
-            if not $scope.selected_request.user
-                $scope.selected_request.user = $scope.fake_user
-
-#            new_user = _.find $scope.users, (user) ->
-#                user.id > $scope.selected_request.user.id
-
-            new_user = if parseInt($scope.user.id) is parseInt($scope.selected_request.user_id) then $scope.fake_user else $scope.user
-
-            # if toggeled to the last user, start the loop over | SYSTEM USER INSTEAD
-            # new_user = $scope.users[0] if new_user is undefined
-            $scope.selected_request.user = new_user
-            $scope.selected_request.user_id = new_user.id
-
-        $scope.getUser = (user_id) ->
-            _.findWhere $scope.users,
-                id: parseInt(user_id)
-
         $scope.addListSubject = ->
             RequestList.save
                 request_id: $scope.selected_request.id
