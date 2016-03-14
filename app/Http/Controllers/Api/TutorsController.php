@@ -137,10 +137,17 @@ class TutorsController extends Controller
          $tutors = $query->get();
 
          $tutors->each(function($tutor) use ($destination) {
+            # Количество учеников
             $tutor->append('clients_count');
 
+            # Количество встреч
+            $tutor->meeting_count = $tutor->getMeetingCount();
+
+            # Оставляем только зеленые маркеры, если клиент едет к репетитору
             if ($destination == "k_r") {
+                # Cкрываем все маркеры
                 $tutor->hideRelation('markers');
+                # Оставляем только зеленые
                 $tutor->markers = $tutor->getMarkers('green');
             }
          });

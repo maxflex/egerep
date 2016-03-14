@@ -33,12 +33,39 @@
 		position: absolute;
 		top: 8px;
 		z-index: 999;
-		left: 150px;
+		left: 170px;
 	}
 
 	email {
 		& .comment-inside-input {
-			left: 224px;
+			top: 7px;
+			& input {
+				top: -1px;
+			    position: relative;
+			}
+		}
+		& .phone-comment {
+			width: 288px !important;
+		}
+
+		& .input-group {
+			border: 1px solid #ccc;
+		    border-radius: 4px;
+			& input.form-control {
+				width: 170px !important;
+			    border: none;
+			    box-shadow: none;
+			    height: 32px;
+				&:focus {
+					border: none;
+					box-shadow: none;
+				}
+			}
+			& button {
+				border-top: none;
+			    border-bottom: none;
+			    border-right: none;
+			}
 		}
 	}
 
@@ -122,7 +149,7 @@
 		padding: 0;
 	}
 	.phone-comment {
-		width: 110px;
+		width: 218px;
 	}
 
 	#tutorList.table-divlike {

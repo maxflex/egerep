@@ -114,6 +114,14 @@ class Tutor extends Model
     }
 
     /**
+     * Получить количество встреч
+     */
+    public function getMeetingCount()
+    {
+        return $this->accounts()->count();
+    }
+
+    /**
      * Получить дату первой стыковки
      */
     public function getFirstAttachmentDate()

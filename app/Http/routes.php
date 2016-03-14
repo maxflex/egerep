@@ -40,10 +40,6 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('sms', 'SmsController');
 
         Route::post('external/{function}', 'ExternalController@exec'); // external API controller
-
-        // Route::controllers([
-        //     'external' => 'ExternalController', // external API controller
-        // ]);
     });
 
 

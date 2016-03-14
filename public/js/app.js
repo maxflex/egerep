@@ -495,20 +495,6 @@
       $scope.selected_request = request;
       return delete $scope.selected_list;
     };
-    $scope.toggleUser = function() {
-      var new_user;
-      if (!$scope.selected_request.user) {
-        $scope.selected_request.user = $scope.fake_user;
-      }
-      new_user = parseInt($scope.user.id) === parseInt($scope.selected_request.user_id) ? $scope.fake_user : $scope.user;
-      $scope.selected_request.user = new_user;
-      return $scope.selected_request.user_id = new_user.id;
-    };
-    $scope.getUser = function(user_id) {
-      return _.findWhere($scope.users, {
-        id: parseInt(user_id)
-      });
-    };
     $scope.addListSubject = function() {
       RequestList.save({
         request_id: $scope.selected_request.id,
@@ -1494,7 +1480,8 @@
         return $scope.when = {
           'age': ['год', 'года', 'лет'],
           'student': ['ученик', 'ученика', 'учеников'],
-          'minute': ['минуту', 'минуты', 'минут']
+          'minute': ['минуту', 'минуты', 'минут'],
+          'meeting': ['встреча', 'встречи', 'встреч']
         };
       }
     };

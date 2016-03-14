@@ -26988,10 +26988,32 @@ md-tooltip {
   position: absolute;
   top: 8px;
   z-index: 999;
-  left: 150px; }
+  left: 170px; }
 
 email .comment-inside-input {
-  left: 224px; }
+  top: 7px; }
+  email .comment-inside-input input {
+    top: -1px;
+    position: relative; }
+
+email .phone-comment {
+  width: 288px !important; }
+
+email .input-group {
+  border: 1px solid #ccc;
+  border-radius: 4px; }
+  email .input-group input.form-control {
+    width: 170px !important;
+    border: none;
+    box-shadow: none;
+    height: 32px; }
+    email .input-group input.form-control:focus {
+      border: none;
+      box-shadow: none; }
+  email .input-group button {
+    border-top: none;
+    border-bottom: none;
+    border-right: none; }
 
 .remove-space {
   margin-left: -4px; }
@@ -27053,7 +27075,7 @@ a {
   padding: 0; }
 
 .phone-comment {
-  width: 110px; }
+  width: 218px; }
 
 #tutorList.table-divlike tr:not(:last-child) {
   border-bottom: 1px solid #ddd;

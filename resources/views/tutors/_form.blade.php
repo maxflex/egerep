@@ -44,7 +44,7 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-3">
+    <div class="col-sm-3" style='width: 19%'>
         <div class="form-group">
             <input type="text" class="form-control" ng-model="tutor.last_name" placeholder="фамилия">
         </div>
@@ -65,7 +65,7 @@
 
         <div class="form-group">
             <input type="text" class="form-control digits-year" ng-model="tutor.birth_year" placeholder="год рождения">
-            <span class="inside-input" ng-show="tutor.birth_year > 999">– возраст @{{ yearDifference(tutor.birth_year) }}
+            <span class="inside-input" ng-show="tutor.birth_year > 999">– @{{ yearDifference(tutor.birth_year) }}
                 <ng-pluralize count="yearDifference(tutor.birth_year)" when="{
                     'one': 'год',
                     'few': 'года',
@@ -99,9 +99,9 @@
         </div>
     </div>
 
-    <div class="col-sm-7">
+    <div class="col-sm-8">
         <div class="row">
-            <div class="col-sm-7">
+            <div class="col-sm-8">
                 <div class="form-group">
                     <phones entity='tutor' sms-number='sms_number'></phones>
                 </div>
