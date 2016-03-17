@@ -46,6 +46,20 @@
         }
 
         /**
+         * Вставить следующий номер телефона, если не существует
+         */
+         public function addPhone($phone)
+         {
+             // если еще не все номера телефонов заполнены
+             if (count($this->phones) < count(static::$phone_fields)) {
+                 // если номер телефона еще не был добавлен
+                 if (! in_array($phone, $this->phones)) {
+                     $this->{static::$phone_fields[count($this->phones)]} = $phone;
+                 }
+             }
+         }
+
+        /**
          * Отсортировать имя
          */
         public function getName($order = 'fio')
