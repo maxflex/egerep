@@ -87,10 +87,7 @@ angular
         # разбить "1 класс, 2 класс, 3 класс" на "1-3 классы"
         $scope.shortenGrades = ->
             a = $scope.tutor.grades
-            # debugger
-            if a.length < 1
-                console.log 'qutting'
-                return
+            return if a.length < 1
             limit = a.length - 1
             combo_end = -1
             pairs = []
@@ -121,7 +118,6 @@ angular
                     pairs.push combo_start + ' класс'
                 i++
             $timeout ->
-                console.log pairs
                 $('#sp-tutor-grades').parent().find('.filter-option').html pairs.join ', '
             return
 

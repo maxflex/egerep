@@ -39,29 +39,33 @@
 	}
 
 	.comment-inside-input {
-		width: 70%;
+		// width: 70%;
 		position: absolute;
 		top: 8px;
 		z-index: 999;
 		left: 170px;
 	}
 
+	// .phone-comment {
+	//   width: 100%;
+	// }
 	.phone-comment {
-	  width: 100%;
-	}
+ 		width: 218px;
+ 	}
 
 	email {
 		& .comment-inside-input {
-		  	width: 70%!important;
+			//  	width: 70%!important;
 			top: 7px;
 			& input {
 				top: -1px;
 			    position: relative;
-				width: 100%;
+				// width: 100%;
 			}
 		}
 		& .phone-comment {
-			width: 100%;
+			width: 288px !important;
+			// width: 100%;
 		}
 
 		& .input-group {

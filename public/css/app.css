@@ -26990,25 +26990,22 @@ md-tooltip {
   padding-bottom: 1px; }
 
 .comment-inside-input {
-  width: 70%;
   position: absolute;
   top: 8px;
   z-index: 999;
   left: 170px; }
 
 .phone-comment {
-  width: 100%; }
+  width: 218px; }
 
 email .comment-inside-input {
-  width: 70% !important;
   top: 7px; }
   email .comment-inside-input input {
     top: -1px;
-    position: relative;
-    width: 100%; }
+    position: relative; }
 
 email .phone-comment {
-  width: 100%; }
+  width: 288px !important; }
 
 email .input-group {
   border: 1px solid #ccc;
