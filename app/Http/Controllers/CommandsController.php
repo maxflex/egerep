@@ -9,6 +9,22 @@ use App\Http\Controllers\Controller;
 
 class CommandsController extends Controller
 {
+    public function getNumbers()
+    {
+        $tutors = Tutor::all();
+
+        $tutor_ids = [];
+
+        foreach ($tutors as $tutor) {
+            preg_match("/([\d]{7})/imu", $tutor->contacts, $numbers);
+            if (count($numbers)) {
+                $tutor_ids[] = $tutor->id;
+            }
+        }
+
+        dd($tutor_ids);
+    }
+
     /**
      * Выдернуть номера телефонов из поля «Контакты»
      */
