@@ -32,6 +32,29 @@ class CommandsController extends Controller
     /**
      * Выдернуть номера телефонов c пробелом из поля «Контакты»
      */
+    public function getGrabPhonesMoscow()
+    {
+        $tutors = Tutor::all();
+
+        foreach ($tutors as $tutor) {
+            preg_match_all("/([\d]{7})/imu", $tutor->contacts, $phones);
+            if ($phones[0]) {
+                foreach ($phones[0] as $phone) {
+                    if (count($tutor->phones) >= 4) {
+                        break;
+                    }
+                    $tutor->contacts = str_replace($phone, 'XXXXX', $tutor->contacts);
+                    $phone = '7495' . $phone;
+                    $tutor->addPhone($phone);
+                }
+                $tutor->save();
+            }
+        }
+    }
+
+    /**
+     * Выдернуть номера телефонов c пробелом из поля «Контакты»
+     */
     public function getGrabPhonesSpace()
     {
         $tutors = Tutor::all();
@@ -40,6 +63,9 @@ class CommandsController extends Controller
             preg_match_all("/([9]{1}[\d]{2}\s[\d]{7})/imu", $tutor->contacts, $phones);
             if ($phones[0]) {
                 foreach ($phones[0] as $phone) {
+                    if (count($tutor->phones) >= 4) {
+                        break;
+                    }
                     $tutor->contacts = str_replace($phone, 'XXXXX', $tutor->contacts);
                     $phone = '7' . preg_replace('/\s+/', '', $phone);
                     $tutor->addPhone($phone);
@@ -60,6 +86,9 @@ class CommandsController extends Controller
             preg_match_all("/([4|9][\d]{9})/imu", $tutor->contacts, $phones);
             if ($phones[0]) {
                 foreach ($phones[0] as $phone) {
+                    if (count($tutor->phones) >= 4) {
+                        break;
+                    }
                     $tutor->contacts = str_replace($phone, 'XXXXX', $tutor->contacts);
                     $phone = '7' . $phone;
                     $tutor->addPhone($phone);
