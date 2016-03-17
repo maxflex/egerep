@@ -154,6 +154,27 @@ class TransferController extends Controller
 	];
 
 	/**
+	 * Перенести поле контакты
+	 */
+	public function getContactsField(Request $request)
+	{
+		$tutors = Tutor::all();
+
+		$updated = 0;
+
+		foreach($tutors as $tutor) {
+			$query = DB::connection('egerep')->table('repetitors')->select('contacts')->where('id', $tutor->id_a_pers);
+			if ($query->exists()) {
+				$updated++;
+				$tutor->contacts = $query->first()->contacts;
+				$tutor->save();
+			}
+		}
+
+		dd($updated);
+	}
+
+	/**
 	 * Есть ли клиенты у репетитора?
 	 */
 	public function getHasClients(Request $request)
