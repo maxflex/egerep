@@ -38,7 +38,7 @@ class CommandsController extends Controller
             if ($phones[0]) {
                 foreach ($phones[0] as $phone) {
                     $tutor->contacts = str_replace($phone, 'XXXXX', $tutor->contacts);
-                    $phone = '7' . str_replace(' ', '', $phone);
+                    $phone = '7' . preg_replace('/\s+/', '', $phone);
                     $tutor->addPhone($phone);
                 }
                 $tutor->save();
