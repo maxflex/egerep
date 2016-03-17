@@ -18,8 +18,8 @@ class TutorsController extends Controller
             ngInit([
                 'state_counts'  => Tutor::stateCounts(),
                 'user_counts'   => Tutor::userCounts(),      
-                'page'      => $request->input('page'),
-                'search'    => $request->input('text'),
+                'page'          => $request->input('page'),
+                'global_search' => $request->input('text'),
             ])
         );
     }

@@ -40,7 +40,7 @@ angular
 
         loadTutors = (page) ->
             params = '?page=' + page
-            params += "&search=#{ $scope.search }" if $scope.search
+            params += "&global_search=#{ $scope.global_search }" if $scope.global_search
             params += "&state=#{ $scope.state }" if $scope.state isnt null and $scope.state isnt ''
             params += "&user_id=#{ $scope.user_id }" if $scope.user_id
 
