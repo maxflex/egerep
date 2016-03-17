@@ -19,19 +19,21 @@
             </select> --}}
         </div>
     </div>
-    <div class="col-sm-4">
-        <div class="form-group">
-            <div ng-if='client !== undefined'>
-                <phones entity="client"></phones>
+    <div class="col-sm-8">
+        <div class="col-sm-8">
+            <div class="form-group">
+                <div ng-if='client !== undefined'>
+                    <phones entity="client"></phones>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-sm-1">
-        <div class="form-group">
-            <span class="link-like" ng-click="showMap()">метки</span> (@{{ client.markers.length }})
+        <div class="col-sm-1">
+            <div class="form-group">
+                <span class="link-like" ng-click="showMap()">метки</span> (@{{ client.markers.length }})
+            </div>
         </div>
-    </div>
-    <div class="col-sm-4">
-        <metro-list markers='client.markers'></metro-list>
+        <div class="col-sm-4">
+            <metro-list markers='client.markers'></metro-list>
+        </div>
     </div>
 </div>
