@@ -85,7 +85,6 @@
     last-text="»"
     previous-text="«"
     next-text="»"
-    ng-show="tutors.length"
 >
 </pagination>
 @stop
