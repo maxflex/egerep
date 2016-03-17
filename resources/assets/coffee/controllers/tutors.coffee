@@ -84,6 +84,13 @@ angular
         $scope.TutorStates = TutorStates
         $rootScope.frontend_loading = true
 
+        $scope.deleteTutor = ->
+            bootbox.confirm 'Вы уверены, что хотите удалить преподавателя?', (result) ->
+                if result is true
+                    ajaxStart()
+                    $scope.tutor.$delete ->
+                        history.back()
+
         # разбить "1 класс, 2 класс, 3 класс" на "1-3 классы"
         $scope.shortenGrades = ->
             a = $scope.tutor.grades
@@ -252,6 +259,9 @@ angular
             $scope.tutor.$update()
                 .then (response) ->
                     $scope.saving = false
+
+
+
 
 
         #

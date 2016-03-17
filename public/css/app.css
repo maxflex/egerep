@@ -29032,6 +29032,16 @@ md-input-container textarea {
   .link-reverse:hover {
     text-decoration: none; }
 
+.header-link {
+  color: white;
+  text-decoration: underline;
+  cursor: pointer; }
+  .header-link:hover {
+    color: white;
+    text-decoration: none; }
+  .header-link.red {
+    color: #a94442; }
+
 .link-white {
   color: white !important; }
 

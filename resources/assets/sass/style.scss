@@ -2568,6 +2568,19 @@ white-space: nowrap;
 	}
 }
 
+.header-link {
+	color: white;
+	text-decoration: underline;
+	cursor: pointer;
+	&:hover {
+		color: white;
+		text-decoration: none;
+	}
+	&.red {
+		color: #a94442;
+	}
+}
+
 .link-white {
 	color: white !important;
 }

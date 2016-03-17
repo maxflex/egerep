@@ -4,11 +4,50 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Tutor;
+use App\Traits\Person;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 class CommandsController extends Controller
 {
+    /**
+     * Найти дубликаты
+     */
+    public function getTutorDuplicates()
+    {
+        $tutors = Tutor::all();
+
+        foreach ($tutors as $tutor) {
+            foreach ($tutor->phones as $phone) {
+                if (@$phone[1] == '9') {
+                    $query = Tutor::whereRaw("
+                        (phone='$phone' OR phone2='$phone' OR phone3='$phone' OR phone4='$phone')
+                        AND id != $tutor->id
+                    ");
+                    if ($query->exists()) {
+                        echo "Tutor $tutor->id is doubled on $phone <br>";
+                        $tutor->is_doubled = true;
+                        $tutor->save();
+                        break;
+                    }
+                }
+                if (@$phone[1] == '4') {
+                    $last_7_digits = substr($phone, -7);
+                    $query = Tutor::whereRaw("
+                        ( phone RLIKE '74[0-9]{2}$phone' OR phone2 RLIKE '74[0-9]{2}$phone'
+                            OR phone3 RLIKE '74[0-9]{2}$phone' OR phone4 RLIKE '74[0-9]{2}$phone'
+                        ) AND id != $tutor->id
+                    ");
+                    if ($query->exists()) {
+                        echo "Tutor $tutor->id is doubled on $phone <br>";
+                        $tutor->is_doubled = true;
+                        $tutor->save();
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * @delete
      */

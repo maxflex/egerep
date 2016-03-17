@@ -8,8 +8,9 @@
 @section('content')
 @section('controller', 'TutorsForm')
 @section('title-right')
-    <a href="http://www.a-perspektiva.ru/tutors/?id={{ $id }}" target="_blank">анкета на a-perspektiva.ru</a>
+    <a href="http://www.a-perspektiva.ru/tutors/?id=@{{ tutor.id_a_pers }}" target="_blank">анкета на a-perspektiva.ru</a>
     <a href="tutors/{{ $id }}/accounts">отчетность</a>
+    <span class="header-link" ng-click='deleteTutor()'>удалить</span>
 @endsection
 
 <div class="row" ng-init="id = {{ $id }}">

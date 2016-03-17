@@ -50,7 +50,8 @@
                 }"></ng-pluralize>
             </span>
         </td>
-        <td width='50' class="text-danger bold">@{{ tutor.has_clients ? 'K' : '' }}</td>
+        <td width='50' class="text-gray bold">@{{ tutor.has_clients ? 'K' : '' }}</td>
+        <td width='50' class="text-danger bold">@{{ tutor.is_doubled ? 'Д' : '' }}</td>
 		<td style="width:50px">@{{ tutor.tb }}</td>
 		<td style="width:50px">@{{ tutor.lk }}</td>
 		<td style="width:50px">@{{ tutor.js }}</td>
