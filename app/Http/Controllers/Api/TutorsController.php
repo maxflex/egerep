@@ -20,7 +20,7 @@ class TutorsController extends Controller
     {
         return Tutor::searchByState($request->state)
                         ->searchByUser($request->user_id)
-                        ->searchByLastNameAndPhone($request->search)
+                        ->searchByLastNameAndPhone($request->global_search)
                         ->paginate(30)->toJson();
     }
 
@@ -134,6 +134,51 @@ class TutorsController extends Controller
 
          if (isset($gender)) {
              $query->whereIn('gender', $gender);
+         }
+
+         if (isset($age_from) || isset($age_to)) {
+             $birth_start   = date("Y") - (isset($age_to) ? $age_to : 200);
+             $birth_end = date("Y") - (isset($age_from) ? $age_from : 0);
+
+             $query->whereBetween('birth_year', [$birth_start, $birth_end]);
+         }
+
+         if (isset($grades)) {
+             $rawSql = '';
+             foreach ($grades as $k => $grade) {
+                 $rawSql .= ($k ? ' OR ' : '')." FIND_IN_SET('$grade',grades) ";
+             }
+             $rawSql = ' ('.$rawSql.') ';
+             $query->whereRaw($rawSql);
+         }
+
+         if (isset($subjects)) {
+             $rawSql = '';
+             foreach ($subjects as $k => $subject) {
+                 $rawSql .= ($k ? ' OR ' : '')." FIND_IN_SET('$subject',subjects) ";
+             }
+             $rawSql = ' ('.$rawSql.') ';
+             $query->whereRaw($rawSql);
+         }
+
+         if (isset($tb_from)) {
+             $query->where('tb', '>=', $tb_from);
+         }
+
+         if (isset($lk_from)) {
+             $query->where('lk', '>=', $lk_from);
+         }
+
+         if (isset($js_from)) {
+             $query->where('js', '>=', $js_from);
+         }
+
+         if (isset($lesson_price_to)) {
+             $query->where('public_price', '<=', $lesson_price_to);
+         }
+
+         if (isset($state)) {
+             $query->whereIn('state', $state);
          }
 
          $tutors = $query->get();

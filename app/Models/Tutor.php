@@ -211,16 +211,14 @@ class Tutor extends Model
         });
     }
 
-    /**
-     * @todo Add phone4 field after Task #738 migrations!
-     */
     public function scopeSearchByLastNameAndPhone($query, $searchText)
     {
         if ($searchText) {
             return $query->whereRaw("lower(last_name) like lower('%{$searchText}%')")
                          ->orWhere("phone", "like", "%{$searchText}%")
                          ->orWhere("phone2", "like", "%{$searchText}%")
-                         ->orWhere("phone3", "like", "%{$searchText}%");
+                         ->orWhere("phone3", "like", "%{$searchText}%")
+                         ->orWhere("phone4", "like", "%{$searchText}%");
 
         }
     }
