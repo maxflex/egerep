@@ -9,6 +9,9 @@ use App\Http\Controllers\Controller;
 
 class CommandsController extends Controller
 {
+    /**
+     * @delete
+     */
     public function getNumbers()
     {
         $tutors = Tutor::all();
@@ -19,7 +22,7 @@ class CommandsController extends Controller
             preg_match("/([\d]{7})/imu", $tutor->contacts, $numbers);
             if (count($numbers)) {
 	            echo $tutor->contacts . '<br>';
-                // $tutor_ids[] = $tutor->id;
+                $tutor_ids[] = $tutor->id;
             }
         }
 
@@ -27,7 +30,7 @@ class CommandsController extends Controller
     }
 
     /**
-     * Выдернуть номера телефонов из поля «Контакты»
+     * Выдернуть номера телефонов c пробелом из поля «Контакты»
      */
     public function getGrabPhonesSpace()
     {
