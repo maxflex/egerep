@@ -37,7 +37,7 @@ class CommandsController extends Controller
         $tutors = Tutor::all();
 
         foreach ($tutors as $tutor) {
-            preg_match_all("/([\d]{7})/imu", $tutor->contacts, $phones);
+            preg_match_all("/(\b[\d]{7}\b)/imu", $tutor->contacts, $phones);
             if ($phones[0]) {
                 foreach ($phones[0] as $phone) {
                     if (count($tutor->phones) >= 4) {
