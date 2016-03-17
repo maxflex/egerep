@@ -1,5 +1,10 @@
 @extends('app')
-@section('title', 'Редактирование преподавателя')
+@section('title')
+Редактирование преподавателя
+
+<span class='label label-white ng-hide' ng-show='tutor.in_egecentr'>работает в ЕГЭ-Центре</span>
+
+@stop
 @section('content')
 @section('controller', 'TutorsForm')
 @section('title-right')

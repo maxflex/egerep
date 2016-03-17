@@ -26978,6 +26978,11 @@ md-tooltip {
   -webkit-animation-name: slideOutUp;
   animation-name: slideOutUp; }
 
+.btn-mini {
+  font-size: 12px;
+  padding: 0 5px;
+  line-height: 14px; }
+
 .green-section {
   border-left: 5px solid #1C874F;
   background: #DBECE3;
@@ -27034,15 +27039,19 @@ email .input-group {
   .map-tutor-list .ava {
     height: 65px;
     vertical-align: top;
-    margin-right: 5px;
+    margin-right: 7px;
     float: left; }
   .map-tutor-list > div {
     margin-bottom: 7px;
     display: inline-block;
     width: 100%; }
   .map-tutor-list .info-line {
-    width: calc(100% - 70px);
-    display: inline-block; }
+    width: calc(100% - 72px);
+    display: inline-block;
+    float: left;
+    top: -1px;
+    position: relative;
+    font-size: 12px; }
     .map-tutor-list .info-line .glyphicon {
       top: 3px; }
 
@@ -27105,6 +27114,13 @@ a {
 .full-width {
   width: 100%; }
 
+.options-list {
+  font-weight: bold; }
+  .options-list span {
+    margin-right: 10px; }
+    .options-list span.link-like {
+      font-weight: normal; }
+
 .btn.btn-primary {
   border-color: #158E51; }
   .btn.btn-primary:hover {
@@ -27116,6 +27132,32 @@ a {
   .btn.btn-primary[disabled] {
     border-color: #158E51;
     background-color: #158E51; }
+
+.btn.btn-success {
+  background-color: #337AB7;
+  border-color: #337AB7; }
+  .btn.btn-success:hover {
+    background-color: #4f93ce;
+    border-color: #4f93ce; }
+  .btn.btn-success:focus {
+    background-color: #4f93ce;
+    border-color: #4f93ce; }
+  .btn.btn-success[disabled] {
+    border-color: #337AB7;
+    background-color: #337AB7; }
+
+.btn.btn-danger {
+  background-color: #ff0039;
+  border-color: #ff0039; }
+  .btn.btn-danger:hover {
+    background-color: #ff3361;
+    border-color: #ff3361; }
+  .btn.btn-danger:focus {
+    background-color: #ff3361;
+    border-color: #ff3361; }
+  .btn.btn-danger[disabled] {
+    border-color: #ff0039;
+    background-color: #ff0039; }
 
 .aligner {
   display: -webkit-flex;
@@ -28616,6 +28658,11 @@ h4.row-header {
   padding: 1px 3px;
   color: rgba(0, 0, 0, 0.5); }
 
+.label-white {
+  color: #158E51;
+  background-color: white;
+  margin-left: 3px; }
+
 .label-red-visits {
   background: #ffcccc;
   border-radius: 4px;
@@ -28650,12 +28697,12 @@ h4.row-header {
   box-shadow: 0 0 25px rgba(0, 0, 0, 0.5); }
 
 md-input-container label {
-  padding-left: 0 !important;
-  margin-bottom: -2px !important; }
+  padding-left: 0 !important; }
 
 md-input-container textarea {
   margin-left: -4px !important;
-  position: relative; }
+  position: relative;
+  line-height: 20px !important; }
 
 .lightbox-email, .lightbox-freetime {
   width: 60%;

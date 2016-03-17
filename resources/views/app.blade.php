@@ -9,7 +9,6 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css">
     {{-- <link href='https://fonts.googleapis.com/css?family=Ubuntu&subset=latin,cyrillic' rel='stylesheet' type='text/css'> --}}
     @yield('scripts')
-
     <script src="{{ asset('/js/vendor.js') }}"></script>
     <script src="{{ asset('/js/app.js') }}"></script>
     @foreach($js as $script_name)

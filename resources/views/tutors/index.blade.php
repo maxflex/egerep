@@ -7,13 +7,6 @@
 @endsection
 
 @section('content')
-{{-- <div>
-    <div class="row" ng-repeat="tutor in tutors">
-        <div class="col-sm-12">
-            <a href='tutors/@{{ tutor.id }}/edit'>@{{ tutor.full_name }}</a>
-        </div>
-    </div>
-</div> --}}
 
 <div class="row mb">
     <div class="col-sm-3">
@@ -22,9 +15,20 @@
             <option value="">статус</option>
             <option disabled>──────────────</option>
             <option
-                ng-repeat="(id_state, label) in TutorStates"
-                value="@{{ id_state }}"
-            >@{{ label }}</option>
+                ng-repeat="(state_id, label) in TutorStates"
+                value="@{{ state_id }}"
+            >@{{ label }} @{{ state_counts[state_id] > 0 ? '(' + state_counts[state_id] + ')' : '' }}</option>
+        </select>
+    </div>
+    <div class="col-sm-3">
+        {{-- <ng-select object='TutorStates' model='state' none-text='статус'></ng-select> --}}
+        <select class="form-control" ng-model='user_id' ng-change="changeUser()">
+            <option value="">пользователь</option>
+            <option disabled>──────────────</option>
+            <option
+                ng-repeat="user in UserService.users"
+                value="@{{ user.id }}"
+            >@{{ user.login }} @{{ user_counts[user.id] > 0 ? '(' + user_counts[user.id] + ')' : '' }}</option>
         </select>
     </div>
 </div>
@@ -45,6 +49,8 @@
                     'many': 'лет',
                 }"></ng-pluralize>
             </span>
+        </td>
+        <td width='50' class="text-danger bold">@{{ tutor.has_clients ? 'K' : '' }}</td>
 		<td style="width:50px">@{{ tutor.tb }}</td>
 		<td style="width:50px">@{{ tutor.lk }}</td>
 		<td style="width:50px">@{{ tutor.js }}</td>
@@ -69,7 +75,7 @@
 </div>
 
 <pagination style="margin-top: 30px"
-    ng-hide='data.last_page == 1'
+    ng-hide='data.last_page <= 1'
     ng-model="current_page"
     ng-change="pageChanged()"
     total-items="data.total"

@@ -39,7 +39,7 @@
             </div>
         </div>
         <div class="form-group">
-            <div class="tutor-state tutor-state-@{{ tutor.state }}" ng-click="toggleEnum(tutor, 'state', TutorStates, [3, 5], [108])">
+            <div class="tutor-state tutor-state-@{{ tutor.state }}" ng-click="toggleEnum(tutor, 'state', TutorStates, [3, 5], [56, 61])">
                 @{{ TutorStates[tutor.state] }}
             </div>
         </div>
@@ -76,7 +76,7 @@
 
         <div class="form-group">
             <input type="text" class="form-control digits-year" ng-model="tutor.start_career_year" placeholder="начало карьеры">
-            <span class="inside-input" ng-show="tutor.start_career_year > 999">– педстаж @{{ yearDifference(tutor.start_career_year) }}
+            <span class="inside-input" ng-show="tutor.start_career_year > 999">– стаж @{{ yearDifference(tutor.start_career_year) }}
                 <ng-pluralize count="yearDifference(tutor.start_career_year)" when="{
                     'one': 'год',
                     'few': 'года',
@@ -240,6 +240,10 @@
         <md-input-container class="md-block" style="margin-top: 20px">
             <label>Расписание и загрузка в течение года</label>
             <textarea class="md-input" ng-model="tutor.schedule"></textarea>
+        </md-input-container>
+        <md-input-container class="md-block" style="margin-top: 20px">
+            <label>Готовность работать в ЕГЭ-Центре</label>
+            <textarea class="md-input" ng-model="tutor.ready_to_work"></textarea>
         </md-input-container>
 
         <h4>КОММЕНТАРИИ</h4>

@@ -6,8 +6,10 @@ use App\Http\Requests\Request;
 use Log;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Marker;
+use App\Models\Metro;
 use App\Traits\Markerable;
 use App\Traits\Person;
+use App\Events\ResponsibleUserChanged;
 
 class Tutor extends Model
 {
@@ -16,6 +18,7 @@ class Tutor extends Model
 
     protected $connection = 'egecrm';
     protected $table = 'teachers';
+
     protected $fillable =  [
         'first_name',
 		'last_name',
@@ -50,8 +53,10 @@ class Tutor extends Model
 		'departure_price',
         'list_comment',
         'responsible_user_id',
-        'lesson_duration'
+        'lesson_duration',
+        'ready_to_work',
     ];
+
     protected $appends = ['has_photo_original', 'has_photo_cropped', 'age'];
     protected $with = ['markers'];
     protected static $commaSeparated = ['svg_map', 'subjects', 'grades'];
@@ -134,18 +139,79 @@ class Tutor extends Model
         return public_path() . static::UPLOAD_DIR . $this->id . $addon . '.' . $this->photo_extension;
     }
 
+    /**
+     * Получить минимальное время между всеми метками репетитора и меткой клиента
+     */
+    public function getMinutes($client_marker)
+    {
+        if (! $this->markers->count()) {
+            return -1;
+        }
+
+        $min_minutes = PHP_INT_MAX;
+        $client_marker = (object)$client_marker;
+
+        foreach($this->markers as $marker) {
+            # сначала проверяем, есть ли общие ближайшие станции метро
+            foreach ($client_marker->metros as $metro) {
+                $mutual_metro = $marker->metros->where('station_id', $metro['station_id'])->first();
+
+                # если нашлось общее метро
+                if ($mutual_metro !== null) {
+                    break 2;
+                }
+            }
+        }
+
+        # если есть общие станции метро
+        if ($mutual_metro) {
+            # применяем стандартный метод расчета времени между 2-мя метками
+            foreach($this->markers as $marker) {
+                $new_min_minutes = Metro::minutesBetweenMarkers($marker, $client_marker);
+                if ($new_min_minutes < $min_minutes) {
+                    $min_minutes = $new_min_minutes;
+                }
+            }
+        } else {
+            # общего метро нет
+            foreach($this->markers as $marker) {
+                foreach($marker->metros as $tutor_metro) {
+                    foreach($client_marker->metros as $client_metro) {
+                        # время от метки репетитора до ближайшей станции репетитора
+                        $new_min_minutes = $tutor_metro->minutes;
+
+                        # время от ближайшей станции репетитора до ближайшей станции ученика
+                        $new_min_minutes += Metro::minutesBetweenMetros($tutor_metro->station_id, $client_metro['station_id']);
+
+                        # время от ближайшей станции ученика до метки ученика
+                        $new_min_minutes += $client_metro['minutes'];
+
+                        if ($new_min_minutes < $min_minutes) {
+                            $min_minutes = $new_min_minutes;
+                        }
+                    }
+                }
+            }
+        }
+
+        return round($min_minutes);
+    }
+
     protected static function boot()
     {
-        static::saving(function($model) {
-            cleanNumbers($model);
+        static::saving(function($tutor) {
+            cleanNumbers($tutor);
+        });
+
+        static::updated(function($tutor) {
+            # if responsible user changed
+            if (array_key_exists('responsible_user_id', $tutor->getDirty())) {
+                event(new ResponsibleUserChanged($tutor));
+            }
         });
     }
 
     /**
-     * @param QueryBuilder $query        Query Builder.
-     * @param string $searchText         Last name or phone of tutor.
-     * @return QueryBuilder              QueryBuilder instance.
-     *
      * @todo Add phone4 field after Task #738 migrations!
      */
     public function scopeSearchByLastNameAndPhone($query, $searchText)
@@ -167,5 +233,42 @@ class Tutor extends Model
         if (isset($state)) {
             return $query->where('state', $state);
         }
+    }
+
+    /**
+     * Search by user id
+     */
+    public function scopeSearchByUser($query, $user_id)
+    {
+        if (isset($user_id)) {
+            return $query->where('responsible_user_id', $user_id);
+        }
+    }
+
+    /**
+     * State counts
+     * @return array [state_id] => state_count
+     */
+    public static function stateCounts()
+    {
+        $return = [];
+        foreach (range(0, 5) as $i) {
+            $return[$i] = static::where('state', $i)->count();
+        }
+        return $return;
+    }
+
+    /**
+     * State counts
+     * @return array [user_id] => state_count
+     */
+    public static function userCounts()
+    {
+        $user_ids = static::where('responsible_user_id', '>', '0')->groupBy('responsible_user_id')->pluck('responsible_user_id');
+        $return = [];
+        foreach ($user_ids as $user_id) {
+            $return[$user_id] = static::where('responsible_user_id', $user_id)->count();
+        }
+        return $return;
     }
 }

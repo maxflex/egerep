@@ -39,7 +39,8 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('accounts', 'AccountsController');
         Route::resource('sms', 'SmsController');
 
-        Route::post('external/{function}', 'ExternalController@exec'); // external API controller
+        Route::controller('metro', 'MetroController');
+        Route::post('external/{function}', 'ExternalController@exec'); // external API controller | DEPRICATED?
     });
 
 

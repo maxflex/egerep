@@ -12,6 +12,7 @@ use App\Models\Metro;
 use App\Models\Api;
 use App\Models\Comment;
 use Carbon\Carbon;
+use DB;
 
 class TransferController extends Controller
 {
@@ -151,6 +152,28 @@ class TransferController extends Controller
 		124 => 102,
 		126 => 100
 	];
+
+	/**
+	 * Есть ли клиенты у репетитора?
+	 */
+	public function getHasClients(Request $request)
+	{
+		$tutors = Tutor::all();
+
+		$updated = 0;
+
+		foreach($tutors as $tutor) {
+			$query = DB::connection('egerep')->table('repetitor_clients')->where('repetitor_id', $tutor->id_a_pers);
+			if ($query->exists()) {
+				$updated++;
+				$tutor->has_clients = true;
+				$tutor->save();
+			}
+		}
+
+		dd($updated);
+	}
+
 
     /**
      * Перенести всех преподавателей (+фио)

@@ -4,18 +4,30 @@ angular
     #
     #   LIST CONTROLLER
     #
-    .controller "TutorsIndex", ($scope, $rootScope, $timeout, $http, Tutor, TutorStates, UserService) ->
+    .controller "TutorsIndex", ($scope, $rootScope, $timeout, $http, Tutor, TutorStates, UserService, PusherService) ->
         $rootScope.frontend_loading = true
         $scope.Tutor = Tutor
         $scope.TutorStates = TutorStates
+
         $scope.state = localStorage.getItem('tutors_index_state')
+        $scope.user_id = localStorage.getItem('tutors_index_user_id')
+
         $scope.UserService = UserService
+
+        PusherService.init 'ResponsibleUserChanged', (data) ->
+            if tutor = findById($scope.tutors, data.tutor_id)
+                tutor.responsible_user_id = data.responsible_user_id
+                $scope.$apply()
 
         $scope.yearDifference = (year) ->
             moment().format("YYYY") - year
 
         $scope.changeState = ->
             localStorage.setItem('tutors_index_state', $scope.state)
+            loadTutors($scope.current_page)
+
+        $scope.changeUser = ->
+            localStorage.setItem('tutors_index_user_id', $scope.user_id)
             loadTutors($scope.current_page)
 
         $timeout ->
@@ -30,6 +42,7 @@ angular
             params = '?page=' + page
             params += "&search=#{ $scope.search }" if $scope.search
             params += "&state=#{ $scope.state }" if $scope.state isnt null and $scope.state isnt ''
+            params += "&user_id=#{ $scope.user_id }" if $scope.user_id
 
             $http.get "api/tutors#{ params }"
                 .then (response) ->
@@ -63,7 +76,7 @@ angular
     #
     #   ADD/EDIT CONTROLLER
     #
-    .controller "TutorsForm", ($scope, $rootScope, $timeout, $interval, Tutor, SvgMap, Subjects, Grades, ApiService, TutorStates, Genders) ->
+    .controller "TutorsForm", ($scope, $rootScope, $timeout, Tutor, SvgMap, Subjects, Grades, ApiService, TutorStates, Genders) ->
         $scope.SvgMap   = SvgMap
         $scope.Subjects = Subjects
         $scope.Grades   = Grades
@@ -87,7 +100,7 @@ angular
 
                 if combo_start > 11
                     i++
-                    console.log Grades, combo_start
+                    combo_end = -1
                     pairs.push Grades[combo_start]
                     continue
 
@@ -98,8 +111,9 @@ angular
                 j = i
                 while j <= limit
                     combo_end = a[j]
-                    if a[j + 1] - combo_end > 1
-                        break
+                    # если уже начинает искать по студентам
+                    break if combo_end >= 11
+                    break if a[j + 1] - combo_end > 1
                     j++
                 if combo_start != combo_end
                     pairs.push combo_start + '–' + combo_end + ' классы'
@@ -107,6 +121,7 @@ angular
                     pairs.push combo_start + ' класс'
                 i++
             $timeout ->
+                console.log pairs
                 $('#sp-tutor-grades').parent().find('.filter-option').html pairs.join ', '
             return
 
@@ -318,7 +333,7 @@ angular
             marker.setMap($scope.gmap)
 
             # Ищем ближайшие станции метро к маркеру
-            ApiService.exec 'metro',
+            ApiService.metro 'closest',
                 lat: marker.lat
                 lng: marker.lng
             .then (response) ->

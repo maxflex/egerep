@@ -7,6 +7,7 @@ use App\Models\Tutor;
 use Log;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Models\Metro;
 
 class TutorsController extends Controller
 {
@@ -17,8 +18,9 @@ class TutorsController extends Controller
      */
     public function index(Request $request)
     {
-        return Tutor::searchByState($request->input('state'))
-                        ->searchByLastNameAndPhone($request->input('search'))
+        return Tutor::searchByState($request->state)
+                        ->searchByUser($request->user_id)
+                        ->searchByLastNameAndPhone($request->search)
                         ->paginate(30)->toJson();
     }
 
@@ -110,9 +112,9 @@ class TutorsController extends Controller
 
      public function filtered(Request $request)
      {
-         extract(array_filter($request->input()));
+         extract(array_filter($request->search));
 
-         $query = Tutor::query();
+         $query = Tutor::has('markers');
 
          if (isset($id)) {
              $query->where('id', $id);
@@ -136,7 +138,7 @@ class TutorsController extends Controller
 
          $tutors = $query->get();
 
-         $tutors->each(function($tutor) use ($destination) {
+         foreach($tutors as $tutor) {
             # Количество учеников
             $tutor->append('clients_count');
 
@@ -147,11 +149,14 @@ class TutorsController extends Controller
             if ($destination == "k_r") {
                 # Cкрываем все маркеры
                 $tutor->hideRelation('markers');
+
                 # Оставляем только зеленые
                 $tutor->markers = $tutor->getMarkers('green');
             }
-         });
 
+            # Получить минуты
+            $tutor->minutes = $tutor->getMinutes($request->client_marker);
+         }
 
          return $tutors;
      }

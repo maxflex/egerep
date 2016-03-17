@@ -5,16 +5,23 @@ angular.module 'Egerep'
         # transparent marker opacity
         TRANSPARENT_MARKER = 0.3
 
+        # mode: 'map' | 'list'
+        $scope.mode = 'map'
+
         angular.element(document).ready ->
             $scope.list = new RequestList($scope.list)
 
         $scope.find = ->
-            TutorService.getFiltered $scope.search
+            TutorService.getFiltered {search: $scope.search, client_marker: $scope.client.markers[0]}
                 .then (response) ->
                     $scope.tutors = response.data
                     showTutorsOnMap()
                     findIntersectingMetros()
                     repaintChosen()
+
+        # determine whether tutor has already been added
+        $scope.added = (tutor_id) ->
+            tutor_id in $scope.list.tutor_ids
 
         showTutorsOnMap = ->
             unsetAllMarkers()
@@ -92,13 +99,17 @@ angular.module 'Egerep'
                 $scope.$apply()
 
             google.maps.event.addListener marker, 'dblclick', (event) ->
-                tutor_id = parseInt(marker.tutor.id)
-                if tutor_id in $scope.list.tutor_ids
-                    $scope.list.tutor_ids = _.without($scope.list.tutor_ids, tutor_id)
-                else
-                    $scope.list.tutor_ids.push(tutor_id)
-                repaintChosen()
-                $scope.list.$update()
+                $scope.addOrRemove(marker.tutor.id)
+
+        # add or remove tutor from list
+        $scope.addOrRemove = (tutor_id) ->
+            tutor_id = parseInt(tutor_id)
+            if tutor_id in $scope.list.tutor_ids
+                $scope.list.tutor_ids = _.without($scope.list.tutor_ids, tutor_id)
+            else
+                $scope.list.tutor_ids.push(tutor_id)
+            repaintChosen()
+            $scope.list.$update()
 
         repaintChosen = ->
             $scope.markers.forEach (marker) ->

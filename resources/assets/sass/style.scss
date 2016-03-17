@@ -22,6 +22,15 @@
 	$half_black			: rgba(0, 0, 0, .5);
 	$quater_black 		: rgba(0, 0, 0, .25);
 
+
+
+
+	.btn-mini {
+		font-size: 12px;
+	    padding: 0 5px;
+	    line-height: 14px;
+	}
+
 	.green-section {
 		border-left: 5px solid #1C874F;
 		background: #DBECE3;
@@ -91,7 +100,7 @@
 		& .ava {
 			height: 65px;
 			vertical-align: top;
-			margin-right: 5px;
+			margin-right: 7px;
 			float: left;
 		}
 		& > div {
@@ -101,8 +110,12 @@
 		}
 
 		& .info-line {
-		    width: calc(100% - 70px);
+		    width: calc(100% - 72px);
 			display: inline-block;
+			float: left;
+		    top: -1px;
+		    position: relative;
+			font-size: 12px;
 			& .glyphicon {
 				top: 3px;
 			}
@@ -190,6 +203,16 @@
 		width: 100%;
 	}
 
+	.options-list {
+		font-weight: bold;
+		& span {
+			margin-right: 10px;
+			&.link-like {
+				font-weight: normal;
+			}
+		}
+	}
+
 	.btn.btn-primary {
 		border-color: $green_main;
 		&:hover {
@@ -205,6 +228,41 @@
 			background-color: $green_main;
 		}
 	}
+
+	.btn.btn-success {
+		background-color: $blue;
+		border-color: $blue;
+		&:hover {
+			background-color: lighten($blue, 10);
+			border-color: lighten($blue, 10);
+		}
+		&:focus {
+			background-color: lighten($blue, 10);
+			border-color: lighten($blue, 10);
+		}
+		&[disabled] {
+			border-color: $blue;
+			background-color: $blue;
+		}
+	}
+
+	.btn.btn-danger {
+		background-color: $red;
+		border-color: $red;
+		&:hover {
+			background-color: lighten($red, 10);
+			border-color: lighten($red, 10);
+		}
+		&:focus {
+			background-color: lighten($red, 10);
+			border-color: lighten($red, 10);
+		}
+		&[disabled] {
+			border-color: $red;
+			background-color: $red;
+		}
+	}
+
 	// \new bootstrap
 
 	.aligner {
@@ -2000,6 +2058,12 @@ h4.row-header {
 	color: $half_black;
 }
 
+.label-white {
+	color: $green_main;
+	background-color: white;
+	margin-left: 3px;
+}
+
 .label-red-visits {
 	background: #ffcccc;
     border-radius: 4px;
@@ -2047,11 +2111,12 @@ h4.row-header {
 md-input-container {
 	& label {
 		padding-left: 0 !important;
-		margin-bottom: -2px !important;
+		// margin-bottom: -2px !important;
 	}
 	& textarea {
 		margin-left: -4px !important;
 		position: relative;
+		line-height: 20px !important;
 	}
 }
 

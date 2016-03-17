@@ -296,7 +296,7 @@ angular
             marker.setMap($scope.gmap)
 
             # Ищем ближайшие станции метро к маркеру
-            ApiService.exec 'metro',
+            ApiService.metro 'closest',
                 lat: marker.lat
                 lng: marker.lng
             .then (response) ->

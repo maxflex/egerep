@@ -45,5 +45,6 @@ elixir(function(mix) {
             '../bower/angular-ui-sortable/sortable.min.js',
             '../bower/angular-bootstrap/ui-bootstrap.min.js',
             '../bower/cropper/dist/cropper.min.js',
+            '../bower/pusher/dist/pusher.min.js',
         ], 'public/js/vendor.js');
 });

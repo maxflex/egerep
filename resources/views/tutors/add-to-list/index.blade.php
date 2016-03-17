@@ -38,10 +38,6 @@
     <div class="col-sm-3">
         <div class="form-group">
             <ng-multi object='Genders' model='search.gender' none-text='пол'></ng-multi>
-            {{-- <select class="form-control" id='directive-select' multiple
-                ng-model="search.gender"
-                ng-options="object_id as label for (object_id, label) in Genders">
-            </select> --}}
         </div>
         <div class="form-group">
             <div class="double-input">
@@ -95,11 +91,16 @@
         <div class="form-group">
             <ng-select model='search.destination' object='Destinations'></ng-select>
         </div>
-        {{-- <div class="form-group" style="visibility: hidden">
-            <input type="text" class="form-control digits-only">
-        </div> --}}
         <div class="form-group">
             <button class="btn btn-primary full-width" ng-click='find()'>найти</button>
+        </div>
+    </div>
+</div>
+<div class="row mb">
+    <div class="col-sm-12">
+        <div class="options-list">
+            <span ng-class="{'link-like': mode !== 'map'}" ng-click="mode = 'map'">карта</span>
+            <span ng-class="{'link-like': mode !== 'list'}" ng-click="mode = 'list'">список</span>
         </div>
     </div>
 </div>
