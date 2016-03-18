@@ -88,7 +88,7 @@ class TutorsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Tutor::find($id)->delete();
     }
 
     /**
