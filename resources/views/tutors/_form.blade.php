@@ -245,7 +245,90 @@
             <label>Готовность работать в ЕГЭ-Центре</label>
             <textarea class="md-input" ng-model="tutor.ready_to_work"></textarea>
         </md-input-container>
+        <h4>ИНФОРМАЦИЯ ПО ЭГЕ-ЦЕНТРУ</h4>
+        <md-input-container class="md-block" style="margin-top: 20px">
+            <label>Описание эксперта</label>
+            <textarea class="md-input" ng-model="tutor.comment"></textarea>
+        </md-input-container>
+        <md-input-container class="md-block" style="margin-top: 20px">
+            <div class="row">
+                <div class="col-sm-2" style="width:10%">
+                    <md-input-container class="md-block" style="margin-top: 20px">
+                        Оценка эксперта
+                     </md-input-container>
+                </div>
+                <div class="col-sm-1">
+                    <md-input-container class="md-block" style="margin-top: 20px">
+                        <textarea class="md-input" ng-model="tutor.expert_mark"></textarea>
+                    </md-input-container>
+                </div>
+                <div class="col-sm-4" style="width:27%">
+                    <md-input-container class="md-block" style="margin-top: 20px">
+                        баллов. Стоимость проведения 135-минутного занятия
+                    </md-input-container>
+                </div>
+                <div class="col-sm-1" style="text-align:right;">
+                    <md-input-container class="md-block" style="margin-top: 20px">
+                        <textarea class="md-input" ng-model="tutor.rubbles"></textarea>
+                    </md-input-container>
+                </div>
+                <div class="col-md-4">
+                    <md-input-container class="md-block" style="margin-top: 20px">
+                        <ng-pluralize count='tutor.rubbles' when="{
+                                                 'one': 'рубль',
+                                                 'few': 'рубля',
+                                                 'many': 'рублей'
+                                              }"></ng-pluralize>
+                    </md-input-container>
+                </div>
+            </div>
+        </md-input-container>
 
+        <section class='blue-section'>
+            <div class="row">
+                <div class="col-sm-12">
+                    <md-input-container class="md-block" style="margin-top: 20px">
+                        <label>Опубликованное описание на сайте ЭГЕ-Центра</label>
+                        <textarea class="md-input" ng-model="tutor.description"></textarea>
+                    </md-input-container>
+                    <div class="row">
+                        <div class="col-sm-3" style="width: 20%;">
+                            <md-input-container class="md-block" style="margin-top: 20px">
+                                Опубликованный педагогический опыт
+                             </md-input-container>
+                        </div>
+                        <div class="col-sm-1">
+                            <md-input-container class="md-block" style="margin-top: 20px">
+                                <textarea class="md-input" ng-model="tutor.public_seniority"></textarea>
+                            </md-input-container>
+                        </div>
+                        <div class="col-sm-3" style="width:20%">
+                            <md-input-container class="md-block" style="margin-top: 20px">
+                                лет, опыт подготовки к ЕГЭ/ОГЭ с
+                            </md-input-container>
+                        </div>
+                        <div class="col-sm-1" style="text-align:right;">
+                            <md-input-container class="md-block" style="margin-top: 20px">
+                                <textarea class="md-input" ng-model="tutor.public_ege_start"></textarea>
+                            </md-input-container>
+                        </div>
+                        <div class="col-md-2">
+                            <md-input-container class="md-block" style="margin-top: 20px">
+                                года.
+                                {{-- @todo --}}
+                                {{-- В ЕГЭ-центре ведет--}}
+                            </md-input-container>
+                        </div>
+                        <div class="col-md-2">
+                            <md-input-container class="md-block" style="margin-top: 20px">
+                                {{-- @todo --}}
+                                {{--<textarea class="md-input"></textarea>--}}
+                            </md-input-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
         <h4>КОММЕНТАРИИ</h4>
         <comments entity-type='tutor' entity-id='{{ $id }}' user='{{ $user }}'></comments>
     </div>

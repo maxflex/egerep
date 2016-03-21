@@ -55,6 +55,12 @@ class Tutor extends Model
         'responsible_user_id',
         'lesson_duration',
         'ready_to_work',
+        'comment',
+        'expert_mark',
+        'rubbles',
+        'description',
+        'public_seniority',
+        'public_ege_start',
     ];
 
     protected $appends = ['has_photo_original', 'has_photo_cropped', 'age'];
