@@ -26985,6 +26985,9 @@ md-tooltip {
   font-size: 100%;
   padding: 0; }
 
+.filter-option .text-muted {
+  display: none; }
+
 a:focus {
   outline: none !important; }
 
