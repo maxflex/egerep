@@ -147,13 +147,11 @@ class TutorsController extends Controller
          }
 
          if (isset($age_from)) {
-             $birth_end = date("Y") - (isset($age_from) ? $age_from : 0);
-             $query->where('birth_year', '<', $birth_end);
+             $query->where('birth_year', '<', $age_from);
          }
 
          if (isset($age_to)) {
-             $birth_start = date("Y") - (isset($age_to) ? $age_to : 200);
-             $query->where('birth_year', '>', $birth_start);
+             $query->where('birth_year', '>', $age_to);
          }
 
          if (isset($grades)) {
