@@ -8,11 +8,10 @@ angular
         $rootScope.frontend_loading = true
         $scope.Tutor = Tutor
         $scope.TutorStates = TutorStates
+        $scope.UserService = UserService
 
         $scope.state = localStorage.getItem('tutors_index_state')
         $scope.user_id = localStorage.getItem('tutors_index_user_id')
-
-        $scope.UserService = UserService
 
         PusherService.init 'ResponsibleUserChanged', (data) ->
             if tutor = findById($scope.tutors, data.tutor_id)
@@ -44,11 +43,30 @@ angular
             params += "&state=#{ $scope.state }" if $scope.state isnt null and $scope.state isnt ''
             params += "&user_id=#{ $scope.user_id }" if $scope.user_id
 
+            # update repetitors
+            # @todo: why ugly params? maybe use $http.post instead?
             $http.get "api/tutors#{ params }"
                 .then (response) ->
                     $rootScope.frontendStop()
                     $scope.data = response.data
                     $scope.tutors = $scope.data.data
+
+            # update counts
+            $http.post "api/tutors/counts",
+                state: $scope.state
+                user_id: $scope.user_id
+            .then (response) ->
+                $scope.state_counts = response.data.state_counts
+                $scope.user_counts = response.data.user_counts
+                $timeout ->
+                    # потому что data кэшируется
+                    # @todo: add issue at github
+                    # @link: https://github.com/silviomoreto/bootstrap-select/issues/293
+                    $('#change-state option, #change-user option').each (index, el) ->
+                        $(el).data 'subtext', $(el).attr 'data-subtext'
+                        $(el).data 'content', $(el).attr 'data-content'
+
+                    $('#change-state, #change-user').selectpicker 'refresh'
 
         $scope.blurComment = (tutor) ->
             tutor.is_being_commented = false
@@ -169,7 +187,6 @@ angular
                         $('.cropper-line, .cropper-point').css 'background-color', '#158E51'
                     else
                         $('.cropper-line, .cropper-point').css 'background-color', '#D9534F'
-                        # $('.cropper-line, .cropper-point').css 'background-color', '#39f'
 
         $scope.picture_version = 1;
         bindFileUpload = ->

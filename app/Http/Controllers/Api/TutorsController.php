@@ -4,13 +4,23 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Models\Tutor;
-use Log;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Metro;
 
 class TutorsController extends Controller
 {
+    /**
+     * Get list counts
+     */
+    public function counts(Request $request)
+    {
+        return [
+            'state_counts'  => Tutor::stateCounts($request->user_id),
+            'user_counts'   => Tutor::userCounts($request->state),
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -181,6 +191,18 @@ class TutorsController extends Controller
              $query->whereIn('state', $state);
          }
 
+         # Оставляем только зеленые маркеры, если клиент едет к репетитору
+         if ($destination == "k_r") {
+             # отсеиваем репетиторов без зеленых маркеров
+             $query->whereHas('markers', function($query) {
+               $query->where('type', 'green');
+             });
+             # оставляем только зеленые маркеры, если у репетитора есть и те, и другие
+             $query->with(['markers' => function($query) {
+               $query->where('type', 'green');
+             }]);
+         }
+
          $tutors = $query->get();
 
          foreach($tutors as $tutor) {
@@ -189,15 +211,6 @@ class TutorsController extends Controller
 
             # Количество встреч
             $tutor->meeting_count = $tutor->getMeetingCount();
-
-            # Оставляем только зеленые маркеры, если клиент едет к репетитору
-            if ($destination == "k_r") {
-                # Cкрываем все маркеры
-                $tutor->hideRelation('markers');
-
-                # Оставляем только зеленые
-                $tutor->markers = $tutor->getMarkers('green');
-            }
 
             # Получить минуты
             $tutor->minutes = $tutor->getMinutes($request->client_marker);

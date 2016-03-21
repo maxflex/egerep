@@ -11,24 +11,28 @@
 <div class="row mb">
     <div class="col-sm-3">
         {{-- <ng-select object='TutorStates' model='state' none-text='статус'></ng-select> --}}
-        <select class="form-control" ng-model='state' ng-change="changeState()">
+        <select class="form-control" ng-model='state' ng-change="changeState()" id='change-state'>
             <option value="">статус</option>
             <option disabled>──────────────</option>
             <option
                 ng-repeat="(state_id, label) in TutorStates"
+                data-subtext="@{{ state_counts[state_id] || '' }}"
                 value="@{{ state_id }}"
-            >@{{ label }} @{{ state_counts[state_id] > 0 ? '(' + state_counts[state_id] + ')' : '' }}</option>
+            >
+                @{{ label }}
+            </option>
         </select>
     </div>
     <div class="col-sm-3">
         {{-- <ng-select object='TutorStates' model='state' none-text='статус'></ng-select> --}}
-        <select class="form-control" ng-model='user_id' ng-change="changeUser()">
+        <select class="form-control" ng-model='user_id' ng-change="changeUser()" id='change-user'>
             <option value="">пользователь</option>
             <option disabled>──────────────</option>
             <option
-                ng-repeat="user in UserService.users"
+                ng-repeat="user in UserService.getWithSystem()"
                 value="@{{ user.id }}"
-            >@{{ user.login }} @{{ user_counts[user.id] > 0 ? '(' + user_counts[user.id] + ')' : '' }}</option>
+                data-content="<span style='color: @{{ user.color || 'black' }}'>@{{ user.login }} @{{ $var }}</span><small class='text-muted'>@{{ user_counts[user.id] || '' }}</small>"
+            ></option>
         </select>
     </div>
 </div>

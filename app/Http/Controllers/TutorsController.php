@@ -16,8 +16,6 @@ class TutorsController extends Controller
     {
         return view('tutors.index')->with(
             ngInit([
-                'state_counts'  => Tutor::stateCounts(),
-                'user_counts'   => Tutor::userCounts(),      
                 'page'          => $request->input('page'),
                 'global_search' => $request->input('text'),
             ])
@@ -51,8 +49,9 @@ class TutorsController extends Controller
         $list = RequestList::find($id);
 
         return view('tutors.add-to-list.index')->with(ngInit([
-            'list'      => $list,
-            'client'    => $list->request->client,
+            'list'          => $list,
+            'client'        => $list->request->client,
+            'request_id'    => $list->request->id,
         ]));
     }
 }

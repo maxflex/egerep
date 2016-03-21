@@ -10,6 +10,7 @@ angular.module 'Egerep'
 
         angular.element(document).ready ->
             $scope.list = new RequestList($scope.list)
+            $('.map-tutor-list').droppable()
 
         $scope.find = ->
             TutorService.getFiltered {search: $scope.search, client_marker: $scope.client.markers[0]}
@@ -19,9 +20,22 @@ angular.module 'Egerep'
                     findIntersectingMetros()
                     repaintChosen()
 
-        # determine whether tutor has already been added
+        # determine whether tutor had already been added
         $scope.added = (tutor_id) ->
             tutor_id in $scope.list.tutor_ids
+
+        # rebind draggable
+        rebindDraggable = ->
+            $('.temporary-tutor').draggable
+                containment: 'window'
+                revert: (valid) ->
+                    return true if valid
+                    $scope.tutor_list = removeById($scope.tutor_list, $scope.dragging_tutor.id)
+                    $scope.$apply()
+
+        # remember dragging tutor
+        $scope.startDragging = (tutor) ->
+            $scope.dragging_tutor = tutor
 
         showTutorsOnMap = ->
             unsetAllMarkers()
@@ -32,7 +46,6 @@ angular.module 'Egerep'
 
             $scope.markers = []
             $scope.tutors.forEach (tutor) ->
-                console.log tutor.markers
                 tutor.markers.forEach (marker) ->
                     # Создаем маркер
                     new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, marker.type)
@@ -65,19 +78,22 @@ angular.module 'Egerep'
                     marker.intersecting = false
                     $scope.client.markers.forEach (client_marker) ->
                         client_marker.metros.forEach (client_metro) ->
-                            if client_metro.station_id.toString() in marker.tutor.svg_map
+                            if client_metro.station_id in marker.tutor.svg_map
                                 marker.intersecting = true
+                                marker.tutor.intersecting = true
                                 return
-                    # marker.metros.forEach (metro) ->
-                    #     return if marker.intersecting
-                    #     $scope.client.markers.forEach (client_marker) ->
-                    #         client_marker.metros.forEach (client_metro) ->
-                    #             if client_metro.station_id is metro.station_id
-                    #                 marker.intersecting = true
                 # paint non-intersecting with half opacity
                 $scope.markers.forEach (marker) ->
                     marker.setOpacity(TRANSPARENT_MARKER) if not marker.intersecting
 
+        # получить репетиторов, которые выезжают на ближайшую станцию метро клиента
+        $scope.intersectingTutors = ->
+            _.where($scope.tutors, { intersecting: true })
+
+        # получить репетиторов, которые НЕ доезжают до ближайшей станции
+        $scope.notIntersectingTutors = ->
+            _.filter $scope.tutors, (tutor) ->
+                _.isUndefined(tutor.intersecting)
 
 
         bindTutorMarkerEvents = (marker) ->
@@ -88,6 +104,7 @@ angular.module 'Egerep'
                     $scope.hovered_tutor = null
                     $scope.tutor_list.push marker.tutor
                 $scope.$apply()
+                rebindDraggable()
 
             google.maps.event.addListener marker, 'mouseover', (event) ->
                 return if marker.tutor in $scope.tutor_list

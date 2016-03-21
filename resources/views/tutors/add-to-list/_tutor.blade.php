@@ -4,7 +4,7 @@
 <img class='ava' src="img/tutors/@{{ _tutor.has_photo_cropped ? _tutor.id + '@2x.' + _tutor.photo_extension : 'no-profile-img.gif' }}">
 <div class="info-line">
     <a href="tutors/@{{ _tutor.id }}/edit" target="_blank">@{{ _tutor.full_name }}</a>
-    <span ng-repeat='phone in _tutor.phones' title="@{{phone}}" ng-click='PhoneService.call(phone)'
+    <span ng-repeat='phone in _tutor.phones track by $index' title="@{{phone}}" ng-click='PhoneService.call(phone)'
         class="opacity-pointer glyphicon glyphicon-earphone pull-right small"></span>
 </div>
 <div class="info-line">

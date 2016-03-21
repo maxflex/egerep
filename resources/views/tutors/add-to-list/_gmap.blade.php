@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row" ng-show="mode == 'map'">
   <div class="col-sm-12" style="overflow: hidden">
     <map zoom="10" disable-default-u-i="true" scale-control="true"
         zoom-control="true" zoom-control-options="{style:'SMALL'}" style="height: 500px; width: 100%">
@@ -8,7 +8,7 @@
     </map>
 
     <div class="map-tutor-list" ng-show='tutor_list.length > 0 || hovered_tutor'>
-        <div ng-repeat='tutor in tutor_list'>
+        <div ng-repeat='tutor in tutor_list' class='temporary-tutor' ng-mousedown='startDragging(tutor)'>
             @include('tutors.add-to-list._tutor', ['tutor' => 'tutor'])
         </div>
         <div ng-if='hovered_tutor'>

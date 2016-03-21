@@ -24,6 +24,29 @@
 
 
 
+	.bootstrap-select.btn-group .dropdown-menu li {
+		& small {
+			position: absolute;
+			top: 3px;
+			right: 20px;
+			font-size: 100%;
+			padding: 0;
+		}
+	}
+
+	// #change-user dropdown-menu li a span {
+	// 	color: black;
+	// }
+
+	a:focus {
+		outline: none !important;
+	}
+
+	.panel-heading {
+		& a:hover {
+			color: white !important;
+		}
+	}
 
 	.btn-mini {
 		font-size: 12px;
@@ -101,7 +124,7 @@
 		top: 0;
 		right: 0;
 		padding: 10px 5px;
-		overflow: scroll;
+		// overflow: scroll;
 		&.ng-hide-add, &.ng-hide-remove {
 			transition: all linear .2s;
 		}
@@ -118,6 +141,11 @@
 			margin-bottom: 7px;
 			display: inline-block;
 			width: 100%;
+			&.ui-draggable-dragging {
+				background: white;
+				box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+				z-index: 999;
+			}
 		}
 
 		& .info-line {

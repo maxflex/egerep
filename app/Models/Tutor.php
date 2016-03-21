@@ -247,11 +247,15 @@ class Tutor extends Model
      * State counts
      * @return array [state_id] => state_count
      */
-    public static function stateCounts()
+    public static function stateCounts($user_id)
     {
         $return = [];
         foreach (range(0, 5) as $i) {
-            $return[$i] = static::where('state', $i)->count();
+            $query = static::where('state', $i);
+            if (! empty($user_id)) {
+                $query->where('responsible_user_id', $user_id);
+            }
+            $return[$i] = $query->count();
         }
         return $return;
     }
@@ -260,12 +264,16 @@ class Tutor extends Model
      * State counts
      * @return array [user_id] => state_count
      */
-    public static function userCounts()
+    public static function userCounts($state)
     {
-        $user_ids = static::where('responsible_user_id', '>', '0')->groupBy('responsible_user_id')->pluck('responsible_user_id');
+        $user_ids = static::where('responsible_user_id', '>', 0)->groupBy('responsible_user_id')->pluck('responsible_user_id');
         $return = [];
         foreach ($user_ids as $user_id) {
-            $return[$user_id] = static::where('responsible_user_id', $user_id)->count();
+            $query = static::where('responsible_user_id', $user_id);
+            if (! empty($state)) {
+                $query->where('state', $state);
+            }
+            $return[$user_id] = $query->count();
         }
         return $return;
     }

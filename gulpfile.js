@@ -41,6 +41,7 @@ elixir(function(mix) {
             '../bower/jquery-ui/ui/widget.js',
             '../bower/jquery-ui/ui/mouse.js',
             '../bower/jquery-ui/ui/sortable.js',
+            '../bower/jquery-ui/ui/draggable.js',
             '../bower/jquery-ui/ui/droppable.js',
             '../bower/angular-ui-sortable/sortable.min.js',
             '../bower/angular-bootstrap/ui-bootstrap.min.js',

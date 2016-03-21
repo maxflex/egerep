@@ -26978,6 +26978,19 @@ md-tooltip {
   -webkit-animation-name: slideOutUp;
   animation-name: slideOutUp; }
 
+.bootstrap-select.btn-group .dropdown-menu li small {
+  position: absolute;
+  top: 3px;
+  right: 20px;
+  font-size: 100%;
+  padding: 0; }
+
+a:focus {
+  outline: none !important; }
+
+.panel-heading a:hover {
+  color: white !important; }
+
 .btn-mini {
   font-size: 12px;
   padding: 0 5px;
@@ -27033,8 +27046,7 @@ email .input-group {
   position: absolute;
   top: 0;
   right: 0;
-  padding: 10px 5px;
-  overflow: scroll; }
+  padding: 10px 5px; }
   .map-tutor-list.ng-hide-add, .map-tutor-list.ng-hide-remove {
     transition: all linear .2s; }
   .map-tutor-list.ng-hide {
@@ -27048,6 +27060,10 @@ email .input-group {
     margin-bottom: 7px;
     display: inline-block;
     width: 100%; }
+    .map-tutor-list > div.ui-draggable-dragging {
+      background: white;
+      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+      z-index: 999; }
   .map-tutor-list .info-line {
     width: calc(100% - 72px);
     display: inline-block;
