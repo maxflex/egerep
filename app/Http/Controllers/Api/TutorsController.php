@@ -146,11 +146,14 @@ class TutorsController extends Controller
              $query->whereIn('gender', $gender);
          }
 
-         if (isset($age_from) || isset($age_to)) {
-             $birth_start   = date("Y") - (isset($age_to) ? $age_to : 200);
+         if (isset($age_from)) {
              $birth_end = date("Y") - (isset($age_from) ? $age_from : 0);
+             $query->where('birth_year', '<', $birth_end);
+         }
 
-             $query->whereBetween('birth_year', [$birth_start, $birth_end]);
+         if (isset($age_to)) {
+             $birth_start = date("Y") - (isset($age_to) ? $age_to : 200);
+             $query->where('birth_year', '>', $birth_start);
          }
 
          if (isset($grades)) {
