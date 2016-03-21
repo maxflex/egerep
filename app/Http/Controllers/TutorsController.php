@@ -17,7 +17,7 @@ class TutorsController extends Controller
         return view('tutors.index')->with(
             ngInit([
                 'page'          => $request->input('page'),
-                'global_search' => $request->input('text'),
+                'global_search' => $request->input('global_search'),
             ])
         );
     }

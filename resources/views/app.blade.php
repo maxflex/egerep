@@ -28,7 +28,7 @@
         <div>
           <form id="global-search" action="search" method="post" style="margin-bottom: 10px">
             <div class="input-group">
-              <input id="global-search-text" type="text" placeholder="Поиск..." name="text" class="form-control" ng-model='global_search'><span class="input-group-btn">
+              <input id="global-search-text" type="text" placeholder="Поиск..." name="global_search" class="form-control" ng-model='global_search'><span class="input-group-btn">
                 <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search no-margin-right"></span></button></span>
             </div>
             <!-- /input-group-->
