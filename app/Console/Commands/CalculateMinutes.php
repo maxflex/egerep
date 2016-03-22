@@ -12,14 +12,14 @@ class CalculateMinutes extends Command
      *
      * @var string
      */
-    protected $signature = 'calculateMinutes';
+    protected $signature = 'metro:recalc_minutes';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Пересчитает минуты';
+    protected $description = 'recalculates minutes';
 
     /**
      * Create a new command instance.
@@ -38,14 +38,14 @@ class CalculateMinutes extends Command
      */
     public function handle()
     {
-        $this->line('Fetching elems');
+        $this->line('Starting...');
 
         /* @var $metro Metro */
         foreach (Metro::all() as $metro) {
-            $metro->minutes = $metro->metersToMinutes($metro->meters);
+            $metro->minutes = Metro::metersToMinutes($metro->meters);
             $metro->save();
         }
 
-        $this->line('Elems updated');
+        $this->info('Minutes updated');
     }
 }
