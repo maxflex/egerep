@@ -16,8 +16,8 @@ class Tutor extends Model
     use Markerable;
     use Person;
 
-    protected $connection = 'egecrm';
-    protected $table = 'teachers';
+    // protected $connection = 'egecrm';
+    // protected $table = 'teachers';
 
     protected $fillable =  [
         'first_name',
