@@ -23,6 +23,12 @@
 	$quater_black 		: rgba(0, 0, 0, .25);
 
 
+	.inline-input {
+		width: 50px;
+	    display: inline-block !important;
+	    top: -3px;
+	    margin: 0 1px 0 10px;
+	}
 
 	.bootstrap-select.btn-group .dropdown-menu li {
 		& small {
@@ -70,6 +76,9 @@
 		background: #CCDEED;
 		padding-left: 10px;
 		padding-bottom: 1px;
+		& .inline-block {
+			color: rgba(0,0,0,0.26);
+		}
 	}
 
 	.comment-inside-input {
