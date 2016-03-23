@@ -1,5 +1,8 @@
 <div class="row" ng-show="mode == 'map'">
   <div class="col-sm-12" style="overflow: hidden">
+    <div class="map-loading" ng-show='loading'>
+        <img src="svg/loaders/tail-spin.svg">
+    </div>
     <map zoom="10" disable-default-u-i="true" scale-control="true"
         zoom-control="true" zoom-control-options="{style:'SMALL'}" style="height: 500px; width: 100%">
         <transit-layer></transit-layer>

@@ -44,6 +44,7 @@
     "ng-img-crop": "ngImgCrop#^0.3.2",
     "ng-cropper": "^0.4.1",
     "cropper": "^2.3.0",
-    "pusher": "^3.0.0"
+    "pusher": "^3.0.0",
+    "SVG-Loaders": "svg-loaders#^1.0.2"
   }
 }
