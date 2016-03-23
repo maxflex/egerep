@@ -6,18 +6,18 @@
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <meta charset="utf-8">
     <base href="{{ config('app.url') }}">
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('css/app.css', isProduction()) }}" rel="stylesheet" type="text/css">
     <link href="css/signin.css" rel="stylesheet" type="text/css">
     @yield('scripts')
 
-    <script src="{{ asset('/js/vendor.js') }}"></script>
-    <script src="{{ asset('/js/app.js') }}"></script>
+    <script src="{{ asset('/js/vendor.js', isProduction()) }}"></script>
+    <script src="{{ asset('/js/app.js', isProduction()) }}"></script>
 
     @foreach(['moment.min', 'bootbox', 'bootstrap-datepicker.min', 'bootstrap-datetimepicker',
         'inputmask', 'jquery.cookie', 'jquery.datetimepicker',
         'jquery.fileupload', 'jquery.timepicker', 'mask', 'engine', 'laroute', 'svgmap', 'ngmap.min'
     ] as $script_name)
-        <script src="{{ asset('/js/' . $script_name . '.js') }}"></script>
+        <script src="{{ asset('/js/' . $script_name . '.js', isProduction()) }}"></script>
     @endforeach
 
   </head>
