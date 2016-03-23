@@ -6,13 +6,13 @@
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <meta charset="utf-8">
     <base href="{{ config('app.url') }}">
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('css/app.css', isProduction()) }}" rel="stylesheet" type="text/css">
     {{-- <link href='https://fonts.googleapis.com/css?family=Ubuntu&subset=latin,cyrillic' rel='stylesheet' type='text/css'> --}}
     @yield('scripts')
-    <script src="{{ asset('/js/vendor.js') }}"></script>
-    <script src="{{ asset('/js/app.js') }}"></script>
+    <script src="{{ asset('/js/vendor.js', isProduction()) }}"></script>
+    <script src="{{ asset('/js/app.js', isProduction()) }}"></script>
     @foreach($js as $script_name)
-        <script src="{{ asset('/js/' . $script_name . '.js') }}"></script>
+        <script src="{{ asset('/js/' . $script_name . '.js', isProduction()) }}"></script>
     @endforeach
 
 

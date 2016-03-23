@@ -84,3 +84,8 @@
 
 		return ['nginit' => $return];
 	}
+
+    function isProduction()
+    {
+        return app()->environment() == 'production';
+    }
