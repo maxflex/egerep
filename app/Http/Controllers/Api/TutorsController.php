@@ -214,6 +214,7 @@ class TutorsController extends Controller
              'middle_name',
              'svg_map',
              'photo_extension',
+             'birth_year',
          ] + Tutor::$phone_fields);
         // $tutors = $query->get();
 
