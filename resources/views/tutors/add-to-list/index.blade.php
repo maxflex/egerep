@@ -8,7 +8,7 @@
 
 @section('scripts')
     <script src="//maps.google.ru/maps/api/js?libraries=places"></script>
-    <script src="{{ asset('/js/maps.js') }}"></script>
+    <script src="{{ asset('/js/maps.js', isProduction()) }}"></script>
 @stop
 
 
