@@ -36,16 +36,16 @@
           <div class="list-group">
               <a class="list-group-item active">Меню</a>
               <a href="requests" class="list-group-item">Заявки</a>
-              <a href="clients" class="list-group-item">Клиенты<span class="badge pull-right"></span></a>
-              <a href="groups" class="list-group-item">Группы<span class="badge pull-right"></span></a>
-              <a href="clients/errors" class="list-group-item">Ошибки</a>
-              <a href="testing" class="list-group-item">Тестирование</a>
-              <a href="stats/groups" class="list-group-item">Статистика групп</a>
+              <a class="list-group-item">Клиенты<span class="badge pull-right"></span></a>
+              <a class="list-group-item">Группы<span class="badge pull-right"></span></a>
+              <a class="list-group-item">Ошибки</a>
+              <a class="list-group-item">Тестирование</a>
+              <a class="list-group-item">Статистика групп</a>
               <a class="list-group-item active">Преподаватели</a>
               <a href="tutors" class="list-group-item">Профили</a>
-              <a href="tutors/salary" class="list-group-item">Дебет</a>
+              <a class="list-group-item">Дебет</a>
               <a class="list-group-item active">Настройки</a>
-              <a href="users" class="list-group-item">Пользователи</a>
+              <a class="list-group-item">Пользователи</a>
               <a href="logout" class="list-group-item">Выход</a></div>
         </div>
       </div>
