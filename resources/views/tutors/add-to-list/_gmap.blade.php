@@ -7,7 +7,7 @@
         </custom-control>
     </map>
 
-    <div class="map-tutor-list" ng-show='tutor_list.length > 0 || hovered_tutor'>
+    <div class="map-tutor-list">
         <div ng-repeat='tutor in tutor_list' class='temporary-tutor' ng-mousedown='startDragging(tutor)'>
             @include('tutors.add-to-list._tutor', ['tutor' => 'tutor'])
         </div>

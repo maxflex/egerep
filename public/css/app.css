@@ -27176,8 +27176,8 @@ a {
     background-color: #4f93ce;
     border-color: #4f93ce; }
   .btn.btn-success:focus {
-    background-color: #4f93ce;
-    border-color: #4f93ce; }
+    background-color: #337AB7;
+    border-color: #337AB7; }
   .btn.btn-success[disabled] {
     border-color: #337AB7;
     background-color: #337AB7; }

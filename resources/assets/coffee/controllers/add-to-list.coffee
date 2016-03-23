@@ -58,6 +58,9 @@ angular.module 'Egerep'
                     # Добавляем ивент удаления маркера
                     bindTutorMarkerEvents(new_marker)
                     $scope.markers.push new_marker
+            # @todo: consider using Marker Clusterer
+            # markerCluster = new MarkerClusterer $scope.map, $scope.markers
+
 
         showClientOnMap = ->
             $scope.client.markers.forEach (marker) ->
