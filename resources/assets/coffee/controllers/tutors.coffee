@@ -94,12 +94,17 @@ angular
     #
     #   ADD/EDIT CONTROLLER
     #
-    .controller "TutorsForm", ($scope, $rootScope, $timeout, Tutor, SvgMap, Subjects, Grades, ApiService, TutorStates, Genders) ->
+    .controller "TutorsForm", ($scope, $rootScope, $timeout, Tutor, SvgMap, Subjects, Grades, ApiService, TutorStates, Genders, Workplaces, Branches, BranchService, TutorService) ->
         $scope.SvgMap   = SvgMap
         $scope.Subjects = Subjects
         $scope.Grades   = Grades
         $scope.Genders  = Genders
         $scope.TutorStates = TutorStates
+        $scope.Workplaces  = Workplaces
+        $scope.Branches = Branches
+        $scope.BranchService = BranchService
+
+
         $rootScope.frontend_loading = true
 
         $scope.deleteTutor = ->
@@ -118,7 +123,7 @@ angular
             pairs = []
             i = 0
             while i <= limit
-                combo_start = a[i]
+                combo_start = parseInt(a[i])
 
                 if combo_start > 11
                     i++
@@ -132,10 +137,10 @@ angular
 
                 j = i
                 while j <= limit
-                    combo_end = a[j]
+                    combo_end = parseInt(a[j])
                     # если уже начинает искать по студентам
                     break if combo_end >= 11
-                    break if a[j + 1] - combo_end > 1
+                    break if parseInt(a[j + 1]) - combo_end > 1
                     j++
                 if combo_start != combo_end
                     pairs.push combo_start + '–' + combo_end + ' классы'
@@ -225,6 +230,10 @@ angular
                 $('#photo-edit').cropper 'resize'
             , 100
 
+        $scope.toggleBanned = ->
+            $scope.tutor.banned = +(!$scope.tutor.banned)
+
+
         # get tutor
         $timeout ->
             if $scope.id > 0
@@ -256,6 +265,15 @@ angular
                     $scope.shortenGrades()
             # spRefresh 'tutor-grades' if oldVal isnt undefined
 
+        $scope.$watch 'tutor.branches', (newVal, oldVal) ->
+            return if newVal is undefined
+            sp 'tutor-branches', 'филиалы', ' ' if oldVal is undefined
+            spRefresh 'tutor-branches' if oldVal isnt undefined
+
+        $scope.$watch 'tutor.in_egecentr', (newVal, oldVal) ->
+            if newVal and !$scope.tutor.login and $scope.tutor.first_name and $scope.tutor.last_name and $scope.tutor.middle_name
+                $scope.tutor.login = TutorService.generateLogin($scope.tutor)
+                $scope.tutor.password = TutorService.generatePassword()
 
         $scope.svgSave = ->
             $scope.tutor.svg_map = SvgMap.save()

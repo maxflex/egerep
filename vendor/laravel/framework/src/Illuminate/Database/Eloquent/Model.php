@@ -2514,7 +2514,8 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
         if (is_array($value)) {
             return $value;
         } else {
-            return empty($value) ? [] : array_map('intval', explode(',', $value));
+            return empty($value) ? [] :  explode(',', $value);
+            // return empty($value) ? [] : array_map('intval', explode(',', $value));
         }
     }
 
