@@ -3,6 +3,10 @@ angular.module('Egerep')
         r_k: 'репетитор едет к клиенту'
         k_r: 'клиент едет к репетитору'
 
+    .value 'Workplaces',
+        0: 'не работает в ЕГЭ-Центре'
+        1: 'работает в ЕГЭ-Центре'
+
     .value 'Genders',
         male: 'мужской'
         female: 'женский'
@@ -119,3 +123,88 @@ angular.module('Egerep')
             9: 'ИСТ'
             10: 'АНГ'
         short_eng:      ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf'],
+    .value 'Branches',
+        1:
+            code:'TRG',
+            full:'Тургеневская',
+            short:'ТУР',
+            address:'Мясницкая 40с1',
+            color:'#FBAA33',
+        2:
+            code:'PVN',
+            full:'Проспект Вернадского',
+            short:'ВЕР',
+            address:'',
+            color:'#EF1E25',
+        3:
+            code:'BGT',
+            full:'Багратионовская',
+            short:'БАГ',
+            address:'',
+            color:'#019EE0',
+        5:
+            code:'IZM',
+            full:'Измайловская',
+            short:'ИЗМ',
+            address:'',
+            color:'#0252A2',
+        6:
+            code:'OPL',
+            full:'Октябрьское поле',
+            short:'ОКТ',
+            address:'',
+            color:'#B61D8E',
+        7:
+            code:'RPT',
+            full:'Рязанский Проспект',
+            short:'РЯЗ',
+            address:'',
+            color:'#B61D8E',
+        8:
+            code:'VKS',
+            full:'Войковская',
+            short:'ВОЙ',
+            address:'',
+            color:'#029A55',
+        9:
+            code:'ORH',
+            full:'Орехово',
+            short:'ОРЕ',
+            address:'',
+            color:'#029A55',
+        11:
+            code:'UJN',
+            full:'Южная',
+            short:'ЮЖН',
+            address:'',
+            color:'#ACADAF',
+        12:
+            code:'PER',
+            full:'Перово',
+            short:'ПЕР',
+            address:'',
+            color:'#FFD803',
+        13:
+            code:'KLG',
+            full:'Калужская',
+            short:'КЛЖ',
+            address:'Научный проезд 8с1',
+            color:'#C07911',
+        14:
+            code:'BRT',
+            full:'Братиславская',
+            short:'БРА',
+            address:'',
+            color:'#B1D332',
+        15:
+            code:'MLD',
+            full:'Молодежная',
+            short:'МОЛ',
+            address:'',
+            color:'#0252A2',
+        16:
+            code:'VLD',
+            full:'Владыкино',
+            short:'ВЛА',
+            address:'',
+            color:'#ACADAF',

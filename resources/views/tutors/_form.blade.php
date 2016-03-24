@@ -88,46 +88,77 @@
         <div class="form-group">
             <select class="form-control" multiple id='sp-tutor-subjects'
                 ng-model="tutor.subjects"
-                ng-options="+(subject_id) as subject for (subject_id, subject) in Subjects.three_letters">
+                ng-options="subject_id as subject for (subject_id, subject) in Subjects.three_letters">
             </select>
         </div>
 
         <div class="form-group">
             <select class="form-control" multiple id='sp-tutor-grades' ng-model='tutor.grades'
-                ng-options="+(grade_id) as label for (grade_id, label) in Grades">
+                ng-options="grade_id as label for (grade_id, label) in Grades">
             </select>
         </div>
     </div>
 
     <div class="col-sm-8">
-        <div class="row">
-            <div class="col-sm-8">
-                <div class="form-group">
-                    <phones entity='tutor' sms-number='sms_number'></phones>
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <phones entity='tutor' sms-number='sms_number'></phones>
+                    </div>
+                    <div class="form-group">
+                        <email entity='tutor'></email>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <email entity='tutor'></email>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <span class="link-like" ng-click="SvgMap.show(tutor.svg_map)">выезд @{{ tutor.svg_map.length ? 'возможен' : 'невозможен' }}</span>
+                    <span ng-show="tutor.svg_map.length">
+                        (@{{ tutor.svg_map.length }} <ng-pluralize count="tutor.svg_map.length" when="{
+                            'one': 'станция',
+                            'few': 'станции',
+                            'many': 'станций',
+                        }"></ng-pluralize>)
+                    </span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <span class="link-like" ng-click="showMap()">метки</span> (@{{ tutor.markers.length }})
+                </div>
+                <div class="col-sm-9">
+                    <metro-list markers='tutor.markers'></metro-list>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <span class="link-like" ng-click="SvgMap.show(tutor.svg_map)">выезд @{{ tutor.svg_map.length ? 'возможен' : 'невозможен' }}</span>
-                <span ng-show="tutor.svg_map.length">
-                    (@{{ tutor.svg_map.length }} <ng-pluralize count="tutor.svg_map.length" when="{
-                        'one': 'станция',
-                        'few': 'станции',
-                        'many': 'станций',
-                    }"></ng-pluralize>)
-                </span>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <select class="form-control"
+                    ng-model="tutor.in_egecentr"
+                    ng-options="+(workplace) as label for (workplace, label) in Workplaces" placeholder="место работы"></select>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-3">
-                <span class="link-like" ng-click="showMap()">метки</span> (@{{ tutor.markers.length }})
-            </div>
-            <div class="col-sm-9">
-                <metro-list markers='tutor.markers'></metro-list>
+            <div ng-show="tutor.in_egecentr == 1">
+                <div class="form-group">
+                    <div class="input-group">
+                        <input class="form-control" ng-disabled="tutor.banned" ng-model="tutor.login" placeholder="Логин">
+                        <span class="input-group-addon pointer" ng-click="toggleBanned()">
+                            <span class="glyphicon glyphicon-lock no-margin-right" ng-class="{ 'text-danger': tutor.banned }"></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input placeholder="пароль" type="text" ng-model="tutor.password" class="form-control" ng-disabled="tutor.banned">
+                </div>
+                <div class="form-group">
+                    <div class="form-group">
+                        <select class="form-control" multiple id='sp-tutor-branches' ng-model='tutor.branches'>
+                            <option ng-repeat='(branch_id, branch) in Branches'
+                                    value='@{{branch_id}}'
+                                    data-content='@{{ BranchService.getNameWithColor(branch_id) }}'>@{{ branch.full }}</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -245,56 +276,60 @@
             <label>Готовность работать в ЕГЭ-Центре</label>
             <textarea class="md-input" ng-model="tutor.ready_to_work"></textarea>
         </md-input-container>
-        <h4>ИНФОРМАЦИЯ ПО ЕГЭ-ЦЕНТРУ</h4>
-        <md-input-container class="md-block" style="margin-top: 20px">
-            <label>Описание эксперта</label>
-            <textarea class="md-input" ng-model="tutor.comment"></textarea>
-        </md-input-container>
-        <md-input-container class="md-block" style="margin-top: 20px">
-            <div class="row">
-                <div class="col-sm-12">
-                        <div class="inline-block">Оценка эксперта</div>
-                        <md-input-container class="md-block inline-input">
-                            <textarea class="md-input digits-only" ng-model="tutor.expert_mark" maxlength="2"></textarea>
-                        </md-input-container>
-                        <div class="inline-block"><plural count='tutor.expert_mark' type='score' text-only></plural>. Стоимость проведения 135-минутного занятия</div>
-                        <md-input-container class="md-block  inline-input">
-                            <textarea class="md-input" ng-model="tutor.rubbles" maxlength="4"></textarea>
-                        </md-input-container>
-                        <div class="inline-block"><plural count='tutor.rubbles' type='rubbles' text-only></plural></div>
-                </div>
-            </div>
-        </md-input-container>
 
-        <section class='blue-section'>
-            <div class="row">
-                <div class="col-sm-12">
-                    <md-input-container class="md-block" style="margin-top: 20px">
-                        <label>Опубликованное описание на сайте ЕГЭ-Центра</label>
-                        <textarea class="md-input" ng-model="tutor.description"></textarea>
-                    </md-input-container>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="inline-block">
-                                Опубликованный педагогический опыт
-                            </div>
+        <div ng-show="tutor.in_egecentr == 1" class="egecentrInformation">
+            <h4>ИНФОРМАЦИЯ ПО ЕГЭ-ЦЕНТРУ</h4>
+            <md-input-container class="md-block" style="margin-top: 20px">
+                <label>Описание эксперта</label>
+                <textarea class="md-input" ng-model="tutor.comment"></textarea>
+            </md-input-container>
+            <md-input-container class="md-block" style="margin-top: 20px">
+                <div class="row">
+                    <div class="col-sm-12">
+                            <div class="inline-block">Оценка эксперта</div>
                             <md-input-container class="md-block inline-input">
-                                <textarea class="md-input" ng-model="tutor.public_seniority" maxlength="2"></textarea>
+                                <textarea class="md-input digits-only" ng-model="tutor.expert_mark" maxlength="2"></textarea>
                             </md-input-container>
-                            <div class="inline-block">
-                                <plural count='tutor.public_seniority' type='age' text-only></plural>, опыт подготовки к ЕГЭ/ОГЭ с
-                            </div>
-                            <md-input-container class="md-block inline-input">
-                                <textarea class="md-input" ng-model="tutor.public_ege_start" maxlength="4"></textarea>
+                            <div class="inline-block"><plural count='tutor.expert_mark' type='score' text-only></plural>. Стоимость проведения 135-минутного занятия</div>
+                            <md-input-container class="md-block  inline-input">
+                                <textarea class="md-input" ng-model="tutor.rubbles" maxlength="4"></textarea>
                             </md-input-container>
-                            <div class="inline-block">
-                                <plural count='tutor.public_ege_start' type='age' text-only></plural>.
+                            <div class="inline-block"><plural count='tutor.rubbles' type='rubbles' text-only></plural></div>
+                    </div>
+                </div>
+            </md-input-container>
+
+            <section class='blue-section'>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <md-input-container class="md-block" style="margin-top: 20px">
+                            <label>Опубликованное описание на сайте ЕГЭ-Центра</label>
+                            <textarea class="md-input" ng-model="tutor.description"></textarea>
+                        </md-input-container>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="inline-block">
+                                    Опубликованный педагогический опыт
+                                </div>
+                                <md-input-container class="md-block inline-input">
+                                    <textarea class="md-input" ng-model="tutor.public_seniority" maxlength="2"></textarea>
+                                </md-input-container>
+                                <div class="inline-block">
+                                    <plural count='tutor.public_seniority' type='age' text-only></plural>, опыт подготовки к ЕГЭ/ОГЭ с
+                                </div>
+                                <md-input-container class="md-block inline-input">
+                                    <textarea class="md-input" ng-model="tutor.public_ege_start" maxlength="4"></textarea>
+                                </md-input-container>
+                                <div class="inline-block">
+                                    <plural count='tutor.public_ege_start' type='age' text-only></plural>.
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
+
         <h4>КОММЕНТАРИИ</h4>
         <comments entity-type='tutor' entity-id='{{ $id }}' user='{{ $user }}'></comments>
     </div>

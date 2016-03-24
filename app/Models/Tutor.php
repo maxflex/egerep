@@ -19,6 +19,8 @@ class Tutor extends Model
     // protected $connection = 'egecrm';
     // protected $table = 'teachers';
 
+    const USER_TYPE = 'TEACHER';
+
     protected $fillable =  [
         'first_name',
 		'last_name',
@@ -61,11 +63,16 @@ class Tutor extends Model
         'description',
         'public_seniority',
         'public_ege_start',
+        'login',
+        'password',
+        'branches',
+        'banned',
+        'in_egecentr',
     ];
 
-    protected $appends = ['has_photo_original', 'has_photo_cropped', 'age'];
+    protected $appends = ['has_photo_original', 'has_photo_cropped', 'age', 'banned'];
     protected $with = ['markers'];
-    protected static $commaSeparated = ['svg_map', 'subjects', 'grades'];
+    protected static $commaSeparated = ['svg_map', 'subjects', 'grades', 'branches'];
 
     const UPLOAD_DIR = '/img/tutors/';
 
@@ -108,6 +115,25 @@ class Tutor extends Model
         return count($this->getClientIds());
     }
 
+    public function getBannedAttribute()
+    {
+        $user = User::where([
+                        'id_entity' => $this->id,
+                        'type' => static::USER_TYPE])
+                      ->first();
+        return $user ? $user->banned : false;
+    }
+
+    public function setBannedAttribute($newValue)
+    {
+        $user = User::where([
+                        'id_entity' => $this->id,
+                        'type' => static::USER_TYPE])
+                      ->first();
+        if ($user) {
+            $user->update(['banned' => $newValue]);
+        }
+    }
     // ------------------------------------------------------------------------
 
     /**
