@@ -167,6 +167,7 @@
 			vertical-align: top;
 			margin-right: 7px;
 			float: left;
+			border-radius: 4px;
 		}
 		& > div {
 			margin-bottom: 7px;
@@ -290,10 +291,10 @@
 			background-color: lighten($green_main, 10);
 			border-color: lighten($green_main, 10);
 		}
-		&:focus {
-			background-color: lighten($green_main, 10);
-			border-color: lighten($green_main, 10);
-		}
+		// &:focus {
+		// 	background-color: lighten($green_main, 10);
+		// 	border-color: lighten($green_main, 10);
+		// }
 		&[disabled] {
 			border-color: $green_main;
 			background-color: $green_main;
@@ -307,10 +308,10 @@
 			background-color: lighten($blue, 10);
 			border-color: lighten($blue, 10);
 		}
-		&:focus {
-			background-color: $blue;
-			border-color: $blue;
-		}
+		// &:focus {
+		// 	background-color: $blue;
+		// 	border-color: $blue;
+		// }
 		&[disabled] {
 			border-color: $blue;
 			background-color: $blue;

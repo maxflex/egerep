@@ -27089,7 +27089,8 @@ email .input-group {
     height: 65px;
     vertical-align: top;
     margin-right: 7px;
-    float: left; }
+    float: left;
+    border-radius: 4px; }
   .map-tutor-list > div {
     margin-bottom: 7px;
     display: inline-block;
@@ -27179,9 +27180,6 @@ a {
   .btn.btn-primary:hover {
     background-color: #1cba6a;
     border-color: #1cba6a; }
-  .btn.btn-primary:focus {
-    background-color: #1cba6a;
-    border-color: #1cba6a; }
   .btn.btn-primary[disabled] {
     border-color: #158E51;
     background-color: #158E51; }
@@ -27192,9 +27190,6 @@ a {
   .btn.btn-success:hover {
     background-color: #4f93ce;
     border-color: #4f93ce; }
-  .btn.btn-success:focus {
-    background-color: #337AB7;
-    border-color: #337AB7; }
   .btn.btn-success[disabled] {
     border-color: #337AB7;
     background-color: #337AB7; }
