@@ -161,6 +161,7 @@ return [
         Lord\Laroute\LarouteServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
         'Clockwork\Support\Laravel\ClockworkServiceProvider',
+        'GrahamCampbell\Throttle\ThrottleServiceProvider',
     ],
 
     /*
@@ -208,6 +209,7 @@ return [
         'View'      => Illuminate\Support\Facades\View::class,
         'Form'      => Collective\Html\FormFacade::class,
         'Html'      => Collective\Html\HtmlFacade::class,
+        'Throttle'  => 'GrahamCampbell\Throttle\Facades\Throttle',
     ],
 
 ];
