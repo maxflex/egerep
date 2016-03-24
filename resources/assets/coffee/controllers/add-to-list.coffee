@@ -8,17 +8,22 @@ angular.module 'Egerep'
         # mode: 'map' | 'list'
         $scope.mode = 'map'
 
+        # loading map
+        $scope.loading = false
+
         angular.element(document).ready ->
             $scope.list = new RequestList($scope.list)
             $('.map-tutor-list').droppable()
 
         $scope.find = ->
+            $scope.loading = true
             TutorService.getFiltered {search: $scope.search, client_marker: $scope.client.markers[0]}
                 .then (response) ->
                     $scope.tutors = response.data
                     showTutorsOnMap()
                     findIntersectingMetros()
                     repaintChosen()
+                    $scope.loading = false
 
         # determine whether tutor had already been added
         $scope.added = (tutor_id) ->
@@ -58,6 +63,9 @@ angular.module 'Egerep'
                     # Добавляем ивент удаления маркера
                     bindTutorMarkerEvents(new_marker)
                     $scope.markers.push new_marker
+            # @todo: consider using Marker Clusterer
+            # markerCluster = new MarkerClusterer $scope.map, $scope.markers
+
 
         showClientOnMap = ->
             $scope.client.markers.forEach (marker) ->

@@ -8,7 +8,7 @@
 
 @section('scripts')
     <script src="//maps.google.ru/maps/api/js?libraries=places"></script>
-    <script src="{{ asset('/js/maps.js') }}"></script>
+    <script src="{{ asset('/js/maps.js', isProduction()) }}"></script>
 @stop
 
 
@@ -97,7 +97,9 @@
                 <ng-select model='search.destination' object='Destinations'></ng-select>
             </div>
             <div class="form-group">
-                <button class="btn btn-primary full-width" ng-click='find()'>найти</button>
+                <button class="btn btn-primary full-width" ng-click='find()' ng-disabled='loading'>
+                    @{{ loading ? 'поиск...' : 'найти' }}
+                </button>
             </div>
         </div>
     </div>

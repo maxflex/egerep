@@ -224,11 +224,13 @@
     bindArguments($scope, arguments);
     TRANSPARENT_MARKER = 0.3;
     $scope.mode = 'map';
+    $scope.loading = false;
     angular.element(document).ready(function() {
       $scope.list = new RequestList($scope.list);
       return $('.map-tutor-list').droppable();
     });
     $scope.find = function() {
+      $scope.loading = true;
       return TutorService.getFiltered({
         search: $scope.search,
         client_marker: $scope.client.markers[0]
@@ -236,7 +238,8 @@
         $scope.tutors = response.data;
         showTutorsOnMap();
         findIntersectingMetros();
-        return repaintChosen();
+        repaintChosen();
+        return $scope.loading = false;
       });
     };
     $scope.added = function(tutor_id) {

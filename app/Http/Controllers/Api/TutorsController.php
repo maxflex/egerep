@@ -206,7 +206,17 @@ class TutorsController extends Controller
              }]);
          }
 
-         $tutors = $query->get();
+         # выбираем только нужные поля для ускорения запроса
+         $tutors = $query->get([
+             'id',
+             'first_name',
+             'last_name',
+             'middle_name',
+             'svg_map',
+             'photo_extension',
+             'birth_year',
+         ] + Tutor::$phone_fields);
+        // $tutors = $query->get();
 
          foreach($tutors as $tutor) {
             # Количество учеников

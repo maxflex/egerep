@@ -4,6 +4,7 @@ Route::post('login', 'LoginController@login');
 Route::get('logout', 'LoginController@logout');
 
 Route::group(['middleware' => ['web']], function () {
+    Route::get('/', 'TutorsController@index');
     Route::resource('tutors', 'TutorsController');
     Route::resource('requests', 'RequestsController');
     Route::resource('clients', 'ClientsController');
