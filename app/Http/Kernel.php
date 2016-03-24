@@ -31,7 +31,7 @@ class Kernel extends HttpKernel
             // \App\Http\Middleware\VerifyCsrfToken::class,
             \App\Http\Middleware\UserLogin::class,
             'Clockwork\Support\Laravel\ClockworkMiddleware',
-            'GrahamCampbell\Throttle\Http\Middleware\ThrottleMiddleware',
+            // 'GrahamCampbell\Throttle\Http\Middleware\ThrottleMiddleware',
         ],
         'api' => [
             'throttle:60,1',
