@@ -2,6 +2,8 @@
 @section('title')
 Редактирование преподавателя
 
+<span class='label label-white ng-hide' ng-show='tutor.id_a_pers'>Cтарый номер в базе @{{tutor.id_a_pers}}</span>
+
 @stop
 @section('content')
 @section('controller', 'TutorsForm')
