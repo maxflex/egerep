@@ -243,6 +243,11 @@ angular
                         bindFileUpload()
                     , 1000
                     $rootScope.frontendStop()
+            else
+                #set default values of tutor for create page
+                $scope.tutor = TutorService.defaultTutor
+                $scope.$apply()
+                $rootScope.frontendStop()
                     # $scope.tutor.is_being_commented = []
 
         # @todo: ЗАМЕНИТЬ НА ДИРЕКТИВУ <ng-select> (уже сделано, но глючная. надо доделать)

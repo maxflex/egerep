@@ -1135,6 +1135,10 @@
           }, 1000);
           return $rootScope.frontendStop();
         });
+      } else {
+        $scope.tutor = TutorService.defaultTutor;
+        $scope.$apply();
+        return $rootScope.frontendStop();
       }
     });
     $scope.$watch('tutor.subjects', function(newVal, oldVal) {
@@ -2222,6 +2226,17 @@
       'э': 'e',
       'ю': 'yu',
       'я': 'ya'
+    };
+    this.defaultTutor = {
+      gender: "male",
+      branches: [],
+      phones: [],
+      subjects: [],
+      grades: [],
+      svg_map: [],
+      markers: [],
+      state: 0,
+      in_egecentr: 0
     };
     this.getFiltered = function(search_data) {
       return $http.post('api/tutors/filtered', search_data);
