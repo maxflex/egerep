@@ -17,7 +17,7 @@
                 <span class="btn-file">
                     {{-- <input name="tutor_photo" type="file" id="fileupload" data-url="upload/tutor/" accept="image/jpg"> --}}
                 </span>
-                <img ng-if='tutor.id' src="img/tutors/@{{ tutor.has_photo_cropped ? tutor.id + '@2x.' + tutor.photo_extension : 'no-profile-img.gif' }}?ver=@{{ picture_version }}">
+                <img src="img/tutors/@{{ tutor.id && tutor.has_photo_cropped ? tutor.id + '@2x.' + tutor.photo_extension : 'no-profile-img.gif' }}?ver=@{{ picture_version }}">
             </div>
         </div>
         <div class="form-group">
@@ -164,7 +164,7 @@
     </div>
 </div>
 
-<div class="row" style="margin-top: 10px">
+<div class="row" style="margin-top: 10px;margin-bottom: 10px">
     <div class="col-sm-12">
         <h4>САМОЕ ВАЖНОЕ</h4>
         <md-input-container class="md-block" style="margin-top: 20px">
@@ -329,8 +329,9 @@
                 </div>
             </section>
         </div>
-
-        <h4>КОММЕНТАРИИ</h4>
-        <comments entity-type='tutor' entity-id='{{ $id }}' user='{{ $user }}'></comments>
+        <div ng-if="tutor.id">
+            <h4>КОММЕНТАРИИ</h4>
+            <comments entity-type='tutor' entity-id='{{ isset($id) ? $id : 0 }}' user='{{ $user }}'></comments>
+        </div>
     </div>
 </div>

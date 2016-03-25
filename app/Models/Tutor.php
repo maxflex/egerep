@@ -235,6 +235,16 @@ class Tutor extends Model
             cleanNumbers($tutor);
         });
 
+        static::updating(function($tutor) {
+            User::where([
+                    'id_entity' => $tutor->id,
+                    'type' => static::USER_TYPE])
+                  ->first()
+                  ->update([
+                    'login' => $tutor->login,
+                    'password' => User::_password($tutor->password)]);
+        });
+
         static::updated(function($tutor) {
             # if responsible user changed
             if (array_key_exists('responsible_user_id', $tutor->getDirty())) {
