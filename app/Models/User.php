@@ -13,7 +13,8 @@ class User extends Model
         'password',
         'color',
         'type',
-        'banned'
+        'banned',
+        'id_entity',
     ];
 
     public $timestamps = false;

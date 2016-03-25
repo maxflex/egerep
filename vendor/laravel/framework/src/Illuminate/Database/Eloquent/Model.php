@@ -2574,6 +2574,29 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     }
 
     /**
+     * Check if one of the attributes changed
+     * @ attributes – mixed – string | array
+     * @custom
+     */
+     public function changed($attributes)
+     {
+         $changed = false;
+
+         if (! is_array($attributes)) {
+             $attributes = [$attributes];
+         }
+
+         foreach ($attributes as $attribute) {
+             if (array_key_exists($attribute, $this->getDirty())) {
+                 return true;
+             }
+         }
+
+         return false;
+     }
+
+
+    /**
      * Convert the model's attributes to an array.
      *
      * @return array

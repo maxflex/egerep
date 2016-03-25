@@ -103,9 +103,7 @@ class Tutor extends Model
     public function getBannedAttribute()
     {
         // @todo: does this run 2 separate queries?
-        if ($this->user) {
-            return $this->user->banned;
-        }
+        return $this->user ? $this->user->banned : false;
     }
 
     public function getHasPhotoOriginalAttribute()
@@ -227,12 +225,15 @@ class Tutor extends Model
     {
         static::saving(function($tutor) {
             cleanNumbers($tutor);
-            // $tutor->updateUser();
+
+            if ($tutor->changed(['login', 'password', 'banned'])) {
+                $tutor->updateUser();
+            }
         });
 
         static::updated(function($tutor) {
             # if responsible user changed
-            if (array_key_exists('responsible_user_id', $tutor->getDirty())) {
+            if ($tutor->changed('responsible_user_id')) {
                 event(new ResponsibleUserChanged($tutor));
             }
         });
@@ -312,7 +313,7 @@ class Tutor extends Model
     public function updateUser()
     {
         if ($this->in_egecentr) {
-            $user = User::updateOrCreate([
+            User::updateOrCreate([
                 'id_entity' => $this->id,
                 'type'      => static::USER_TYPE,
             ], [
