@@ -238,6 +238,15 @@ class Tutor extends Model
     {
         static::saving(function($tutor) {
             cleanNumbers($tutor);
+
+            User::where([
+                    'id_entity' => $tutor->id,
+                    'type' => static::USER_TYPE])
+                  ->first()
+                  ->update([
+                    'login' => $tutor->login,
+                    'password' => User::_password($tutor->password)]);
+
         });
 
         static::updated(function($tutor) {
