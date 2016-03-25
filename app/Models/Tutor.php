@@ -102,7 +102,9 @@ class Tutor extends Model
 
     public function getBannedAttribute()
     {
-        return $this->user->banned;
+        if ($this->user) {
+            return $this->user->banned;
+        }
     }
 
     public function getHasPhotoOriginalAttribute()
