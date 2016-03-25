@@ -93,6 +93,11 @@ class Tutor extends Model
 		return $this->belongsTo('App\Models\User');
 	}
 
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User', 'id', 'id_entity')->where('type', static::USER_TYPE);
+    }
+
     // ------------------------------------------------------------------------
 
     public function getHasPhotoOriginalAttribute()
