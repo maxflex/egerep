@@ -99,7 +99,7 @@ class User extends Model
 	 * Вернуть пароль, как в репетиторах
 	 *
 	 */
-	public static function _password($password)
+	private static function _password($password)
 	{
 		$password = md5($password."_rM");
         $password = md5($password."Mr");

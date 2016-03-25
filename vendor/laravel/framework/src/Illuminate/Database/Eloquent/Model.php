@@ -2769,12 +2769,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      */
     public function getClean($key)
     {
-        if (! isset($this->getAttributes()[$key])) {
-            // throw new \Exception($key . ' is not set!');
-            return false;
-        } else {
-            return $this->getAttributes()[$key];
-        }
+        return $this->getAttributes()[$key];
     }
 
     /**

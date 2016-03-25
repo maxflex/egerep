@@ -20,36 +20,36 @@ class Tutor extends Model
 
     protected $fillable =  [
         'first_name',
-		'last_name',
-		'middle_name',
-		'email',
-		'email_comment',
-		'gender',
-		'birth_year',
-		'start_career_year',
-		'tb',
-		'lk',
-		'js',
-		'state',
-		'contacts',
-		'price',
-		'education',
-		'achievements',
-		'preferences',
-		'experience',
-		'current_work',
-		'tutoring_experience',
-		'students_category',
-		'impression',
-		'schedule',
-		'public_desc',
-		'public_price',
-		'markers',
-		'svg_map',
-		'subjects',
-		'grades',
-		'id_a_pers',
-		'departure_price',
+        'last_name',
+        'middle_name',
+        'email',
+        'email_comment',
+        'gender',
+        'birth_year',
+        'start_career_year',
+        'tb',
+        'lk',
+        'js',
+        'state',
+        'contacts',
+        'price',
+        'education',
+        'achievements',
+        'preferences',
+        'experience',
+        'current_work',
+        'tutoring_experience',
+        'students_category',
+        'impression',
+        'schedule',
+        'public_desc',
+        'public_price',
+        'markers',
+        'svg_map',
+        'subjects',
+        'grades',
+        'id_a_pers',
+        'departure_price',
         'list_comment',
         'responsible_user_id',
         'lesson_duration',
@@ -117,28 +117,13 @@ class Tutor extends Model
 
     public function getAgeAttribute()
     {
-        return date('Y') - $this->birth_year;
+        return static::getAge($this->birth_year);
     }
 
     public function getClientsCountAttribute()
     {
         return count($this->getClientIds());
     }
-
-    // public function setInEgecentrAttribute($value)
-    // {
-    //     \Log::info('Updating user with ' . $this->getClean('banned'));
-    //     if ($value) {
-    //         $user = User::updateOrCreate([
-    //             'id_entity' => $this->id,
-    //             'type'      => static::USER_TYPE,
-    //         ], [
-    //             'banned'    => $this->getClean('banned'),
-    //             'login'     => $this->login,
-    //             'password'  => $this->password,
-    //         ]);
-    //     }
-    // }
 
     // ------------------------------------------------------------------------
 
@@ -239,7 +224,7 @@ class Tutor extends Model
     {
         static::saving(function($tutor) {
             cleanNumbers($tutor);
-            \Log::info('Saving: ' . @$tutor->getClean('banned'));
+            $tutor->updateUser();
         });
 
         static::updated(function($tutor) {
@@ -316,5 +301,22 @@ class Tutor extends Model
             $return[$user_id] = $query->count();
         }
         return $return;
+    }
+
+    /**
+     * Updates corresponding user from users table
+     */
+    public function updateUser()
+    {
+        if ($this->in_egecentr) {
+            $user = User::updateOrCreate([
+                'id_entity' => $this->id,
+                'type'      => static::USER_TYPE,
+            ], [
+                'banned'    => $this->getClean('banned'),
+                'login'     => $this->login,
+                'password'  => $this->password,
+            ]);
+        }
     }
 }

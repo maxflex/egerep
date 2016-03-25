@@ -63,18 +63,7 @@ class TutorsController extends Controller
      */
     public function show($id)
     {
-        return Tutor::find($id)->toJson();
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        return Tutor::find($id)->append('banned')->toJson();
     }
 
     /**
@@ -86,7 +75,6 @@ class TutorsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // dd($request->input());
         Tutor::find($id)->update($request->input());
     }
 
@@ -132,15 +120,15 @@ class TutorsController extends Controller
          }
 
          if (isset($last_name)) {
-             $query->where('last_name', 'LIKE', "%{$last_name}%");
+             $query->where('last_name', 'like', "%{$last_name}%");
          }
 
          if (isset($first_name)) {
-             $query->where('first_name', 'LIKE', "%{$first_name}%");
+             $query->where('first_name', 'like', "%{$first_name}%");
          }
 
          if (isset($middle_name)) {
-             $query->where('middle_name', 'LIKE', "%{$middle_name}%");
+             $query->where('middle_name', 'like', "%{$middle_name}%");
          }
 
          if (isset($gender)) {
@@ -148,13 +136,11 @@ class TutorsController extends Controller
          }
 
          if (isset($age_from)) {
-             $birth_end = date("Y") - $age_from;
-             $query->where('birth_year', '<', $birth_end);
+             $query->where('birth_year', '<', Tutor::getAge($birth_end));
          }
 
          if (isset($age_to)) {
-             $birth_start = date("Y") - $age_to;
-             $query->where('birth_year', '>', $birth_start);
+             $query->where('birth_year', '>', Tutor::getAge($birth_start));
          }
 
          if (isset($grades)) {
@@ -217,7 +203,6 @@ class TutorsController extends Controller
              'photo_extension',
              'birth_year',
          ] + Tutor::$phone_fields);
-        // $tutors = $query->get();
 
          foreach($tutors as $tutor) {
             # Количество учеников
