@@ -125,19 +125,20 @@ class Tutor extends Model
         return count($this->getClientIds());
     }
 
-    public function setInEgecentrAttribute($value)
-    {
-        if ($value) {
-            $user = User::updateOrCreate([
-                'id_entity' => $this->id,
-                'type'      => static::USER_TYPE,
-            ], [
-                'banned'    => $this->getClean('banned'),
-                'login'     => $this->login,
-                'password'  => $this->password,
-            ]);
-        }
-    }
+    // public function setInEgecentrAttribute($value)
+    // {
+    //     \Log::info('Updating user with ' . $this->getClean('banned'));
+    //     if ($value) {
+    //         $user = User::updateOrCreate([
+    //             'id_entity' => $this->id,
+    //             'type'      => static::USER_TYPE,
+    //         ], [
+    //             'banned'    => $this->getClean('banned'),
+    //             'login'     => $this->login,
+    //             'password'  => $this->password,
+    //         ]);
+    //     }
+    // }
 
     // ------------------------------------------------------------------------
 
@@ -238,6 +239,7 @@ class Tutor extends Model
     {
         static::saving(function($tutor) {
             cleanNumbers($tutor);
+            \Log::info('Saving: ' . @$tutor->getClean('banned'));
         });
 
         static::updated(function($tutor) {

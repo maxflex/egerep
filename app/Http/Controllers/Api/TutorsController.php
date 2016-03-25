@@ -87,9 +87,7 @@ class TutorsController extends Controller
     public function update(Request $request, $id)
     {
         // dd($request->input());
-        $tutor = Tutor::find($id);
-        $tutor->update($request->input());
-        \Log::info($request->banned);
+        Tutor::find($id)->update($request->input());
     }
 
     /**

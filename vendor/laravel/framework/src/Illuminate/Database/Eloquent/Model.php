@@ -1541,13 +1541,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      */
     public function save(array $options = [])
     {
-        // Unset virtual attributes before save
-        // @custom
-        foreach (static::$virtual as $attribute) {
-            \Log::info('Unsetting ' . $attribute);
-            unset($this->{$attribute});
-        }
-
         $query = $this->newQueryWithoutScopes();
 
         // If the "saving" event returns false we'll bail out of the save and return
@@ -1555,6 +1548,13 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
         // listeners to cancel save operations if validations fail or whatever.
         if ($this->fireModelEvent('saving') === false) {
             return false;
+        }
+
+        // Unset virtual attributes before save
+        // @custom
+        foreach (static::$virtual as $attribute) {
+            \Log::info('Unsetting ' . $attribute);
+            unset($this->{$attribute});
         }
 
         // If the model already exists in the database we can just update our record
@@ -2769,7 +2769,12 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      */
     public function getClean($key)
     {
-        return $this->getAttributes()[$key];
+        if (! isset($this->getAttributes()[$key])) {
+            // throw new \Exception($key . ' is not set!');
+            return false;
+        } else {
+            return $this->getAttributes()[$key];
+        }
     }
 
     /**
