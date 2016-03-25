@@ -951,13 +951,16 @@
         });
       }
     };
-  }).controller("TutorsForm", function($scope, $rootScope, $timeout, Tutor, SvgMap, Subjects, Grades, ApiService, TutorStates, Genders) {
+  }).controller("TutorsForm", function($scope, $rootScope, $timeout, Tutor, SvgMap, Subjects, Grades, ApiService, TutorStates, Genders, Workplaces, Branches, BranchService, TutorService) {
     var bindCropper, bindFileUpload, filterMarkers;
     $scope.SvgMap = SvgMap;
     $scope.Subjects = Subjects;
     $scope.Grades = Grades;
     $scope.Genders = Genders;
     $scope.TutorStates = TutorStates;
+    $scope.Workplaces = Workplaces;
+    $scope.Branches = Branches;
+    $scope.BranchService = BranchService;
     $rootScope.frontend_loading = true;
     $scope.deleteTutor = function() {
       return bootbox.confirm('Вы уверены, что хотите удалить преподавателя?', function(result) {
@@ -980,7 +983,7 @@
       pairs = [];
       i = 0;
       while (i <= limit) {
-        combo_start = a[i];
+        combo_start = parseInt(a[i]);
         if (combo_start > 11) {
           i++;
           combo_end = -1;
@@ -993,11 +996,11 @@
         }
         j = i;
         while (j <= limit) {
-          combo_end = a[j];
+          combo_end = parseInt(a[j]);
           if (combo_end >= 11) {
             break;
           }
-          if (a[j + 1] - combo_end > 1) {
+          if (parseInt(a[j + 1]) - combo_end > 1) {
             break;
           }
           j++;
@@ -1103,6 +1106,9 @@
         return $('#photo-edit').cropper('resize');
       }, 100);
     };
+    $scope.toggleBanned = function() {
+      return $scope.tutor.banned = +(!$scope.tutor.banned);
+    };
     $timeout(function() {
       if ($scope.id > 0) {
         return $scope.tutor = Tutor.get({
@@ -1140,6 +1146,23 @@
         return $timeout(function() {
           return $scope.shortenGrades();
         });
+      }
+    });
+    $scope.$watch('tutor.branches', function(newVal, oldVal) {
+      if (newVal === void 0) {
+        return;
+      }
+      if (oldVal === void 0) {
+        sp('tutor-branches', 'филиалы', ' ');
+      }
+      if (oldVal !== void 0) {
+        return spRefresh('tutor-branches');
+      }
+    });
+    $scope.$watch('tutor.in_egecentr', function(newVal, oldVal) {
+      if (newVal && !$scope.tutor.login && $scope.tutor.first_name && $scope.tutor.last_name && $scope.tutor.middle_name) {
+        $scope.tutor.login = TutorService.generateLogin($scope.tutor);
+        return $scope.tutor.password = TutorService.generatePassword();
       }
     });
     $scope.svgSave = function() {
@@ -1667,6 +1690,9 @@
   angular.module('Egerep').value('Destinations', {
     r_k: 'репетитор едет к клиенту',
     k_r: 'клиент едет к репетитору'
+  }).value('Workplaces', {
+    0: 'не работает в ЕГЭ-Центре',
+    1: 'работает в ЕГЭ-Центре'
   }).value('Genders', {
     male: 'мужской',
     female: 'женский'
@@ -1777,6 +1803,105 @@
       10: 'АНГ'
     },
     short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
+  }).value('Branches', {
+    1: {
+      code: 'TRG',
+      full: 'Тургеневская',
+      short: 'ТУР',
+      address: 'Мясницкая 40с1',
+      color: '#FBAA33'
+    },
+    2: {
+      code: 'PVN',
+      full: 'Проспект Вернадского',
+      short: 'ВЕР',
+      address: '',
+      color: '#EF1E25'
+    },
+    3: {
+      code: 'BGT',
+      full: 'Багратионовская',
+      short: 'БАГ',
+      address: '',
+      color: '#019EE0'
+    },
+    5: {
+      code: 'IZM',
+      full: 'Измайловская',
+      short: 'ИЗМ',
+      address: '',
+      color: '#0252A2'
+    },
+    6: {
+      code: 'OPL',
+      full: 'Октябрьское поле',
+      short: 'ОКТ',
+      address: '',
+      color: '#B61D8E'
+    },
+    7: {
+      code: 'RPT',
+      full: 'Рязанский Проспект',
+      short: 'РЯЗ',
+      address: '',
+      color: '#B61D8E'
+    },
+    8: {
+      code: 'VKS',
+      full: 'Войковская',
+      short: 'ВОЙ',
+      address: '',
+      color: '#029A55'
+    },
+    9: {
+      code: 'ORH',
+      full: 'Орехово',
+      short: 'ОРЕ',
+      address: '',
+      color: '#029A55'
+    },
+    11: {
+      code: 'UJN',
+      full: 'Южная',
+      short: 'ЮЖН',
+      address: '',
+      color: '#ACADAF'
+    },
+    12: {
+      code: 'PER',
+      full: 'Перово',
+      short: 'ПЕР',
+      address: '',
+      color: '#FFD803'
+    },
+    13: {
+      code: 'KLG',
+      full: 'Калужская',
+      short: 'КЛЖ',
+      address: 'Научный проезд 8с1',
+      color: '#C07911'
+    },
+    14: {
+      code: 'BRT',
+      full: 'Братиславская',
+      short: 'БРА',
+      address: '',
+      color: '#B1D332'
+    },
+    15: {
+      code: 'MLD',
+      full: 'Молодежная',
+      short: 'МОЛ',
+      address: '',
+      color: '#0252A2'
+    },
+    16: {
+      code: 'VLD',
+      full: 'Владыкино',
+      short: 'ВЛА',
+      address: '',
+      color: '#ACADAF'
+    }
   });
 
 }).call(this);
@@ -1862,6 +1987,19 @@
   angular.module('Egerep').service('ApiService', function($http) {
     this.metro = function(fun, data) {
       return $http.post("api/metro/" + fun, data);
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('BranchService', function(Branches) {
+    this.branches = Branches;
+    this.getNameWithColor = function(branch_id) {
+      var curBranch;
+      curBranch = this.branches[branch_id];
+      return '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="svg-metro"><circle fill="' + curBranch.color + '" r="6" cx="7" cy="7"></circle></svg>' + curBranch.full;
     };
     return this;
   });
@@ -2002,8 +2140,91 @@
 
 (function() {
   angular.module('Egerep').service('TutorService', function($http) {
+    this.translit = {
+      'А': 'A',
+      'Б': 'B',
+      'В': 'V',
+      'Г': 'G',
+      'Д': 'D',
+      'Е': 'E',
+      'Ё': 'E',
+      'Ж': 'Gh',
+      'З': 'Z',
+      'И': 'I',
+      'Й': 'Y',
+      'К': 'K',
+      'Л': 'L',
+      'М': 'M',
+      'Н': 'N',
+      'О': 'O',
+      'П': 'P',
+      'Р': 'R',
+      'С': 'S',
+      'Т': 'T',
+      'У': 'U',
+      'Ф': 'F',
+      'Х': 'H',
+      'Ц': 'C',
+      'Ч': 'Ch',
+      'Ш': 'Sh',
+      'Щ': 'Sch',
+      'Ъ': 'Y',
+      'Ы': 'Y',
+      'Ь': 'Y',
+      'Э': 'E',
+      'Ю': 'Yu',
+      'Я': 'Ya',
+      'а': 'a',
+      'б': 'b',
+      'в': 'v',
+      'г': 'g',
+      'д': 'd',
+      'е': 'e',
+      'ё': 'e',
+      'ж': 'gh',
+      'з': 'z',
+      'и': 'i',
+      'й': 'y',
+      'к': 'k',
+      'л': 'l',
+      'м': 'm',
+      'н': 'n',
+      'о': 'o',
+      'п': 'p',
+      'р': 'r',
+      'с': 's',
+      'т': 't',
+      'у': 'u',
+      'ф': 'f',
+      'х': 'h',
+      'ц': 'c',
+      'ч': 'ch',
+      'ш': 'sh',
+      'щ': 'sch',
+      'ъ': 'y',
+      'ы': 'y',
+      'ь': 'y',
+      'э': 'e',
+      'ю': 'yu',
+      'я': 'ya'
+    };
     this.getFiltered = function(search_data) {
       return $http.post('api/tutors/filtered', search_data);
+    };
+    this.generateLogin = function(tutor) {
+      var i, len, letter, login, ref;
+      login = '';
+      ref = tutor.last_name.toLowerCase();
+      for (i = 0, len = ref.length; i < len; i++) {
+        letter = ref[i];
+        login += this.translit[letter];
+      }
+      login = login.slice(0, 3);
+      login += '_' + this.translit[tutor.first_name.toLowerCase()[0]] + this.translit[tutor.middle_name.toLowerCase()[0]];
+      return login;
+    };
+    this.generatePassword = function() {
+      return Math.floor(10000000 + Math.random() * 89999999);
     };
     return this;
   });
