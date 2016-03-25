@@ -136,7 +136,9 @@ class Tutor extends Model
         $client_ids = [];
 
         foreach ($this->attachments as $attachment) {
-            $client_ids[] = $attachment->requestList->request->client_id;
+            if ($attachment->requestList && $attachment->requestList->request) {
+                $client_ids[] = $attachment->requestList->request->client_id;
+            }
         }
 
         return $client_ids;
