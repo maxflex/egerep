@@ -68,6 +68,17 @@ angular.module 'Egerep'
             'ю':'yu'
             'я':'ya'
 
+        this.defaultTutor =
+            gender: "male"
+            branches: []
+            phones:   []
+            subjects: []
+            grades:   []
+            svg_map:  []
+            markers:  []
+            state:       0
+            in_egecentr: 0
+
         this.getFiltered = (search_data) ->
             $http.post 'api/tutors/filtered', search_data
 

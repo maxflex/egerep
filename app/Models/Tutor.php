@@ -233,7 +233,9 @@ class Tutor extends Model
     {
         static::saving(function($tutor) {
             cleanNumbers($tutor);
+        });
 
+        static::updating(function($tutor) {
             User::where([
                     'id_entity' => $tutor->id,
                     'type' => static::USER_TYPE])
@@ -241,7 +243,6 @@ class Tutor extends Model
                   ->update([
                     'login' => $tutor->login,
                     'password' => User::_password($tutor->password)]);
-
         });
 
         static::updated(function($tutor) {
