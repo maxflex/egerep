@@ -102,6 +102,7 @@ class Tutor extends Model
 
     public function getBannedAttribute()
     {
+        // @todo: does this run 2 separate queries?
         if ($this->user) {
             return $this->user->banned;
         }
@@ -226,7 +227,7 @@ class Tutor extends Model
     {
         static::saving(function($tutor) {
             cleanNumbers($tutor);
-            $tutor->updateUser();
+            // $tutor->updateUser();
         });
 
         static::updated(function($tutor) {
