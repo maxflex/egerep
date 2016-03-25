@@ -5,6 +5,12 @@ angular.module 'Egerep'
         # transparent marker opacity
         TRANSPARENT_MARKER = 0.3
 
+        # differentiate single & double click
+        clicks = 0
+
+        # marker clusterer
+        markerClusterer = undefined
+
         # mode: 'map' | 'list'
         $scope.mode = 'map'
 
@@ -64,7 +70,7 @@ angular.module 'Egerep'
                     bindTutorMarkerEvents(new_marker)
                     $scope.markers.push new_marker
             # @todo: consider using Marker Clusterer
-            # markerCluster = new MarkerClusterer $scope.map, $scope.markers
+            markerClusterer = new MarkerClusterer $scope.map, $scope.markers
 
 
         showClientOnMap = ->
@@ -75,9 +81,13 @@ angular.module 'Egerep'
                 new_marker.setMap($scope.map)
 
         unsetAllMarkers = ->
-            return if $scope.markers is undefined
-            $scope.markers.forEach (marker) ->
-                marker.setMap null
+            # unset markers
+            if $scope.markers isnt undefined
+                $scope.markers.forEach (marker) ->
+                    marker.setMap null
+            # unset clusterer
+            if markerClusterer isnt undefined
+                markerClusterer.clearMarkers()
 
         findIntersectingMetros = ->
             if $scope.search.destination is 'r_k'
@@ -86,7 +96,7 @@ angular.module 'Egerep'
                     marker.intersecting = false
                     $scope.client.markers.forEach (client_marker) ->
                         client_marker.metros.forEach (client_metro) ->
-                            if client_metro.station_id in marker.tutor.svg_map
+                            if client_metro.station_id.toString() in marker.tutor.svg_map
                                 marker.intersecting = true
                                 marker.tutor.intersecting = true
                                 return
@@ -105,14 +115,28 @@ angular.module 'Egerep'
 
 
         bindTutorMarkerEvents = (marker) ->
+            # double click custom handler with delay
             google.maps.event.addListener marker, 'click', (event) ->
-                if marker.tutor in $scope.tutor_list
-                    $scope.tutor_list = removeById($scope.tutor_list, marker.tutor.id)
-                else
-                    $scope.hovered_tutor = null
-                    $scope.tutor_list.push marker.tutor
-                $scope.$apply()
-                rebindDraggable()
+                clicks++
+                if clicks is 1
+                    setTimeout ->
+                        if clicks is 1
+                            # single click
+                            if marker.tutor in $scope.tutor_list
+                                $scope.tutor_list = removeById($scope.tutor_list, marker.tutor.id)
+                            else
+                                $scope.hovered_tutor = null
+                                $scope.tutor_list.push marker.tutor
+                            $scope.$apply()
+                            rebindDraggable()
+                        else
+                            # double click
+                            $scope.addOrRemove(marker.tutor.id)
+                        clicks = 0
+                    , 250
+
+            google.maps.event.addListener marker, 'dblclick', (event) ->
+                clicks++
 
             google.maps.event.addListener marker, 'mouseover', (event) ->
                 return if marker.tutor in $scope.tutor_list
@@ -122,9 +146,6 @@ angular.module 'Egerep'
             google.maps.event.addListener marker, 'mouseout', (event) ->
                 $scope.hovered_tutor = null
                 $scope.$apply()
-
-            google.maps.event.addListener marker, 'dblclick', (event) ->
-                $scope.addOrRemove(marker.tutor.id)
 
         # add or remove tutor from list
         $scope.addOrRemove = (tutor_id) ->

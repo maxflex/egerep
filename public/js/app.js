@@ -220,9 +220,11 @@
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   angular.module('Egerep').controller('AddToList', function($scope, Genders, Grades, Subjects, TutorStates, Destinations, TutorService, PhoneService, RequestList) {
-    var TRANSPARENT_MARKER, bindTutorMarkerEvents, findIntersectingMetros, rebindDraggable, repaintChosen, showClientOnMap, showTutorsOnMap, unsetAllMarkers;
+    var TRANSPARENT_MARKER, bindTutorMarkerEvents, clicks, findIntersectingMetros, markerClusterer, rebindDraggable, repaintChosen, showClientOnMap, showTutorsOnMap, unsetAllMarkers;
     bindArguments($scope, arguments);
     TRANSPARENT_MARKER = 0.3;
+    clicks = 0;
+    markerClusterer = void 0;
     $scope.mode = 'map';
     $scope.loading = false;
     angular.element(document).ready(function() {
@@ -265,7 +267,7 @@
       $scope.marker_id = 1;
       $scope.tutor_list = [];
       $scope.markers = [];
-      return $scope.tutors.forEach(function(tutor) {
+      $scope.tutors.forEach(function(tutor) {
         return tutor.markers.forEach(function(marker) {
           var new_marker;
           new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, marker.type);
@@ -276,6 +278,7 @@
           return $scope.markers.push(new_marker);
         });
       });
+      return markerClusterer = new MarkerClusterer($scope.map, $scope.markers);
     };
     showClientOnMap = function() {
       return $scope.client.markers.forEach(function(marker) {
@@ -286,12 +289,14 @@
       });
     };
     unsetAllMarkers = function() {
-      if ($scope.markers === void 0) {
-        return;
+      if ($scope.markers !== void 0) {
+        $scope.markers.forEach(function(marker) {
+          return marker.setMap(null);
+        });
       }
-      return $scope.markers.forEach(function(marker) {
-        return marker.setMap(null);
-      });
+      if (markerClusterer !== void 0) {
+        return markerClusterer.clearMarkers();
+      }
     };
     findIntersectingMetros = function() {
       if ($scope.search.destination === 'r_k') {
@@ -300,7 +305,7 @@
           return $scope.client.markers.forEach(function(client_marker) {
             return client_marker.metros.forEach(function(client_metro) {
               var ref;
-              if (ref = client_metro.station_id, indexOf.call(marker.tutor.svg_map, ref) >= 0) {
+              if (ref = client_metro.station_id.toString(), indexOf.call(marker.tutor.svg_map, ref) >= 0) {
                 marker.intersecting = true;
                 marker.tutor.intersecting = true;
               }
@@ -326,15 +331,28 @@
     };
     bindTutorMarkerEvents = function(marker) {
       google.maps.event.addListener(marker, 'click', function(event) {
-        var ref;
-        if (ref = marker.tutor, indexOf.call($scope.tutor_list, ref) >= 0) {
-          $scope.tutor_list = removeById($scope.tutor_list, marker.tutor.id);
-        } else {
-          $scope.hovered_tutor = null;
-          $scope.tutor_list.push(marker.tutor);
+        clicks++;
+        if (clicks === 1) {
+          return setTimeout(function() {
+            var ref;
+            if (clicks === 1) {
+              if (ref = marker.tutor, indexOf.call($scope.tutor_list, ref) >= 0) {
+                $scope.tutor_list = removeById($scope.tutor_list, marker.tutor.id);
+              } else {
+                $scope.hovered_tutor = null;
+                $scope.tutor_list.push(marker.tutor);
+              }
+              $scope.$apply();
+              rebindDraggable();
+            } else {
+              $scope.addOrRemove(marker.tutor.id);
+            }
+            return clicks = 0;
+          }, 250);
         }
-        $scope.$apply();
-        return rebindDraggable();
+      });
+      google.maps.event.addListener(marker, 'dblclick', function(event) {
+        return clicks++;
       });
       google.maps.event.addListener(marker, 'mouseover', function(event) {
         var ref;
@@ -344,12 +362,9 @@
         $scope.hovered_tutor = marker.tutor;
         return $scope.$apply();
       });
-      google.maps.event.addListener(marker, 'mouseout', function(event) {
+      return google.maps.event.addListener(marker, 'mouseout', function(event) {
         $scope.hovered_tutor = null;
         return $scope.$apply();
-      });
-      return google.maps.event.addListener(marker, 'dblclick', function(event) {
-        return $scope.addOrRemove(marker.tutor.id);
       });
     };
     $scope.addOrRemove = function(tutor_id) {

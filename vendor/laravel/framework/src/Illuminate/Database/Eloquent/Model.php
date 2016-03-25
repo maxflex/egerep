@@ -170,6 +170,14 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     protected static $dotDates = [];
 
     /**
+     * Virtual attributes that aren't saved to database
+     *
+     * @custom
+     * @var array
+     */
+    protected static $virtual = [];
+
+    /**
      * The relationships that should be touched on save.
      *
      * @var array
@@ -1533,6 +1541,13 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      */
     public function save(array $options = [])
     {
+        // Unset virtual attributes before save
+        // @custom
+        foreach (static::$virtual as $attribute) {
+            \Log::info('Unsetting ' . $attribute);
+            unset($this->{$attribute});
+        }
+
         $query = $this->newQueryWithoutScopes();
 
         // If the "saving" event returns false we'll bail out of the save and return
@@ -2745,6 +2760,16 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
         }
 
         return $this->getRelationValue($key);
+    }
+
+    /**
+     * Get a clean attribute, avoiding accessors/getters
+     *
+     * @custom
+     */
+    public function getClean($key)
+    {
+        return $this->getAttributes()[$key];
     }
 
     /**

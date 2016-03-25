@@ -8,11 +8,16 @@ class User extends Model
 {
     protected $connection = 'egecrm';
 
-    protected $fillable = ['login', 'password', 'color', 'type', 'banned'];
+    protected $fillable = [
+        'login',
+        'password',
+        'color',
+        'type',
+        'banned'
+    ];
+
     public $timestamps = false;
 
-    # ID of the last real user
-    const LAST_REAL_ID = 112;
     const USER_TYPE = 'USER';
 
     # Fake system user
@@ -20,6 +25,11 @@ class User extends Model
         'id'    => 0,
         'login' => 'system',
     ];
+
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = static::_password($value);
+    }
 
     /**
      * Вход пользователя

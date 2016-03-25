@@ -87,7 +87,9 @@ class TutorsController extends Controller
     public function update(Request $request, $id)
     {
         // dd($request->input());
-        Tutor::find($id)->update($request->input());
+        $tutor = Tutor::find($id);
+        $tutor->update($request->input());
+        \Log::info($request->banned);
     }
 
     /**
@@ -124,7 +126,8 @@ class TutorsController extends Controller
      {
          extract(array_filter($request->search));
 
-         $query = Tutor::has('markers');
+         // анализируем только не закрытых преподавателей с метками
+         $query = Tutor::has('markers')->where('state', '<>', 3);
 
          if (isset($id)) {
              $query->where('id', $id);

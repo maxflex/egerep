@@ -27078,13 +27078,14 @@ email .input-group {
   position: absolute;
   top: 0;
   right: 0;
-  padding: 10px 5px; }
+  padding: 0 10px; }
   .map-tutor-list.ng-hide-add, .map-tutor-list.ng-hide-remove {
     transition: all linear .2s; }
   .map-tutor-list.ng-hide {
     right: -250px; }
   .map-tutor-list .ava {
     height: 65px;
+    width: 52px;
     vertical-align: top;
     margin-right: 7px;
     float: left;

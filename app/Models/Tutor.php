@@ -16,9 +16,6 @@ class Tutor extends Model
     use Markerable;
     use Person;
 
-    // protected $connection = 'egecrm';
-    // protected $table = 'teachers';
-
     const USER_TYPE = 'TEACHER';
 
     protected $fillable =  [
@@ -70,9 +67,11 @@ class Tutor extends Model
         'in_egecentr',
     ];
 
-    protected $appends = ['has_photo_original', 'has_photo_cropped', 'age', 'banned'];
+    protected $appends = ['has_photo_original', 'has_photo_cropped', 'age'];
     protected $with = ['markers'];
+
     protected static $commaSeparated = ['svg_map', 'subjects', 'grades', 'branches'];
+    protected static $virtual = ['banned'];
 
     const UPLOAD_DIR = '/img/tutors/';
 
@@ -95,10 +94,16 @@ class Tutor extends Model
 
     public function user()
     {
-        return $this->belongsTo('App\Models\User', 'id', 'id_entity')->where('type', static::USER_TYPE);
+        return $this->belongsTo('App\Models\User', 'id', 'id_entity')
+                    ->where('type', static::USER_TYPE);
     }
 
     // ------------------------------------------------------------------------
+
+    public function getBannedAttribute()
+    {
+        return $this->user->banned;
+    }
 
     public function getHasPhotoOriginalAttribute()
     {
@@ -120,25 +125,20 @@ class Tutor extends Model
         return count($this->getClientIds());
     }
 
-    public function getBannedAttribute()
+    public function setInEgecentrAttribute($value)
     {
-        $user = User::where([
-                        'id_entity' => $this->id,
-                        'type' => static::USER_TYPE])
-                      ->first();
-        return $user ? $user->banned : false;
-    }
-
-    public function setBannedAttribute($newValue)
-    {
-        $user = User::where([
-                        'id_entity' => $this->id,
-                        'type' => static::USER_TYPE])
-                      ->first();
-        if ($user) {
-            $user->update(['banned' => $newValue]);
+        if ($value) {
+            $user = User::updateOrCreate([
+                'id_entity' => $this->id,
+                'type'      => static::USER_TYPE,
+            ], [
+                'banned'    => $this->getClean('banned'),
+                'login'     => $this->login,
+                'password'  => $this->password,
+            ]);
         }
     }
+
     // ------------------------------------------------------------------------
 
     /**
@@ -238,15 +238,6 @@ class Tutor extends Model
     {
         static::saving(function($tutor) {
             cleanNumbers($tutor);
-
-            User::where([
-                    'id_entity' => $tutor->id,
-                    'type' => static::USER_TYPE])
-                  ->first()
-                  ->update([
-                    'login' => $tutor->login,
-                    'password' => User::_password($tutor->password)]);
-
         });
 
         static::updated(function($tutor) {
@@ -260,6 +251,7 @@ class Tutor extends Model
     public function scopeSearchByLastNameAndPhone($query, $searchText)
     {
         if ($searchText) {
+            // @todo: цикл по номерам телефона
             return $query->whereRaw("lower(last_name) like lower('%{$searchText}%')")
                          ->orWhere("phone", "like", "%{$searchText}%")
                          ->orWhere("phone2", "like", "%{$searchText}%")
