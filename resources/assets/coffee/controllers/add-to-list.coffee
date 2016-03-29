@@ -70,7 +70,8 @@ angular.module 'Egerep'
                     bindTutorMarkerEvents(new_marker)
                     $scope.markers.push new_marker
             # @todo: consider using Marker Clusterer
-            markerClusterer = new MarkerClusterer $scope.map, $scope.markers
+            markerClusterer = new MarkerClusterer $scope.map, $scope.markers,
+                maxZoom: 12
 
 
         showClientOnMap = ->
