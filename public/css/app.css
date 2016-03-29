@@ -26978,6 +26978,28 @@ md-tooltip {
   -webkit-animation-name: slideOutUp;
   animation-name: slideOutUp; }
 
+.gmnoprint:not(.gm-bundled-control) {
+  display: none; }
+
+.gm-bundled-control .gmnoprint {
+  display: block; }
+
+.gm-style-cc {
+  left: 50px;
+  right: auto !important; }
+
+map > div {
+  border-radius: 4px; }
+
+a[href^="http://maps.google.com/maps"] {
+  display: none !important; }
+
+a[href^="https://maps.google.com/maps"] {
+  display: none !important; }
+
+a[href^="https://www.google.com/maps"] {
+  display: none !important; }
+
 .map-loading {
   position: absolute;
   height: 100%;

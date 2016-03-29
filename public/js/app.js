@@ -279,7 +279,7 @@
         });
       });
       return markerClusterer = new MarkerClusterer($scope.map, $scope.markers, {
-        maxZoom: 12
+        gridSize: 10
       });
     };
     showClientOnMap = function() {

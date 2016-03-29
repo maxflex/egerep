@@ -3,8 +3,12 @@
     <div class="map-loading" ng-show='loading'>
         <img src="svg/loaders/tail-spin.svg">
     </div>
-    <map zoom="10" disable-default-u-i="true" scale-control="true"
-        zoom-control="true" zoom-control-options="{style:'SMALL'}" style="height: 500px; width: 100%">
+    <map zoom="10" disable-default-u-i="true"
+        scale-control="true"
+        zoom-control="true"
+        map-type-control="true"
+        style="height: 500px; width: 100%"
+    >
         <transit-layer></transit-layer>
         <custom-control position="TOP_RIGHT" index="1">
         </custom-control>

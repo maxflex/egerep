@@ -71,7 +71,8 @@ angular.module 'Egerep'
                     $scope.markers.push new_marker
             # @todo: consider using Marker Clusterer
             markerClusterer = new MarkerClusterer $scope.map, $scope.markers,
-                maxZoom: 12
+                gridSize: 10
+                # maxZoom: 12
 
 
         showClientOnMap = ->

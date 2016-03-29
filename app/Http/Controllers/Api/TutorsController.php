@@ -191,6 +191,9 @@ class TutorsController extends Controller
              $query->with(['markers' => function($query) {
                $query->where('type', 'green');
              }]);
+         } else {
+             # если "Клиент едет к репетитору", то только репетиторы с картой выезда
+             $query->where('svg_map', '<>', '');
          }
 
          # выбираем только нужные поля для ускорения запроса
