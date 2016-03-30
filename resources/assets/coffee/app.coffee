@@ -61,3 +61,6 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
         $rootScope.ajaxEnd = ->
             ajaxEnd()
             $rootScope.saving = false
+
+        $rootScope.findById = (object, id) ->
+            _.findWhere(object, {id: parseInt(id)})

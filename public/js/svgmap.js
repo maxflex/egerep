@@ -314,8 +314,8 @@ SVGMap.prototype = {
             else this.select(id);
         }
         if(typeof this.options.clickCallback == 'function'){
-			place = this.options.places[this.options.placesHash[id]];
-			this.options.clickCallback(place);
+			// place = this.options.places[this.options.placesHash[id]];
+			this.options.clickCallback(id);
 		}
         this.selectUnion(this.save());
         scope.$apply()
@@ -328,6 +328,16 @@ SVGMap.prototype = {
             }
         })
         return count
+        // return Object.keys(this.selected).length;
+    },
+    getSelected: function() {
+        selected = []
+        $.each(this.selected, function(index, value) {
+            if (value && index != 'undefined' && index != 'null') {
+                selected.push(parseInt(index))
+            }
+        })
+        return selected
         // return Object.keys(this.selected).length;
     },
     save: function() {

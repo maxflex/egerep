@@ -145,6 +145,9 @@ angular.module('Egerep').service 'SvgMap', ->
             id = $(this).attr("data-rel")
             map.toggleGroup(id)
 
+    this.el = ->
+        $('#map').contents()
+
     this.save = ->
         $('#svg-modal').modal('hide')
         this.map.save()
