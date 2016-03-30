@@ -28,21 +28,18 @@ angular
 
         $scope.$watch 'hovered_station_id', (newVal, oldVal) ->
             if newVal isnt undefined
-                $scope.found_distances = _.filter _.clone($scope.distances), (distance) ->
+                found_distances = _.filter $scope.distances, (distance) ->
                     distance.from is newVal or distance.to is newVal
 
-                # @todo: почему-то не работает, если сортировать по from
-                # _.map $scope.found_distances, (fd) ->
-                #     if fd.from isnt newVal
-                #         from_buffer = fd.from
-                #         fd.from = newVal
-                #         fd.to = from_buffer
+                # 1. objects in js are copied by ref
+                # 2. _.clone - shallow copy
+                $scope.found_distances = _.map found_distances, _.clone
 
-                # angular.forEach $scope.found_distances, (distance) ->
-                #     if distance.from isnt newVal
-                #         from_buffer = distance.from
-                #         distance.from = newVal
-                #         distance.to = from_buffer
+                angular.forEach $scope.found_distances, (distance) ->
+                     if distance.from isnt newVal
+                         from_buffer = distance.from
+                         distance.from = newVal
+                         distance.to = from_buffer
 
 
         $scope.save = ->
