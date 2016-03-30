@@ -73,9 +73,14 @@
       ajaxStart();
       return $rootScope.saving = true;
     };
-    return $rootScope.ajaxEnd = function() {
+    $rootScope.ajaxEnd = function() {
       ajaxEnd();
       return $rootScope.saving = false;
+    };
+    return $rootScope.findById = function(object, id) {
+      return _.findWhere(object, {
+        id: parseInt(id)
+      });
     };
   });
 
@@ -839,6 +844,93 @@
     };
     return $scope.saveMarkers = function() {
       return $('#gmap-modal').modal('hide');
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').controller('GraphController', function($scope, $timeout, $http, $rootScope, SvgMap) {
+    var getDistance;
+    bindArguments($scope, arguments);
+    angular.element(document).ready(function() {
+      $timeout(function() {
+        SvgMap.show();
+        return SvgMap.el().find('#stations > g > g').each(function(index, el) {
+          $(el).on('mouseenter', function() {
+            $scope.hovered_station_id = parseInt($(this).attr('id').replace(/[^\d]/g, ''));
+            return $scope.$apply();
+          });
+          return $(el).on('mouseleave', function() {
+            $scope.hovered_station_id = void 0;
+            return $scope.$apply();
+          });
+        });
+      });
+      return SvgMap.map.options.clickCallback = function(id) {
+        if (SvgMap.map.getSelected().length > 2) {
+          SvgMap.map.deselectAll();
+          SvgMap.map.select(id);
+        }
+        return $scope.selected = SvgMap.map.getSelected();
+      };
+    });
+    $scope.$watch('selected', function(newVal, oldVal) {
+      if (newVal === void 0) {
+        return;
+      }
+      if (newVal.length === 2) {
+        return $scope.new_distance = getDistance(newVal[0], newVal[1]);
+      }
+    });
+    $scope.$watch('hovered_station_id', function(newVal, oldVal) {
+      if (newVal !== void 0) {
+        return $scope.found_distances = _.filter($scope.distances, function(distance) {
+          return distance.from === newVal || distance.to === newVal;
+        });
+      }
+    });
+    $scope.save = function() {
+      $rootScope.ajaxStart();
+      return $http.post('graph/save', {
+        from: $scope.selected[0],
+        to: $scope.selected[1],
+        distance: $scope.new_distance
+      }).then(function() {
+        return $rootScope.ajaxEnd();
+      });
+    };
+    $scope["delete"] = function() {
+      var from, to;
+      from = Math.min($scope.selected[0], $scope.selected[1]);
+      to = Math.max($scope.selected[0], $scope.selected[1]);
+      $rootScope.ajaxStart();
+      return $http.post('graph/delete', {
+        from: from,
+        to: to
+      }).then(function() {
+        $rootScope.ajaxEnd();
+        $scope.distances = _.without($scope.distances, _.findWhere($scope.distances, {
+          from: from,
+          to: to
+        }));
+        $scope.selected = [];
+        return SvgMap.map.deselectAll();
+      });
+    };
+    return getDistance = function(from, to) {
+      var distance;
+      from = Math.min(from, to);
+      to = Math.max(from, to);
+      distance = _.find($scope.distances, {
+        from: from,
+        to: to
+      });
+      if (distance === void 0) {
+        return void 0;
+      } else {
+        return distance.distance;
+      }
     };
   });
 
@@ -2149,6 +2241,9 @@
         id = $(this).attr("data-rel");
         return map.toggleGroup(id);
       });
+    };
+    this.el = function() {
+      return $('#map').contents();
     };
     this.save = function() {
       $('#svg-modal').modal('hide');

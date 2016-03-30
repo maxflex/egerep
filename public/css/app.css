@@ -26978,6 +26978,62 @@ md-tooltip {
   -webkit-animation-name: slideOutUp;
   animation-name: slideOutUp; }
 
+.place_mark {
+  display: inline-block;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 6px;
+  padding: 4px;
+  margin-right: 1px; }
+
+.place_mark.line1 {
+  background-color: #ca5948;
+  border-color: #ca5948; }
+
+.place_mark.line2 {
+  background-color: #528c5d;
+  border-color: #528c5d; }
+
+.place_mark.line3 {
+  background-color: #5a68a0;
+  border-color: #5a68a0; }
+
+.place_mark.line4 {
+  background-color: #4babd8;
+  border-color: #4babd8; }
+
+.place_mark.line5 {
+  background-color: #9b6144;
+  border-color: #9b6144; }
+
+.place_mark.line6 {
+  background-color: #d78a4b;
+  border-color: #d78a4b; }
+
+.place_mark.line7 {
+  background-color: #a25980;
+  border-color: #a25980; }
+
+.place_mark.line8 {
+  background-color: #ebe457;
+  border-color: #ebe457; }
+
+.place_mark.line9 {
+  background-color: #838382;
+  border-color: #838382; }
+
+.place_mark.line10 {
+  background-color: #79b872;
+  border-color: #79b872; }
+
+.place_mark.line11 {
+  background-color: #4c7ea9;
+  border-color: #4c7ea9; }
+
+.place_mark.line12 {
+  background-color: #b0cccb;
+  border-color: #b0cccb; }
+
 .gmnoprint:not(.gm-bundled-control) {
   display: none; }
 

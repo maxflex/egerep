@@ -13,6 +13,7 @@ Route::group(['middleware' => ['web']], function () {
         'transfer'  => 'TransferController',
         'upload'    => 'UploadController',
         'command'   => 'CommandsController',
+        'graph'     => 'GraphController',
     ]);
 
     # Добавление из списка
