@@ -45,6 +45,8 @@
     "ng-cropper": "^0.4.1",
     "cropper": "^2.3.0",
     "pusher": "^3.0.0",
-    "SVG-Loaders": "svg-loaders#^1.0.2"
+    "SVG-Loaders": "svg-loaders#^1.0.2",
+    "angular-ladda": "^0.3.4",
+    "ladda": "^1.0.0"
   }
 }
