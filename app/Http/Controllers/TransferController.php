@@ -154,6 +154,8 @@ class TransferController extends Controller
 		127 => 1367,
 	];
 
+    const TUTOR_STATE_APPROVED = 5;
+
 	/**
 	 * Перенести поле контакты
 	 */
@@ -263,6 +265,36 @@ class TransferController extends Controller
 		@copy("/var/www/html/repetitors/htdocs/photo/photo_" . $oldcrm_tutor_id . ".r." . $extension,
 			public_path() . Tutor::UPLOAD_DIR . $newcrm_tutor_id . '@2x.' . $extension);
 	}
+
+    /**
+     * Обновить место для занятий, районы выезда.
+     * @task    #775
+     */
+    public function getTransferPlace(Request $request)
+    {
+        // @todo: delete all from markers, from metros
+        extract($request->input());
+        $teachers = \DB::connection('egerep')->select("select * from repetitors limit {$limit} offset {$offset}");
+
+        $transfered = 0;
+        foreach ($teachers as $teacher) {
+            $tutor = Tutor::where('id_a_pers', '=', $teacher->id)
+                          ->where('state', '<>', static::TUTOR_STATE_APPROVED);
+            if ($tutor->exists()) {
+                // Контакты, места для занятий
+                $contacts = $tutor->contacts . "
+" . $teacher->place;
+
+                $tutor = $tutor->update([
+                    'contacts' => $contacts
+                ]);
+                $transfered++;
+            }
+        }
+        dd($transfered);
+        return view();
+    }
+
 
     /**
      * Перенести все данные
