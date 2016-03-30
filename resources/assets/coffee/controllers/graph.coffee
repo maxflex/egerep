@@ -20,6 +20,7 @@ angular
                         SvgMap.map.deselectAll()
                         SvgMap.map.select id
                     $scope.selected = SvgMap.map.getSelected()
+            , 500
 
         $scope.$watch 'selected', (newVal, oldVal) ->
             return if newVal is undefined
