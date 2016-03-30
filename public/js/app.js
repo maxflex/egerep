@@ -278,7 +278,9 @@
           return $scope.markers.push(new_marker);
         });
       });
-      return markerClusterer = new MarkerClusterer($scope.map, $scope.markers);
+      return markerClusterer = new MarkerClusterer($scope.map, $scope.markers, {
+        gridSize: 10
+      });
     };
     showClientOnMap = function() {
       return $scope.client.markers.forEach(function(marker) {

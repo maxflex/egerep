@@ -6,9 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Station extends Model
 {
-    protected $connection = 'egecrm';
     protected $appends = ['color'];
-    
+
     const LINE_COLORS = [
         1 => '#EF1E25',	// Красный
         2 => '#029A55', // Зеленый

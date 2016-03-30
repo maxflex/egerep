@@ -90,11 +90,16 @@ class Metro extends Model
     /**
      * Получить время между двумя станциями метро
      */
-    public static function minutesBetweenMetros($from_station_id, $to_station_id)
+    public static function minutesBetweenMetros($from, $to)
     {
+        if ($from == $to) {
+            return;
+        }
+        $p1 = min($from, $to);
+        $p2 = max($from, $to);
         $obj = DB::table('distances')
-            ->where('from', $from_station_id)
-            ->where('to', $to_station_id)
+            ->where('from', $p1)
+            ->where('to', $p2)
             ->first();
         if ($obj === null) {
             throw new \Exception("Distance not found", $obj);

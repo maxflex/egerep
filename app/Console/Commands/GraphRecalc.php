@@ -7,8 +7,6 @@ use App\Models\Station;
 
 class GraphRecalc extends Command
 {
-    const INFINUM = 1000000;
-
     static $places;
     static $places_count;
     static $mass; //матрица смежностей
@@ -66,7 +64,7 @@ class GraphRecalc extends Command
     }
 
     private static function loadPlaces() {
-        static::$places = Station::pluck('id');
+        static::$places = \DB::table('graph_places')->pluck('id');
         static::$places_count = count(static::$places);
     } //загрузка станций
 
@@ -75,10 +73,10 @@ class GraphRecalc extends Command
         foreach (static::$places as $i) {
             static::$mass[$i] = [];
             foreach (static::$places as $j) {
-                static::$mass[$i][$j] = static::INFINUM;
+                static::$mass[$i][$j] = PHP_INT_MAX;
             }
         } //заполнили бесконечностью
-        $distances = \DB::table('distances_before')->get();
+        $distances = \DB::table('graph_distances')->get();
         foreach ($distances as $distance) {
             static::$mass[$distance->from][$distance->to] = $distance->distance;
             static::$mass[$distance->to][$distance->from] = $distance->distance;
@@ -97,7 +95,7 @@ class GraphRecalc extends Command
     } //подготовка к запуску дейкстры
 
     private static function fmin() {
-        $m = static::INFINUM;
+        $m = PHP_INT_MAX;
         $im = -1;
         for ($i = 0; $i < static::$places_count; $i++) {
             $id = static::$places[$i];
@@ -130,11 +128,17 @@ class GraphRecalc extends Command
     } //алгоритм Дейкстры
 
     private static function updateDistance($from, $to, $distance) {
+        // если точка назначения равна точке отправления,
+        // то не считать
+        if ($from == $to) {
+            return;
+        }
         $p1 = min($from, $to);
         $p2 = max($from, $to);
         \DB::insert("INSERT INTO distances (`from`, `to`, `distance`) VALUES (?, ?, ?)
             ON DUPLICATE KEY UPDATE distance = VALUES(distance)", [$p1, $p2, $distance]);
-        \DB::insert("INSERT INTO distances (`from`, `to`, `distance`) VALUES (?, ?, ?)
-            ON DUPLICATE KEY UPDATE distance = VALUES(distance)", [$p2, $p1, $distance]);
+        // не дублируем точки
+        // \DB::insert("INSERT INTO distances (`from`, `to`, `distance`) VALUES (?, ?, ?)
+        //     ON DUPLICATE KEY UPDATE distance = VALUES(distance)", [$p2, $p1, $distance]);
     }
 }

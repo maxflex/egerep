@@ -136,11 +136,11 @@ class TutorsController extends Controller
          }
 
          if (isset($age_from)) {
-             $query->where('birth_year', '<', Tutor::getAge($birth_end));
+             $query->where('birth_year', '<', Tutor::getAge($age_from));
          }
 
          if (isset($age_to)) {
-             $query->where('birth_year', '>', Tutor::getAge($birth_start));
+             $query->where('birth_year', '>', Tutor::getAge($age_to));
          }
 
          if (isset($grades)) {
@@ -191,6 +191,9 @@ class TutorsController extends Controller
              $query->with(['markers' => function($query) {
                $query->where('type', 'green');
              }]);
+         } else {
+             # если "Клиент едет к репетитору", то только репетиторы с картой выезда
+             $query->where('svg_map', '<>', '');
          }
 
          # выбираем только нужные поля для ускорения запроса
