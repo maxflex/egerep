@@ -5,7 +5,7 @@
 @section('content')
     <div class="row">
         <div class="col-sm-7">
-            <iframe src="svg/map.svg" frameborder="0" marginwidth="0" marginheight="0" data-width="700" id="map"
+            <iframe ng-show='map_loaded' src="svg/map.svg" frameborder="0" marginwidth="0" marginheight="0" data-width="700" id="map"
                 scrolling="no" style="height: 900px; width: 100%; overflow: hidden"></iframe>
         </div>
         <div class="col-sm-5">

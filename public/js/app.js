@@ -853,6 +853,7 @@
   angular.module('Egerep').controller('GraphController', function($scope, $timeout, $http, $rootScope, SvgMap) {
     var getDistance;
     bindArguments($scope, arguments);
+    $scope.map_loaded = false;
     angular.element(document).ready(function() {
       return $timeout(function() {
         SvgMap.show();
@@ -866,13 +867,14 @@
             return $scope.$apply();
           });
         });
-        return SvgMap.map.options.clickCallback = function(id) {
+        SvgMap.map.options.clickCallback = function(id) {
           if (SvgMap.map.getSelected().length > 2) {
             SvgMap.map.deselectAll();
             SvgMap.map.select(id);
           }
           return $scope.selected = SvgMap.map.getSelected();
         };
+        return $scope.map_loaded = true;
       }, 500);
     });
     $scope.$watch('selected', function(newVal, oldVal) {

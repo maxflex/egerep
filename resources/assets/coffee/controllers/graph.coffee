@@ -3,6 +3,8 @@ angular
     .controller 'GraphController', ($scope, $timeout, $http, $rootScope, SvgMap) ->
         bindArguments($scope, arguments)
 
+        $scope.map_loaded = false
+
         angular.element(document).ready ->
             $timeout ->
                 SvgMap.show()
@@ -20,6 +22,8 @@ angular
                         SvgMap.map.deselectAll()
                         SvgMap.map.select id
                     $scope.selected = SvgMap.map.getSelected()
+
+                $scope.map_loaded = true
             , 500
 
         $scope.$watch 'selected', (newVal, oldVal) ->
