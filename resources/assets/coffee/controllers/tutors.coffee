@@ -95,17 +95,10 @@ angular
     #   ADD/EDIT CONTROLLER
     #
     .controller "TutorsForm", ($scope, $rootScope, $timeout, Tutor, SvgMap, Subjects, Grades, ApiService, TutorStates, Genders, Workplaces, Branches, BranchService, TutorService) ->
-        $scope.SvgMap   = SvgMap
-        $scope.Subjects = Subjects
-        $scope.Grades   = Grades
-        $scope.Genders  = Genders
-        $scope.TutorStates = TutorStates
-        $scope.Workplaces  = Workplaces
-        $scope.Branches = Branches
-        $scope.BranchService = BranchService
-
+        bindArguments($scope, arguments)
 
         $rootScope.frontend_loading = true
+        $scope.form_changed = false
 
         $scope.deleteTutor = ->
             bootbox.confirm 'Вы уверены, что хотите удалить преподавателя?', (result) ->
@@ -242,13 +235,12 @@ angular
                         bindCropper()
                         bindFileUpload()
                     , 1000
+                    $scope.originalTutor = angular.copy $scope.tutor
                     $rootScope.frontendStop()
             else
                 #set default values of tutor for create page
-                $scope.tutor = TutorService.defaultTutor
-                $scope.$apply()
+                $scope.tutor = $scope.originalTutor = TutorService.defaultTutor
                 $rootScope.frontendStop()
-                    # $scope.tutor.is_being_commented = []
 
         # @todo: ЗАМЕНИТЬ НА ДИРЕКТИВУ <ng-select> (уже сделано, но глючная. надо доделать)
         # refresh selectpicker on update
@@ -293,14 +285,16 @@ angular
                     tutors: tutor.id
 
         $scope.edit = ->
+            ajaxStart()
             $scope.saving = true
             filterMarkers()
 
             $scope.tutor.$update()
                 .then (response) ->
                     $scope.saving = false
-
-
+                    $scope.form_changed = false
+                    ajaxEnd()
+                    $scope.originalTutor = angular.copy $scope.tutor
 
 
 
@@ -478,3 +472,14 @@ angular
         # Сохранить метки
         $scope.saveMarkers = ->
             $('#gmap-modal').modal 'hide'
+
+        $scope.strfyObjNulls = (Obj) ->
+            for prop in Obj
+                if Obj[prop] == null
+                    Obj[prop] = ""
+            Obj
+
+        $(document).ready ->
+            $("#tutorForm").on 'keyup change', 'input, select, textarea', ->
+                $scope.form_changed = !angular.equals $scope.strfyObjNulls($scope.tutor), $scope.strfyObjNulls($scope.originalTutor)
+                $scope.$apply()

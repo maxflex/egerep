@@ -13,14 +13,15 @@
     <span class="header-link" ng-click='deleteTutor()'>удалить</span>
 @endsection
 
-<div class="row" ng-init="id = {{ $id }}">
+<div class="row" ng-init="id = {{ $id }}" id="tutorForm">
     <div class="col-sm-12">
 
         @include('tutors._form')
 
         <div class="row">
             <div class="col-sm-12 center">
-                <button class="btn btn-primary" ng-click="edit()" ng-disabled="saving">Сохранить</button>
+                <button class="btn btn-primary" disabled ng-show="!form_changed">Сохранено</button>
+                <button class="btn btn-primary" ng-show="form_changed" ng-click="edit()" ng-disabled="saving">Сохранить</button>
             </div>
         </div>
     </div>
