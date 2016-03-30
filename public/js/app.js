@@ -1,7 +1,7 @@
 (function() {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ngAnimate', 'ui.sortable', 'ui.bootstrap']).config([
+  angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ngAnimate', 'ui.sortable', 'ui.bootstrap', 'angular-ladda']).config([
     '$compileProvider', function($compileProvider) {
       return $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension|sip):/);
     }
@@ -854,9 +854,9 @@
     var getDistance;
     bindArguments($scope, arguments);
     angular.element(document).ready(function() {
-      $timeout(function() {
+      return $timeout(function() {
         SvgMap.show();
-        return SvgMap.el().find('#stations > g > g').each(function(index, el) {
+        SvgMap.el().find('#stations > g > g').each(function(index, el) {
           $(el).on('mouseenter', function() {
             $scope.hovered_station_id = parseInt($(this).attr('id').replace(/[^\d]/g, ''));
             return $scope.$apply();
@@ -866,14 +866,14 @@
             return $scope.$apply();
           });
         });
+        return SvgMap.map.options.clickCallback = function(id) {
+          if (SvgMap.map.getSelected().length > 2) {
+            SvgMap.map.deselectAll();
+            SvgMap.map.select(id);
+          }
+          return $scope.selected = SvgMap.map.getSelected();
+        };
       });
-      return SvgMap.map.options.clickCallback = function(id) {
-        if (SvgMap.map.getSelected().length > 2) {
-          SvgMap.map.deselectAll();
-          SvgMap.map.select(id);
-        }
-        return $scope.selected = SvgMap.map.getSelected();
-      };
     });
     $scope.$watch('selected', function(newVal, oldVal) {
       if (newVal === void 0) {
@@ -885,7 +885,7 @@
     });
     $scope.$watch('hovered_station_id', function(newVal, oldVal) {
       if (newVal !== void 0) {
-        return $scope.found_distances = _.filter($scope.distances, function(distance) {
+        return $scope.found_distances = _.filter(_.clone($scope.distances), function(distance) {
           return distance.from === newVal || distance.to === newVal;
         });
       }
@@ -938,13 +938,24 @@
 
 (function() {
   angular.module('Egerep').controller('LoginCtrl', function($scope, $http) {
+    angular.element(document).ready(function() {
+      return $scope.l = Ladda.create(document.querySelector('#login-submit'));
+    });
     return $scope.checkFields = function() {
+      $scope.l.start();
+      ajaxStart();
+      $scope.in_process = true;
       return $http.post('login', {
         login: $scope.login,
         password: $scope.password
       }).then(function(response) {
         if (response.data === true) {
           return location.reload();
+        } else {
+          $scope.in_process = false;
+          ajaxEnd();
+          $scope.l.stop();
+          return notifyError("Неправильная пара логин-пароль");
         }
       });
     };
@@ -1062,15 +1073,10 @@
     };
   }).controller("TutorsForm", function($scope, $rootScope, $timeout, Tutor, SvgMap, Subjects, Grades, ApiService, TutorStates, Genders, Workplaces, Branches, BranchService, TutorService) {
     var bindCropper, bindFileUpload, filterMarkers;
-    $scope.SvgMap = SvgMap;
-    $scope.Subjects = Subjects;
-    $scope.Grades = Grades;
-    $scope.Genders = Genders;
-    $scope.TutorStates = TutorStates;
-    $scope.Workplaces = Workplaces;
-    $scope.Branches = Branches;
-    $scope.BranchService = BranchService;
+    bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
+    $scope.form_changed = false;
+    $scope.fully_loaded = false;
     $scope.deleteTutor = function() {
       return bootbox.confirm('Вы уверены, что хотите удалить преподавателя?', function(result) {
         if (result === true) {
@@ -1227,11 +1233,11 @@
             bindCropper();
             return bindFileUpload();
           }, 1000);
+          $scope.original_tutor = angular.copy($scope.tutor);
           return $rootScope.frontendStop();
         });
       } else {
-        $scope.tutor = TutorService.defaultTutor;
-        $scope.$apply();
+        $scope.tutor = TutorService.default_tutor;
         return $rootScope.frontendStop();
       }
     });
@@ -1272,6 +1278,11 @@
         return spRefresh('tutor-branches');
       }
     });
+    $scope.$watchCollection('tutor', function(newVal, oldVal) {
+      if ($scope.fully_loaded) {
+        return $scope.form_changed = true;
+      }
+    });
     $scope.$watch('tutor.in_egecentr', function(newVal, oldVal) {
       if (newVal && !$scope.tutor.login && $scope.tutor.first_name && $scope.tutor.last_name && $scope.tutor.middle_name) {
         $scope.tutor.login = TutorService.generateLogin($scope.tutor);
@@ -1293,10 +1304,13 @@
       });
     };
     $scope.edit = function() {
+      ajaxStart();
       $scope.saving = true;
       filterMarkers();
       return $scope.tutor.$update().then(function(response) {
-        return $scope.saving = false;
+        $scope.saving = false;
+        $scope.form_changed = false;
+        return ajaxEnd();
       });
     };
     $scope.marker_id = 1;
@@ -1449,13 +1463,93 @@
           $scope.bindMarkerChangeType(new_marker);
           return markers.push(new_marker);
         });
-        return $scope.tutor.markers = markers;
+        $scope.tutor.markers = markers;
+        return $timeout(function() {
+          return $scope.fully_loaded = true;
+        });
       });
     };
     return $scope.saveMarkers = function() {
       return $('#gmap-modal').modal('hide');
     };
   });
+
+}).call(this);
+
+(function() {
+  var apiPath, updateMethod;
+
+  angular.module('Egerep').factory('Account', function($resource) {
+    return $resource(apiPath('accounts'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Review', function($resource) {
+    return $resource(apiPath('reviews'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Archive', function($resource) {
+    return $resource(apiPath('archives'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Attachment', function($resource) {
+    return $resource(apiPath('attachments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('RequestList', function($resource) {
+    return $resource(apiPath('lists'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Request', function($resource) {
+    return $resource(apiPath('requests'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Sms', function($resource) {
+    return $resource(apiPath('sms'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Comment', function($resource) {
+    return $resource(apiPath('comments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Client', function($resource) {
+    return $resource(apiPath('clients'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('User', function($resource) {
+    return $resource(apiPath('users'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Tutor', function($resource) {
+    return $resource(apiPath('tutors'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      deletePhoto: {
+        url: apiPath('tutors', 'photo'),
+        method: 'DELETE'
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  });
+
+  apiPath = function(entity, additional) {
+    if (additional == null) {
+      additional = '';
+    }
+    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
+  };
+
+  updateMethod = function() {
+    return {
+      update: {
+        method: 'PUT'
+      }
+    };
+  };
 
 }).call(this);
 
@@ -2020,83 +2114,6 @@
 }).call(this);
 
 (function() {
-  var apiPath, updateMethod;
-
-  angular.module('Egerep').factory('Account', function($resource) {
-    return $resource(apiPath('accounts'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Review', function($resource) {
-    return $resource(apiPath('reviews'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Archive', function($resource) {
-    return $resource(apiPath('archives'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Attachment', function($resource) {
-    return $resource(apiPath('attachments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('RequestList', function($resource) {
-    return $resource(apiPath('lists'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Request', function($resource) {
-    return $resource(apiPath('requests'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Sms', function($resource) {
-    return $resource(apiPath('sms'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Comment', function($resource) {
-    return $resource(apiPath('comments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Client', function($resource) {
-    return $resource(apiPath('clients'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('User', function($resource) {
-    return $resource(apiPath('users'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Tutor', function($resource) {
-    return $resource(apiPath('tutors'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      deletePhoto: {
-        url: apiPath('tutors', 'photo'),
-        method: 'DELETE'
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  });
-
-  apiPath = function(entity, additional) {
-    if (additional == null) {
-      additional = '';
-    }
-    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
-  };
-
-  updateMethod = function() {
-    return {
-      update: {
-        method: 'PUT'
-      }
-    };
-  };
-
-}).call(this);
-
-(function() {
   angular.module('Egerep').service('ApiService', function($http) {
     this.metro = function(fun, data) {
       return $http.post("api/metro/" + fun, data);
@@ -2324,7 +2341,7 @@
       'ю': 'yu',
       'я': 'ya'
     };
-    this.defaultTutor = {
+    this.default_tutor = {
       gender: "male",
       branches: [],
       phones: [],

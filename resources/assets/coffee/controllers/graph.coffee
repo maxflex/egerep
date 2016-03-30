@@ -15,11 +15,11 @@ angular
                         $scope.hovered_station_id = undefined
                         $scope.$apply()
 
-            SvgMap.map.options.clickCallback = (id) ->
-                if SvgMap.map.getSelected().length > 2
-                    SvgMap.map.deselectAll()
-                    SvgMap.map.select id
-                $scope.selected = SvgMap.map.getSelected()
+                SvgMap.map.options.clickCallback = (id) ->
+                    if SvgMap.map.getSelected().length > 2
+                        SvgMap.map.deselectAll()
+                        SvgMap.map.select id
+                    $scope.selected = SvgMap.map.getSelected()
 
         $scope.$watch 'selected', (newVal, oldVal) ->
             return if newVal is undefined
@@ -28,8 +28,16 @@ angular
 
         $scope.$watch 'hovered_station_id', (newVal, oldVal) ->
             if newVal isnt undefined
-                $scope.found_distances = _.filter $scope.distances, (distance) ->
+                $scope.found_distances = _.filter _.clone($scope.distances), (distance) ->
                     distance.from is newVal or distance.to is newVal
+
+                # @todo: почему-то не работает, если сортировать по from
+                # _.map $scope.found_distances, (fd) ->
+                #     if fd.from isnt newVal
+                #         from_buffer = fd.from
+                #         fd.from = newVal
+                #         fd.to = from_buffer
+
                 # angular.forEach $scope.found_distances, (distance) ->
                 #     if distance.from isnt newVal
                 #         from_buffer = distance.from

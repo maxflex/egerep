@@ -100,6 +100,9 @@ angular
         $rootScope.frontend_loading = true
         $scope.form_changed = false
 
+        # страница полностью загружена (включая все изменения маркеров)
+        $scope.fully_loaded = false
+
         $scope.deleteTutor = ->
             bootbox.confirm 'Вы уверены, что хотите удалить преподавателя?', (result) ->
                 if result is true
@@ -235,11 +238,17 @@ angular
                         bindCropper()
                         bindFileUpload()
                     , 1000
-                    $scope.originalTutor = angular.copy $scope.tutor
+                    $scope.original_tutor = angular.copy $scope.tutor
                     $rootScope.frontendStop()
             else
                 #set default values of tutor for create page
-                $scope.tutor = $scope.originalTutor = TutorService.defaultTutor
+                $scope.tutor = TutorService.default_tutor
+
+                # закомментировал нижнюю строчку, потому что при добавлении анкеты функционала
+                # с disable кнопки сохранить быть не должно. там одна кнопка "добавить", при нажатии
+                # на которую выполняется редирект
+                # @todo: проверить работоспособность создания репетитора без original_tutor
+                # $scope.tutor = $scope.original_tutor = TutorService.defaultTutor
                 $rootScope.frontendStop()
 
         # @todo: ЗАМЕНИТЬ НА ДИРЕКТИВУ <ng-select> (уже сделано, но глючная. надо доделать)
@@ -266,6 +275,10 @@ angular
             return if newVal is undefined
             sp 'tutor-branches', 'филиалы', ' ' if oldVal is undefined
             spRefresh 'tutor-branches' if oldVal isnt undefined
+
+        # только после загрузки маркеров биндим отслеживание кнопки сохранить
+        $scope.$watchCollection 'tutor', (newVal, oldVal) ->
+            $scope.form_changed = true if $scope.fully_loaded
 
         $scope.$watch 'tutor.in_egecentr', (newVal, oldVal) ->
             if newVal and !$scope.tutor.login and $scope.tutor.first_name and $scope.tutor.last_name and $scope.tutor.middle_name
@@ -294,7 +307,7 @@ angular
                     $scope.saving = false
                     $scope.form_changed = false
                     ajaxEnd()
-                    $scope.originalTutor = angular.copy $scope.tutor
+
 
 
 
@@ -468,18 +481,9 @@ angular
                     $scope.bindMarkerChangeType(new_marker)
                     markers.push new_marker
                 $scope.tutor.markers = markers
+                $timeout ->
+                    $scope.fully_loaded = true
 
         # Сохранить метки
         $scope.saveMarkers = ->
             $('#gmap-modal').modal 'hide'
-
-        $scope.strfyObjNulls = (Obj) ->
-            for prop in Obj
-                if Obj[prop] == null
-                    Obj[prop] = ""
-            Obj
-
-        $(document).ready ->
-            $("#tutorForm").on 'keyup change', 'input, select, textarea', ->
-                $scope.form_changed = !angular.equals $scope.strfyObjNulls($scope.tutor), $scope.strfyObjNulls($scope.originalTutor)
-                $scope.$apply()

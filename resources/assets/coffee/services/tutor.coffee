@@ -68,7 +68,7 @@ angular.module 'Egerep'
             'ю':'yu'
             'я':'ya'
 
-        this.defaultTutor =
+        this.default_tutor =
             gender: "male"
             branches: []
             phones:   []
