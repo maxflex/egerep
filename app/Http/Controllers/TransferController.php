@@ -154,7 +154,7 @@ class TransferController extends Controller
 		127 => 1367,
 	];
 
-    const TUTOR_STATE_APPROVED = 5;
+    const TUTOR_STATE_APPROVED = 5;   // factory.coffee
 
 	/**
 	 * Перенести поле контакты

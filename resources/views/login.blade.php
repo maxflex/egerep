@@ -13,10 +13,7 @@
     <script src="{{ asset('/js/vendor.js', isProduction()) }}"></script>
     <script src="{{ asset('/js/app.js', isProduction()) }}"></script>
 
-    @foreach(['moment.min', 'bootbox', 'bootstrap-datepicker.min', 'bootstrap-datetimepicker',
-        'inputmask', 'jquery.cookie', 'jquery.datetimepicker',
-        'jquery.fileupload', 'jquery.timepicker', 'mask', 'engine', 'laroute', 'svgmap', 'ngmap.min'
-    ] as $script_name)
+    @foreach(['moment.min', 'inputmask', 'mask', 'engine', 'laroute', 'ngmap.min'] as $script_name)
         <script src="{{ asset('/js/' . $script_name . '.js', isProduction()) }}"></script>
     @endforeach
 
