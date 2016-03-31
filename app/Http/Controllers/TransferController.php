@@ -154,8 +154,6 @@ class TransferController extends Controller
 		127 => 1367,
 	];
 
-    const TUTOR_STATE_APPROVED = 5;   // factory.coffee
-
 	/**
 	 * Перенести поле контакты
 	 */
@@ -270,7 +268,7 @@ class TransferController extends Controller
      * Обновить место для занятий, районы выезда.
      * @task    #775
      */
-    public function getTransferPlace(Request $request)
+    public function getPlaceField(Request $request)
     {
         extract($request->input());
         $teachers = \DB::connection('egerep')->select("select * from repetitors limit {$limit} offset {$offset}");
@@ -278,7 +276,7 @@ class TransferController extends Controller
         $transfered = 0;
         foreach ($teachers as $teacher) {
             $tutor = Tutor::where('id_a_pers', '=', $teacher->id)
-                          ->where('state', '<>', static::TUTOR_STATE_APPROVED);
+                          ->whereNotIn('state', [4, 5]);
             if ($tutor->exists()) {
                 // Контакты, места для занятий
                 $contacts = $tutor->pluck('contacts')->first() . "
