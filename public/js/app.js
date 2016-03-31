@@ -1482,6 +1482,7 @@
       });
     };
     return $scope.saveMarkers = function() {
+      $scope.form_changed = true;
       return $('#gmap-modal').modal('hide');
     };
   });

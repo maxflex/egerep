@@ -272,7 +272,6 @@ class TransferController extends Controller
      */
     public function getTransferPlace(Request $request)
     {
-        // @todo: delete all from markers, from metros
         extract($request->input());
         $teachers = \DB::connection('egerep')->select("select * from repetitors limit {$limit} offset {$offset}");
 
@@ -282,7 +281,7 @@ class TransferController extends Controller
                           ->where('state', '<>', static::TUTOR_STATE_APPROVED);
             if ($tutor->exists()) {
                 // Контакты, места для занятий
-                $contacts = $tutor->contacts . "
+                $contacts = $tutor->pluck('contacts')->first() . "
 " . $teacher->place;
 
                 $tutor = $tutor->update([

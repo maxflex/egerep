@@ -486,4 +486,5 @@ angular
 
         # Сохранить метки
         $scope.saveMarkers = ->
+            $scope.form_changed = true
             $('#gmap-modal').modal 'hide'
