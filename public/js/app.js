@@ -851,7 +851,7 @@
 
 (function() {
   angular.module('Egerep').controller('GraphController', function($scope, $timeout, $http, $rootScope, SvgMap) {
-    var getDistance;
+    var getDistance, getDistanceObject;
     bindArguments($scope, arguments);
     $scope.map_loaded = false;
     angular.element(document).ready(function() {
@@ -903,12 +903,26 @@
       }
     });
     $scope.save = function() {
+      var from, to;
+      from = $scope.selected[0];
+      to = $scope.selected[1];
       $rootScope.ajaxStart();
       return $http.post('graph/save', {
-        from: $scope.selected[0],
-        to: $scope.selected[1],
+        from: from,
+        to: to,
         distance: $scope.new_distance
       }).then(function() {
+        var distance;
+        distance = getDistanceObject(from, to);
+        if (distance === void 0) {
+          $scope.distances.push({
+            from: from,
+            to: to,
+            distance: $scope.new_distance
+          });
+        } else {
+          distance.distance = $scope.new_distance;
+        }
         return $rootScope.ajaxEnd();
       });
     };
@@ -930,19 +944,22 @@
         return SvgMap.map.deselectAll();
       });
     };
-    return getDistance = function(from, to) {
+    getDistance = function(from, to) {
       var distance;
-      from = Math.min(from, to);
-      to = Math.max(from, to);
-      distance = _.find($scope.distances, {
-        from: from,
-        to: to
-      });
+      distance = getDistanceObject(from, to);
       if (distance === void 0) {
         return void 0;
       } else {
         return distance.distance;
       }
+    };
+    return getDistanceObject = function(from, to) {
+      from = Math.min(from, to);
+      to = Math.max(from, to);
+      return _.find($scope.distances, {
+        from: from,
+        to: to
+      });
     };
   });
 

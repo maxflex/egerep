@@ -48,13 +48,24 @@ angular
 
 
         $scope.save = ->
+            from = $scope.selected[0]
+            to = $scope.selected[1]
             $rootScope.ajaxStart()
             $http.post 'graph/save',
-                from: $scope.selected[0]
-                to: $scope.selected[1]
+                from: from
+                to: to
                 distance: $scope.new_distance
             .then ->
+                distance = getDistanceObject(from, to)
+                if distance is undefined
+                    $scope.distances.push
+                        from: from
+                        to: to
+                        distance: $scope.new_distance
+                else
+                    distance.distance = $scope.new_distance
                 $rootScope.ajaxEnd()
+
 
         $scope.delete = ->
             from = Math.min($scope.selected[0], $scope.selected[1])
@@ -71,7 +82,10 @@ angular
                 SvgMap.map.deselectAll()
 
         getDistance = (from, to) ->
+            distance = getDistanceObject(from, to)
+            if distance is undefined then undefined else distance.distance
+
+        getDistanceObject = (from, to) ->
             from = Math.min(from, to)
             to = Math.max(from, to)
-            distance = _.find($scope.distances, {from: from, to: to})
-            if distance is undefined then undefined else distance.distance
+            _.find($scope.distances, {from: from, to: to})
