@@ -5,3 +5,5 @@ Homestead.yaml
 Homestead.json
 Envoy.blade.php
 .env
+vendor/composer/*
+/.idea
