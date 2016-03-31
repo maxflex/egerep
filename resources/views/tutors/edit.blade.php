@@ -1,10 +1,12 @@
 @extends('app')
+
 @section('title')
-Редактирование преподавателя
-
-<span class='label label-white ng-hide' ng-show='tutor.id_a_pers'>старый номер в базе: <b>@{{ tutor.id_a_pers }}</b></span>
-
+    Редактирование преподавателя
+    <a href='https://crm.a-perspektiva.ru/repetitors/edit/?id=@{{ tutor.id_a_pers }}' style='text-decoration: none' target="_blank">
+        <span class='label label-white ng-hide' ng-show='tutor.id_a_pers'>старый номер в базе: <b>@{{ tutor.id_a_pers }}</b></span>
+    </a>
 @stop
+
 @section('content')
 @section('controller', 'TutorsForm')
 @section('title-right')
