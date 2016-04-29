@@ -46,6 +46,7 @@
               <a class="list-group-item">Дебет</a>
               <a class="list-group-item active">Настройки</a>
               <a class="list-group-item">Пользователи</a>
+              <a href="userstats" class="list-group-item">Статистика</a>
               <a href="logout" class="list-group-item">Выход</a></div>
         </div>
       </div>

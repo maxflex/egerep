@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         Commands\GraphRecalc::class,
         Commands\CalculateMinutes::class,
         Commands\TestTutorQueryTime::class,
+        Commands\SaveTutorStateChanges::class,
     ];
 
     /**
@@ -26,7 +27,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        $schedule->command('tutorstates:transfer')->dailyAt('19:00');
     }
 }
