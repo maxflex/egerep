@@ -328,6 +328,12 @@
                     </div>
                 </div>
             </section>
+
+            <md-input-container class="md-block" style="margin-top: 20px">
+                <label>Ссылка на видео</label>
+                <textarea class="md-input" ng-model="tutor.video_link"></textarea>
+            </md-input-container>
+
         </div>
         <div ng-if="tutor.id">
             <h4>КОММЕНТАРИИ</h4>

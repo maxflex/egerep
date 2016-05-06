@@ -65,6 +65,7 @@ class Tutor extends Model
         'branches',
         'banned',
         'in_egecentr',
+        'video_link',
     ];
 
     protected $appends = ['has_photo_original', 'has_photo_cropped', 'age'];
