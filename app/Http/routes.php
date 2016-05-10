@@ -3,6 +3,11 @@
 Route::post('login', 'LoginController@login');
 Route::get('logout', 'LoginController@logout');
 
+# API unprotected
+Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
+    Route::controller('metro', 'MetroController');
+});
+
 Route::group(['middleware' => ['web']], function () {
     Route::get('/', 'TutorsController@index');
     Route::resource('tutors', 'TutorsController');
@@ -44,7 +49,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('accounts', 'AccountsController');
         Route::resource('sms', 'SmsController');
 
-        Route::controller('metro', 'MetroController');
+        // Route::controller('metro', 'MetroController');
         Route::post('external/{function}', 'ExternalController@exec'); // external API controller | DEPRICATED?
     });
 
