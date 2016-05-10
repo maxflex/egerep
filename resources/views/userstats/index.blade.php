@@ -42,7 +42,7 @@
             <tr ng-repeat-end>
                 <td colspan="@{{ state_cnt }}">
                     <table>
-                        <tr ng-repeat="(user_id, data) in stat_data">
+                        <tr ng-repeat="(user_id, data) in stat_data" ng-show="@{{ UserService.getUser(+user_id).id }}">
                             <td class="login-width">
                                 <span style="color:#556DA7;">@{{ UserService.getLogin(+user_id) }}</span>
                             </td>
