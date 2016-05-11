@@ -178,8 +178,8 @@ angular
                 aspectRatio: 4 / 5
                 minContainerHeight: 700
                 minContainerWidth: 700
-                minCropBoxWidth: 120
-                minCropBoxHeight: 150
+                minCropBoxWidth: 240
+                minCropBoxHeight: 300
                 preview: '.img-preview'
                 viewMode: 1
                 crop: (e) ->

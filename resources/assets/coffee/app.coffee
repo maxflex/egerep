@@ -64,3 +64,13 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
 
         $rootScope.findById = (object, id) ->
             _.findWhere(object, {id: parseInt(id)})
+
+        $rootScope.formatBytes = (bytes) ->
+          if bytes < 1024
+            bytes + ' Bytes'
+          else if bytes < 1048576
+            (bytes / 1024).toFixed(1) + ' KB'
+          else if bytes < 1073741824
+            (bytes / 1048576).toFixed(1) + ' MB'
+          else
+            (bytes / 1073741824).toFixed(1) + ' GB'

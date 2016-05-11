@@ -68,7 +68,7 @@ class Tutor extends Model
         'video_link',
     ];
 
-    protected $appends = ['has_photo_original', 'has_photo_cropped', 'age'];
+    protected $appends = ['has_photo_original', 'has_photo_cropped', 'photo_cropped_size', 'photo_original_size', 'age'];
     protected $with = ['markers'];
 
     protected static $commaSeparated = ['svg_map', 'subjects', 'grades', 'branches'];
@@ -115,6 +115,24 @@ class Tutor extends Model
     public function getHasPhotoCroppedAttribute()
     {
         return file_exists($this->photoPath('@2x'));
+    }
+
+    public function getPhotoCroppedSizeAttribute()
+    {
+        if ($this->has_photo_cropped) {
+            return filesize($this->photoPath('@2x'));
+        } else {
+            return 0;
+        }
+    }
+
+    public function getPhotoOriginalSizeAttribute()
+    {
+        if ($this->has_photo_cropped) {
+            return filesize($this->photoPath('_original'));
+        } else {
+            return 0;
+        }
     }
 
     public function getAgeAttribute()
