@@ -16,8 +16,6 @@ class Tutor extends Model
     use Markerable;
     use Person;
 
-    const USER_TYPE = 'TEACHER';
-
     protected $fillable =  [
         'first_name',
         'last_name',
@@ -68,13 +66,23 @@ class Tutor extends Model
         'video_link',
     ];
 
-    protected $appends = ['has_photo_original', 'has_photo_cropped', 'photo_cropped_size', 'photo_original_size', 'age'];
+    protected $appends = [
+        'has_photo_original',
+        'has_photo_cropped',
+        'photo_cropped_size',
+        'photo_original_size',
+        'photo_url',
+        'age',
+    ];
+
     protected $with = ['markers'];
 
     protected static $commaSeparated = ['svg_map', 'subjects', 'grades', 'branches'];
     protected static $virtual = ['banned'];
 
     const UPLOAD_DIR = '/img/tutors/';
+    const NO_PHOTO   = 'no-profile-img.gif';
+    const USER_TYPE  = 'TEACHER';
 
     // ------------------------------------------------------------------------
 
@@ -103,8 +111,18 @@ class Tutor extends Model
 
     public function getBannedAttribute()
     {
-        // @todo: does this run 2 separate queries?
+        // @check: does this run 2 separate queries?
         return $this->user ? $this->user->banned : false;
+    }
+
+    public function getPhotoUrlAttribute()
+    {
+        if ($this->has_photo_cropped) {
+            $photo = $this->id . '.' . $this->photo_extension;
+        } else {
+            $photo = static::NO_PHOTO;
+        }
+        return substr(static::UPLOAD_DIR, 1) . $photo;
     }
 
     public function getHasPhotoOriginalAttribute()

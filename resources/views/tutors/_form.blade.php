@@ -17,7 +17,7 @@
                 <span class="btn-file">
                     {{-- <input name="tutor_photo" type="file" id="fileupload" data-url="upload/tutor/" accept="image/jpg"> --}}
                 </span>
-                <img src="img/tutors/@{{ tutor.id && tutor.has_photo_cropped ? tutor.id + '@2x.' + tutor.photo_extension : 'no-profile-img.gif' }}?ver=@{{ picture_version }}">
+                <img src="@{{ tutor.photo_url }}?ver=@{{ picture_version }}">
             </div>
         </div>
         <div class="form-group">
