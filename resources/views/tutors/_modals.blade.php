@@ -4,7 +4,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-sm-10 image-col-left">
-                        <div ng-if='tutor.has_photo_original'>
+                        <div ng-show='tutor.has_photo_original' style="height: 100%">
                             <img src="img/tutors/@{{ tutor.id + '_original.' + tutor.photo_extension }}?ver=@{{ picture_version }}" id='photo-edit'>
                         </div>
                     </div>
