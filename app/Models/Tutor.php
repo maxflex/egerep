@@ -146,7 +146,7 @@ class Tutor extends Model
 
     public function getPhotoOriginalSizeAttribute()
     {
-        if ($this->has_photo_cropped) {
+        if ($this->has_photo_original) {
             return filesize($this->photoPath('_original'));
         } else {
             return 0;
