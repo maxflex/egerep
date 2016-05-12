@@ -38,13 +38,13 @@ class TutorRetina extends Command
      */
     public function handle()
     {
-        $tutors = Tutor::where('photo_extension', '<>', '')->take(100)->get();
+        $tutors = Tutor::where('photo_extension', '<>', '')->get();
 
         $this->line('Starting: ' . $tutors->count() . ' tutors');
 
         foreach ($tutors as $tutor) {
             @unlink($tutor->photoPath());
-            rename($tutor->photoPath('@2x'), $tutor->photoPath());
+            @rename($tutor->photoPath('@2x'), $tutor->photoPath());
         }
 
         $this->info('Success!');
