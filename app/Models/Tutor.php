@@ -114,13 +114,13 @@ class Tutor extends Model
 
     public function getHasPhotoCroppedAttribute()
     {
-        return file_exists($this->photoPath('@2x'));
+        return file_exists($this->photoPath());
     }
 
     public function getPhotoCroppedSizeAttribute()
     {
         if ($this->has_photo_cropped) {
-            return filesize($this->photoPath('@2x'));
+            return filesize($this->photoPath());
         } else {
             return 0;
         }
