@@ -165,9 +165,11 @@ angular
                     data: formData
                     processData: false
                     contentType: false
-                    success: ->
+                    dataType: 'json'
+                    success: (response) ->
                         ajaxEnd()
                         $scope.tutor.has_photo_cropped = true
+                        $scope.photo_cropped_size = response
                         $scope.picture_version++
                         $scope.$apply()
                         $scope.closeDialog('change-photo')
@@ -210,9 +212,11 @@ angular
         		    ajaxEnd()
         		,
         		done: (i, response) ->
-                    $scope.tutor.photo_extension = response.result
-                    $scope.tutor.has_photo_original = true
-                    $scope.tutor.has_photo_cropped = false
+                    $scope.tutor.photo_extension     = response.result.extension
+                    $scope.tutor.photo_original_size = response.result.size
+                    $scope.tutor.photo_cropped_size  = 0
+                    $scope.tutor.has_photo_original  = true
+                    $scope.tutor.has_photo_cropped   = false
                     $scope.picture_version++
                     $scope.$apply()
                     bindCropper()

@@ -16,10 +16,10 @@
                       </div>
 
                       <div class='photo-sizes'>
-                          <div>
+                          <div ng-show='tutor.photo_original_size'>
                               @{{ formatBytes(tutor.photo_original_size) }}
                           </div>
-                          <div>
+                          <div ng-show='tutor.photo_cropped_size'>
                               @{{ formatBytes(tutor.photo_cropped_size) }}
                           </div>
                       </div>

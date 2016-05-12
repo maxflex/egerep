@@ -16,7 +16,10 @@ class UploadController extends Controller
         $extension = $request->file('photo')->getClientOriginalExtension();
         Tutor::where('id', $tutor_id)->update(['photo_extension' => $extension]);
         $request->file('photo')->move(public_path() . Tutor::UPLOAD_DIR, $tutor_id . '_original.' . $extension);
-        return $extension;
+        return [
+            'extension' => $extension,
+            'size'      => filesize(public_path() . Tutor::UPLOAD_DIR .  $tutor_id . '_original.' . $extension)
+        ];
     }
 
     public function postCropped(Request $request)
@@ -25,14 +28,10 @@ class UploadController extends Controller
 
         $file = $request->file('croppedImage');
 
-        // Retina
         $img = new \abeautifulsite\SimpleImage($file);
         $img->resize(240, 300);
-        $img->save(public_path() . Tutor::UPLOAD_DIR . $tutor->id . '@2x.' . $tutor->photo_extension);
-
-        // Regular monitors
-        $img = new \abeautifulsite\SimpleImage($file);
-        $img->resize(120, 150);
-        $img->save(public_path() . Tutor::UPLOAD_DIR . $tutor->id . '.' . $tutor->photo_extension);
+        $img->save($tutor->photoPath());
+        
+        return $tutor->photo_cropped_size;
     }
 }

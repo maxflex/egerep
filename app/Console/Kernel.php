@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         Commands\CalculateMinutes::class,
         Commands\TestTutorQueryTime::class,
         Commands\SaveTutorStateChanges::class,
+        Commands\TutorRetina::class,
     ];
 
     /**
