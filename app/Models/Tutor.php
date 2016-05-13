@@ -167,6 +167,8 @@ class Tutor extends Model
 
     /**
      * Получить ID всех клиентов преподавателя
+     *  id    – номер клиента,
+     *  link  - ссылка на конфигурацию (см clients.coffee : $scope.parseHash())
      */
     public function getClientIds()
     {
@@ -174,7 +176,11 @@ class Tutor extends Model
 
         foreach ($this->attachments as $attachment) {
             if ($attachment->requestList && $attachment->requestList->request) {
-                $client_ids[] = $attachment->requestList->request->client_id;
+                $client_ids[] = [
+                    'id' => $attachment->requestList->request->client_id,
+                    # @todo: заменить на link_url
+                    'link' => "requests/{$attachment->requestList->request->id}/edit#{$attachment->requestList->id}#{$attachment->id}"
+                ];
             }
         }
 

@@ -8,10 +8,12 @@ use Carbon\Carbon;
 
 class Account extends Model
 {
+    // комиссия по умолчанию в процентах
+    const DEFAULT_COMMISSION = 0.25;
+
     protected $fillable = [
         'date_end',
         'tutor_id',
-        'total_commission',
         'received',
         'debt',
         'debt_type',
@@ -20,7 +22,7 @@ class Account extends Model
         'payment_method',
         'data',
     ];
-    protected $appends = ['data'];
+    protected $appends = ['data', 'total_commission'];
 
     // ------------------------------------------------------------------------
 
@@ -82,6 +84,26 @@ class Account extends Model
         }
 
         return $date_start;
+    }
+
+    /**
+     * Итого комиссия за период
+     */
+    public function getTotalCommissionAttribute()
+    {
+        $total_commission = 0;
+
+        if (count($this->accountData)) {
+            foreach ($this->accountData as $data) {
+                if ($data->commission) {
+                    $total_commission += $data->commission;
+                } else {
+                    $total_commission += round($data->sum * static::DEFAULT_COMMISSION);
+                }
+            }
+        }
+
+        return $total_commission;
     }
 
     // ------------------------------------------------------------------------

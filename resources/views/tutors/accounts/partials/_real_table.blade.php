@@ -6,16 +6,16 @@
             <thead>
                 <tr>
                     <td width='75'></td>
-                    <td ng-repeat='client_id in client_ids' width='50'>
-                        клиент @{{ client_id }}
+                    <td ng-repeat='client in client_ids' width='50'>
+                        <a href='@{{ client.link }}'>клиент @{{ client.id }}</a>
                     </td>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat='date in getDates($index)'>
                     <td>@{{ formatDate(date) }}</td>
-                    <td ng-repeat='client_id in client_ids'>
-                        <input type="text" class='account-column no-border-outline' ng-model='account.data[client_id][date]'>
+                    <td ng-repeat='client in client_ids'>
+                        <input type="text" class='account-column no-border-outline' ng-model='account.data[client.id][date]'>
                     </td>
                 </tr>
             </tbody>
@@ -29,7 +29,7 @@
     <div class='accounts-data'>
         <div class="mbs">
             <span>Итого комиссия за период:</span>
-            <input ng-model='account.total_commission' class='no-border-outline' style="width: 50px">
+            <input ng-model='account.total_commission' readonly class='no-border-outline' style="width: 50px">
             <ng-pluralize count='account.total_commission' when="{
                 'one': 'рубль',
                 'few': 'рубля',
