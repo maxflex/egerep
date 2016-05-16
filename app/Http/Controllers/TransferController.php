@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Tutor;
 use App\Models\User;
+use App\Models\Client;
 use App\Models\Metro;
 use App\Models\Api;
 use App\Models\Comment;
@@ -159,7 +160,32 @@ class TransferController extends Controller
 	 */
 	public function getClients(Request $request)
 	{
-		$query = DB::connection('egerep')->table('clients');
+		$clients = DB::connection('egerep')->table('clients')->get();
+
+		foreach($clients as $client) {
+			$new_client = Client::create([
+				'id_a_pers' 	=> $client->id,
+				'address'		=> $client->description,
+				'name'			=> $client->student_name,
+				'grade'			=> static::_convertGrade($client->grade)
+			]);
+
+			// Создать метку
+			$markers = DB::connection('egerep')->table('geo')->
+						->where('entity_type', 'client')->where('entity_id', $client->id)->get();
+
+			if (count($markers)) {
+				foreach($markers as $marker) {
+					Marker::create([
+						'markerable_id' 	=> $client->id,
+						'markerable_type'	=> 'App\Models\Client',
+						'lat'				=> $marker->lat,
+						'lng'				=> $marker->lng,
+						'type'				=> 'green',
+					]);
+				}
+			}
+		}
 	}
 
 	/**
@@ -632,5 +658,19 @@ class TransferController extends Controller
 	{
 		extract($request->input());
  		return \DB::connection('egerep')->select("select * from repetitors limit {$limit} offset {$offset}");
+	}
+
+	/**
+	 * Конвертировать класс
+	 */
+	private static function _convertGrade($grade)
+	{
+		if ($grade == 100) {
+			return 12;
+		} else
+		if ($grade == 101) {
+			return 13;
+		}
+		return $grade;
 	}
 }

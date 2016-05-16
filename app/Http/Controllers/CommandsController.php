@@ -15,18 +15,28 @@ class CommandsController extends Controller
      */
     public function getTutorPhotoTop()
     {
-        $tutors = Tutor::where('photo_extension', '<>', '')->get();
+        ini_set('max_execution_time', 0);
+	    set_time_limit(0);
+
+/*
+        $tutors = Tutor::where('photo_extension', '<>', '')->skip(12000)->take(4000)->get();
 
         $sizes = [];
 
         foreach ($tutors as $tutor) {
-            list($width, $height) = getimagesize($tutor->photoPath('_original'));
+            list($width, $height) = @getimagesize($tutor->photoPath('_original'));
             $sizes[$tutor->id] = $width * $height;
         }
 
-        asort($sizes);
+		$_SESSION['sizes'] = $_SESSION['sizes'] + $sizes;
 
-        echo implode(', ', array_keys($sizes));
+		dd($_SESSION['sizes']);
+*/
+		$sizes = $_SESSION['sizes'];
+
+        arsort($sizes);
+
+        echo implode(', ', array_slice(array_keys($sizes), 0, 100));
     }
 
     /**
