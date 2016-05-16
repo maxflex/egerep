@@ -161,6 +161,9 @@ class TransferController extends Controller
 	 */
 	public function getClients(Request $request)
 	{
+		ini_set('max_execution_time', 0);
+	    set_time_limit(0);
+		
 		$clients = DB::connection('egerep')->table('clients')->get();
 
 		foreach($clients as $client) {
