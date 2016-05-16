@@ -19,7 +19,8 @@ class Client extends Model
         'grade',
         'address',
         'requests',
-        'markers'
+        'markers',
+        'id_a_pers', // @temp
     ];
 
     public function requests()
