@@ -155,6 +155,14 @@ class TransferController extends Controller
 	];
 
 	/**
+	 * Перенести всех клиентов
+	 */
+	public function getClients(Request $request)
+	{
+		$query = DB::connection('egerep')->table('clients');
+	}
+
+	/**
 	 * Перенести поле контакты
 	 */
 	public function getContactsField(Request $request)

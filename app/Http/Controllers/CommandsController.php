@@ -11,6 +11,25 @@ use App\Http\Controllers\Controller;
 class CommandsController extends Controller
 {
     /**
+     * Топ преподавателей по размеру фото
+     */
+    public function getTutorPhotoTop()
+    {
+        $tutors = Tutor::where('photo_extension', '<>', '')->get();
+
+        $sizes = [];
+
+        foreach ($tutors as $tutor) {
+            list($width, $height) = getimagesize($tutor->photoPath('_original'));
+            $sizes[$tutor->id] = $width * $height;
+        }
+
+        asort($sizes);
+
+        echo implode(', ', array_keys($sizes));
+    }
+
+    /**
      * Найти дубликаты
      */
     public function getTutorDuplicates()
