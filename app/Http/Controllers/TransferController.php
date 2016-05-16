@@ -130,7 +130,6 @@ class TransferController extends Controller
 
 	/**
 	 * Перенести все заявки
-	 * @IMPORTANT: во время запуска добавить public $timestamps = false; в Request Model
 	 */
 	public function getRequests()
 	{
@@ -142,12 +141,14 @@ class TransferController extends Controller
 		foreach ($tasks as $task) {
 			$new_request = \App\Models\Request::create([
 				'id_a_pers'       => $task->id,
-				'created_at'	  => $task->begin,
 				'comment'		  => $task->description,
 				'user_id'	      => static::_userId($task->status_ico),
 				'user_id_created' => static::_userId($task->user_id),
 				'state'			  => static::_convertRequestStatus($task->status),
 				'client_id'       => Client::where('id_a_pers', $task->client_id)->pluck('id')->first(),
+			]);
+			\App\Models\Request::where('id', $new_request->id)->update([
+				'created_at'	  => strtotime($task->begin),
 			]);
 		}
 	}
@@ -643,16 +644,23 @@ class TransferController extends Controller
 	 */
 	private static function _convertRequestStatus($status)
 	{
-		if ($status == 9) {
-			return 4;
+		switch ($status) {
+			case 0: {
+				return 'new';
+			}
+			case 1: {
+				return 'finished';
+			}
+			case 2: {
+				return 'awaiting';
+			}
+			case 3: {
+				return 'deny';
+			}
+			case 9: {
+				return 'spam';
+			}
 		}
-		if ($status == 1) {
-			return 2;
-		}
-		if ($status == 2) {
-			return 1;
-		}
-		return $status;
 	}
 
 	/**

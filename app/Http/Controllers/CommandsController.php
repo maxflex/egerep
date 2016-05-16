@@ -19,7 +19,7 @@ class CommandsController extends Controller
 	    set_time_limit(0);
 
 /*
-        $tutors = Tutor::where('photo_extension', '<>', '')->skip(12000)->take(4000)->get();
+        $tutors = Tutor::where('photo_extension', '<>', '')->where('id', '>', 200)->where('birth_year', '<', 1986)->skip(8000)->take(4000)->get();
 
         $sizes = [];
 
@@ -36,7 +36,16 @@ class CommandsController extends Controller
 
         arsort($sizes);
 
-        echo implode(', ', array_slice(array_keys($sizes), 0, 100));
+		$ids = array_slice(array_keys($sizes), 0, 100);
+
+		$tutors = Tutor::whereIn('id', $ids)->get();
+
+		foreach($tutors as $tutor) {
+			@copy($tutor->photoPath('_original'),
+				public_path() . '/img/tmp/' . $tutor->id  . '.' . $tutor->photo_extension
+			);
+		}
+//         echo implode(', ', array_slice(array_keys($sizes), 0, 100));
     }
 
     /**
