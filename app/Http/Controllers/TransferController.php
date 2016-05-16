@@ -171,18 +171,19 @@ class TransferController extends Controller
 			]);
 
 			// Создать метку
-			$markers = DB::connection('egerep')->table('geo')->
+			$markers = DB::connection('egerep')->table('geo')
 						->where('entity_type', 'client')->where('entity_id', $client->id)->get();
 
 			if (count($markers)) {
 				foreach($markers as $marker) {
-					Marker::create([
+					$new_marker = Marker::create([
 						'markerable_id' 	=> $client->id,
 						'markerable_type'	=> 'App\Models\Client',
 						'lat'				=> $marker->lat,
 						'lng'				=> $marker->lng,
 						'type'				=> 'green',
 					]);
+					$new_marker->createMetros();
 				}
 			}
 		}

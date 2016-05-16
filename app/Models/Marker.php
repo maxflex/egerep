@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Marker;
 
 class Marker extends Model
 {
@@ -28,4 +29,17 @@ class Marker extends Model
         return $this->hasMany('App\Models\Metro');
     }
 
+    // ------------------------------------------------------------------------
+
+    /**
+     * Создать ближайшие метро к маркеру
+     */
+    public function createMetros()
+    {
+        $metros = Metro::getClosest($this->lat, $this->lng);
+        foreach ($metros as $metro) {
+            $metro['station_id'] = $metro['id'];
+            $this->metros()->create($metro);
+        }
+    }
 }
