@@ -140,12 +140,12 @@ class TransferController extends Controller
 		$tasks = DB::connection('egerep')->table('tasks')->get();
 
 		foreach ($tasks as $task) {
-			$new_request = App\Models\Request::create([
+			$new_request = \App\Models\Request::create([
 				'id_a_pers'       => $task->id,
 				'created_at'	  => $task->begin,
 				'comment'		  => $task->description,
-				'user_id'	      => static::CO_USER_REAL[$task->status_ico],
-				'user_id_created' => static::CO_USER_REAL[$task->user_id],
+				'user_id'	      => static::_userId($task->status_ico),
+				'user_id_created' => static::_userId($task->user_id),
 				'state'			  => static::_convertRequestStatus($task->status),
 				'client_id'       => Client::where('id_a_pers', $task->client_id)->pluck('id')->first(),
 			]);
@@ -653,5 +653,17 @@ class TransferController extends Controller
 			return 1;
 		}
 		return $status;
+	}
+
+	/**
+	 * Соответствие межу ID пользователя
+	 */
+	private static function _userId($old_crm_user_id)
+	{
+		if (array_key_exists($old_crm_user_id, static::CO_USER_REAL)) {
+			return static::CO_USER_REAL[$old_crm_user_id];
+		} else {
+			return $old_crm_user_id;
+		}
 	}
 }
