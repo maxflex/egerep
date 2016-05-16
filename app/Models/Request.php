@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Request extends Model
 {
+    public $timestamps = false;
+    
     protected $attributes = [
         'state' => 'new',
     ];
