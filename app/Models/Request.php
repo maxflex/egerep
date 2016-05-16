@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Request extends Model
 {
     public $timestamps = false;
-    
+
     protected $attributes = [
         'state' => 'new',
     ];
@@ -19,6 +19,7 @@ class Request extends Model
         'user_id',
         'user_id_created',
         'lists',
+        'id_a_pers',
     ];
 
     // ------------------------------------------------------------------------
