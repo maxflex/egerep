@@ -666,9 +666,6 @@ class TransferController extends Controller
 	 */
 	private static function _convertGrade($grade)
 	{
-		if ($grade === null) {
-			return 0;
-		}
 		if ($grade == 100) {
 			return 12;
 		} else
