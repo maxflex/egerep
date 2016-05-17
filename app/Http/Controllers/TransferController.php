@@ -46,48 +46,6 @@ class TransferController extends Controller
     ];
 
 
-    // Соответствия пользователей локально
-    const CO_USER_LOCAL = [
-        12 => 1182,
-        13 => 14,
-        20 => 1183,
-        35 => 1184,
-        26 => 1185,
-        28 => 1186,
-        30 => 1187,
-        40 => 1188,
-        46 => 1189,
-        43 => 1190,
-        48 => 1191,
-        49 => 1192,
-        50 => 1193,
-        57 => 1194,
-        58 => 1195,
-        55 => 1196,
-        60 => 1197,
-        62 => 1198,
-        63 => 1199,
-        66 => 1200,
-        70 => 1201,
-        72 => 1202,
-        75 => 1203,
-        73 => 1204,
-        67 => 1205,
-        74 => 1206,
-        76 => 1207,
-        78 => 1208,
-        82 => 1209,
-        80 => 1210,
-        84 => 1211,
-        85 => 1212,
-        81 => 1213,
-        89 => 1214,
-        91 => 1215,
-        86 => 1216,
-        87 => 1217,
-        88 => 1218,
-    ];
-
 	// Соответствия пользователей в реальной базе
 	// в старой базе => в новой базе
 	const CO_USER_REAL = [12 => 1304,13 => 1305,20 => 1306,35 => 1307,26 => 1308,28 => 1309,30 => 1310,40 => 1311,46 => 1312,43 => 1313,48 => 1314,49 => 1315,50 => 1316,57 => 1317,58 => 1318,55 => 1319,60 => 1320,62 => 1321,63 => 1322,66 => 1323,70 => 1324,72 => 1325,75 => 1326,73 => 1327,67 => 1328,74 => 1329,76 => 1330,78 => 1331,82 => 1332,80 => 1333,84 => 1334,85 => 1335,81 => 1336,89 => 1337,91 => 1338,86 => 1339,87 => 1340,88 => 1341,100 => 1342,104 => 1343,95 => 1344,96 => 1345,97 => 1346,109 => 1347,102 => 1348,99 => 1349,98 => 1350,106 => 1351,108 => 1352,113 => 1353,115 => 1354,120 => 1355,119 => 106,118 => 1356,117 => 1357,125 => 1358,123 => 104,114 => 108,116 => 1359,121 => 1360,122 => 1361,124 => 102,139 => 1380,126 => 100,142 => 1383,140 => 1381,141 => 1382,130 => 1370,131 => 1371,132 => 1372,138 => 1379,136 => 1376,135 => 1377,137 => 1378,134 => 1373,133 => 1374,128 => 1368,127 => 1367,129 => 1369,143 => 1384,144 => 1385];
@@ -206,9 +164,9 @@ class TransferController extends Controller
 			if ($request_id) {
 				$new_list = RequestList::create([
 					'request_id' => \App\Models\Request::where('id_a_pers', $list->task_id)->pluck('id')->first(),
-					'subjects'	=> explode('|', $list->subjects),
+					'subjects'	=> static::_subjects(explode('|', $list->subjects)),
 					'user_id'	=> static::_userId($list->user_id),
-					'tutor_ids'	=> DB::connection('egerep')->table('list_repetitors')->where('list_id', $list->id)->pluck('repetitor_id'),
+					'tutor_ids'	=> static::_tutorIds(DB::connection('egerep')->table('list_repetitors')->where('list_id', $list->id)->pluck('repetitor_id')),
 				]);
 				RequestList::where('id', $new_list->id)->update([
 					'created_at' => $list->time,
@@ -741,5 +699,74 @@ class TransferController extends Controller
 		} else {
 			return $old_crm_user_id;
 		}
+	}
+
+	/**
+	 * Соответствие между предметами
+	 */
+	private static function _subjects($subjects)
+	{
+		$new_subjects = [];
+		if (count($subjects)) {
+			foreach ($subjects as $subject_id) {
+				switch($subject_id) {
+					case 2: {
+						$new_subjects[] = static::MATH;
+						break;
+					}
+					case 3: {
+						$new_subjects[] = static::PHYSICS;
+						break;
+					}
+					case 7: {
+						$new_subjects[] = static::CHEMISTRY;
+						break;
+					}
+					case 4: {
+						$new_subjects[] = static::BIOLOGY;
+						break;
+					}
+					case 12: {
+						$new_subjects[] = static::COMPUTER;
+						break;
+					}
+					case 10: {
+						$new_subjects[] = static::RUSSIAN;
+						break;
+					}
+					case 13: {
+						$new_subjects[] = static::LITERATURE;
+						break;
+					}
+					case 1: {
+						$new_subjects[] = static::SOCIETY;
+						break;
+					}
+					case 5: {
+						$new_subjects[] = static::HISTORY;
+						break;
+					}
+					case 9: {
+						$new_subjects[] = static::ENGLISH;
+						break;
+					}
+				}
+			}
+		}
+		return $new_subjects;
+	}
+
+	/**
+	 * Соответствия межу ID преподавателей
+	 */
+	private static function _tutorIds($tutor_ids)
+	{
+		$new_tutor_ids = [];
+		if (count($tutor_ids)) {
+			foreach ($tutor_ids as $tutor_id) {
+				$new_tutor_ids[] = Tutor::where('id_a_pers', $tutor_id)->pluck('id')->first();
+			}
+		}
+		return $new_tutor_ids;
 	}
 }
