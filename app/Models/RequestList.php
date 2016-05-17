@@ -14,7 +14,6 @@ class RequestList extends Model
         'attachments',
     ];
     protected static $commaSeparated = ['tutor_ids', 'subjects'];
-    public $timestamps = false;
 
     // ------------------------------------------------------------------------
 

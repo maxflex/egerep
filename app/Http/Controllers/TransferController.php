@@ -12,6 +12,7 @@ use App\Models\Client;
 use App\Models\Metro;
 use App\Models\Api;
 use App\Models\Comment;
+use App\Models\RequestList;
 use Carbon\Carbon;
 use App\Models\Marker;
 use DB;
@@ -143,12 +144,35 @@ class TransferController extends Controller
 				'id_a_pers'       => $task->id,
 				'comment'		  => $task->description,
 				'user_id'	      => static::_userId($task->status_ico),
-				'user_id_created' => static::_userId($task->user_id),
 				'state'			  => static::_convertRequestStatus($task->status),
 				'client_id'       => Client::where('id_a_pers', $task->client_id)->pluck('id')->first(),
 			]);
-			\App\Models\Request::where('id', $new_request->id)->update([
-				'created_at'	  => strtotime($task->begin),
+			\App\Models\Request::where('id_a_pers', $task->id)->update([
+				'created_at'	  => $task->begin,
+				'user_id_created' => static::_userId($task->user_id),
+			]);
+		}
+	}
+
+	/**
+	 * Перенести списки
+	 */
+	public function getLists()
+	{
+		ini_set('max_execution_time', 0);
+	    set_time_limit(0);
+
+		$lists = DB::connection('egerep')->table('lists')->get();
+
+		foreach ($lists as $list) {
+			$new_list = RequestList::create([
+				'request_id' => \App\Models\Request::where('id_a_pers', $list->task_id)->pluck('id')->first(),
+				'subjects'	=> explode('|', $list->subjects),
+				'user_id'	=> static::_userId($list->user_id),
+				'tutor_ids'	=> DB::connection('egerep')->table('list_repetitors')->where('list_id', $list->id)->pluck('repetitor_id'),
+			]);
+			RequestList::where('id', $new_list->id)->update([
+				'created_at' => $list->time,
 			]);
 		}
 	}
