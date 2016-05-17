@@ -164,17 +164,28 @@ class TransferController extends Controller
 
 		$lists = DB::connection('egerep')->table('lists')->get();
 
+		// списки, которым нет соответствующих заявок
+		$no_request = [];
+
 		foreach ($lists as $list) {
-			$new_list = RequestList::create([
-				'request_id' => \App\Models\Request::where('id_a_pers', $list->task_id)->pluck('id')->first(),
-				'subjects'	=> explode('|', $list->subjects),
-				'user_id'	=> static::_userId($list->user_id),
-				'tutor_ids'	=> DB::connection('egerep')->table('list_repetitors')->where('list_id', $list->id)->pluck('repetitor_id'),
-			]);
-			RequestList::where('id', $new_list->id)->update([
-				'created_at' => $list->time,
-			]);
+			$request_id = \App\Models\Request::where('id_a_pers', $list->task_id)->pluck('id')->first();
+
+			if ($request_id) {
+				$new_list = RequestList::create([
+					'request_id' => \App\Models\Request::where('id_a_pers', $list->task_id)->pluck('id')->first(),
+					'subjects'	=> explode('|', $list->subjects),
+					'user_id'	=> static::_userId($list->user_id),
+					'tutor_ids'	=> DB::connection('egerep')->table('list_repetitors')->where('list_id', $list->id)->pluck('repetitor_id'),
+				]);
+				RequestList::where('id', $new_list->id)->update([
+					'created_at' => $list->time,
+				]);
+			} else {
+				$no_request[] = $list->id;
+			}
 		}
+
+		echo implode(', ', $no_request);
 	}
 
 	/**

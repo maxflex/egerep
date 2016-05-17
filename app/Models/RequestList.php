@@ -12,6 +12,7 @@ class RequestList extends Model
         'tutor_ids',
         'subjects',
         'attachments',
+        'user_id',
     ];
     protected static $commaSeparated = ['tutor_ids', 'subjects'];
 
