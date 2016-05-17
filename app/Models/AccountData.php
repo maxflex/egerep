@@ -18,6 +18,10 @@ class AccountData extends Model
 
     public function setValueAttribute($value)
     {
+        if (strpos($value,'/') === false) {
+            $value .= '/';
+        }
+
         $data = explode('/', $value);
         if (count($data) >= 1) {
             $this->sum = $data[0];
