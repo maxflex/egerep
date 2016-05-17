@@ -135,7 +135,6 @@ angular
             RequestList.save
                 request_id: $scope.selected_request.id
                 subjects: $scope.list_subjects
-                user_id: $scope.user.id
             , (data) ->
                 $scope.selected_request.lists.push data
                 $scope.selected_list = data

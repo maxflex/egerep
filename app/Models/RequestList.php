@@ -36,4 +36,15 @@ class RequestList extends Model
             Attachment::find($attachment['id'])->update($attachment);
         }
     }
+
+    // ------------------------------------------------------------------------
+
+    protected static function boot()
+    {
+        static::saving(function ($model) {
+            if (! $model->exists) {
+                $model->user_id = User::fromSession()->id;
+            }
+        });
+    }
 }

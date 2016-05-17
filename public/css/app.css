@@ -29963,4 +29963,7 @@ select.has-error:focus, input.has-error:focus, button.has-error:focus {
   background: #3276b1 !important;
   border-color: #285e8e !important; }
 
+.request-list-props {
+  min-height: 50px; }
+
 /*# sourceMappingURL=app.css.map */
