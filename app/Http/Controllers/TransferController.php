@@ -165,10 +165,10 @@ class TransferController extends Controller
 				$new_list = RequestList::create([
 					'request_id' => \App\Models\Request::where('id_a_pers', $list->task_id)->pluck('id')->first(),
 					'subjects'	=> static::_subjects(explode('|', $list->subjects)),
-					'user_id'	=> static::_userId($list->user_id),
 					'tutor_ids'	=> static::_tutorIds(DB::connection('egerep')->table('list_repetitors')->where('list_id', $list->id)->pluck('repetitor_id')),
 				]);
 				RequestList::where('id', $new_list->id)->update([
+					'user_id'	=> static::_userId($list->user_id),
 					'created_at' => $list->time,
 				]);
 			} else {
