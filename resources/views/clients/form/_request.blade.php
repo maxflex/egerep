@@ -15,7 +15,7 @@
     <div class="col-sm-6">
         <div class='mbs'>
             <b>Заявку создал:</b>
-                @{{ getUser(selected_request.user_id_created) ? getUser(selected_request.user_id_created).login : 'system' }}
+                @{{ UserService.getLogin(selected_request.user_id_created) }}
                 @{{ formatDateTime(selected_request.created_at) }}
         </div>
         <div class='mbs'>

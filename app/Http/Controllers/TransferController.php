@@ -190,6 +190,10 @@ class TransferController extends Controller
 		$attachments = DB::connection('egerep')->table('lists')->get();
 
 		foreach ($attachments as $attachment) {
+			Attachment::create([
+				'begin' => $attachment_date,
+				'end'	=> $attachment_close,
+			]);
 		}
 	}
 
