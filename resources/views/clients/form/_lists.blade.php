@@ -13,7 +13,7 @@
 </div>
 
 <div class="row">
-    <div class="col-sm-12">
+    <div class="col-sm-6">
         <div ui-sortable='sortableOptions' ng-model="selected_list.tutor_ids" class="mbs">
             <div class='mbs' ng-repeat="tutor_id in selected_list.tutor_ids" data-id='@{{tutor_id}}'>
                 <a href="tutors/@{{ tutor_id }}/edit">@{{ tutors[tutor_id] }}</a>
@@ -25,5 +25,12 @@
         <p ng-show='selected_list'>
             <a class="link-gray" href='tutors/add/@{{ selected_list.id }}'>добавить репетитора</a>
         </p>
+    </div>
+    <div class="col-sm-6">
+        <div class='mbs request-list-props' ng-show='selected_list'>
+            <b>Список создал:</b>
+                @{{ UserService.getLogin(selected_list.user_id) }}
+                @{{ selected_list.created_at ? formatDateTime(selected_list.created_at) : '' }}
+        </div>
     </div>
 </div>
