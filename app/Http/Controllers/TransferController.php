@@ -174,6 +174,7 @@ class TransferController extends Controller
 					'user_id' 		=> static::_userId($comment->user_id),
 					'entity_type' 	=> 'request',
 					'entity_id'		=> $request_id,
+					'comment'		=> $comment->text,
 					'created_at'	=> $comment->time,
 					'updated_at'	=> $comment->time,
 				]);
