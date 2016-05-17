@@ -155,7 +155,39 @@ class TransferController extends Controller
 	}
 
 	/**
+	 * Перенести комментарии к заявке
+	 */
+	public function getRequestComments()
+	{
+		ini_set('max_execution_time', 0);
+	    set_time_limit(0);
+
+		$comments = DB::connection('egerep')->table('task_comments')->get();
+
+		$no_request = [];
+
+		foreach ($comments as $comment) {
+			$request_id = \App\Models\Request::where('id_a_pers', $comment->task_id)->pluck('id')->first();
+
+			if ($request_id) {
+				Comment::insert([
+					'user_id' 		=> static::_userId('user_id'),
+					'entity_type' 	=> 'request',
+					'entity_id'		=> $request_id,
+					'created_at'	=> $comment->time,
+					'updated_at'	=> $comment->time,
+				]);
+			} else {
+				$no_request[] = $comment->id;
+			}
+		}
+
+		echo implode(', ', $no_request);
+	}
+
+	/**
 	 * Перенести списки
+	 * списки, которым не соответствующей заявки: 9, 3609, 3610, 3696, 14163, 14164
 	 */
 	public function getLists()
 	{
