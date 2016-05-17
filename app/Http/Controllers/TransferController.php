@@ -171,7 +171,7 @@ class TransferController extends Controller
 
 			if ($request_id) {
 				Comment::insert([
-					'user_id' 		=> static::_userId('user_id'),
+					'user_id' 		=> static::_userId($comment->user_id),
 					'entity_type' 	=> 'request',
 					'entity_id'		=> $request_id,
 					'created_at'	=> $comment->time,
