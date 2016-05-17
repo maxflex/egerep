@@ -180,6 +180,20 @@ class TransferController extends Controller
 	}
 
 	/**
+	 * Перенести стыковки
+	 */
+	public function getAttachments()
+	{
+		ini_set('max_execution_time', 0);
+		set_time_limit(0);
+
+		$attachments = DB::connection('egerep')->table('lists')->get();
+
+		foreach ($attachments as $attachment) {
+		}
+	}
+
+	/**
 	 * Перенести поле контакты
 	 */
 	public function getContactsField(Request $request)
