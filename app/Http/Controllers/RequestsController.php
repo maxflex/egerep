@@ -14,9 +14,13 @@ class RequestsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('requests.index');
+        return view('requests.index')->with(
+            ngInit([
+                'page' => $request->input('page'),
+            ])
+        );
     }
 
     /**
