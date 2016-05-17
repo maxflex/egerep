@@ -17,7 +17,7 @@ class RequestsController extends Controller
      */
     public function index()
     {
-        return \App\Models\Request::all()->toJson();
+        return \App\Models\Request::paginate(20)->toJson();
     }
 
     /**
