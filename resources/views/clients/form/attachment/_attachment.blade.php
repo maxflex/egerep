@@ -38,5 +38,12 @@
         <div class='mbs'>
             <b>Статус стыковки:</b> новая
         </div>
+        <div class='mbs'>
+            <b>Видимость:</b>
+            <span ng-click="selected_attachment.hide = +(!selected_attachment.hide)" class="link-like">
+                <span ng-show="selected_attachment.hide">скрыто</span>
+                <span ng-show="!selected_attachment.hide">показано</span>
+            </span>
+        </div>
     </div>
 </div>

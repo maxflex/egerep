@@ -18,6 +18,7 @@ class Attachment extends Model
         'review',
         'comment',
         'forecast',
+        'hide'
     ];
     protected $casts = [
         'grade' => 'int',
