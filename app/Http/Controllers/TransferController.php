@@ -156,7 +156,8 @@ class TransferController extends Controller
 	{
 		ini_set('max_execution_time', 0);
 	    set_time_limit(0);
-
+		DB::connection()->disableQueryLog();
+		
 		$lists = DB::connection('egerep')->table('lists')->get();
 
 		// списки, которым нет соответствующих заявок
@@ -836,7 +837,10 @@ class TransferController extends Controller
 		$new_tutor_ids = [];
 		if (count($tutor_ids)) {
 			foreach ($tutor_ids as $tutor_id) {
-				$new_tutor_ids[] = Tutor::where('id_a_pers', $tutor_id)->pluck('id')->first();
+				$new_tutor_id = Tutor::where('id_a_pers', $tutor_id)->pluck('id')->first();
+				if ($new_tutor_id) {
+					$new_tutor_ids[] = $new_tutor_id;
+				}
 			}
 		}
 		return $new_tutor_ids;
@@ -847,7 +851,8 @@ class TransferController extends Controller
 	 */
 	private static function _tutorId($tutor_id)
 	{
-		return Tutor::where('id_a_pers', $tutor_id)->pluck('id')->first();
+		$new_tutor_id = Tutor::where('id_a_pers', $tutor_id)->pluck('id')->first();
+		return $new_tutor_id ? $new_tutor_id : null;
 	}
 
 	/**
