@@ -13,6 +13,9 @@ use App\Models\Metro;
 use App\Models\Api;
 use App\Models\Comment;
 use App\Models\RequestList;
+use App\Models\Attachment;
+use App\Models\Archive;
+use App\Models\Review;
 use Carbon\Carbon;
 use App\Models\Marker;
 use DB;
@@ -211,9 +214,36 @@ class TransferController extends Controller
 				'comment'	=> $attachment->description,
 				'created_at'=> $attachment->created,
 				'updated_at'=> $attachment->created,
-				'forecast'	=> $attachment->archive == 1 ? 1 : null,
+				'forecast'	=> (($attachment->dohod == 0) ? ($attachment->summa * $attachment->num * 0.25) : ($attachment->num * $attachment->dohod)),
 				'hide'		=> $attachment->hide,
 			]);
+
+			// если заархивировано
+			if ($attachment->archive) {
+				Archive::insert([
+					'attachment_id' 		=> $new_attachment_id,
+					'date'					=> $attachment->end,
+					'total_lessons_missing' => $attachment->archive == 1 ? 1 : null,
+					'comment'				=> $attachment->archive_comment,
+					'user_id'				=> static::_userId($attachment->archive_user_id),
+					'created_at'			=> $attachment->archive_created,
+					'updated_at'			=> $attachment->archive_created,
+				]);
+			}
+
+			// если есть отзыв
+			if ($attachment->opinion_user_id) {
+				Review::insert([
+					'attachment_id'		=> $new_attachment_id,
+					'score'				=> static::_reviewScore($attachment->rating),
+					'signature'			=> $attachment->opinion_signature,
+					'comment'			=> $attachment->opinion,
+					'user_id'			=> static::_userId($attachment->opinion_user_id),
+					'state'				=> $attachment->opinion_public ? 'published' : 'unpublished',
+					'created_at'		=> $attachment->opinion_created,
+					'updated_at'		=> $attachment->opinion_edited,
+				]);
+			}
 		}
 	}
 
@@ -818,5 +848,17 @@ class TransferController extends Controller
 	private static function _tutorId($tutor_id)
 	{
 		return Tutor::where('id_a_pers', $tutor_id)->pluck('id')->first();
+	}
+
+	/**
+	 * Оценка в отзыве
+	 */
+	private static function _reviewScore($score)
+	{
+		if ($score < 0) {
+			return 11;
+		} else {
+			return $score;
+		}
 	}
 }
