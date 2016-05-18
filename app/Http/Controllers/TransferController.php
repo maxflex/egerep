@@ -16,6 +16,8 @@ use App\Models\RequestList;
 use App\Models\Attachment;
 use App\Models\Archive;
 use App\Models\Review;
+use App\Models\Account;
+use App\Models\AccountData;
 use Carbon\Carbon;
 use App\Models\Marker;
 use DB;
@@ -157,7 +159,7 @@ class TransferController extends Controller
 		ini_set('max_execution_time', 0);
 	    set_time_limit(0);
 		DB::connection()->disableQueryLog();
-		
+
 		$lists = DB::connection('egerep')->table('lists')->get();
 
 		// списки, которым нет соответствующих заявок
@@ -191,8 +193,19 @@ class TransferController extends Controller
 	{
 		ini_set('max_execution_time', 0);
 		set_time_limit(0);
+		DB::connection()->disableQueryLog();
 
-		$attachments = DB::connection('egerep')->table('lists')->get();
+		DB::statement("DELETE FROM `attachments`");
+		DB::statement("ALTER TABLE `attachments` AUTO_INCREMENT=1");
+		DB::statement("DELETE FROM `reviews`");
+		DB::statement("ALTER TABLE `reviews` AUTO_INCREMENT=1");
+		DB::statement("DELETE FROM `archives`");
+		DB::statement("ALTER TABLE `archives` AUTO_INCREMENT=1");
+
+
+		$attachments = DB::connection('egerep')->table('repetitor_clients')->get();
+
+		$no_tutor_ids = [];
 
 		foreach ($attachments as $attachment) {
 			$client_advanced = DB::connection('egerep')->table('client_advanced')
@@ -200,53 +213,127 @@ class TransferController extends Controller
 				->where('repetitor_id', $attachment->repetitor_id)
 				->first();
 
-			$request_list_id = RequestList::join('requests', 'requests.id', '=', 'request_lists.request_id')
-								->where('requests.id_a_pers', $attachment->task_id)
-								->whereRaw('FIND_IN_SET(' . static::_tutorId($attachment->repetitor_id) . ', request_lists.tutor_ids)')
-								->pluck('request_lists.id')
-								->first();
-
-			$new_attachment_id = Attachment::insertGetId([
-				'user_id' 	=> static::_userId($attachment->user_id),
-				'tutor_id'	=> static::_tutorId($attachment->tutor_id),
-				'date'		=> $attachment->begin,
-				'grade'		=> static::_convertGrade($client_advanced->client_group),
-				'subjects'	=> implode(',', static::_subjects(explode(',', $client_advanced->subjects))),
-				'comment'	=> $attachment->description,
-				'created_at'=> $attachment->created,
-				'updated_at'=> $attachment->created,
-				'forecast'	=> (($attachment->dohod == 0) ? ($attachment->summa * $attachment->num * 0.25) : ($attachment->num * $attachment->dohod)),
-				'hide'		=> $attachment->hide,
-			]);
-
-			// если заархивировано
-			if ($attachment->archive) {
-				Archive::insert([
-					'attachment_id' 		=> $new_attachment_id,
-					'date'					=> $attachment->end,
-					'total_lessons_missing' => $attachment->archive == 1 ? 1 : null,
-					'comment'				=> $attachment->archive_comment,
-					'user_id'				=> static::_userId($attachment->archive_user_id),
-					'created_at'			=> $attachment->archive_created,
-					'updated_at'			=> $attachment->archive_created,
-				]);
+/*
+			if (! $client_advanced) {
+				throw new \Exception("No client advanced model for {$attachment->client_id} + {$attachment->repetitor_id}");
 			}
+*/
 
-			// если есть отзыв
-			if ($attachment->opinion_user_id) {
-				Review::insert([
-					'attachment_id'		=> $new_attachment_id,
-					'score'				=> static::_reviewScore($attachment->rating),
-					'signature'			=> $attachment->opinion_signature,
-					'comment'			=> $attachment->opinion,
-					'user_id'			=> static::_userId($attachment->opinion_user_id),
-					'state'				=> $attachment->opinion_public ? 'published' : 'unpublished',
-					'created_at'		=> $attachment->opinion_created,
-					'updated_at'		=> $attachment->opinion_edited,
+			$new_crm_tutor_id = static::_tutorId($attachment->repetitor_id);
+
+			if ($new_crm_tutor_id) {
+				$request_list_id = RequestList::join('requests', 'requests.id', '=', 'request_lists.request_id')
+									->where('requests.id_a_pers', $attachment->task_id)
+									->whereRaw('FIND_IN_SET(' . $new_crm_tutor_id . ', request_lists.tutor_ids)')
+									->pluck('request_lists.id')
+									->first();
+
+				if (! $request_list_id) {
+					continue;
+// 					throw new \Exception("No request_list_id for old_task_id: {$attachment->task_id} + new_crm_tutor_id: {$new_crm_tutor_id}");
+				}
+
+				$forecast = (($attachment->dohod == 0) ? ($attachment->summa * $attachment->num * 0.25) : ($attachment->num * $attachment->dohod));
+
+				$new_attachment_id = Attachment::insertGetId([
+					'user_id' 	=> static::_userId($attachment->user_id),
+					'tutor_id'	=> $new_crm_tutor_id,
+					'date'		=> $attachment->begin,
+					'grade'		=> $client_advanced ? static::_convertGrade($client_advanced->client_group) : 0,
+					'subjects'	=> $client_advanced ? implode(',', static::_subjects(explode(',', $client_advanced->subjects))) : '',
+					'comment'	=> $attachment->description,
+					'created_at'=> $attachment->created,
+					'updated_at'=> $attachment->created,
+					'forecast'	=> $forecast ? $forecast : null,
+					'hide'		=> $attachment->hide,
+					'request_list_id' => $request_list_id,
 				]);
+
+				// если заархивировано
+				if ($attachment->archive) {
+					Archive::insert([
+						'attachment_id' 		=> $new_attachment_id,
+						'date'					=> $attachment->end,
+						'total_lessons_missing' => $attachment->archive == 1 ? 1 : null,
+						'comment'				=> $attachment->archive_comment,
+						'user_id'				=> static::_userId($attachment->archive_user_id),
+						'created_at'			=> $attachment->archive_created,
+						'updated_at'			=> $attachment->archive_created,
+					]);
+				}
+
+				// если есть отзыв
+				if ($attachment->opinion_user_id) {
+					Review::insert([
+						'attachment_id'		=> $new_attachment_id,
+						'score'				=> static::_reviewScore($attachment->rating),
+						'signature'			=> $attachment->opinion_signature,
+						'comment'			=> $attachment->opinion,
+						'user_id'			=> static::_userId($attachment->opinion_user_id),
+						'state'				=> $attachment->opinion_public ? 'published' : 'unpublished',
+						'created_at'		=> $attachment->opinion_created,
+						'updated_at'		=> $attachment->opinion_created,
+					]);
+				}
+			} else {
+				$no_tutor_ids[] = $attachment->repetitor_id;
+			}
+		}
+
+		dd($no_tutor_ids);
+	}
+
+	/**
+	 * Перенести отчетность
+	 */
+	public function getAccounts()
+	{
+		ini_set('max_execution_time', 0);
+		set_time_limit(0);
+		DB::connection()->disableQueryLog();
+
+		DB::statement("DELETE FROM `accounts`");
+		DB::statement("ALTER TABLE `accounts` AUTO_INCREMENT=1");
+		DB::statement("DELETE FROM `account_datas`");
+		DB::statement("ALTER TABLE `account_datas` AUTO_INCREMENT=1");
+
+		$periods = DB::connection('egerep')->table('periods')->get();
+
+		foreach ($periods as $period) {
+			$new_tutor_id = static::_tutorId($period->repetitor_id);
+
+			if ($new_tutor_id) {
+				$new_account_id = Account::insertGetId([
+					'payment_method'	=> $period->money,
+					'debt'				=> abs($period->zadol),
+					'debt_type'			=> $period->zadol < 0 ? 1 : 0, // доплатил/переплатил
+					'debt_before'		=> $period->was_in_debet,
+					'received'			=> $period->summa,
+					'comment'			=> $period->comments,
+					'date_end'			=> $period->end,
+					'tutor_id'			=> $new_tutor_id,
+					'created_at'		=> $period->date_created,
+					'updated_at'		=> $period->date_created,
+				]);
+
+				// данные таблицы отчетности
+				$account_data = DB::connection('egerep')->table('lessons')
+									->where('repetitor_id', $period->repetitor_id)
+									->get();
+
+				foreach ($account_data as $ad) {
+					AccountData::insert([
+						'tutor_id' 	=> $new_tutor_id,
+						'client_id'	=> static::_clientId($ad->client_id),
+						'date'		=> $ad->date,
+						'sum'		=> $ad->summa,
+						'commission'=> $ad->dohod,
+					]);
+				}
 			}
 		}
 	}
+
 
 	/**
 	 * Перенести поле контакты
@@ -853,6 +940,15 @@ class TransferController extends Controller
 	{
 		$new_tutor_id = Tutor::where('id_a_pers', $tutor_id)->pluck('id')->first();
 		return $new_tutor_id ? $new_tutor_id : null;
+	}
+
+	/**
+	 * Соответствия межу ID клиента
+	 */
+	private static function _clientId($client_id)
+	{
+		$new_client_id = Client::where('id_a_pers', $client_id)->pluck('id')->first();
+		return $new_client_id ? $new_client_id : null;
 	}
 
 	/**
