@@ -30,6 +30,7 @@ class TransferController extends Controller
 	const SOCIETY	= 8;
 	const HISTORY	= 9;
 	const ENGLISH	= 10;
+	const UNKNOWN 	= 11;
 
 	# Все предметы
 	static $subjects = [
@@ -190,9 +191,28 @@ class TransferController extends Controller
 		$attachments = DB::connection('egerep')->table('lists')->get();
 
 		foreach ($attachments as $attachment) {
-			Attachment::create([
-				'begin' => $attachment_date,
-				'end'	=> $attachment_close,
+			$client_advanced = DB::connection('egerep')->table('client_advanced')
+				->where('client_id', $attachment->client_id)
+				->where('repetitor_id', $attachment->repetitor_id)
+				->first();
+
+			$request_list_id = RequestList::join('requests', 'requests.id', '=', 'request_lists.request_id')
+								->where('requests.id_a_pers', $attachment->task_id)
+								->whereRaw('FIND_IN_SET(' . static::_tutorId($attachment->repetitor_id) . ', request_lists.tutor_ids)')
+								->pluck('request_lists.id')
+								->first();
+
+			$new_attachment_id = Attachment::insertGetId([
+				'user_id' 	=> static::_userId($attachment->user_id),
+				'tutor_id'	=> static::_tutorId($attachment->tutor_id),
+				'date'		=> $attachment->begin,
+				'grade'		=> static::_convertGrade($client_advanced->client_group),
+				'subjects'	=> implode(',', static::_subjects(explode(',', $client_advanced->subjects))),
+				'comment'	=> $attachment->description,
+				'created_at'=> $attachment->created,
+				'updated_at'=> $attachment->created,
+				'forecast'	=> $attachment->archive == 1 ? 1 : null,
+				'hide'		=> $attachment->hide,
 			]);
 		}
 	}
@@ -768,6 +788,10 @@ class TransferController extends Controller
 						$new_subjects[] = static::ENGLISH;
 						break;
 					}
+					default: {
+						$new_subjects[] = static::UNKNOWN;
+						break;
+					}
 				}
 			}
 		}
@@ -786,5 +810,13 @@ class TransferController extends Controller
 			}
 		}
 		return $new_tutor_ids;
+	}
+
+	/**
+	 * Соответствия межу ID преподавателей
+	 */
+	private static function _tutorId($tutor_id)
+	{
+		return Tutor::where('id_a_pers', $tutor_id)->pluck('id')->first();
 	}
 }

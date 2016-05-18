@@ -11,6 +11,7 @@ return array(
     'AddForecastToAttachment' => $baseDir . '/database/migrations/2016_02_23_224011_add_forecast_to_attachment.php',
     'AddGradesToTeachers' => $baseDir . '/database/migrations/2016_02_15_193218_add_grades_to_teachers.php',
     'AddHasClientsToTeachers' => $baseDir . '/database/migrations/2016_03_16_172334_add_has_clients_to_teachers.php',
+    'AddHideToAttachments' => $baseDir . '/database/migrations/2016_05_17_182544_add_hide_to_attachments.php',
     'AddIdAPersToClients' => $baseDir . '/database/migrations/2016_05_16_130655_add_id_a_pers_to_clients.php',
     'AddIdAPersToRequests' => $baseDir . '/database/migrations/2016_05_16_173348_add_id_a_pers_to_requests.php',
     'AddIndexOnTutorState' => $baseDir . '/database/migrations/2016_03_25_135311_add_index_on_tutor_state.php',
