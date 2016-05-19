@@ -90,7 +90,7 @@ class Transfer extends Command
 	 */
 	public static function clients()
 	{
-		Client::truncate();
+		DB::statement("DELETE FROM `clients`");
 		DB::statement("ALTER TABLE `clients` AUTO_INCREMENT=1");
 		Marker::where('markerable_type', 'App\Models\Client')->delete();
 
@@ -128,7 +128,7 @@ class Transfer extends Command
 	 */
 	public static function requests()
 	{
-		Request::truncate();
+		DB::statement("DELETE FROM `requests`");
 		DB::statement("ALTER TABLE `requests` AUTO_INCREMENT=1");
 
 		$tasks = DB::connection('egerep')->table('tasks')->get();
@@ -181,7 +181,7 @@ class Transfer extends Command
 	 */
 	public static function lists()
 	{
-		RequestList::truncate();
+		DB::statement("DELETE FROM `request_lists`");
 		DB::statement("ALTER TABLE `request_lists` AUTO_INCREMENT=1");
 
 		$lists = DB::connection('egerep')->table('lists')->get();
