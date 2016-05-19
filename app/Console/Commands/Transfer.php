@@ -55,32 +55,32 @@ class Transfer extends Command
     {
         if ($this->option('clients') || $this->option('all')) {
             $this->line('Transfering clients...');
-			static::clients($request);
+			static::clients();
             $this->info('Clients transfered!');
 		}
 		if ($this->option('requests') || $this->option('all')) {
             $this->line('Transfering requests...');
-			static::requests($request);
+			static::requests();
             $this->info('Requests transfered!');
 		}
 		if ($this->option('requestcomments') || $this->option('all')) {
             $this->line('Transfering request comments...');
-			static::requestComments($request);
+			static::requestComments();
             $this->info('Request comments transfered!');
 		}
 		if ($this->option('lists') || $this->option('all')) {
             $this->line('Transfering lists...');
-			static::lists($request);
+			static::lists();
             $this->info('Lists transfered!');
 		}
 		if ($this->option('attachments') || $this->option('all')) {
             $this->line('Transfering attachments...');
-			static::attachments($request);
+			static::attachments();
             $this->info('Attachments transfered!');
 		}
 		if ($this->option('accounts') || $this->option('all')) {
             $this->line('Transfering accounts...');
-			static::accounts($request);
+			static::accounts();
             $this->info('Accounts transfered!');
 		}
     }

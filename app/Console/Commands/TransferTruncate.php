@@ -42,7 +42,7 @@ class TransferTruncate extends Command
     {
         $this->line('Starting truncate...');
         static::truncateTables();
-        $this->info('');
+        $this->info('Truncate success!');
     }
 
     public static function truncateTables()
