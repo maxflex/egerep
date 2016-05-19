@@ -56,48 +56,81 @@ class TransferController extends Controller
 	// в старой базе => в новой базе
 	const CO_USER_REAL = [12 => 1304,13 => 1305,20 => 1306,35 => 1307,26 => 1308,28 => 1309,30 => 1310,40 => 1311,46 => 1312,43 => 1313,48 => 1314,49 => 1315,50 => 1316,57 => 1317,58 => 1318,55 => 1319,60 => 1320,62 => 1321,63 => 1322,66 => 1323,70 => 1324,72 => 1325,75 => 1326,73 => 1327,67 => 1328,74 => 1329,76 => 1330,78 => 1331,82 => 1332,80 => 1333,84 => 1334,85 => 1335,81 => 1336,89 => 1337,91 => 1338,86 => 1339,87 => 1340,88 => 1341,100 => 1342,104 => 1343,95 => 1344,96 => 1345,97 => 1346,109 => 1347,102 => 1348,99 => 1349,98 => 1350,106 => 1351,108 => 1352,113 => 1353,115 => 1354,120 => 1355,119 => 106,118 => 1356,117 => 1357,125 => 1358,123 => 104,114 => 108,116 => 1359,121 => 1360,122 => 1361,124 => 102,139 => 1380,126 => 100,142 => 1383,140 => 1381,141 => 1382,130 => 1370,131 => 1371,132 => 1372,138 => 1379,136 => 1376,135 => 1377,137 => 1378,134 => 1373,133 => 1374,128 => 1368,127 => 1367,129 => 1369,143 => 1384,144 => 1385];
 
-    public function getClearSession() {
-        foreach([
-                'last_client_id', 'last_marker_id',
-                'last_list_id', 'last_task_id',
-                'last_comment_id', 'last_attachment_id',
-                'last_period_id'
-            ] as $key) {
-            unset($_SESSION[$key]);
-        }
-    }
+	public function getAll(Request $request)
+	{
+		ini_set('max_execution_time', 0);
+		set_time_limit(0);
+		DB::connection()->disableQueryLog();
+
+		if ($request->input('clients') || ! count($request->input())) {
+			$this->getClients($request);
+		}
+		if ($request->input('requests') || ! count($request->input())) {
+			$this->getRequests($request);
+		}
+		if ($request->input('requestcomments') || ! count($request->input())) {
+			$this->getRequestComments($request);
+		}
+		if ($request->input('lists') || ! count($request->input())) {
+			$this->getLists($request);
+		}
+		if ($request->input('attachments') || ! count($request->input())) {
+			$this->getAttachments($request);
+		}
+		if ($request->input('accounts') || ! count($request->input())) {
+			$this->getAccounts($request);
+		}
+	}
+
+	public function getTruncateTables()
+	{
+		DB::statement("DELETE FROM `attachments`");
+		DB::statement("ALTER TABLE `attachments` AUTO_INCREMENT=1");
+		DB::statement("DELETE FROM `reviews`");
+		DB::statement("ALTER TABLE `reviews` AUTO_INCREMENT=1");
+		DB::statement("DELETE FROM `archives`");
+		DB::statement("ALTER TABLE `archives` AUTO_INCREMENT=1");
+		DB::statement("DELETE FROM `request_lists`");
+		DB::statement("ALTER TABLE `request_lists` AUTO_INCREMENT=1");
+		Comment::where('entity_type', 'request')->delete();
+		DB::statement("DELETE FROM `requests`");
+		DB::statement("ALTER TABLE `requests` AUTO_INCREMENT=1");
+
+		Marker::where('markerable_type', 'App\Models\Client')->delete();
+		DB::statement("DELETE FROM `accounts`");
+		DB::statement("ALTER TABLE `accounts` AUTO_INCREMENT=1");
+		DB::statement("DELETE FROM `account_datas`");
+		DB::statement("ALTER TABLE `account_datas` AUTO_INCREMENT=1");
+		DB::statement("DELETE FROM `clients`");
+		DB::statement("ALTER TABLE `clients` AUTO_INCREMENT=1");
+
+	}
 
 	/**
 	 * Перенести всех клиентов
 	 */
 	public function getClients(Request $request)
 	{
-		ini_set('max_execution_time', 0);
-	    set_time_limit(0);
+		Client::truncate();
+		DB::statement("ALTER TABLE `clients` AUTO_INCREMENT=1");
+		Marker::where('markerable_type', 'App\Models\Client')->delete();
 
-        $last_client_id = isset($_SESSION['last_client_id']) ? $_SESSION['last_client_id'] : 0;
-		$clients = DB::connection('egerep')->table('clients')
-                                            ->where('id', '>', $last_client_id)
-                                            ->get();
+		$clients = DB::connection('egerep')->table('clients')->get();
 
 		foreach($clients as $client) {
-            DB::statement("DELETE FROM `clients` WHERE id_a_pers = {$client->id}");
-
-            $new_client = Client::create([
+			$new_client = Client::create([
 				'id_a_pers' 	=> $client->id,
 				'address'		=> $client->description,
 				'name'			=> $client->student_name,
 				'grade'			=> static::_convertGrade($client->grade)
 			]);
 
-            // Создать метку
+			// Создать метку
 			$markers = DB::connection('egerep')->table('geo')
-						                       ->where('entity_type', 'client')
-			                                   ->where('entity_id', $client->id)->get();
+						->where('entity_type', 'client')->where('entity_id', $client->id)->get();
 
 			if (count($markers)) {
-                DB::statement("DELETE FROM `markers` WHERE markerable_id = {$client->id} AND markerable_type = 'App\\Models\\Client'");
-                foreach($markers as $marker) {
+				foreach($markers as $marker) {
 					$new_marker = Marker::create([
 						'markerable_id' 	=> $client->id,
 						'markerable_type'	=> 'App\Models\Client',
@@ -105,56 +138,43 @@ class TransferController extends Controller
 						'lng'				=> $marker->lng,
 						'type'				=> 'green',
 					]);
-					$new_marker->createMetros();  // вставить / не вставить в сессию сомневался, пока не вставил
+					$new_marker->createMetros();
 				}
 			}
-
-            $_SESSION['last_client_id'] = $client->id;
 		}
 	}
 
 	/**
 	 * Перенести все заявки
 	 */
-	public function getRequests(Request $request)
+	public function getRequests()
 	{
-		ini_set('max_execution_time', 0);
-	    set_time_limit(0);
+		Request::truncate();
+		DB::statement("ALTER TABLE `requests` AUTO_INCREMENT=1");
 
-        $last_task_id = isset($_SESSION['last_task_id']) ? $_SESSION['last_task_id'] : 0;
-        $tasks = DB::connection('egerep')->table('tasks')
-                                         ->where('id', '>', $last_task_id)
-                                         ->get();
+		$tasks = DB::connection('egerep')->table('tasks')->get();
 
 		foreach ($tasks as $task) {
-			$new_request = \App\Models\Request::create([
+			\App\Models\Request::insert([
 				'id_a_pers'       => $task->id,
 				'comment'		  => $task->description,
 				'user_id'	      => static::_userId($task->status_ico),
 				'state'			  => static::_convertRequestStatus($task->status),
 				'client_id'       => Client::where('id_a_pers', $task->client_id)->pluck('id')->first(),
-			]);
-			\App\Models\Request::where('id_a_pers', $task->id)->update([
 				'created_at'	  => $task->begin,
 				'user_id_created' => static::_userId($task->user_id),
 			]);
-
-            $_SESSION['last_task_id'] = $task->id;
-        }
+		}
 	}
 
 	/**
 	 * Перенести комментарии к заявке
 	 */
-	public function getRequestComments(Request $request)
+	public function getRequestComments()
 	{
-		ini_set('max_execution_time', 0);
-	    set_time_limit(0);
+		Comment::where('entity_type', 'request')->delete();
 
-        $last_comment_id = isset($_SESSION['last_comment_id']) ? $_SESSION['last_comment_id'] : 0;
-        $comments = DB::connection('egerep')->table('task_comments')
-                                            ->where('id', '>', $last_comment_id)
-                                            ->get();
+		$comments = DB::connection('egerep')->table('task_comments')->get();
 
 		$no_request = [];
 
@@ -173,8 +193,6 @@ class TransferController extends Controller
 			} else {
 				$no_request[] = $comment->id;
 			}
-
-            $_SESSION['last_comment_id'] = $comment->id;
 		}
 
 		echo implode(', ', $no_request);
@@ -184,16 +202,12 @@ class TransferController extends Controller
 	 * Перенести списки
 	 * списки, которым не соответствующей заявки: 9, 3609, 3610, 3696, 14163, 14164
 	 */
-	public function getLists(Request $request)
+	public function getLists()
 	{
-		ini_set('max_execution_time', 0);
-	    set_time_limit(0);
-		DB::connection()->disableQueryLog();
+		RequestList::truncate();
+		DB::statement("ALTER TABLE `request_lists` AUTO_INCREMENT=1");
 
-        $last_list_id = isset($_SESSION['last_list_id']) ? $_SESSION['last_list_id'] : 0;
-		$lists = DB::connection('egerep')->table('lists')
-                                         ->where('id', '>', $last_list_id)
-                                         ->get();
+		$lists = DB::connection('egerep')->table('lists')->get();
 
 		// списки, которым нет соответствующих заявок
 		$no_request = [];
@@ -202,20 +216,16 @@ class TransferController extends Controller
 			$request_id = \App\Models\Request::where('id_a_pers', $list->task_id)->pluck('id')->first();
 
 			if ($request_id) {
-				$new_list = RequestList::create([
-					'request_id' => \App\Models\Request::where('id_a_pers', $list->task_id)->pluck('id')->first(),
-					'subjects'	=> static::_subjects(explode('|', $list->subjects)),
-					'tutor_ids'	=> static::_tutorIds(DB::connection('egerep')->table('list_repetitors')->where('list_id', $list->id)->pluck('repetitor_id')),
-				]);
-				RequestList::where('id', $new_list->id)->update([
-					'user_id'	=> static::_userId($list->user_id),
-					'created_at' => $list->time,
+				$new_list = RequestList::insert([
+					'request_id'	=> \App\Models\Request::where('id_a_pers', $list->task_id)->pluck('id')->first(),
+					'subjects'		=> static::_subjects(explode('|', $list->subjects)),
+					'tutor_ids'		=> static::_tutorIds(DB::connection('egerep')->table('list_repetitors')->where('list_id', $list->id)->pluck('repetitor_id')),
+					'user_id'		=> static::_userId($list->user_id),
+					'created_at' 	=> $list->time,
 				]);
 			} else {
 				$no_request[] = $list->id;
 			}
-
-            $_SESSION['last_list_id'] = $list->id;
 		}
 
 		echo implode(', ', $no_request);
@@ -224,12 +234,8 @@ class TransferController extends Controller
 	/**
 	 * Перенести стыковки
 	 */
-	public function getAttachments(Request $request)
+	public function getAttachments()
 	{
-		ini_set('max_execution_time', 0);
-		set_time_limit(0);
-		DB::connection()->disableQueryLog();
-
 		DB::statement("DELETE FROM `attachments`");
 		DB::statement("ALTER TABLE `attachments` AUTO_INCREMENT=1");
 		DB::statement("DELETE FROM `reviews`");
@@ -238,18 +244,15 @@ class TransferController extends Controller
 		DB::statement("ALTER TABLE `archives` AUTO_INCREMENT=1");
 
 
-        $last_attachment_id = isset($_SESSION['last_attachment_id']) ? $_SESSION['last_attachment_id'] : 0;
-		$attachments = DB::connection('egerep')->table('repetitor_clients')
-                                               ->where('id', '>', $last_attachment_id)
-                                               ->get();
+		$attachments = DB::connection('egerep')->table('repetitor_clients')->get();
 
 		$no_tutor_ids = [];
 
 		foreach ($attachments as $attachment) {
 			$client_advanced = DB::connection('egerep')->table('client_advanced')
-                                                       ->where('client_id', $attachment->client_id)
-                                                       ->where('repetitor_id', $attachment->repetitor_id)
-                                                       ->first();
+				->where('client_id', $attachment->client_id)
+				->where('repetitor_id', $attachment->repetitor_id)
+				->first();
 
 /*
 			if (! $client_advanced) {
@@ -316,9 +319,7 @@ class TransferController extends Controller
 			} else {
 				$no_tutor_ids[] = $attachment->repetitor_id;
 			}
-
-            $_SESSION['last_attachment_id'] = $attachment->id;
-        }
+		}
 
 		dd($no_tutor_ids);
 	}
@@ -326,21 +327,14 @@ class TransferController extends Controller
 	/**
 	 * Перенести отчетность
 	 */
-	public function getAccounts(Request $request)
+	public function getAccounts()
 	{
-		ini_set('max_execution_time', 0);
-		set_time_limit(0);
-		DB::connection()->disableQueryLog();
-
 		DB::statement("DELETE FROM `accounts`");
 		DB::statement("ALTER TABLE `accounts` AUTO_INCREMENT=1");
 		DB::statement("DELETE FROM `account_datas`");
 		DB::statement("ALTER TABLE `account_datas` AUTO_INCREMENT=1");
 
-		$last_period_id = isset($_SESSION['last_period_id']) ? $_SESSION['last_period_id'] : 0;
-        $periods = DB::connection('egerep')->table('periods')
-                                           ->where('id', '>', $last_period_id)
-                                           ->get();
+		$periods = DB::connection('egerep')->table('periods')->get();
 
 		foreach ($periods as $period) {
 			$new_tutor_id = static::_tutorId($period->repetitor_id);
@@ -374,8 +368,6 @@ class TransferController extends Controller
 					]);
 				}
 			}
-
-            $_SESSION['last_period_id'] = $period->id;
 		}
 	}
 

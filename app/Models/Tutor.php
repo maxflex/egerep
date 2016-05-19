@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Http\Requests\Request;
 use Log;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Marker;
@@ -93,7 +92,7 @@ class Tutor extends Model
 
     public function attachments()
     {
-        return $this->hasMany('App\Models\Attachment');
+        return $this->hasMany('App\Models\Attachment')->where('hide', 1);
     }
 
 	public function responsibleUser()

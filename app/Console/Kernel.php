@@ -18,6 +18,8 @@ class Kernel extends ConsoleKernel
         Commands\TestTutorQueryTime::class,
         Commands\SaveTutorStateChanges::class,
         Commands\TutorRetina::class,
+        Commands\Transfer::class,
+        Commands\TransferTruncate::class,
     ];
 
     /**
