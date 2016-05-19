@@ -75,7 +75,11 @@ class Account extends Model
      */
     public function getDateStartAttribute()
     {
-        $date_start = static::where('date_end', '<', $this->date_end)->where('tutor_id', $this->tutor_id)->pluck('date_end')->first();
+        $date_start = static::where('date_end', '<', $this->date_end)
+                            ->where('tutor_id', $this->tutor_id)
+                            ->orderBy('date_end', 'desc')
+                            ->pluck('date_end')
+                            ->first();
 
         // если предыдущей встречи нет, то дата самой ранней стыковки
         if ($date_start === null) {
