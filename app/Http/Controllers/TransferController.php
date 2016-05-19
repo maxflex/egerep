@@ -82,9 +82,28 @@ class TransferController extends Controller
 		}
 	}
 
-	public function getSession()
+	public function getTruncateTables()
 	{
-		dd($_SESSION);
+		DB::statement("DELETE FROM `attachments`");
+		DB::statement("ALTER TABLE `attachments` AUTO_INCREMENT=1");
+		DB::statement("DELETE FROM `reviews`");
+		DB::statement("ALTER TABLE `reviews` AUTO_INCREMENT=1");
+		DB::statement("DELETE FROM `archives`");
+		DB::statement("ALTER TABLE `archives` AUTO_INCREMENT=1");
+		DB::statement("DELETE FROM `request_lists`");
+		DB::statement("ALTER TABLE `request_lists` AUTO_INCREMENT=1");
+		Comment::where('entity_type', 'request')->delete();
+		DB::statement("DELETE FROM `requests`");
+		DB::statement("ALTER TABLE `requests` AUTO_INCREMENT=1");
+
+		Marker::where('markerable_type', 'App\Models\Client')->delete();
+		DB::statement("DELETE FROM `accounts`");
+		DB::statement("ALTER TABLE `accounts` AUTO_INCREMENT=1");
+		DB::statement("DELETE FROM `account_datas`");
+		DB::statement("ALTER TABLE `account_datas` AUTO_INCREMENT=1");
+		DB::statement("DELETE FROM `clients`");
+		DB::statement("ALTER TABLE `clients` AUTO_INCREMENT=1");
+
 	}
 
 	/**
@@ -92,8 +111,6 @@ class TransferController extends Controller
 	 */
 	public function getClients(Request $request)
 	{
-		$_SESSION['transfer_step'] = 'clients';
-
 		Client::truncate();
 		DB::statement("ALTER TABLE `clients` AUTO_INCREMENT=1");
 		Marker::where('markerable_type', 'App\Models\Client')->delete();
@@ -107,7 +124,6 @@ class TransferController extends Controller
 				'name'			=> $client->student_name,
 				'grade'			=> static::_convertGrade($client->grade)
 			]);
-			$_SESSION['transfer_client_id'] = $client->id;
 
 			// Создать метку
 			$markers = DB::connection('egerep')->table('geo')
@@ -133,7 +149,6 @@ class TransferController extends Controller
 	 */
 	public function getRequests()
 	{
-		$_SESSION['transfer_step'] = 'requests';
 		Request::truncate();
 		DB::statement("ALTER TABLE `requests` AUTO_INCREMENT=1");
 
@@ -149,7 +164,6 @@ class TransferController extends Controller
 				'created_at'	  => $task->begin,
 				'user_id_created' => static::_userId($task->user_id),
 			]);
-			$_SESSION['transfer_task_id'] = $task->id;
 		}
 	}
 
@@ -158,7 +172,6 @@ class TransferController extends Controller
 	 */
 	public function getRequestComments()
 	{
-		$_SESSION['transfer_step'] = 'comments';
 		Comment::where('entity_type', 'request')->delete();
 
 		$comments = DB::connection('egerep')->table('task_comments')->get();
@@ -177,7 +190,6 @@ class TransferController extends Controller
 					'created_at'	=> $comment->time,
 					'updated_at'	=> $comment->time,
 				]);
-				$_SESSION['transfer_comment_id'] = $comment->id;
 			} else {
 				$no_request[] = $comment->id;
 			}
@@ -192,7 +204,6 @@ class TransferController extends Controller
 	 */
 	public function getLists()
 	{
-		$_SESSION['transfer_step'] = 'lists';
 		RequestList::truncate();
 		DB::statement("ALTER TABLE `request_lists` AUTO_INCREMENT=1");
 
@@ -212,7 +223,6 @@ class TransferController extends Controller
 					'user_id'		=> static::_userId($list->user_id),
 					'created_at' 	=> $list->time,
 				]);
-				$_SESSION['transfer_list_id'] = $list->id;
 			} else {
 				$no_request[] = $list->id;
 			}
@@ -226,7 +236,6 @@ class TransferController extends Controller
 	 */
 	public function getAttachments()
 	{
-		$_SESSION['transfer_step'] = 'attachments';
 		DB::statement("DELETE FROM `attachments`");
 		DB::statement("ALTER TABLE `attachments` AUTO_INCREMENT=1");
 		DB::statement("DELETE FROM `reviews`");
@@ -280,7 +289,6 @@ class TransferController extends Controller
 					'hide'		=> $attachment->hide,
 					'request_list_id' => $request_list_id,
 				]);
-				$_SESSION['transfer_attachment_id'] = $attachment->id;
 
 				// если заархивировано
 				if ($attachment->archive) {
@@ -321,7 +329,6 @@ class TransferController extends Controller
 	 */
 	public function getAccounts()
 	{
-		$_SESSION['transfer_step'] = 'accounts';
 		DB::statement("DELETE FROM `accounts`");
 		DB::statement("ALTER TABLE `accounts` AUTO_INCREMENT=1");
 		DB::statement("DELETE FROM `account_datas`");
@@ -345,7 +352,6 @@ class TransferController extends Controller
 					'created_at'		=> $period->date_created,
 					'updated_at'		=> $period->date_created,
 				]);
-				$_SESSION['transfer_period_id'] = $period->id;
 
 				// данные таблицы отчетности
 				$account_data = DB::connection('egerep')->table('lessons')
@@ -360,7 +366,6 @@ class TransferController extends Controller
 						'sum'		=> $ad->summa,
 						'commission'=> $ad->dohod,
 					]);
-					$_SESSION['transfer_lesson_id'] = $ad->id;
 				}
 			}
 		}
