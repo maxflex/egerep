@@ -92,7 +92,7 @@ class Tutor extends Model
 
     public function attachments()
     {
-        return $this->hasMany('App\Models\Attachment')->where('hide', 1);
+        return $this->hasMany('App\Models\Attachment')->where('hide', 0);
     }
 
 	public function responsibleUser()
