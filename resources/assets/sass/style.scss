@@ -3390,3 +3390,7 @@ select.has-error:focus, input.has-error:focus, button.has-error:focus {
 	min-height: 50px;
 }
 
+.horizontal-scroll {
+  width: 100%;
+  overflow-x: scroll;
+}

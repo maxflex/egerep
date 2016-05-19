@@ -1,7 +1,7 @@
 {{-- REAL DATES --}}
 <div ng-if='tutor.accounts.length > 0' ng-repeat='account in tutor.accounts'>
 
-    <div class='inline-block'>
+    <div class='inline-block horizontal-scroll'>
         <table class='accounts-table'>
             <thead>
                 <tr>
@@ -15,7 +15,7 @@
                 <tr ng-repeat='date in getDates($index)'>
                     <td>@{{ formatDate(date) }}</td>
                     <td ng-repeat='client in client_ids'>
-                        <input type="text" class='account-column no-border-outline' ng-model='account.data[client.id][date]'>
+                        <input type="text" class='account-column no-border-outline' ng-model='account.data[client.id][date]' title="@{{ formatDate(date) }}">
                     </td>
                 </tr>
             </tbody>
