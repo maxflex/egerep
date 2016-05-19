@@ -15,6 +15,8 @@ class Tutor extends Model
     use Markerable;
     use Person;
 
+    // DATE(edit_date) = DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+
     protected $fillable =  [
         'first_name',
         'last_name',
@@ -87,7 +89,8 @@ class Tutor extends Model
 
     public function accounts()
     {
-        return $this->hasMany('App\Models\Account');
+        // последние 60 дней
+        return $this->hasMany('App\Models\Account')->whereRaw('date_end > DATE_SUB(CURDATE(), INTERVAL 60 DAY)');
     }
 
     public function attachments()
