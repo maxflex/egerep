@@ -58,7 +58,6 @@ class TransferController extends Controller
 
 	public function getAll(Request $request)
 	{
-		session_start();
 		ini_set('max_execution_time', 0);
 		set_time_limit(0);
 		DB::connection()->disableQueryLog();
@@ -85,7 +84,6 @@ class TransferController extends Controller
 
 	public function getSession()
 	{
-		session_start();
 		dd($_SESSION);
 	}
 
