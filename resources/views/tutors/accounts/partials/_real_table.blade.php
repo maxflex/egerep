@@ -5,8 +5,8 @@
         <table class='accounts-table'>
             <thead ng-if='$index == 0'>
                 <tr>
-                    <td width='75'></td>
-                    <td ng-repeat='client in client_ids' width='50'>
+                    <td width='61'></td>
+                    <td ng-repeat='client in client_ids' width='107'>
                         <a href='@{{ client.link }}'>клиент @{{ client.id }}</a>
                     </td>
                 </tr>
