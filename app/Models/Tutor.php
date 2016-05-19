@@ -175,7 +175,7 @@ class Tutor extends Model
         $client_ids = [];
 
         foreach ($this->attachments as $attachment) {
-            if ($attachment->requestList && $attachment->requestList->request) {
+            if ($attachment->requestList && $attachment->requestList->request && !$attachment->hide) {
                 $client_ids[] = [
                     'id' => $attachment->requestList->request->client_id,
                     # @todo: заменить на link_url
