@@ -288,7 +288,7 @@ class Transfer extends Command
 					'tutor_id'	=> $new_crm_tutor_id,
 					'date'		=> $attachment->begin,
 					'grade'		=> $client_advanced ? static::_convertGrade($client_advanced->client_group) : 0,
-					'subjects'	=> $client_advanced ? implode(',', static::_subjects(explode(',', $client_advanced->subjects))) : '',
+					'subjects'	=> $client_advanced ? static::_subjects(explode(',', $client_advanced->subjects)) : '',
 					'comment'	=> $attachment->description,
 					'created_at'=> $attachment->created,
 					'updated_at'=> $attachment->created,
@@ -495,7 +495,7 @@ class Transfer extends Command
 				}
 			}
 		}
-		return $new_subjects;
+		return implode(',', $new_subjects);
 	}
 
 	/**
@@ -512,7 +512,7 @@ class Transfer extends Command
 				}
 			}
 		}
-		return $new_tutor_ids;
+		return implode(',', $new_tutor_ids);
 	}
 
 	/**
