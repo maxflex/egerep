@@ -95,7 +95,7 @@ class Transfer extends Command
 			static::requests();
             $this->info('Requests transfered!');
 		}
-		if ($this->option('requestcomments') || $this->option('all')) {
+		if ($this->option('request_comments') || $this->option('all')) {
             $this->line('Transfering request comments...');
 			static::requestComments();
             $this->info('Request comments transfered!');
