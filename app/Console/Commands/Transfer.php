@@ -85,36 +85,52 @@ class Transfer extends Command
      */
     public function handle()
     {
+        $total_time = microtime(true);
+
         if ($this->option('clients') || $this->option('all')) {
+            $t = microtime(true);
             $this->line('Transfering clients...');
 			static::clients();
             $this->info('Clients transfered!');
-		}
+            $this->info('Time: ' . (microtime(true) - $t) . 's');
+        }
 		if ($this->option('requests') || $this->option('all')) {
+            $t = microtime(true);
             $this->line('Transfering requests...');
 			static::requests();
             $this->info('Requests transfered!');
-		}
+            $this->info('Time: ' . (microtime(true) - $t) . 's');
+        }
 		if ($this->option('request_comments') || $this->option('all')) {
+            $t = microtime(true);
             $this->line('Transfering request comments...');
 			static::requestComments();
             $this->info('Request comments transfered!');
-		}
+            $this->info('Time: ' . (microtime(true) - $t) . 's');
+        }
 		if ($this->option('lists') || $this->option('all')) {
+            $t = microtime(true);
             $this->line('Transfering lists...');
 			static::lists();
             $this->info('Lists transfered!');
-		}
+            $this->info('Time: ' . (microtime(true) - $t) . 's');
+        }
 		if ($this->option('attachments') || $this->option('all')) {
+            $t = microtime(true);
             $this->line('Transfering attachments...');
 			static::attachments();
             $this->info('Attachments transfered!');
+            $this->info('Time: ' . (microtime(true) - $t) . 's');
 		}
 		if ($this->option('accounts') || $this->option('all')) {
+            $ac = microtime(true);
             $this->line('Transfering accounts...');
 			static::accounts();
             $this->info('Accounts transfered!');
+            $this->info('Time: ' . (microtime(true) - $t) . 's');
 		}
+
+        $this->info('Total: ' . (microtime(true) - $total_time) . 's');
     }
 
     /**
