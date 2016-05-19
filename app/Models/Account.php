@@ -38,8 +38,7 @@ class Account extends Model
     {
         return $this->hasMany('App\Models\AccountData', 'tutor_id', 'tutor_id')
             ->where('date', '>', $this->date_start)
-            ->where('date', '<=', $this->date_end)
-            ->whereRaw('date > DATE_SUB(CURDATE(), INTERVAL 60 DAY)');
+            ->where('date', '<=', $this->date_end);
     }
 
     // ------------------------------------------------------------------------
