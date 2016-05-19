@@ -87,6 +87,9 @@ class TransferController extends Controller
 	 */
 	public function getClients(Request $request)
 	{
+		Client::truncate();
+		DB::statement("ALTER TABLE `clients` AUTO_INCREMENT=1");
+
 		$clients = DB::connection('egerep')->table('clients')->get();
 
 		foreach($clients as $client) {
@@ -121,8 +124,8 @@ class TransferController extends Controller
 	 */
 	public function getRequests()
 	{
-		ini_set('max_execution_time', 0);
-	    set_time_limit(0);
+		Request::truncate();
+		DB::statement("ALTER TABLE `requests` AUTO_INCREMENT=1");
 
 		$tasks = DB::connection('egerep')->table('tasks')->get();
 
@@ -146,8 +149,7 @@ class TransferController extends Controller
 	 */
 	public function getRequestComments()
 	{
-		ini_set('max_execution_time', 0);
-	    set_time_limit(0);
+		Comment::where('entity_type', 'request')->delete();
 
 		$comments = DB::connection('egerep')->table('task_comments')->get();
 
@@ -179,9 +181,8 @@ class TransferController extends Controller
 	 */
 	public function getLists()
 	{
-		ini_set('max_execution_time', 0);
-	    set_time_limit(0);
-		DB::connection()->disableQueryLog();
+		RequestList::truncate();
+		DB::statement("ALTER TABLE `request_lists` AUTO_INCREMENT=1");
 
 		$lists = DB::connection('egerep')->table('lists')->get();
 
@@ -214,10 +215,6 @@ class TransferController extends Controller
 	 */
 	public function getAttachments()
 	{
-		ini_set('max_execution_time', 0);
-		set_time_limit(0);
-		DB::connection()->disableQueryLog();
-
 		DB::statement("DELETE FROM `attachments`");
 		DB::statement("ALTER TABLE `attachments` AUTO_INCREMENT=1");
 		DB::statement("DELETE FROM `reviews`");
@@ -311,10 +308,6 @@ class TransferController extends Controller
 	 */
 	public function getAccounts()
 	{
-		ini_set('max_execution_time', 0);
-		set_time_limit(0);
-		DB::connection()->disableQueryLog();
-
 		DB::statement("DELETE FROM `accounts`");
 		DB::statement("ALTER TABLE `accounts` AUTO_INCREMENT=1");
 		DB::statement("DELETE FROM `account_datas`");
