@@ -22,6 +22,38 @@ use DB;
 
 class Transfer extends Command
 {
+    # Список предметов
+	const MATH 		= 1;
+	const PHYSICS	= 2;
+	const CHEMISTRY	= 3;
+	const BIOLOGY	= 4;
+	const COMPUTER	= 5;
+	const RUSSIAN	= 6;
+	const LITERATURE= 7;
+	const SOCIETY	= 8;
+	const HISTORY	= 9;
+	const ENGLISH	= 10;
+	const UNKNOWN 	= 11;
+
+	# Все предметы
+	static $subjects = [
+		self::MATH 		=> "математика",
+		self::PHYSICS	=> "физика",
+		self::RUSSIAN	=> "русский",
+		self::LITERATURE=> "литература",
+		self::ENGLISH	=> "английский",
+		self::HISTORY	=> "история",
+		self::SOCIETY	=> "обществознание",
+		self::CHEMISTRY	=> "химия",
+		self::BIOLOGY	=> "биология",
+		self::COMPUTER	=> "информатика",
+    ];
+
+
+	// Соответствия пользователей в реальной базе
+	// в старой базе => в новой базе
+	const CO_USER_REAL = [12 => 1304,13 => 1305,20 => 1306,35 => 1307,26 => 1308,28 => 1309,30 => 1310,40 => 1311,46 => 1312,43 => 1313,48 => 1314,49 => 1315,50 => 1316,57 => 1317,58 => 1318,55 => 1319,60 => 1320,62 => 1321,63 => 1322,66 => 1323,70 => 1324,72 => 1325,75 => 1326,73 => 1327,67 => 1328,74 => 1329,76 => 1330,78 => 1331,82 => 1332,80 => 1333,84 => 1334,85 => 1335,81 => 1336,89 => 1337,91 => 1338,86 => 1339,87 => 1340,88 => 1341,100 => 1342,104 => 1343,95 => 1344,96 => 1345,97 => 1346,109 => 1347,102 => 1348,99 => 1349,98 => 1350,106 => 1351,108 => 1352,113 => 1353,115 => 1354,120 => 1355,119 => 106,118 => 1356,117 => 1357,125 => 1358,123 => 104,114 => 108,116 => 1359,121 => 1360,122 => 1361,124 => 102,139 => 1380,126 => 100,142 => 1383,140 => 1381,141 => 1382,130 => 1370,131 => 1371,132 => 1372,138 => 1379,136 => 1376,135 => 1377,137 => 1378,134 => 1373,133 => 1374,128 => 1368,127 => 1367,129 => 1369,143 => 1384,144 => 1385];
+
     /**
      * The name and signature of the console command.
      *
@@ -341,6 +373,175 @@ class Transfer extends Command
 					]);
 				}
 			}
+		}
+	}
+
+
+
+
+
+    private static function _getUserId($oldcrm_user_id)
+	{
+		if (@static::CO_USER_REAL[$oldcrm_user_id] !== null) {
+			return static::CO_USER_REAL[$oldcrm_user_id];
+		} else {
+			return $oldcrm_user_id;
+		}
+	}
+
+	/**
+	 * Конвертировать класс
+	 */
+	private static function _convertGrade($grade)
+	{
+		if ($grade == 100) {
+			return 12;
+		} else
+		if ($grade == 101) {
+			return 13;
+		}
+		return $grade;
+	}
+
+	/**
+	 * Конвертировать статус заявки
+	 */
+	private static function _convertRequestStatus($status)
+	{
+		switch ($status) {
+			case 0: {
+				return 'new';
+			}
+			case 1: {
+				return 'finished';
+			}
+			case 2: {
+				return 'awaiting';
+			}
+			case 3: {
+				return 'deny';
+			}
+			case 9: {
+				return 'spam';
+			}
+		}
+	}
+
+	/**
+	 * Соответствие межу ID пользователя
+	 */
+	private static function _userId($old_crm_user_id)
+	{
+		if (array_key_exists($old_crm_user_id, static::CO_USER_REAL)) {
+			return static::CO_USER_REAL[$old_crm_user_id];
+		} else {
+			return $old_crm_user_id;
+		}
+	}
+
+	/**
+	 * Соответствие между предметами
+	 */
+	private static function _subjects($subjects)
+	{
+		$new_subjects = [];
+		if (count($subjects)) {
+			foreach ($subjects as $subject_id) {
+				switch($subject_id) {
+					case 2: {
+						$new_subjects[] = static::MATH;
+						break;
+					}
+					case 3: {
+						$new_subjects[] = static::PHYSICS;
+						break;
+					}
+					case 7: {
+						$new_subjects[] = static::CHEMISTRY;
+						break;
+					}
+					case 4: {
+						$new_subjects[] = static::BIOLOGY;
+						break;
+					}
+					case 12: {
+						$new_subjects[] = static::COMPUTER;
+						break;
+					}
+					case 10: {
+						$new_subjects[] = static::RUSSIAN;
+						break;
+					}
+					case 13: {
+						$new_subjects[] = static::LITERATURE;
+						break;
+					}
+					case 1: {
+						$new_subjects[] = static::SOCIETY;
+						break;
+					}
+					case 5: {
+						$new_subjects[] = static::HISTORY;
+						break;
+					}
+					case 9: {
+						$new_subjects[] = static::ENGLISH;
+						break;
+					}
+					default: {
+						$new_subjects[] = static::UNKNOWN;
+						break;
+					}
+				}
+			}
+		}
+		return $new_subjects;
+	}
+
+	/**
+	 * Соответствия межу ID преподавателей
+	 */
+	private static function _tutorIds($tutor_ids)
+	{
+		$new_tutor_ids = [];
+		if (count($tutor_ids)) {
+			foreach ($tutor_ids as $tutor_id) {
+				$new_tutor_id = Tutor::where('id_a_pers', $tutor_id)->pluck('id')->first();
+				if ($new_tutor_id) {
+					$new_tutor_ids[] = $new_tutor_id;
+				}
+			}
+		}
+		return $new_tutor_ids;
+	}
+
+	/**
+	 * Соответствия межу ID преподавателей
+	 */
+	private static function _tutorId($tutor_id)
+	{
+		$new_tutor_id = Tutor::where('id_a_pers', $tutor_id)->pluck('id')->first();
+		return $new_tutor_id ? $new_tutor_id : null;
+	}
+
+	/**
+	 * Соответствия межу ID клиента
+	 */
+	private static function _clientId($client_id)
+	{
+		$new_client_id = Client::where('id_a_pers', $client_id)->pluck('id')->first();
+		return $new_client_id ? $new_client_id : null;
+	}
+
+	/**
+	 * Оценка в отзыве
+	 */
+	private static function _reviewScore($score)
+	{
+		if ($score < 0) {
+			return 11;
+		} else {
+			return $score;
 		}
 	}
 }
