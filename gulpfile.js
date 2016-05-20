@@ -51,5 +51,7 @@ elixir(function(mix) {
             '../bower/ladda/dist/ladda.min.js',
             '../bower/angular-ladda/dist/angular-ladda.min.js',
             '../bower/remarkable-bootstrap-notify/dist/bootstrap-notify.min.js',
+            '../bower/StickyTableHeaders/js/jquery.stickytableheaders.min.js',
+            '../bower/jquery.floatThead/dist/jquery.floatThead.min.js',
         ], 'public/js/vendor.js');
 });

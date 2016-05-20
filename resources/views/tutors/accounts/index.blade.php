@@ -6,11 +6,16 @@
     <span class="link-like link-reverse link-white" ng-click='addAccountDialog()'>добавить расчет</span>
 @stop
 
+<style>
+.panel-body {
+    overflow: hidden;
+}
+</style>
+
 @section('content')
     @include('tutors.accounts.partials._fake_table')
     @include('tutors.accounts.partials._real_table')
-
-    <div class="row" ng-if='tutor.accounts.length > 0'>
+    <div class="row" ng-if='tutor.last_accounts.length > 0'>
         <div class="col-sm-12 center">
             <button class="btn btn-primary" ng-click="save()" ng-disabled="saving">Сохранить</button>
         </div>
