@@ -40,6 +40,7 @@
         </div>
         <div class='mbs'>
             <b>Видимость:</b>
+            {{-- @todo AttachmentStates enumtoggle --}}
             <span ng-click="selected_attachment.hide = +(!selected_attachment.hide)" class="link-like">
                 <span ng-show="selected_attachment.hide">скрыто</span>
                 <span ng-show="!selected_attachment.hide">показано</span>

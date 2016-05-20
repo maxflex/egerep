@@ -51,7 +51,7 @@ angular.module('Egerep')
 
         $scope.getFakeDates = ->
             dates = []
-            current_date = moment().subtract(10, 'days').format('YYYY-MM-DD')
+            current_date = moment().subtract(60, 'days').format('YYYY-MM-DD')
             while current_date <= moment().format('YYYY-MM-DD')
                 dates.push current_date
                 current_date = moment(current_date).add(1, 'days').format('YYYY-MM-DD')

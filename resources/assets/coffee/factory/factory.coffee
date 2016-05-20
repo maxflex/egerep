@@ -45,6 +45,10 @@ angular.module('Egerep')
         unpublished: 'не опубликован'
         published: 'опубликован'
 
+    .value 'AttachmentStates',
+        0: 'показано'
+        1: 'скрыто'
+
     .value 'ReviewScores',
         1: 1
         2: 2
