@@ -39,7 +39,7 @@
             </div>
         </div>
         <div class="form-group">
-            <div class="tutor-state tutor-state-@{{ tutor.state }}" ng-click="toggleEnum(tutor, 'state', TutorStates, [3, 5], [56, 61, 79, 1368])">
+            <div class="tutor-state tutor-state-@{{ tutor.state }}" ng-click="toggleEnum(tutor, 'state', TutorStates, [3, 5], [user.can_approve_tutor ? user.id : 0 ])">
                 @{{ TutorStates[tutor.state] }}
             </div>
         </div>

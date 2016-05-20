@@ -13,7 +13,8 @@ class User extends Model
         'password',
         'color',
         'type',
-        'banned',
+        'banned_egerep',
+        'can_approve_tutors',
         'id_entity',
     ];
 
@@ -38,8 +39,9 @@ class User extends Model
     public static function login($data)
     {
         $User = User::where([
-            'login'     => $data['login'],
-            'password'  => static::_password($data['password']),
+            'login'         => $data['login'],
+            'password'      => static::_password($data['password']),
+            'banned_egerep' => 0,
         ]);
 
         if ($User->exists()) {
@@ -115,6 +117,6 @@ class User extends Model
     public static function scopeReal($query)
     {
         return $query->where('type', static::USER_TYPE)
-                     ->where('banned', 0);
+                     ->where('banned_egerep', 0);
     }
 }
