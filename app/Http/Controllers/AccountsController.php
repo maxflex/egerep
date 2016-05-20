@@ -23,7 +23,7 @@ class AccountsController extends Controller
         return view('tutors.accounts.index')->with(ngInit([
             'tutor'                 => Tutor::where('id', $id)->first()->withLastAccounts(),
             'client_ids'            => $tutor->getClientIds(),
-            'first_attachment_date' => $tutor->getFirstAttachmentDate(),
+            'first_attachment_date' => $tutor->getDateLimit(),
         ]));
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Log;
+use DB;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Marker;
 use App\Models\Metro;
@@ -390,5 +390,14 @@ class Tutor extends Model
         $this->accounts_page = $page;
         $this->append('last_accounts');
         return $this;
+     }
+
+     /**
+      * Получить дату последней встречи -60 дней
+      */
+     public function getDateLimit()
+     {
+         return Account::select(DB::raw('DATE_SUB(date_end, INTERVAL 60 DAY) as date_limit'))
+                            ->where('tutor_id', $this->id)->orderBy('date_end', 'desc')->pluck('date_limit')->first();
      }
 }
