@@ -37,6 +37,7 @@ class Account extends Model
     public function accountData()
     {
         return $this->hasMany('App\Models\AccountData', 'tutor_id', 'tutor_id')
+            ->whereRaw("date > DATE_SUB((SELECT date_end FROM accounts WHERE tutor_id=" . $this->tutor_id . " ORDER BY date_end DESC LIMIT 1), INTERVAL 60 DAY)")
             ->where('date', '>', $this->date_start)
             ->where('date', '<=', $this->date_end);
     }
