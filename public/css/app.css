@@ -27618,8 +27618,7 @@ a {
     .accounts-table tr td:last-of-type {
       border-right: none; }
     .accounts-table tr td.empty-td {
-      width: 61px;
-      height: 70px; }
+      border-right: 1px solid #999999; }
     .accounts-table tr td.date-td {
       padding: 3px 3px;
       border-right: 1px solid #999999; }
@@ -27629,7 +27628,7 @@ a {
       text-align: left; }
   .accounts-table thead tr td {
     border-top: none;
-    padding-bottom: 50px;
+    height: 70px;
     text-align: center;
     background: white; }
 
