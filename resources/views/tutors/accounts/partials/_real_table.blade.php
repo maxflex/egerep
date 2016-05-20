@@ -39,7 +39,7 @@
                             <div class='accounts-data'>
                                 <div class="mbs">
                                     <span>Итого комиссия за период:</span>
-                                    <input ng-model='account.total_commission' readonly class='no-border-outline' style="width: 50px">
+                                    <input ng-model='account.total_commission' readonly class='no-border-outline' style="width: 60px">
                                     <ng-pluralize count='account.total_commission' when="{
                                         'one': 'рубль',
                                         'few': 'рубля',
@@ -49,7 +49,7 @@
                                 </div>
                                 <div class="mbs">
                                     <span>Передано:</span>
-                                    <input ng-model='account.received' class='no-border-outline' style="width: 50px">
+                                    <input ng-model='account.received' class='no-border-outline' style="width: 60px">
                                     <ng-pluralize count='account.received' when="{
                                         'one': 'рубль',
                                         'few': 'рубля',
@@ -59,7 +59,7 @@
                                 </div>
                                 <div class="mbs">
                                     <span>Дебет до встречи:</span>
-                                    <input ng-model='account.debt_before' class='no-border-outline' style="width: 50px">
+                                    <input ng-model='account.debt_before' class='no-border-outline' style="width: 60px">
                                     <ng-pluralize count='account.debt_before' when="{
                                         'one': 'рубль',
                                         'few': 'рубля',
@@ -68,7 +68,7 @@
                                 </div>
                                 <div class="mbs">
                                     <span>Задолженность:</span>
-                                    <input ng-model='account.debt' class='no-border-outline' style="width: 50px">
+                                    <input ng-model='account.debt' class='no-border-outline' style="width: 60px">
                                     <ng-pluralize count='account.debt' when="{
                                         'one': 'рубль',
                                         'few': 'рубля',

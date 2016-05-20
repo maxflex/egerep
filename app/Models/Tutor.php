@@ -385,10 +385,10 @@ class Tutor extends Model
     /**
      * Данные по встречам 60 дней с момента последней встречи
      */
-     public function withLastAccounts($page = 1)
+     public function withLastAccounts($page = 0)
      {
-         $this->last_accounts = $this->accounts()
-             ->whereRaw("date_end > DATE_SUB((SELECT date_end FROM accounts WHERE tutor_id=" . $this->id . " ORDER BY date_end DESC LIMIT 1), INTERVAL 60 DAY)")
-             ->get();
+        $this->accounts_page = $page;
+        $this->append('last_accounts');
+        return $this;
      }
 }
