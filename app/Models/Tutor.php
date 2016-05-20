@@ -90,8 +90,7 @@ class Tutor extends Model
     public function accounts()
     {
         // последние 60 дней
-        return $this->hasMany('App\Models\Account');
-        //->whereRaw('date_end > DATE_SUB(CURDATE(), INTERVAL 60 DAY)');
+        return $this->hasMany('App\Models\Account')->whereRaw('date_end > DATE_SUB(CURDATE(), INTERVAL 60 DAY)');
     }
 
     public function attachments()
