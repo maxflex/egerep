@@ -1,5 +1,5 @@
 {{-- REAL DATES --}}
-<div ng-if='tutor.accounts.length > 0' ng-repeat='account in tutor.accounts'>
+<div ng-if='tutor.last_accounts.length > 0'>
 
     <div class='inline-block horizontal-scroll'>
         <table class='accounts-table'>

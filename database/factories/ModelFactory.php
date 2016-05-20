@@ -47,6 +47,6 @@ $factory->define(App\Models\Attachment::class, function (Faker\Generator $faker)
         'date'      => $faker->date('Y-m-d'),
         'grade'     => $faker->numberBetween(1, 11),
         'subjects'  => '1,2',
-        'comment'   => $faker->realText(),  
+        'comment'   => $faker->realText(),
     ];
 });

@@ -27599,17 +27599,17 @@ a {
   -ms-flex-item-align: end;
   align-self: flex-end; }
 
-.accounts-data {
-  margin-bottom: 40px; }
-  .accounts-data .mbs > span {
-    display: inline-block;
-    width: 190px; }
+.accounts-data .mbs > span {
+  display: inline-block; }
 
 .accounts-table {
-  margin-bottom: 10px; }
+  float: left;
+  margin-bottom: 10px;
+  margin-right: 1px; }
   .accounts-table input {
     width: 100px; }
   .accounts-table tr td {
+    height: 25px;
     border: 1px solid #999999;
     padding: 2px 3px; }
     .accounts-table tr td:first-of-type {
@@ -27617,10 +27617,21 @@ a {
       text-align: center; }
     .accounts-table tr td:last-of-type {
       border-right: none; }
+    .accounts-table tr td.empty-td {
+      width: 61px;
+      height: 70px; }
+    .accounts-table tr td.date-td {
+      padding: 3px 3px;
+      border-right: 1px solid #999999; }
+    .accounts-table tr td.period-end {
+      height: 178px;
+      border-bottom: none;
+      text-align: left; }
   .accounts-table thead tr td {
     border-top: none;
     padding-bottom: 50px;
-    text-align: center; }
+    text-align: center;
+    background: white; }
 
 .mbs {
   margin-bottom: 3px; }
@@ -29965,5 +29976,12 @@ select.has-error:focus, input.has-error:focus, button.has-error:focus {
 
 .request-list-props {
   min-height: 50px; }
+
+.horizontal-scroll {
+  width: 100%;
+  overflow-x: scroll; }
+
+.right-table-scroll {
+  overflow: auto; }
 
 /*# sourceMappingURL=app.css.map */
