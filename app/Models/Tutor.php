@@ -89,8 +89,9 @@ class Tutor extends Model
 
     public function accounts()
     {
-        // последние 60 дней
-        return $this->hasMany('App\Models\Account')->whereRaw('date_end > DATE_SUB(CURDATE(), INTERVAL 60 DAY)');
+        // последние 60 дней с момента начальной стыковки
+        return $this->hasMany('App\Models\Account');
+            // ->whereRaw("date_end > DATE_SUB((SELECT date_end FROM accounts WHERE tutor_id=" . $this->id . " ORDER BY date_end DESC LIMIT 1), INTERVAL 60 DAY)");
     }
 
     public function attachments()
@@ -110,6 +111,16 @@ class Tutor extends Model
     }
 
     // ------------------------------------------------------------------------
+
+    /**
+     * Данные по встречам 60 дней с момента последней встречи
+     */
+    public function getLastAccountsAttribute()
+    {
+        return $this->accounts()
+            ->whereRaw("date_end > DATE_SUB((SELECT date_end FROM accounts WHERE tutor_id=" . $this->id . " ORDER BY date_end DESC LIMIT 1), INTERVAL 60 DAY)")
+            ->get();
+    }
 
     public function getBannedAttribute()
     {
@@ -370,4 +381,14 @@ class Tutor extends Model
             ]);
         }
     }
+
+    /**
+     * Данные по встречам 60 дней с момента последней встречи
+     */
+     public function withLastAccounts($page = 1)
+     {
+         $this->last_accounts = $this->accounts()
+             ->whereRaw("date_end > DATE_SUB((SELECT date_end FROM accounts WHERE tutor_id=" . $this->id . " ORDER BY date_end DESC LIMIT 1), INTERVAL 60 DAY)")
+             ->get();
+     }
 }

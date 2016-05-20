@@ -417,11 +417,11 @@
 	}
 
 	.accounts-data {
-		margin-bottom: 40px;
+		// margin-bottom: 40px;
 		& .mbs {
 			& > span {
 				display: inline-block;
-				width: 190px;
+				// width: 220px;
 			}
 		}
 	}
@@ -429,9 +429,13 @@
 		& input {
 			width: 100px;
 		}
+		float: left;
 		margin-bottom: 10px;
+		margin-right: 1px;
 		& tr {
+
 			& td {
+				height: 25px;
 				border: 1px solid $placeholder_gray;
 				padding: 2px 3px;
 				&:first-of-type {
@@ -441,6 +445,19 @@
 				&:last-of-type {
 					border-right: none;
 				}
+				&.empty-td {
+					width: 61px;
+					height: 70px;
+				}
+				&.date-td {
+					padding: 3px 3px;
+					border-right: 1px solid $placeholder_gray;
+				}
+				&.period-end {
+					height: 178px;
+					border-bottom: none;
+					text-align: left;
+				}
 			}
 		}
 		& thead {
@@ -449,6 +466,7 @@
 					border-top: none;
 					padding-bottom: 50px;
 					text-align: center;
+					background: white;
 				}
 			}
 		}
@@ -3393,4 +3411,8 @@ select.has-error:focus, input.has-error:focus, button.has-error:focus {
 .horizontal-scroll {
   width: 100%;
   overflow-x: scroll;
+}
+
+.right-table-scroll {
+    overflow: auto;
 }

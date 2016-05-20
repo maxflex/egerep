@@ -21,7 +21,7 @@ class AccountsController extends Controller
         }
 
         return view('tutors.accounts.index')->with(ngInit([
-            'tutor'                 => Tutor::where('id', $id)->with(['accounts'])->first(),
+            'tutor'                 => Tutor::where('id', $id)->first()->append('last_accounts'),
             'client_ids'            => $tutor->getClientIds(),
             'first_attachment_date' => $tutor->getFirstAttachmentDate(),
         ]));

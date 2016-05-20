@@ -6,7 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'AccountsSeeder' => $baseDir . '/database/seeds/AccountsSeeder.php',
     'AddDeparturePriceToTeachers' => $baseDir . '/database/migrations/2016_02_17_121119_add_departure_price_to_teachers.php',
     'AddFieldsToTeachers' => $baseDir . '/database/migrations/2016_01_15_122608_add_fields_to_teachers.php',
     'AddForecastToAttachment' => $baseDir . '/database/migrations/2016_02_23_224011_add_forecast_to_attachment.php',
@@ -30,6 +29,7 @@ return array(
     'AddUserCreatedIdToRequests' => $baseDir . '/database/migrations/2016_01_22_123001_add_user_created_id_to_requests.php',
     'AddVideoLinkToTutors' => $baseDir . '/database/migrations/2016_05_06_102120_add_video_link_to_tutors.php',
     'AttachmentTotalLessonsMissingNullable' => $baseDir . '/database/migrations/2016_02_20_031600_attachment_total_lessons_missing_nullable.php',
+    'AttachmentsSeeder' => $baseDir . '/database/seeds/AttachmentsSeeder.php',
     'ChangeAttachmentDates' => $baseDir . '/database/migrations/2016_02_20_162149_change_attachment_dates.php',
     'ChangeAttachmentEnums' => $baseDir . '/database/migrations/2016_02_20_170702_change_attachment_enums.php',
     'ChangeClientSubjectListReference' => $baseDir . '/database/migrations/2016_02_19_012520_change_client_subject_list_reference.php',

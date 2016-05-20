@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class AccountsSeeder extends Seeder
+class AttachmentsSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -11,6 +11,6 @@ class AccountsSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Models\Account::class, 10)->create();
+        factory(App\Models\Attachment::class, 5)->create();
     }
 }

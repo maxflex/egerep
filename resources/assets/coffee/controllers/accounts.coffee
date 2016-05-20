@@ -4,17 +4,22 @@ angular.module('Egerep')
         $scope.DebtTypes = DebtTypes
         $scope.current_scope = $scope
 
+        angular.element(document).ready ->
+            # $('.sticky-header').floatThead()
+            $('.accounts-table').stickyTableHeaders()
+                # scrollableArea: $('.right-table-scroll')
+
         getAccountStartDate = (index) ->
             if index > 0
-                moment($scope.tutor.accounts[index - 1].date_end).add(1, 'days').toDate()
+                moment($scope.tutor.last_accounts[index - 1].date_end).add(1, 'days').toDate()
             else
                 new Date $scope.first_attachment_date
 
         getAccountEndDate = (index) ->
-            if (index + 1) is $scope.tutor.accounts.length
+            if (index + 1) is $scope.tutor.last_accounts.length
                 ''
             else
-                moment($scope.tutor.accounts[index + 1].date_end).subtract(1, 'days').toDate()
+                moment($scope.tutor.last_accounts[index + 1].date_end).subtract(1, 'days').toDate()
 
         $scope.changeDateDialog = (index) ->
             $('#date-end-change').datepicker('destroy')
@@ -25,7 +30,7 @@ angular.module('Egerep')
                 startDate   : getAccountStartDate(index)
                 endDate     : getAccountEndDate(index)
 
-            $scope.selected_account = $scope.tutor.accounts[index]
+            $scope.selected_account = $scope.tutor.last_accounts[index]
             $scope.change_date_end = $scope.formatDate($scope.selected_account.date_end, true)
             $scope.dialog 'change-account-date'
 
@@ -51,7 +56,7 @@ angular.module('Egerep')
 
         $scope.getFakeDates = ->
             dates = []
-            current_date = moment().subtract(10, 'days').format('YYYY-MM-DD')
+            current_date = moment().subtract(60, 'days').format('YYYY-MM-DD')
             while current_date <= moment().format('YYYY-MM-DD')
                 dates.push current_date
                 current_date = moment(current_date).add(1, 'days').format('YYYY-MM-DD')
@@ -65,17 +70,17 @@ angular.module('Egerep')
             if not index
                 current_date = moment($scope.first_attachment_date).format('YYYY-MM-DD')
             else
-                current_date = moment($scope.tutor.accounts[index - 1].date_end).add(1, 'days').format('YYYY-MM-DD')
+                current_date = moment($scope.tutor.last_accounts[index - 1].date_end).add(1, 'days').format('YYYY-MM-DD')
 
-            while (current_date <= $scope.tutor.accounts[index].date_end)
+            while (current_date <= $scope.tutor.last_accounts[index].date_end)
                 dates.push current_date
                 current_date = moment(current_date).add(1, 'days').format('YYYY-MM-DD')
             dates
 
         # откуда можно выбирать дату в календаре
         getCalendarStartDate = ->
-            if $scope.tutor.accounts.length > 0
-                date_end = $scope.tutor.accounts[$scope.tutor.accounts.length - 1].date_end
+            if $scope.tutor.last_accounts.length > 0
+                date_end = $scope.tutor.last_accounts[$scope.tutor.last_accounts.length - 1].date_end
                 moment(date_end).add(1, 'days').toDate()
             else
                 new Date $scope.first_attachment_date
@@ -97,5 +102,5 @@ angular.module('Egerep')
                 date_end: convertDate($scope.new_account_date_end)
                 tutor_id: $scope.tutor.id
             , (new_account) ->
-                $scope.tutor.accounts.push(new_account)
+                $scope.tutor.last_accounts.push(new_account)
                 $scope.closeDialog 'add-account'
