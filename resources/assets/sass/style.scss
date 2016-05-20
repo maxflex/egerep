@@ -446,8 +446,9 @@
 					border-right: none;
 				}
 				&.empty-td {
-					width: 61px;
-					height: 70px;
+					// width: 61px;
+					// height: 70px;
+					border-right: 1px solid #999999;
 				}
 				&.date-td {
 					padding: 3px 3px;
@@ -464,7 +465,8 @@
 			& tr {
 				& td {
 					border-top: none;
-					padding-bottom: 50px;
+					// padding-bottom: 50px;
+				    height: 70px;
 					text-align: center;
 					background: white;
 				}
