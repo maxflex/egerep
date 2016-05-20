@@ -3,9 +3,11 @@
 
     <div class='inline-block'>
         <table class='accounts-table'>
-            <thead>
+            <thead class="high-z-index">
                 <tr>
-                    <td class='empty-td'></td>
+                    <td class='empty-td'>
+                        <span class='link-like'>+30 дней</span>
+                    </td>
                 </tr>
             </thead>
             <tbody ng-repeat='account in tutor.last_accounts'>

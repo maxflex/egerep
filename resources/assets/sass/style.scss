@@ -3418,3 +3418,7 @@ select.has-error:focus, input.has-error:focus, button.has-error:focus {
 .right-table-scroll {
     overflow: auto;
 }
+
+.high-z-index {
+	z-index: 999 !important;
+}
