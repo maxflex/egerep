@@ -7,7 +7,9 @@ angular.module('Egerep')
         angular.element(document).ready ->
             # $('.sticky-header').floatThead()
             $('.accounts-table').stickyTableHeaders()
-                # scrollableArea: $('.right-table-scroll')
+
+            $('.right-table-scroll').scroll ->
+                $(window).trigger('resize.stickyTableHeaders')
 
         getAccountStartDate = (index) ->
             if index > 0
