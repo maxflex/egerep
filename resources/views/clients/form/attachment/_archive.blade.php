@@ -40,4 +40,8 @@
                 ng-click="toggleEnum(selected_attachment.archive, 'state', ArchiveStates)">@{{ ArchiveStates[selected_attachment.archive.state] }}</span>
         </div>
     </div>
+
+    <div class="col-sm-12">
+        <comments entity-type='archive' entity-id='selected_attachment.id' user='{{ $user }}'></comments>
+    </div>
 </div>
