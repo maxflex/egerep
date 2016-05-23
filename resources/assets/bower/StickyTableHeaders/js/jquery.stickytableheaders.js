@@ -173,7 +173,7 @@
 							new_options.clip = 'rect(0, ' + (base.panel_body_width - pb_diff + 1) + 'px, 71px, 0)'
 						}
 
-						// console.log(pb_diff, offset.left)
+						console.log(pb_diff, offset.left)
 
 						base.$originalHeader.css(new_options);
 						base.leftOffset = newLeft;
