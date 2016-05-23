@@ -70,7 +70,7 @@ angular.module('Egerep')
 
 
         $scope.save = ->
-            $.each $scope.tutor.accounts, (index, account) ->
+            $.each $scope.tutor.last_accounts, (index, account) ->
                 Account.update account
 
         $scope.getFakeDates = ->
