@@ -1,6 +1,6 @@
 <div class="comment-block">
     <div>
-		<div ng-repeat="comment in comments">
+		<div ng-repeat="comment in comments | orderBy:'created_at'">
 			<div class='comment-div'>
 				<span style="color: @{{comment.user.color}}" class="comment-login">@{{comment.user.login}}: </span>
 				<div class='comment-line' ng-click="edit(comment, $event)">@{{comment.comment}}</div>
