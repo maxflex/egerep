@@ -34,4 +34,8 @@
                 ng-click="toggleEnum(selected_attachment.review, 'state', ReviewStates)">@{{ ReviewStates[selected_attachment.review.state] }}</span>
         </div>
     </div>
+
+    <div class="col-sm-12">
+        <comments entity-type='review' entity-id='selected_attachment.id' user='{{ $user }}'></comments>
+    </div>
 </div>
