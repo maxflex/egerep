@@ -1,5 +1,5 @@
 @extends('app')
-@section('title', 'Редактирование профиля ученика')
+@section('title', 'Редактирование профиля ученика №' . $id)
 @section('content')
 @section('controller', 'ClientsForm')
 
