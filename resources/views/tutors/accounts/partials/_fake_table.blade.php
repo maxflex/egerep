@@ -1,5 +1,5 @@
 {{-- FAKE DATES IF NO ACCOUNTS --}}
-<div ng-if='tutor.accounts.length == 0'>
+<div ng-if='tutor.last_accounts.length == 0'>
     <table class='accounts-table'>
         <thead>
             <tr>
