@@ -29984,6 +29984,6 @@ select.has-error:focus, input.has-error:focus, button.has-error:focus {
   overflow: auto; }
 
 .high-z-index {
-  z-index: 999 !important; }
+  z-index: 998 !important; }
 
 /*# sourceMappingURL=app.css.map */

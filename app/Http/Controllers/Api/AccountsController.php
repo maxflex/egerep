@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
+use App\Models\Tutor;
 
 class AccountsController extends Controller
 {
@@ -47,9 +48,18 @@ class AccountsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        //
+        $type = $request->type;
+
+        $tutor = Tutor::find($id);
+        $client_ids = $tutor->getClientIds();
+
+        return [
+            'tutor'                 => Tutor::where('id', $id)->first()->withLastAccounts($type),
+            'client_ids'            => $client_ids,
+            'date_limit'            => $tutor->getDateLimit($type),
+        ];
     }
 
     /**
