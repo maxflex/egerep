@@ -355,11 +355,7 @@ class Transfer extends Command
 		DB::statement("DELETE FROM `account_datas`");
 		DB::statement("ALTER TABLE `account_datas` AUTO_INCREMENT=1");
 
-		// ID преподавателей, чьи данные по отчетности перенесены
-		$lessons_transfered = [];
-
 		$periods = DB::connection('egerep')->table('periods')->get();
-
 
 		foreach ($periods as $period) {
 			$new_tutor_id = static::_tutorId($period->repetitor_id);
@@ -378,11 +374,6 @@ class Transfer extends Command
 					'updated_at'		=> $period->date_created,
 				]);
 
-				// если данные по таблице отчетности уже были перенесены, смотрим далее
-				if (in_array($new_tutor_id, $lessons_transfered)) {
-					continue;
-				}
-
 				// данные таблицы отчетности
 				$account_data = DB::connection('egerep')->table('lessons')
 									->where('repetitor_id', $period->repetitor_id)
@@ -397,8 +388,6 @@ class Transfer extends Command
 						'commission'=> $ad->dohod,
 					]);
 				}
-
-				$lessons_transfered[] = $new_tutor_id;
 			}
 		}
 	}
