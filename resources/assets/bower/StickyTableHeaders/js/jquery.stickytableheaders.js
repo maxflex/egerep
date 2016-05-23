@@ -154,13 +154,27 @@
 							(offset.top + $this.height() - headerHeight - (base.isWindowScrolling ? 0 : newTopOffset));
 
 					if (scrolledPastTop && notScrolledPastBottom) {
+
 						newLeft = offset.left - scrollLeft + base.options.leftOffset;
-						base.$originalHeader.css({
+						var new_options = {
 							'position': 'fixed',
 							'margin-top': base.options.marginTop,
 							'left': newLeft,
 							'z-index': 3 // #18: opacity bug
-						});
+						}
+
+						var pb = $('.panel-body').offset().left + 15
+						var pb_diff = offset.left - pb
+						if (pb_diff < 0) {
+							new_options.clip = 'rect(0, ' + ($('.panel-body').width() + Math.abs(pb_diff) + 1) + 'px, 71px, ' + Math.abs(pb_diff) + 'px)'
+						}
+						if (pb_diff > 0) {
+							new_options.clip = 'rect(0, ' + ($('.panel-body').width() - pb_diff + 1) + 'px, 71px, 0)'
+						}
+
+						console.log(pb_diff, offset.left)
+
+						base.$originalHeader.css(new_options);
 						base.leftOffset = newLeft;
 						base.topOffset = newTopOffset;
 						base.$clonedHeader.css('display', '');
