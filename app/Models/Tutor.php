@@ -118,14 +118,22 @@ class Tutor extends Model
     public function getLastAccountsAttribute()
     {
         $query = $this->accounts();
-
-        if ($days = $this->_defineAccountDays($this->accounts_type)) {
-            return $query
-                ->whereRaw("date_end > DATE_SUB((SELECT date_end FROM accounts WHERE tutor_id=" . $this->id . " ORDER BY date_end DESC LIMIT 1), INTERVAL {$days} DAY)")
-                ->get();
-        } else {
-            return $query->get();
-        }
+       switch ($this->accounts_type) {
+           case 'month':
+               $days = 90;
+               break;
+           case 'year':
+               $days = 365;
+               break;
+           case 'all':
+               return $query->get();
+           default:
+               $days = 60;
+               break;
+       }
+       return $query
+           ->whereRaw("date_end > DATE_SUB((SELECT date_end FROM accounts WHERE tutor_id=" . $this->id . " ORDER BY date_end DESC LIMIT 1), INTERVAL {$days} DAY)")
+           ->get();
     }
 
     public function getBannedAttribute()
@@ -414,16 +422,21 @@ class Tutor extends Model
       */
      public function getDateLimit($type = 'initial')
      {
-         $query = $this->accounts();
-         $query->where('tutor_id', $this->id)->orderBy('date_end', 'desc');
-
-         if ($days = $this->_defineAccountDays($type)) {
-             $query->select(DB::raw("DATE_SUB(date_end, INTERVAL {$days} DAY) as date_limit"))->pluck('date_limit');
-         } else {
-             $query->pluck('date_end');
+         switch ($type) {
+             case 'month':
+                 $days = 90;
+                 break;
+             case 'year':
+                 $days = 365;
+                 break;
+             case 'all':
+                 return Account::where('tutor_id', $this->id)->orderBy('date_end', 'desc')->pluck('date_end')->first();
+             default:
+                 $days = 60;
+                 break;
          }
-
-         return $query->first();
+         return Account::select(DB::raw("DATE_SUB(date_end, INTERVAL {$days} DAY) as date_limit"))
+                            ->where('tutor_id', $this->id)->orderBy('date_end', 'desc')->pluck('date_limit')->first();
      }
 
     /**
