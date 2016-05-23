@@ -419,7 +419,20 @@ class Tutor extends Model
       */
      public function getDateLimit($type = 'initial')
      {
-         return Account::select(DB::raw('DATE_SUB(date_end, INTERVAL 60 DAY) as date_limit'))
+         switch ($type) {
+             case 'month':
+                 $days = 90;
+                 break;
+             case 'year':
+                 $days = 365;
+                 break;
+             case 'all':
+                 return Account::where('tutor_id', $this->id)->orderBy('date_end', 'desc')->pluck('date_end')->first();
+             default:
+                 $days = 60;
+                 break;
+         }
+         return Account::select(DB::raw("DATE_SUB(date_end, INTERVAL {$days} DAY) as date_limit"))
                             ->where('tutor_id', $this->id)->orderBy('date_end', 'desc')->pluck('date_limit')->first();
      }
 }
