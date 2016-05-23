@@ -90,42 +90,42 @@ class Transfer extends Command
         if ($this->option('clients') || $this->option('all')) {
             $t = microtime(true);
             $this->line('Transfering clients...');
-			static::clients();
+			$this->clients();
             $this->info('Clients transfered!');
             $this->info('Time: ' . (microtime(true) - $t) . 's');
         }
 		if ($this->option('requests') || $this->option('all')) {
             $t = microtime(true);
             $this->line('Transfering requests...');
-			static::requests();
+			$this->requests();
             $this->info('Requests transfered!');
             $this->info('Time: ' . (microtime(true) - $t) . 's');
         }
 		if ($this->option('request_comments') || $this->option('all')) {
             $t = microtime(true);
             $this->line('Transfering request comments...');
-			static::requestComments();
+			$this->requestComments();
             $this->info('Request comments transfered!');
             $this->info('Time: ' . (microtime(true) - $t) . 's');
         }
 		if ($this->option('lists') || $this->option('all')) {
             $t = microtime(true);
             $this->line('Transfering lists...');
-			static::lists();
+			$this->lists();
             $this->info('Lists transfered!');
             $this->info('Time: ' . (microtime(true) - $t) . 's');
         }
 		if ($this->option('attachments') || $this->option('all')) {
             $t = microtime(true);
             $this->line('Transfering attachments...');
-			static::attachments();
+			$this->attachments();
             $this->info('Attachments transfered!');
             $this->info('Time: ' . (microtime(true) - $t) . 's');
 		}
 		if ($this->option('accounts') || $this->option('all')) {
             $ac = microtime(true);
             $this->line('Transfering accounts...');
-			static::accounts();
+			$this->accounts();
             $this->info('Accounts transfered!');
             $this->info('Time: ' . (microtime(true) - $t) . 's');
 		}
@@ -136,7 +136,7 @@ class Transfer extends Command
     /**
 	 * Перенести всех клиентов
 	 */
-	public static function clients()
+	public function clients()
 	{
 		DB::statement("DELETE FROM `clients`");
 		DB::statement("ALTER TABLE `clients` AUTO_INCREMENT=1");
@@ -159,7 +159,7 @@ class Transfer extends Command
 			if (count($markers)) {
 				foreach($markers as $marker) {
 					$new_marker = Marker::create([
-						'markerable_id' 	=> $client->id,
+						'markerable_id' 	=> $new_client->id,
 						'markerable_type'	=> 'App\Models\Client',
 						'lat'				=> $marker->lat,
 						'lng'				=> $marker->lng,
@@ -174,7 +174,7 @@ class Transfer extends Command
 	/**
 	 * Перенести все заявки
 	 */
-	public static function requests()
+	public function requests()
 	{
 		DB::statement("DELETE FROM `requests`");
 		DB::statement("ALTER TABLE `requests` AUTO_INCREMENT=1");
@@ -197,7 +197,7 @@ class Transfer extends Command
 	/**
 	 * Перенести комментарии к заявке
 	 */
-	public static function requestComments()
+	public function requestComments()
 	{
 		Comment::where('entity_type', 'request')->delete();
 
@@ -227,7 +227,7 @@ class Transfer extends Command
 	 * Перенести списки
 	 * списки, которым не соответствующей заявки: 9, 3609, 3610, 3696, 14163, 14164
 	 */
-	public static function lists()
+	public function lists()
 	{
 		DB::statement("DELETE FROM `request_lists`");
 		DB::statement("ALTER TABLE `request_lists` AUTO_INCREMENT=1");
@@ -257,7 +257,7 @@ class Transfer extends Command
 	/**
 	 * Перенести стыковки
 	 */
-	public static function attachments()
+	public function attachments()
 	{
 		DB::statement("DELETE FROM `attachments`");
 		DB::statement("ALTER TABLE `attachments` AUTO_INCREMENT=1");
@@ -348,7 +348,7 @@ class Transfer extends Command
 	/**
 	 * Перенести отчетность
 	 */
-	public static function accounts()
+	public function accounts()
 	{
 		DB::statement("DELETE FROM `accounts`");
 		DB::statement("ALTER TABLE `accounts` AUTO_INCREMENT=1");
