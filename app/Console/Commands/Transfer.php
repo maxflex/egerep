@@ -357,6 +357,9 @@ class Transfer extends Command
 
 		$periods = DB::connection('egerep')->table('periods')->get();
 
+		// ID преподавателей, по которым отчетность перенесена
+		$transfered_tutor_ids = [];
+
 		foreach ($periods as $period) {
 			$new_tutor_id = static::_tutorId($period->repetitor_id);
 
@@ -374,6 +377,12 @@ class Transfer extends Command
 					'updated_at'		=> $period->date_created,
 				]);
 
+				if (in_array($period->repetitor_id, $transfered_tutor_ids)) {
+					continue;
+				}
+
+				$transfered_tutor_ids[] = $period->repetitor_id;
+				
 				// данные таблицы отчетности
 				$account_data = DB::connection('egerep')->table('lessons')
 									->where('repetitor_id', $period->repetitor_id)

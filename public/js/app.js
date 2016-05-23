@@ -536,7 +536,7 @@
       });
     };
     $scope.save = function() {
-      return $.each($scope.tutor.accounts, function(index, account) {
+      return $.each($scope.tutor.last_accounts, function(index, account) {
         return Account.update(account);
       });
     };
