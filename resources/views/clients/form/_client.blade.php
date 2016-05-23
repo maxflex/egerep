@@ -10,7 +10,7 @@
         </div>
         <div class="form-group">
             <select class="form-control" ng-model='client.grade'
-                ng-options='grade_id as label for (grade_id, label) in Grades'>
+                ng-options='+(grade_id) as label for (grade_id, label) in Grades'>
                 <option value="">выберите класс</option>
             </select>
             {{-- <select class="form-control" ng-model='client.grade'>
