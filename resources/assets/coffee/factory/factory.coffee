@@ -1,8 +1,12 @@
 angular.module('Egerep')
+    .value 'AccountPeriods',
+        0: 'initial'
+        1: 'month'
+        2: 'year'
+        3: 'all'
     .value 'Destinations',
         r_k: 'репетитор едет к клиенту'
         k_r: 'клиент едет к репетитору'
-
     .value 'Workplaces',
         0: 'не работает в ЕГЭ-Центре'
         1: 'работает в ЕГЭ-Центре'

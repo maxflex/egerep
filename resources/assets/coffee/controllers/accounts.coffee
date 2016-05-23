@@ -1,21 +1,38 @@
 angular.module('Egerep')
-    .controller 'AccountsCtrl', ($scope, Account, PaymentMethods, DebtTypes) ->
+    .controller 'AccountsCtrl', ($rootScope, $scope, $http, $timeout, Account, PaymentMethods, DebtTypes, AccountPeriods) ->
         $scope.PaymentMethods = PaymentMethods
         $scope.DebtTypes = DebtTypes
+        $scope.AccountPeriods = AccountPeriods
         $scope.current_scope = $scope
+        $scope.current_period = 0
 
         angular.element(document).ready ->
-            # $('.sticky-header').floatThead()
-            $('.accounts-table').stickyTableHeaders()
+            $scope.loadPage()
 
-            $('.right-table-scroll').scroll ->
-                $(window).trigger('resize.stickyTableHeaders')
+        $scope.loadPage = (type) ->
+            $rootScope.frontend_loading = true
+            $http.get "api/accounts/#{$scope.tutor_id}?type=#{AccountPeriods[$scope.current_period]}"
+            .success (response) ->
+                    renderData(response)
+                    $scope.current_period++
+
+        renderData = (data) ->
+            $scope.tutor = data.tutor
+            $scope.date_limit = data.date_limit
+            $scope.client_ids = data.client_ids
+            $rootScope.frontend_loading = false
+            $('.accounts-table').stickyTableHeaders('destroy')
+            $timeout ->
+                $('.accounts-table').stickyTableHeaders()
+
+                $('.right-table-scroll').scroll ->
+                    $(window).trigger('resize.stickyTableHeaders')
 
         getAccountStartDate = (index) ->
             if index > 0
                 moment($scope.tutor.last_accounts[index - 1].date_end).add(1, 'days').toDate()
             else
-                new Date $scope.first_attachment_date
+                new Date $scope.date_limit
 
         getAccountEndDate = (index) ->
             if (index + 1) is $scope.tutor.last_accounts.length
@@ -70,7 +87,7 @@ angular.module('Egerep')
             # если нулевой элемент, то отсчитываем от даты первой стыковки (самой ранней стыковки)
             # иначе отсчитываем от даты конца предыдущего периода
             if not index
-                current_date = moment($scope.first_attachment_date).format('YYYY-MM-DD')
+                current_date = moment($scope.date_limit).format('YYYY-MM-DD')
             else
                 current_date = moment($scope.tutor.last_accounts[index - 1].date_end).add(1, 'days').format('YYYY-MM-DD')
 
@@ -85,7 +102,7 @@ angular.module('Egerep')
                 date_end = $scope.tutor.last_accounts[$scope.tutor.last_accounts.length - 1].date_end
                 moment(date_end).add(1, 'days').toDate()
             else
-                new Date $scope.first_attachment_date
+                new Date $scope.date_limit
 
         $scope.addAccountDialog = ->
             $scope.new_account_date_end = ''

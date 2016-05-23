@@ -19,11 +19,8 @@ class AccountsController extends Controller
         if (! count($client_ids)) {
             return view('tutors.accounts.no_clients');
         }
-
         return view('tutors.accounts.index')->with(ngInit([
-            'tutor'                 => Tutor::where('id', $id)->first()->withLastAccounts(),
-            'client_ids'            => $tutor->getClientIds(),
-            'first_attachment_date' => $tutor->getDateLimit(),
+            'tutor_id' => $id,
         ]));
     }
 }
