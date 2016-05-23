@@ -163,16 +163,17 @@
 							'z-index': 3 // #18: opacity bug
 						}
 
-						var pb = $('.panel-body').offset().left + 15
-						var pb_diff = offset.left - pb
+						// @custom
+						var pb_diff = offset.left - base.panel_body_offset
+
 						if (pb_diff < 0) {
-							new_options.clip = 'rect(0, ' + ($('.panel-body').width() + Math.abs(pb_diff) + 1) + 'px, 71px, ' + Math.abs(pb_diff) + 'px)'
+							new_options.clip = 'rect(0, ' + (base.panel_body_width + Math.abs(pb_diff) + 1) + 'px, 71px, ' + Math.abs(pb_diff) + 'px)'
 						}
 						if (pb_diff > 0) {
-							new_options.clip = 'rect(0, ' + ($('.panel-body').width() - pb_diff + 1) + 'px, 71px, 0)'
+							new_options.clip = 'rect(0, ' + (base.panel_body_width - pb_diff + 1) + 'px, 71px, 0)'
 						}
 
-						console.log(pb_diff, offset.left)
+						// console.log(pb_diff, offset.left)
 
 						base.$originalHeader.css(new_options);
 						base.leftOffset = newLeft;
@@ -295,6 +296,8 @@
 			base.$document = $(base.options.objDocument);
 			base.$scrollableArea = $(base.options.scrollableArea);
 			base.isWindowScrolling = base.$scrollableArea[0] === base.$window[0];
+			base.panel_body_offset = $('.panel-body').offset().left + 15
+			base.panel_body_width = $('.panel-body').width()
 		};
 
 		base.updateOptions = function (options) {
