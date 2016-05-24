@@ -196,7 +196,7 @@ class Transfer extends Command
 		foreach ($tasks as $task) {
 			\App\Models\Request::insert([
 				'id_a_pers'       => $task->id,
-				'comment'		  => str_replace('&nbsp;', ' ', $task->description),
+				'comment'		  => static::_tutorIds(static::_htmlReplace($task->description)),
 				'user_id'	      => static::_userId($task->status_ico),
 				'state'			  => static::_convertRequestStatus($task->status),
 				'client_id'       => Client::where('id_a_pers', $task->client_id)->pluck('id')->first(),
@@ -262,14 +262,16 @@ class Transfer extends Command
 									->where('attachments.tutor_id', $tutor_id)
 									->pluck('attachments.id')->first();
 
-				Comment::insert([
-					'user_id' 		=> static::_userId($comment->user_id),
-					'entity_type' 	=> 'attachment',
-					'entity_id'		=> $attachment_id,
-					'comment'		=> $comment->text,
-					'created_at'	=> $comment->time,
-					'updated_at'	=> $comment->time,
-				]);
+				if ($attachment_id) {
+					Comment::insert([
+						'user_id' 		=> static::_userId($comment->user_id),
+						'entity_type' 	=> 'attachment',
+						'entity_id'		=> $attachment_id,
+						'comment'		=> $comment->text,
+						'created_at'	=> $comment->time,
+						'updated_at'	=> $comment->time,
+					]);
+				}
 			}
 			$bar->advance();
 		}
@@ -634,5 +636,36 @@ class Transfer extends Command
 		} else {
 			return $score;
 		}
+	}
+
+	/**
+	 * Заменить html-entities
+	 */
+	private static function _htmlReplace($text)
+	{
+		$text = str_replace('&quot;', '"', $text);
+		$text = str_replace('&nbsp;', ' ', $text);
+		return $text;
+	}
+
+	/**
+	 * Заменить старые ID репетиторов внутри текста
+	 */
+	public function tutorIdsInText($text)
+	{
+		preg_match_all('/(репетитор [\d]+)/ui', $text, $matches);
+
+		$new_text = $text;
+
+		if (count($matches[0])) {
+			foreach ($matches[0] as $m) {
+				$tutor_id     = filter_var($m, FILTER_SANITIZE_NUMBER_INT);
+				$new_tutor_id = static::_tutorId($tutor_id);
+				$new_m        = str_replace($tutor_id, $new_tutor_id, $m);
+				$new_text	  = preg_replace("/{$m}\b/iu", $new_m, $new_text);
+			}
+		}
+
+		return $new_text;
 	}
 }

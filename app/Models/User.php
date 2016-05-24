@@ -114,7 +114,6 @@ class User extends Model
      */
     public static function scopeReal($query)
     {
-        return $query->where('type', static::USER_TYPE)
-                     ->where('banned', 0);
+        return $query->where('type', static::USER_TYPE);
     }
 }

@@ -22,10 +22,13 @@ angular.module 'Egerep'
         this.getColor = (user_id) ->
             this.getUser(user_id).color
 
-        this.getWithSystem = ->
+        this.getWithSystem = (only_active = true) ->
             users = _.clone this.users
             users.unshift system_user
-            users
+            if only_active
+                _.where(users, {banned: 0})
+            else
+                users
 
         this.toggle = (entity, user_id, Resource = false) ->
             new_user_id = if entity[user_id] then 0 else this.current_user.id
@@ -40,4 +43,3 @@ angular.module 'Egerep'
                 entity[user_id] = new_user_id
 
         this
-
