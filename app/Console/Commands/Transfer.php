@@ -150,6 +150,7 @@ class Transfer extends Command
 		Marker::where('markerable_type', 'App\Models\Client')->delete();
 
 		$clients = DB::connection('egerep')->table('clients')->get();
+		$bar = $this->output->createProgressBar(count($clients));
 
 		foreach($clients as $client) {
 			$new_client = Client::create([
@@ -175,7 +176,10 @@ class Transfer extends Command
 					$new_marker->createMetros();
 				}
 			}
+			$bar->advance();
 		}
+
+		$bar->finish();
 	}
 
 	/**
@@ -187,6 +191,7 @@ class Transfer extends Command
 		DB::statement("ALTER TABLE `requests` AUTO_INCREMENT=1");
 
 		$tasks = DB::connection('egerep')->table('tasks')->get();
+		$bar = $this->output->createProgressBar(count($tasks));
 
 		foreach ($tasks as $task) {
 			\App\Models\Request::insert([
@@ -198,7 +203,10 @@ class Transfer extends Command
 				'created_at'	  => $task->begin,
 				'user_id_created' => static::_userId($task->user_id),
 			]);
+			$bar->advance();
 		}
+
+		$bar->finish();
 	}
 
 	/**
@@ -209,6 +217,7 @@ class Transfer extends Command
 		Comment::where('entity_type', 'request')->delete();
 
 		$comments = DB::connection('egerep')->table('task_comments')->get();
+		$bar = $this->output->createProgressBar(count($comments));
 
 		$no_request = [];
 
@@ -227,7 +236,10 @@ class Transfer extends Command
 			} else {
 				$no_request[] = $comment->id;
 			}
+			$bar->advance();
 		}
+
+		$bar->finish();
 	}
 
 	/**
@@ -238,6 +250,7 @@ class Transfer extends Command
 		Comment::where('entity_type', 'attachment')->delete();
 
 		$comments = DB::connection('egerep')->table('client_comments')->get();
+		$bar = $this->output->createProgressBar(count($comments));
 
 		foreach ($comments as $comment) {
 			$tutor_id = static::_tutorId($comment->repetitor_id);
@@ -258,7 +271,10 @@ class Transfer extends Command
 					'updated_at'	=> $comment->time,
 				]);
 			}
+			$bar->advance();
 		}
+
+		$bar->finish();
 	}
 
 
@@ -272,6 +288,7 @@ class Transfer extends Command
 		DB::statement("ALTER TABLE `request_lists` AUTO_INCREMENT=1");
 
 		$lists = DB::connection('egerep')->table('lists')->get();
+		$bar = $this->output->createProgressBar(count($lists));
 
 		// списки, которым нет соответствующих заявок
 		$no_request = [];
@@ -290,7 +307,9 @@ class Transfer extends Command
 			} else {
 				$no_request[] = $list->id;
 			}
+			$bar->advance();
 		}
+		$bar->finish();
 	}
 
 	/**
@@ -307,6 +326,7 @@ class Transfer extends Command
 
 
 		$attachments = DB::connection('egerep')->table('repetitor_clients')->get();
+		$bar = $this->output->createProgressBar(count($attachments));
 
 		$no_tutor_ids = [];
 
@@ -381,7 +401,10 @@ class Transfer extends Command
 			} else {
 				$no_tutor_ids[] = $attachment->repetitor_id;
 			}
+			$bar->advance();
 		}
+
+		$bar->finish();
 	}
 
 	/**
@@ -395,6 +418,7 @@ class Transfer extends Command
 		DB::statement("ALTER TABLE `account_datas` AUTO_INCREMENT=1");
 
 		$periods = DB::connection('egerep')->table('periods')->get();
+		$bar = $this->output->createProgressBar(count($periods));
 
 		// ID преподавателей, по которым отчетность перенесена
 		$transfered_tutor_ids = [];
@@ -437,7 +461,10 @@ class Transfer extends Command
 					]);
 				}
 			}
+			$bar->advance();
 		}
+
+		$bar->finish();
 	}
 
 
