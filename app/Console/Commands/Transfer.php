@@ -196,7 +196,7 @@ class Transfer extends Command
 		foreach ($tasks as $task) {
 			\App\Models\Request::insert([
 				'id_a_pers'       => $task->id,
-				'comment'		  => static::_tutorIds(static::_htmlReplace($task->description)),
+				'comment'		  => static::_tutorIdsInText(static::_htmlReplace($task->description)),
 				'user_id'	      => static::_userId($task->status_ico),
 				'state'			  => static::_convertRequestStatus($task->status),
 				'client_id'       => Client::where('id_a_pers', $task->client_id)->pluck('id')->first(),
@@ -651,7 +651,7 @@ class Transfer extends Command
 	/**
 	 * Заменить старые ID репетиторов внутри текста
 	 */
-	public function tutorIdsInText($text)
+	private static function _tutorIdsInText($text)
 	{
 		preg_match_all('/(репетитор [\d]+)/ui', $text, $matches);
 
