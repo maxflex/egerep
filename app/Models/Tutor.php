@@ -211,6 +211,11 @@ class Tutor extends Model
             }
         }
 
+        // сортируем по ID клиента
+        usort($client_ids, function($a, $b) {
+            return $a['id'] - $b['id'];
+        });
+
         return $client_ids;
     }
 

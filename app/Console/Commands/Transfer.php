@@ -52,14 +52,14 @@ class Transfer extends Command
 
 	// Соответствия пользователей в реальной базе
 	// в старой базе => в новой базе
-	const CO_USER_REAL = [12 => 1304,13 => 1305,20 => 1306,35 => 1307,26 => 1308,28 => 1309,30 => 1310,40 => 1311,46 => 1312,43 => 1313,48 => 1314,49 => 1315,50 => 1316,57 => 1317,58 => 1318,55 => 1319,60 => 1320,62 => 1321,63 => 1322,66 => 1323,70 => 1324,72 => 1325,75 => 1326,73 => 1327,67 => 1328,74 => 1329,76 => 1330,78 => 1331,82 => 1332,80 => 1333,84 => 1334,85 => 1335,81 => 1336,89 => 1337,91 => 1338,86 => 1339,87 => 1340,88 => 1341,100 => 1342,104 => 1343,95 => 1344,96 => 1345,97 => 1346,109 => 1347,102 => 1348,99 => 1349,98 => 1350,106 => 1351,108 => 1352,113 => 1353,115 => 1354,120 => 1355,119 => 106,118 => 1356,117 => 1357,125 => 1358,123 => 104,114 => 108,116 => 1359,121 => 1360,122 => 1361,124 => 102,139 => 1380,126 => 100,142 => 1383,140 => 1381,141 => 1382,130 => 1370,131 => 1371,132 => 1372,138 => 1379,136 => 1376,135 => 1377,137 => 1378,134 => 1373,133 => 1374,128 => 1368,127 => 1367,129 => 1369,143 => 1384,144 => 1385];
+	const CO_USER_REAL = [12 => 1304,13 => 1305,20 => 1306,35 => 1307,26 => 1308,28 => 1309,30 => 1310,40 => 1311,46 => 1312,43 => 1313,48 => 1314,49 => 1315,50 => 1316,57 => 1317,58 => 1318,55 => 1319,60 => 1320,62 => 1321,63 => 1322,66 => 1323,70 => 1324,72 => 1325,75 => 1326,73 => 1327,67 => 1328,74 => 1329,76 => 1330,78 => 1331,82 => 1332,80 => 1333,84 => 1334,85 => 1335,81 => 1336,89 => 1337,91 => 1338,86 => 1339,87 => 1340,88 => 1341,100 => 1342,104 => 1343,95 => 1344,96 => 1345,97 => 1346,109 => 1347,102 => 1348,99 => 1349,98 => 1350,106 => 1351,108 => 1352,113 => 1353,115 => 1354,120 => 1355,119 => 106,118 => 1356,117 => 1357,125 => 1358,123 => 104,114 => 108,116 => 1359,121 => 1360,122 => 1361,124 => 102,139 => 1380,126 => 100,142 => 1383,140 => 1381,141 => 1382,130 => 1370,131 => 1371,132 => 1372,138 => 1379,136 => 1376,135 => 1377,137 => 1378,134 => 1373,133 => 1374,128 => 1368,127 => 1367,129 => 1369,143 => 1384,144 => 1385,145 => 1389];
 
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'transfer:all {--clients} {--requests} {--request_comments} {--lists} {--attachments} {--accounts} {--all}';
+    protected $signature = 'transfer:all {--clients} {--requests} {--request_comments} {--lists} {--attachments} {--attachment_comments} {--accounts} {--all}';
 
     /**
      * The console command description.
@@ -120,6 +120,13 @@ class Transfer extends Command
             $this->line('Transfering attachments...');
 			$this->attachments();
             $this->info('Attachments transfered!');
+            $this->info('Time: ' . (microtime(true) - $t) . 's');
+		}
+		if ($this->option('attachment_comments') || $this->option('all')) {
+            $t = microtime(true);
+            $this->line('Transfering attachment comments...');
+			$this->attachmentComments();
+            $this->info('Attachment comments transfered!');
             $this->info('Time: ' . (microtime(true) - $t) . 's');
 		}
 		if ($this->option('accounts') || $this->option('all')) {
@@ -184,7 +191,7 @@ class Transfer extends Command
 		foreach ($tasks as $task) {
 			\App\Models\Request::insert([
 				'id_a_pers'       => $task->id,
-				'comment'		  => $task->description,
+				'comment'		  => str_replace('&nbsp;', ' ', $task->description),
 				'user_id'	      => static::_userId($task->status_ico),
 				'state'			  => static::_convertRequestStatus($task->status),
 				'client_id'       => Client::where('id_a_pers', $task->client_id)->pluck('id')->first(),
@@ -222,6 +229,38 @@ class Transfer extends Command
 			}
 		}
 	}
+
+	/**
+	 * Перенести комментарии к заявке
+	 */
+	public function attachmentComments()
+	{
+		Comment::where('entity_type', 'attachment')->delete();
+
+		$comments = DB::connection('egerep')->table('client_comments')->get();
+
+		foreach ($comments as $comment) {
+			$tutor_id = static::_tutorId($comment->repetitor_id);
+
+			if ($tutor_id) {
+				$attachment_id = Attachment::join('request_lists', 'request_lists.id', '=', 'attachments.request_list_id')
+									->join('requests', 'requests.id', '=', 'request_lists.request_id')
+									->where('requests.client_id', static::_clientId($comment->client_id))
+									->where('attachments.tutor_id', $tutor_id)
+									->pluck('attachments.id')->first();
+
+				Comment::insert([
+					'user_id' 		=> static::_userId($comment->user_id),
+					'entity_type' 	=> 'attachment',
+					'entity_id'		=> $attachment_id,
+					'comment'		=> $comment->text,
+					'created_at'	=> $comment->time,
+					'updated_at'	=> $comment->time,
+				]);
+			}
+		}
+	}
+
 
 	/**
 	 * Перенести списки
@@ -382,7 +421,7 @@ class Transfer extends Command
 				}
 
 				$transfered_tutor_ids[] = $period->repetitor_id;
-				
+
 				// данные таблицы отчетности
 				$account_data = DB::connection('egerep')->table('lessons')
 									->where('repetitor_id', $period->repetitor_id)
