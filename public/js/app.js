@@ -886,6 +886,11 @@
 }).call(this);
 
 (function() {
+  angular.module('Egerep').controller('EmptyCtrl', function() {});
+
+}).call(this);
+
+(function() {
   angular.module('Egerep').controller('GraphController', function($scope, $timeout, $http, $rootScope, SvgMap) {
     var getDistance, getDistanceObject;
     bindArguments($scope, arguments);

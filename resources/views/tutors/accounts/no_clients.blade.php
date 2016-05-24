@@ -1,6 +1,6 @@
 @extends('app')
 @section('title', 'Отчетность')
-@section('controller', 'AccountsCtrl')
+@section('controller', 'EmptyCtrl')
 
 @section('content')
     <div class="aligner">
