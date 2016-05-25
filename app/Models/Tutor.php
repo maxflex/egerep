@@ -476,4 +476,14 @@ class Tutor extends Model
                  return 60;
          }
      }
+
+    /**
+ 	 * Соответствия межу ID преподавателей
+     * удалить после обновления a-perspektiva.ru
+ 	 */
+ 	public static function newTutorId($tutor_id)
+ 	{
+ 		$new_tutor_id = static::where('id_a_pers', $tutor_id)->pluck('id')->first();
+ 		return $new_tutor_id ? $new_tutor_id : null;
+ 	}
 }

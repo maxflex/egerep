@@ -25,9 +25,9 @@
      * Возвратить чистый номер телефона.
      *
      */
-    function cleanNumber($number)
+    function cleanNumber($number, $add_seven = false)
     {
-        return preg_replace("/[^0-9]/", "", $number);
+        return ($add_seven ? '7' : '') . preg_replace("/[^0-9]/", "", $number);
     }
 
     /**
