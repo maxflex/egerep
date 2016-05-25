@@ -92,6 +92,9 @@
                                 <span style="width: auto">Комментарий:</span>
                                 <input ng-model='account.comment' class='no-border-outline' style="width: 90%">
                             </div>
+                            <div class="mbs">
+                                 @{{ account.user_login }} @{{ formatDateTime(account.created_at) }}
+                            </div>
                         </div>
                     </td>
                 </tr>

@@ -22,7 +22,7 @@ class Account extends Model
         'payment_method',
         'data',
     ];
-    protected $appends = ['data', 'total_commission'];
+    protected $appends = ['data', 'total_commission', 'user_login'];
 
     // ------------------------------------------------------------------------
 
@@ -43,6 +43,11 @@ class Account extends Model
     }
 
     // ------------------------------------------------------------------------
+
+    public function getUserLoginAttribute()
+    {
+        return User::where('id', $this->user_id)->pluck('login')->first();
+    }
 
     public function getDataAttribute()
     {
