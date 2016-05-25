@@ -4,7 +4,7 @@ angular
         $resource 'api/requests/:id', {},
             update:
                 method: 'PUT'
-    .controller 'RequestsIndex', ($rootScope, $scope, $timeout, $http, Request) ->
+    .controller 'RequestsIndex', ($rootScope, $scope, $timeout, $http, Request, Comment, PhoneService, UserService) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 

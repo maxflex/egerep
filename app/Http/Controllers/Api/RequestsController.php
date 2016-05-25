@@ -17,7 +17,7 @@ class RequestsController extends Controller
      */
     public function index()
     {
-        return \App\Models\Request::paginate(20)->toJson();
+        return \App\Models\Request::with(['client'])->paginate(20)->toJson();
     }
 
     /**
@@ -73,7 +73,7 @@ class RequestsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        \App\Models\Request::find($id)->update($request->input());
     }
 
     /**

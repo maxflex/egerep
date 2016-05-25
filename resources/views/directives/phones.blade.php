@@ -13,7 +13,7 @@
                 </button>
                 <button class="btn btn-default"
                     ng-click='sms(entity.{{ $phone_field }})'
-                    ng-if="isFull(entity.{{ $phone_field }}) && isMobile(entity.{{ $phone_field }})">
+                    ng-if="isFull(entity.{{ $phone_field }}) && PhoneService.isMobile(entity.{{ $phone_field }})">
                     <span class="glyphicon glyphicon-envelope small no-margin-right"></span>
                 </button>
                 <button class="btn btn-default" ng-if="level == {{ $index + 1 }} && level < {{ count(App\Traits\Person::$phone_fields) }}" ng-click="nextLevel()">

@@ -455,7 +455,7 @@
 (function() {
   angular.module('Egerep').controller("ClientsIndex", function($scope, $timeout, Client) {
     return $scope.clients = Client.query();
-  }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, ReviewScores, Archive, Review, ApiService, UserService) {
+  }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, AttachmentStates, ReviewScores, Archive, Review, ApiService, UserService) {
     var filterMarkers, saveSelectedList, unsetSelected;
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
@@ -1040,7 +1040,7 @@
         method: 'PUT'
       }
     });
-  }).controller('RequestsIndex', function($rootScope, $scope, $timeout, $http, Request) {
+  }).controller('RequestsIndex', function($rootScope, $scope, $timeout, $http, Request, Comment, PhoneService, UserService) {
     var loadRequests;
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
@@ -1569,19 +1569,6 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').controller("UserStats", function($scope, TutorStates, User, UserService) {
-    bindArguments($scope, arguments);
-    $scope.state_cnt = Object.keys(TutorStates).length + 2;
-    return $scope.sum = function(arr) {
-      return _.reduce(arr, function(m, n) {
-        return m + n;
-      }, 0);
-    };
-  });
-
-}).call(this);
-
-(function() {
   angular.module('Egerep').directive('comments', function() {
     return {
       restrict: 'E',
@@ -1790,9 +1777,6 @@
           }
           return !number.match(/_/);
         };
-        $scope.isMobile = function(number) {
-          return parseInt(number[4]) === 9 || parseInt(number[1]) === 9;
-        };
         return $scope.sms = function(number) {
           $('#sms-modal').modal('show');
           return $scope.$parent.sms_number = number;
@@ -1964,6 +1948,9 @@
   }).value('ReviewStates', {
     unpublished: 'не опубликован',
     published: 'опубликован'
+  }).value('AttachmentStates', {
+    0: 'показано',
+    1: 'скрыто'
   }).value('ReviewScores', {
     1: 1,
     2: 2,
@@ -2247,9 +2234,23 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').service('PhoneService', function($http) {
+  angular.module('Egerep').service('PhoneService', function($rootScope, $http) {
     this.call = function(number) {
       return location.href = "sip:" + number.replace(/[^0-9]/g, '');
+    };
+    this.isMobile = function(number) {
+      return parseInt(number[4]) === 9 || parseInt(number[1]) === 9;
+    };
+    this.clean = function(number) {
+      return number.replace(/[^0-9]/gim, "");
+    };
+    this.format = function(number) {
+      number = this.clean(number);
+      return '+' + number.substr(0, 1) + ' (' + number.substr(1, 3) + ') ' + number.substr(4, 3) + '-' + number.substr(7, 2) + '-' + number.substr(9, 2);
+    };
+    this.sms = function(number) {
+      $rootScope.sms_number = number;
+      return $('#sms-modal').modal('show');
     };
     return this;
   });
