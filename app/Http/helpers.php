@@ -97,3 +97,13 @@
     {
         return \App\Models\User::loggedIn() ? \App\Models\User::fromSession()->id : 0;
     }
+
+    /**
+     * Разбить enter'ом
+     */
+    function breakLines($array)
+    {
+        return implode('
+
+', array_filter($array));
+    }
