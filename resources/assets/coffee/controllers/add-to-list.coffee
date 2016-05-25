@@ -73,7 +73,7 @@ angular.module 'Egerep'
             markerClusterer = new MarkerClusterer $scope.map, $scope.markers,
                 gridSize: 10
                 # maxZoom: 12
-
+                imagePath: 'img/maps/clusterer/m'
 
         showClientOnMap = ->
             $scope.client.markers.forEach (marker) ->
