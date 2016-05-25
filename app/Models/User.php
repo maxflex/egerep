@@ -20,7 +20,8 @@ class User extends Model
 
     public $timestamps = false;
 
-    const USER_TYPE = 'USER';
+    const USER_TYPE    = 'USER';
+    const BANNED_COLOR = 'black';
 
     # Fake system user
     const SYSTEM_USER = [
@@ -31,6 +32,18 @@ class User extends Model
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = static::_password($value);
+    }
+
+    /**
+     * Если пользователь заблокирован,то его цвет должен быть черным
+     */
+    public function getColorAttribute()
+    {
+        if ($this->banned_egerep) {
+            return static::BANNED_COLOR;
+        } else {
+            return $this->attributes['color'];
+        }
     }
 
     /**

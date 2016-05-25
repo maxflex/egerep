@@ -193,7 +193,21 @@ class Tutor extends Model
     // ------------------------------------------------------------------------
 
     /**
-     * Получить ID всех клиентов преподавателя
+      * Получить ID всех клиентов преподавателя
+      */
+     public function getClientIds()
+     {
+         $client_ids = [];
+         foreach ($this->attachments as $attachment) {
+             if ($attachment->requestList && $attachment->requestList->request) {
+                 $client_ids[] = $attachment->requestList->request->client_id;
+             }
+         }
+         return $client_ids;
+     }
+
+    /**
+     * Получить ID всех клиентов преподавателя для создания списка отчетности
      *  id    – номер клиента,
      *  link  - ссылка на конфигурацию (см clients.coffee : $scope.parseHash())
      */
