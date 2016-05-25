@@ -14,7 +14,7 @@ class ExternalController extends Controller
 {
     public function exec($function, Request $request)
     {
-        $this->$function($request->input());
+        $this->$function($request);
     }
 
     /**
@@ -30,7 +30,7 @@ class ExternalController extends Controller
 
         $comment = $data->message . "
 
-        Метро: " . $data->metro_name;
+Метро: " . $data->metro_name;
 
         // создаем заявку клиента
         $client->requests()->create([

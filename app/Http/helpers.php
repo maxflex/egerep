@@ -89,3 +89,11 @@
     {
         return app()->environment() == 'production';
     }
+
+    /**
+     * Возвратить user id из сесси или 0 (system)
+     */
+    function userIdOrSystem()
+    {
+        return \App\Models\User::loggedIn() ? \App\Models\User::fromSession()->id : 0;
+    }
