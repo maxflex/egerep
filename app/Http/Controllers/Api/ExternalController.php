@@ -30,7 +30,7 @@ class ExternalController extends Controller
 
         $new_tutor_id = Tutor::newTutorId($data->repetitor_id);
 
-        $comment = ($new_tutor_id ? "Репетитор " . Tutor::newTutorId($data->repetitor_id) . "
+        $comment = ($data->repetitor_id ? "Репетитор " . Tutor::newTutorId($data->repetitor_id) . "
 
 " : '') . $data->message . "
 
