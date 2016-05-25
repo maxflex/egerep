@@ -73,7 +73,7 @@ class RequestsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        \App\Models\Request::find($id)->update($request->input());
     }
 
     /**

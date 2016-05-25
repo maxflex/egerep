@@ -105,4 +105,9 @@
         {
             return date('Y') - $birth_year;
         }
+
+        public static function getPhoneFieldsAsString()
+        {
+            return "'".implode("','",self::$phone_fields)."'";
+        }
     }
