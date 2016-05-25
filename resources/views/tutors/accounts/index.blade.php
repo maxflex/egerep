@@ -10,6 +10,10 @@
 .panel-body {
     overflow: hidden;
 }
+/* Нужно пофиксить этот баг, задача #854.3 */
+.input-group-btn button {
+    padding: 9px 9.5px !important;
+}
 </style>
 
 @section('content')
