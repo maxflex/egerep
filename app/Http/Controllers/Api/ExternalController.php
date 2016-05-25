@@ -28,9 +28,11 @@ class ExternalController extends Controller
             'phone' => cleanNumber($data->phone, true),
         ]);
 
-        $comment = "Репетитор " . Tutor::newTutorId($data->repetitor_id) . "
+        $new_tutor_id = Tutor::newTutorId($data->repetitor_id);
 
-" . $data->message . "
+        $comment = ($new_tutor_id ? "Репетитор " . Tutor::newTutorId($data->repetitor_id) . "
+
+" : '') . $data->message . "
 
 Метро: " . $data->metro_name;
 
