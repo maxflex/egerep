@@ -5,7 +5,7 @@
             <tr>
                 <td width='75'></td>
                 <td ng-repeat='client in clients' width='50'>
-                    клиент @{{ client.id }}
+                    <a href='@{{ client.link }}'>клиент @{{ client.id }}</a>
                 </td>
             </tr>
         </thead>

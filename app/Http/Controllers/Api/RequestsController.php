@@ -17,7 +17,10 @@ class RequestsController extends Controller
      */
     public function index()
     {
-        return \App\Models\Request::with(['client'])->orderBy('id', 'desc')->paginate(20)->toJson();
+        return \App\Models\Request::with(['client'])
+            // ->orderBy('id', 'desc')
+            ->paginate(20)
+            ->toJson();
     }
 
     /**
