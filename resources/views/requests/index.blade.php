@@ -15,19 +15,10 @@
          ng-class="{ 'manual-request-red': request.contract_time && request.contract_time > 0 && request.contract_time <= 3600 }">
         <div class="col-sm-12">
             <div>
-                    <span ng-show="request.comment" style="margin-right: 10px">
-                        @{{request.comment}}
-                    </span>
-
+                    <span ng-show="request.comment" style="margin-right: 10px">@{{request.comment}}</span>
                     <span class="half-black">
-                        <span ng-show="request.client.name">
-                            @{{request.client.name}},
-                        </span>
-
-                        <span ng-show="request.client.grade > 0">
-                            @{{request.client.grade}} класс,
-                        </span>
-
+                        <span ng-show="request.client.name">@{{request.client.name}},</span>
+                        <span ng-show="request.client.grade > 0">@{{request.client.grade}} класс,</span>
                         <span ng-repeat="phone_field in ['phone', 'phone2', 'phone3']">
                             <span ng-show="request.client[phone_field]">
                                 <span class="underline-hover inline-block"
@@ -50,7 +41,7 @@
                     <div class="half-black">
                         Заявка №@{{request.id}} создана @{{UserService.getLogin(request.id_user_created)}}
                         {{-- @todo --}}
-                        @{{ request.created_at.substr(0,10) }} в @{{ request.created_at.substr(11)}}
+                        @{{ formatDateTime(request.created_at) }}
                         <a class="link-reverse" style="margin-left: 5px" href="requests/@{{request.id}}/edit">редактировать</a>
                     </div>
                 </div>
