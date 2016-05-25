@@ -82,7 +82,7 @@ class ExternalController extends Controller
             'middle_name'       => $request->patronym,
             'contacts'          => breakLines([$request->mobile_phone, $request->city_phone, $request->contact]),
             'subjects'          => static::_subjects($request->subjects),
-            'birth_year'        => $requst->year_of_birth,
+            'birth_year'        => $request->year_of_birth,
             'start_career_year' => $request->experience ? (date("Y") - $request->experience) : null,
             'education'         => $request->education,
             'achievements'      => $request->degrees,
@@ -97,7 +97,7 @@ class ExternalController extends Controller
             Tutor::where('id', $new_tutor_id)->update([
                 'photo_extension' => $extension,
             ]);
-			$fh = fopen(public_path() . Tutor::UPLOAD_DIR . $new_tutor_id . '.' . $extension, 'w');
+			$fh = fopen(public_path() . Tutor::UPLOAD_DIR . $new_tutor_id . '_original.' . $extension, 'w');
 			fwrite($fh, $request->photo);
 			fclose($fh);
 		}
