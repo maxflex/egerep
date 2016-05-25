@@ -3,7 +3,9 @@
 @section('controller', 'TutorsIndex')
 
 @section('title-right')
-    {{ link_to_route('tutors.create', 'добавить преподавателя') }}
+    {{-- нужно поправить функция link_to_route, чтобы она работала с https --}}
+    {{-- {{ link_to_route('tutors.create', 'добавить преподавателя') }} --}}
+    <a href="tutors/create">добавить преподавателя</a>
 @endsection
 
 @section('content')
