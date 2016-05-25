@@ -19,7 +19,6 @@ angular.module('Egerep')
         renderData = (data) ->
             $scope.tutor = data.tutor
             $scope.date_limit = data.date_limit
-            $scope.client_ids = data.client_ids
             $rootScope.frontend_loading = false
             $('.accounts-table').stickyTableHeaders('destroy')
             $timeout ->

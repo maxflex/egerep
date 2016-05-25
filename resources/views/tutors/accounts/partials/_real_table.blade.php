@@ -27,20 +27,28 @@
         <table class='accounts-table'>
             <thead ng-repeat-start='account in tutor.last_accounts' ng-if='$index == 0'>
                 <tr>
-                    <td ng-repeat='client in client_ids' width='107'>
+                    <td ng-repeat='client in clients' width='77'>
                         <a href='@{{ client.link }}'>клиент @{{ client.id }}</a>
                     </td>
                 </tr>
             </thead>
             <tbody ng-repeat-end>
                 <tr ng-repeat='date in getDates($index)'>
-                    <td ng-repeat='client in client_ids'>
-                        <input type="text" class='account-column no-border-outline' ng-model='account.data[client.id][date]' title='@{{ formatDate(date) }}'>
+                    <td ng-repeat='client in clients' ng-class="{
+                        'attachment-start': date == client.attachment_date,
+                        'archive-date': date == client.archive_date,
+                    }">
+                        <input type="text" class='account-column no-border-outline'
+                            ng-class="{
+                                'attachment-start': date == client.attachment_date,
+                                'archive-date': date == client.archive_date,
+                            }"
+                            ng-model='account.data[client.id][date]' title='@{{ formatDate(date) }}'>
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="1000" class="period-end">
-                        <div class='accounts-data'>
+                    <td class="period-end" width='77'>
+                        <div class='accounts-data' style="position: absolute; margin-top: -57px">
                             <div class="mbs">
                                 <span>Итого комиссия за период:</span>
                                 <input ng-model='account.total_commission' readonly class='no-border-outline' style="width: 60px">

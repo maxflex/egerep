@@ -388,7 +388,7 @@ class Transfer extends Command
 				}
 
 				// если есть отзыв
-				if ($attachment->opinion_user_id) {
+				if ($attachment->rating != 0 && ! empty($attachment->opinion)) {
 					Review::insert([
 						'attachment_id'		=> $new_attachment_id,
 						'score'				=> static::_reviewScore($attachment->rating),
@@ -440,6 +440,7 @@ class Transfer extends Command
 					'tutor_id'			=> $new_tutor_id,
 					'created_at'		=> $period->date_created,
 					'updated_at'		=> $period->date_created,
+					'user_id'			=> static::_userId($period->user_id),
 				]);
 
 				if (in_array($period->repetitor_id, $transfered_tutor_ids)) {

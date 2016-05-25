@@ -27605,9 +27605,13 @@ a {
 .accounts-table {
   float: left;
   margin-bottom: 10px;
-  margin-right: 1px; }
+  font-size: 14px; }
   .accounts-table input {
-    width: 100px; }
+    width: 75px; }
+  .accounts-table .attachment-start {
+    background-color: #BBDEBB; }
+  .accounts-table .archive-date {
+    background-color: #F1D0D7; }
   .accounts-table tr td {
     height: 25px;
     border: 1px solid #999999;

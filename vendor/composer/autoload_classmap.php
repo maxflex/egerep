@@ -27,6 +27,7 @@ return array(
     'AddSwitchesToAttachments' => $baseDir . '/database/migrations/2016_02_20_135309_add_switches_to_attachments.php',
     'AddTimestampsToLists' => $baseDir . '/database/migrations/2016_05_17_112210_add_timestamps_to_lists.php',
     'AddUserCreatedIdToRequests' => $baseDir . '/database/migrations/2016_01_22_123001_add_user_created_id_to_requests.php',
+    'AddUserIdToAccounts' => $baseDir . '/database/migrations/2016_05_25_122002_add_user_id_to_accounts.php',
     'AddVideoLinkToTutors' => $baseDir . '/database/migrations/2016_05_06_102120_add_video_link_to_tutors.php',
     'AttachmentTotalLessonsMissingNullable' => $baseDir . '/database/migrations/2016_02_20_031600_attachment_total_lessons_missing_nullable.php',
     'AttachmentsSeeder' => $baseDir . '/database/seeds/AttachmentsSeeder.php',

@@ -14,13 +14,14 @@ class AccountsController extends Controller
     public function index($id)
     {
         $tutor = Tutor::find($id);
-        $client_ids = $tutor->getClientIds();
+        $clients = $tutor->getAttachmenClients();
 
-        if (! count($client_ids)) {
+        if (! count($clients)) {
             return view('tutors.accounts.no_clients');
         }
         return view('tutors.accounts.index')->with(ngInit([
-            'tutor_id' => $id,
+            'tutor_id'  => $id,
+            'clients'   => $clients,
         ]));
     }
 }

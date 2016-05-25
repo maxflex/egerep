@@ -197,16 +197,18 @@ class Tutor extends Model
      *  id    – номер клиента,
      *  link  - ссылка на конфигурацию (см clients.coffee : $scope.parseHash())
      */
-    public function getClientIds()
+    public function getAttachmenClients()
     {
         $client_ids = [];
 
         foreach ($this->attachments as $attachment) {
             if ($attachment->requestList && $attachment->requestList->request) {
                 $client_ids[] = [
-                    'id' => $attachment->requestList->request->client_id,
+                    'id'              => $attachment->requestList->request->client_id,
                     # @todo: заменить на link_url
-                    'link' => "requests/{$attachment->requestList->request->id}/edit#{$attachment->requestList->id}#{$attachment->id}"
+                    'link'            => "requests/{$attachment->requestList->request->id}/edit#{$attachment->requestList->id}#{$attachment->id}",
+                    'attachment_date' => $attachment->getOriginal('date'),
+                    'archive_date'    => $attachment->archive ? $attachment->archive->getOriginal('date') : null,
                 ];
             }
         }
