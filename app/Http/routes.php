@@ -26,8 +26,6 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::get('tutors/{id}/accounts', 'AccountsController@index');
 
-    Route::get('userstats/', 'UserstatsController@index');
-
 	# Поиск по преподам
 	Route::post('search', 'TutorsController@index');
 
