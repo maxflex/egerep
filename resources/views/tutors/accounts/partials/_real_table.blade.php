@@ -56,7 +56,7 @@
                 </tr>
                 <tr>
                     <td class="period-end" width='77'>
-                        <div class='accounts-data' style="position: absolute; margin-top: -86px; width: 840px">
+                        <div class='accounts-data' style="position: absolute; margin-top: -86px; width: 1000px">
                             <div class="mbs">
                                 <span>Передано (руб.):</span>
                                 <pencil-input model='account.received'></pencil-input>
@@ -69,7 +69,7 @@
                             </div>
                             <div class="mbs">
                                 <span>Итого комиссия за период (руб.):</span>
-                                @{{ account.total_commission }}
+                                @{{ totalCommission(account) }}
                             </div>
                             <div class="mbs">
                                 <span>Дебет до встречи (руб.):</span>
@@ -78,7 +78,11 @@
                             <div class="mbs">
                                 <span>Задолженность (руб.):</span>
                                 <pencil-input model='account.debt'></pencil-input>
-                                <span ng-if='account.debt > 0'> – репетитор <span class="link-like"
+                                <span ng-if='account.debt > 0'> – репетитор <span class="link-like-no-color"
+                                        ng-class="{
+                                            'text-danger': account.debt_type == 0,
+                                            'text-success': account.debt_type == 1,
+                                        }"
                                         ng-click="toggleEnum(account, 'debt_type', DebtTypes)">@{{ DebtTypes[account.debt_type] }}</span>
                                 </span>
                             </div>

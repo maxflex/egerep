@@ -23,8 +23,8 @@ angular.module('Egerep').directive 'pencilInput', ->
                 # @todo: надо изменить
                 if event.keyCode is 13
                     $scope.model = $(event.target).parent().children('div').text()
-                    $(event.target).parent().children('div').text($scope.model)
-
+                    
+                $(event.target).parent().children('div').text($scope.model)
                 event.preventDefault()
                 $(event.target).blur()
             return

@@ -142,7 +142,19 @@ angular.module('Egerep')
                 $scope.tutor.last_accounts.push(new_account)
                 $scope.closeDialog 'add-account'
 
+        getCommission = (val) ->
+            if val.indexOf('/') isnt -1
+                val = val.split('/')[1]
+                return if val then parseInt(val) else 0
+            else
+                return Math.round(parseInt(val) * .25)
 
+        $scope.totalCommission = (account) ->
+            total_commission = 0
+            $.each account.data, (index, account_data) ->
+                $.each account_data, (index, val) ->
+                    total_commission += getCommission(val) if val isnt ''
+            total_commission
 
 
 
@@ -185,7 +197,6 @@ angular.module('Egerep')
             # console.log y, x, event, $("#" + y + "-" + x)
             # Получаем начальный элемент (с которого возможно сдвинемся)
             original_element = $("#i-#{y}-#{x}")
-            console.log original_element, original_element.val()
 
             # Если был нажат 0, то подхватываем значение поля сверху
             if original_element.val() is "0" and original_element.val().length

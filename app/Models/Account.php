@@ -22,7 +22,7 @@ class Account extends Model
         'payment_method',
         'data',
     ];
-    protected $appends = ['data', 'total_commission', 'user_login'];
+    protected $appends = ['data', 'user_login'];
 
     // ------------------------------------------------------------------------
 

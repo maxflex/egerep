@@ -2703,6 +2703,14 @@ white-space: nowrap;
 	}
 }
 
+.link-like-no-color {
+    text-decoration: none;
+    cursor: pointer;
+    &:hover {
+	    text-decoration: underline;
+	}
+}
+
 .link-gray {
 	color: $placeholder_gray;
 	text-decoration: none;
