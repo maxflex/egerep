@@ -137,6 +137,7 @@ class Tutor extends Model
        }
        return $query
            ->whereRaw("date_end > DATE_SUB((SELECT date_end FROM accounts WHERE tutor_id=" . $this->id . " ORDER BY date_end DESC LIMIT 1), INTERVAL {$days} DAY)")
+           ->orderBy('date_end', 'asc')
            ->get();
     }
 
