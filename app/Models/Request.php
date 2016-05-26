@@ -11,7 +11,8 @@ class Request extends Model
         'awaiting',
         'finished',
         'deny',
-        'spam'
+        'spam',
+        'motivated_deny'
     ];
     protected $attributes = [
         'state' => 'new',
