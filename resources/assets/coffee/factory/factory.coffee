@@ -50,8 +50,9 @@ angular.module('Egerep')
         published: 'опубликован'
 
     .value 'AttachmentStates',
-        0: 'показано'
-        1: 'скрыто'
+        new:        'новая'
+        ended:      'завершенный'
+        inprogress: 'рабочая'
 
     .value 'ReviewScores',
         1: 1

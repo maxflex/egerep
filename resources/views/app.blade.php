@@ -36,6 +36,7 @@
           <div class="list-group">
               <a class="list-group-item active">Меню</a>
               <a href="requests" class="list-group-item">Заявки</a>
+              <a href="attachments" class="list-group-item">Стыковки</a>
               <a class="list-group-item">Клиенты<span class="badge pull-right"></span></a>
               <a class="list-group-item">Группы<span class="badge pull-right"></span></a>
               <a class="list-group-item">Ошибки</a>

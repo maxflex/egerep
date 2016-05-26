@@ -36,7 +36,14 @@
             <b>Стыковку создал:</b> @{{ selected_attachment.user_login }} @{{ formatDateTime(selected_attachment.created_at) }}
         </div>
         <div class='mbs'>
-            <b>Статус стыковки:</b> новая
+            <b>Статус стыковки:</b>
+            {{-- #859 --}}
+            @{{ selected_attachment.archive
+                    ? AttachmentStates['ended']
+                    : selected_attachment.forecast
+                        ? AttachmentStates['inprogress']
+                        : AttachmentStates['new']
+            }}
         </div>
         <div class='mbs'>
             <b>Видимость:</b>
@@ -45,6 +52,9 @@
                 <span ng-show="selected_attachment.hide">скрыто</span>
                 <span ng-show="!selected_attachment.hide">показано</span>
             </span>
+        </div>
+        <div class='mbs'>
+            <b>Проведено занятий:</b> @{{ selected_attachment.account_data_count }}
         </div>
     </div>
 </div>

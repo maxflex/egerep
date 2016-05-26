@@ -15,9 +15,11 @@ class AttachmentsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        return Attachment::searchByState($request->state)
+                        ->paginate(30)
+                        ->toJson();
     }
 
     /**

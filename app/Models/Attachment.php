@@ -7,6 +7,8 @@ use Carbon\Carbon;
 
 class Attachment extends Model
 {
+    public static $states = ['new', 'inprogress', 'ended'];
+
     protected $fillable = [
         'request_list_id',
         'user_id',
@@ -23,7 +25,7 @@ class Attachment extends Model
     protected $casts = [
         'grade' => 'int',
     ];
-    protected $appends = ['user_login'];
+    protected $appends = ['user_login', 'account_data_count'];
     protected $with = ['archive', 'review'];
     protected static $commaSeparated = ['subjects'];
     protected static $dotDates = ['date'];
@@ -66,6 +68,14 @@ class Attachment extends Model
         }
     }
 
+    public function getAccountDataCountAttribute()
+    {
+        $client_id = $this->requestList()->first()->request()->first()->client_id;
+        return AccountData::where('tutor_id',  $this->tutor_id)
+                          ->where('client_id', $client_id)
+                          ->count();
+    }
+
     // ------------------------------------------------------------------------
 
     protected static function boot()
@@ -76,5 +86,24 @@ class Attachment extends Model
                 $model->user_id = User::fromSession()->id;
             }
         });
+    }
+
+    /**
+     * Search by status.
+     */
+    public function scopeSearchByState($query, $state = 'new')
+    {
+        if (isset($state) && in_array($state, self::$states)) {
+            if ($state == 'ended') {
+                return $query->has('archive');
+            } else {
+                $query->has('archive', '=', 0);
+                if ($state == 'inprogress') {
+                    return $query->where('forecast', '>', 0);
+                } else {
+                    return $query->whereNull('forecast');
+                }
+            }
+        }
     }
 }
