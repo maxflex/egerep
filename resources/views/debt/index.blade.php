@@ -43,24 +43,24 @@
                 </tr>
             </tbody>
         </table>
+        <pagination style="margin-top: 30px"
+                ng-hide='data.last_page <= 1'
+                ng-model="current_page"
+                ng-change="pageChanged()"
+                total-items="data.total"
+                max-size="10"
+                items-per-page="data.per_page"
+                first-text="«"
+                last-text="»"
+                previous-text="«"
+                next-text="»"
+            >
+        </pagination>
     </div>
     <div class="row" ng-hide="tutors.length">
         <div class="col-sm-12">
             <h3 style="text-align: center; margin: 50px 0">cписок  пуст</h3>
         </div>
     </div>
-    <pagination style="margin-top: 30px"
-            ng-hide='data.last_page <= 1'
-            ng-model="current_page"
-            ng-change="pageChanged()"
-            total-items="data.total"
-            max-size="10"
-            items-per-page="data.per_page"
-            first-text="«"
-            last-text="»"
-            previous-text="«"
-            next-text="»"
-        >
-    </pagination>
 </div>
 @stop

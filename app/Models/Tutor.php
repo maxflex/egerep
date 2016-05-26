@@ -77,8 +77,7 @@ class Tutor extends Model
         'photo_cropped_size',
         'photo_original_size',
         'photo_url',
-        'age',
-        'last_debt'
+        'age'
     ];
 
     protected $with = ['markers'];
