@@ -17,7 +17,7 @@
     </div>
     <div class="col-sm-12">
         <div ng-repeat="attachment in attachments">
-            <a href="#">стыковка @{{ attachment.id }}</a>
+            <a href="requests/@{{ attachment.request_list.request_id }}/edit#@{{ attachment.request_list_id }}#@{{ attachment.id }}">стыковка @{{ attachment.id }}</a>
         </div>
     </div>
     <div class="row" ng-hide="attachments.length">

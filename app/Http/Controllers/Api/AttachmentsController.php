@@ -17,7 +17,7 @@ class AttachmentsController extends Controller
      */
     public function index(Request $request)
     {
-        return Attachment::searchByState($request->state)
+        return Attachment::searchByState($request->state)->with(['requestList'])
                         ->paginate(30)
                         ->toJson();
     }
