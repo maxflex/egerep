@@ -14,6 +14,7 @@
     @foreach($js as $script_name)
         <script src="{{ asset('/js/' . $script_name . '.js', isProduction()) }}"></script>
     @endforeach
+    @yield('scripts_after')
 
 
   </head>
@@ -37,17 +38,9 @@
               <a class="list-group-item active">Меню</a>
               <a href="requests" class="list-group-item">Заявки</a>
               <a href="attachments" class="list-group-item">Стыковки</a>
-              <a class="list-group-item">Клиенты<span class="badge pull-right"></span></a>
-              <a class="list-group-item">Группы<span class="badge pull-right"></span></a>
-              <a class="list-group-item">Ошибки</a>
-              <a class="list-group-item">Тестирование</a>
-              <a class="list-group-item">Статистика групп</a>
-              <a class="list-group-item active">Преподаватели</a>
-              <a href="tutors" class="list-group-item">Профили</a>
-              <a class="list-group-item">Дебет</a>
-              <a class="list-group-item active">Настройки</a>
-              <a class="list-group-item">Пользователи</a>
-              <a href="userstats" class="list-group-item">Статистика</a>
+              {{-- <a class="list-group-item active">Преподаватели</a> --}}
+              <a href="tutors" class="list-group-item">Преподаватели</a>
+              {{-- <a class="list-group-item active">Настройки</a> --}}
               <a href="logout" class="list-group-item">Выход</a></div>
         </div>
       </div>

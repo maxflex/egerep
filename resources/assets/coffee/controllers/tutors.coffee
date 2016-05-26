@@ -298,8 +298,7 @@ angular
         $scope.add = ->
             $scope.saving = true
             Tutor.save $scope.tutor, (tutor) ->
-                window.location = laroute.route 'tutors.edit',
-                    tutors: tutor.id
+                window.location = "tutors/#{tutor.id}/edit"
 
         $scope.edit = ->
             ajaxStart()

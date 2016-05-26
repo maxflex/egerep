@@ -4,15 +4,15 @@
         <thead>
             <tr>
                 <td width='75'></td>
-                <td ng-repeat='client in client_ids' width='50'>
-                    клиент @{{ client.id }}
+                <td ng-repeat='client in clients' width='50'>
+                    <a href='@{{ client.link }}'>клиент @{{ client.id }}</a>
                 </td>
             </tr>
         </thead>
         <tbody>
             <tr ng-repeat='date in getFakeDates()'>
                 <td>@{{ formatDate(date) }}</td>
-                <td ng-repeat='client in client_ids'>
+                <td ng-repeat='client in clients'>
                     <input type="text" class='account-column no-border-outline' ng-model='account.data[client.id][date]' disabled>
                 </td>
             </tr>

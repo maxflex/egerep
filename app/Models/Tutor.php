@@ -193,30 +193,49 @@ class Tutor extends Model
     // ------------------------------------------------------------------------
 
     /**
-     * Получить ID всех клиентов преподавателя
+      * Получить ID всех клиентов преподавателя
+      */
+     public function getClientIds()
+     {
+         $client_ids = [];
+         foreach ($this->attachments as $attachment) {
+             if ($attachment->requestList && $attachment->requestList->request) {
+                 $client_ids[] = $attachment->requestList->request->client_id;
+             }
+         }
+         return $client_ids;
+     }
+
+    /**
+     * Получить ID всех клиентов преподавателя для создания списка отчетности
      *  id    – номер клиента,
      *  link  - ссылка на конфигурацию (см clients.coffee : $scope.parseHash())
      */
-    public function getClientIds()
+    public function getAttachmenClients()
     {
-        $client_ids = [];
+        $clients = [];
 
         foreach ($this->attachments as $attachment) {
             if ($attachment->requestList && $attachment->requestList->request && !$attachment->hide) {
-                $client_ids[] = [
-                    'id' => $attachment->requestList->request->client_id,
+                $clients[] = [
+                    'id'                    => $attachment->requestList->request->client_id,
                     # @todo: заменить на link_url
-                    'link' => "requests/{$attachment->requestList->request->id}/edit#{$attachment->requestList->id}#{$attachment->id}"
+                    'link'                  => "requests/{$attachment->requestList->request->id}/edit#{$attachment->requestList->id}#{$attachment->id}",
+                    'attachment_date'       => $attachment->getOriginal('date'),
+                    'archive_date'          => $attachment->archive ? $attachment->archive->getOriginal('date') : null,
+                    'attachment_created_at' => $attachment->getOriginal('created_at'),
+                    'name'                  => $attachment->requestList->request->client->name,
+                    'grade'                 => $attachment->requestList->request->client->grade,
                 ];
             }
         }
 
-        // сортируем по ID клиента
-        usort($client_ids, function($a, $b) {
-            return $a['id'] - $b['id'];
+        // сортируем по дате и времени реквизитов клиента
+        usort($clients, function($a, $b) {
+            return $a['attachment_created_at'] - $b['attachment_created_at'];
         });
 
-        return $client_ids;
+        return $clients;
     }
 
     /**
@@ -460,4 +479,14 @@ class Tutor extends Model
                  return 60;
          }
      }
+
+    /**
+ 	 * Соответствия межу ID преподавателей
+     * удалить после обновления a-perspektiva.ru
+ 	 */
+ 	public static function newTutorId($tutor_id)
+ 	{
+ 		$new_tutor_id = static::where('id_a_pers', $tutor_id)->pluck('id')->first();
+ 		return $new_tutor_id ? $new_tutor_id : null;
+ 	}
 }

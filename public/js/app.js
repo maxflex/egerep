@@ -119,11 +119,37 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').controller('AccountsCtrl', function($rootScope, $scope, $http, $timeout, Account, PaymentMethods, DebtTypes, AccountPeriods) {
-    var getAccountEndDate, getAccountStartDate, getCalendarStartDate, renderData;
+  angular.module('Egerep').filter('cut', function() {
+    return function(value, wordwise, max, tail) {
+      var lastspace;
+      if (!value) {
+        return 'имя не указано';
+      }
+      max = parseInt(max, 10);
+      if (!max) {
+        return value;
+      }
+      if (value.length <= max) {
+        return value;
+      }
+      value = value.substr(0, max);
+      if (wordwise) {
+        lastspace = value.lastIndexOf(' ');
+        if (lastspace !== -1) {
+          if (value.charAt(lastspace - 1) === '.' || value.charAt(lastspace - 1) === ',') {
+            lastspace = lastspace - 1;
+          }
+          value = value.substr(0, lastspace);
+        }
+      }
+      return value + (tail || '…');
+    };
+  }).controller('AccountsCtrl', function($rootScope, $scope, $http, $timeout, Account, PaymentMethods, DebtTypes, AccountPeriods, Grades) {
+    var getAccountEndDate, getAccountStartDate, getCalendarStartDate, getCommission, moveCursor, renderData;
     $scope.PaymentMethods = PaymentMethods;
     $scope.DebtTypes = DebtTypes;
     $scope.AccountPeriods = AccountPeriods;
+    $scope.Grades = Grades;
     $scope.current_scope = $scope;
     $scope.current_period = 0;
     angular.element(document).ready(function() {
@@ -139,7 +165,6 @@
     renderData = function(data) {
       $scope.tutor = data.tutor;
       $scope.date_limit = data.date_limit;
-      $scope.client_ids = data.client_ids;
       $rootScope.frontend_loading = false;
       $('.accounts-table').stickyTableHeaders('destroy');
       return $timeout(function() {
@@ -244,7 +269,7 @@
       });
       return $scope.dialog('add-account');
     };
-    return $scope.addAccount = function() {
+    $scope.addAccount = function() {
       return Account.save({
         date_end: convertDate($scope.new_account_date_end),
         tutor_id: $scope.tutor.id
@@ -252,6 +277,94 @@
         $scope.tutor.last_accounts.push(new_account);
         return $scope.closeDialog('add-account');
       });
+    };
+    getCommission = function(val) {
+      if (val.indexOf('/') !== -1) {
+        val = val.split('/')[1];
+        if (val) {
+          return parseInt(val);
+        } else {
+          return 0;
+        }
+      } else {
+        return Math.round(parseInt(val) * .25);
+      }
+    };
+    $scope.totalCommission = function(account) {
+      var total_commission;
+      total_commission = 0;
+      $.each(account.data, function(index, account_data) {
+        return $.each(account_data, function(index, val) {
+          if (val !== '') {
+            return total_commission += getCommission(val);
+          }
+        });
+      });
+      return total_commission;
+    };
+    $scope.selectRow = function(date) {
+      $('tr[class^=\'tr-\']').removeClass('selected');
+      $('.tr-' + date).addClass('selected');
+    };
+
+    /*
+    * Перевести курсор, если элемент существует
+     */
+    moveCursor = function(x, y, direction) {
+      var el;
+      switch (direction) {
+        case "left":
+          x--;
+          break;
+        case "right":
+          x++;
+          break;
+        case "up":
+          y--;
+          break;
+        case "down":
+          y++;
+      }
+      if (x < 0 || y < 0) {
+        return;
+      }
+      el = $('#i-' + y + '-' + x);
+      if (el.length) {
+        $scope.caret = 0;
+        el.focus();
+      } else {
+        moveCursor(x, y, direction);
+      }
+    };
+    $scope.caret = 0;
+    return $scope.periodsCursor = function(y, x, event) {
+      var i, original_element;
+      original_element = $("#i-" + y + "-" + x);
+      if (original_element.val() === "0" && original_element.val().length) {
+        i = y - 1;
+        while (i > 0) {
+          if ($('#i-' + i + '-' + x).length && $('#i-' + i + '-' + x).val()) {
+            original_element.val($('#i-' + i + '-' + x).val());
+            break;
+          }
+          i--;
+        }
+      }
+      if (original_element.caret() !== $scope.caret) {
+        $scope.caret = original_element.caret();
+        return;
+      }
+      switch (event.which) {
+        case 37:
+          return moveCursor(x, y, "left");
+        case 38:
+          return moveCursor(x, y, "up");
+        case 39:
+          return moveCursor(x, y, "right");
+        case 13:
+        case 40:
+          return moveCursor(x, y, "down");
+      }
     };
   });
 
@@ -320,7 +433,8 @@
         });
       });
       return markerClusterer = new MarkerClusterer($scope.map, $scope.markers, {
-        gridSize: 10
+        gridSize: 10,
+        imagePath: 'img/maps/clusterer/m'
       });
     };
     showClientOnMap = function() {
@@ -455,7 +569,7 @@
 (function() {
   angular.module('Egerep').controller("ClientsIndex", function($scope, $timeout, Client) {
     return $scope.clients = Client.query();
-  }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, ReviewScores, Archive, Review, ApiService, UserService) {
+  }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, AttachmentStates, ReviewScores, Archive, Review, ApiService, UserService) {
     var filterMarkers, saveSelectedList, unsetSelected;
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
@@ -886,6 +1000,11 @@
 }).call(this);
 
 (function() {
+  angular.module('Egerep').controller('EmptyCtrl', function() {});
+
+}).call(this);
+
+(function() {
   angular.module('Egerep').controller('GraphController', function($scope, $timeout, $http, $rootScope, SvgMap) {
     var getDistance, getDistanceObject;
     bindArguments($scope, arguments);
@@ -1035,13 +1154,31 @@
         method: 'PUT'
       }
     });
-  }).controller('RequestsIndex', function($rootScope, $scope, $timeout, $http, Request) {
+  }).controller('RequestsIndex', function($rootScope, $scope, $timeout, $http, Request, RequestStates, Comment, PhoneService, UserService, Grades) {
     var loadRequests;
+    _.extend(RequestStates, {
+      all: 'Все'
+    });
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
+    $scope.changeList = function(state_id) {
+      $scope.chosen_state_id = state_id;
+      $scope.current_page = 1;
+      ajaxStart();
+      loadRequests(1);
+      ajaxEnd();
+      return window.history.pushState(state_id, '', 'requests/' + state_id.toLowerCase());
+    };
     $timeout(function() {
       loadRequests($scope.page);
-      return $scope.current_page = $scope.page;
+      $scope.current_page = $scope.page;
+      if (!$scope.state_counts) {
+        return $http.post("api/requests/counts", {
+          state: $scope.request_state
+        }).then(function(response) {
+          return $scope.request_state_counts = response.data.request_state_counts;
+        });
+      }
     });
     $scope.pageChanged = function() {
       loadRequests($scope.current_page);
@@ -1050,6 +1187,11 @@
     return loadRequests = function(page) {
       var params;
       params = '?page=' + page;
+      if ($scope.chosen_state_id) {
+        params += '&state=' + $scope.chosen_state_id;
+      } else {
+        params += '&state=' + 'new';
+      }
       return $http.get("api/requests" + params).then(function(response) {
         $rootScope.frontendStop();
         $scope.data = response.data;
@@ -1386,9 +1528,7 @@
     $scope.add = function() {
       $scope.saving = true;
       return Tutor.save($scope.tutor, function(tutor) {
-        return window.location = laroute.route('tutors.edit', {
-          tutors: tutor.id
-        });
+        return window.location = "tutors/" + tutor.id + "/edit";
       });
     };
     $scope.edit = function() {
@@ -1560,19 +1700,6 @@
     return $scope.saveMarkers = function() {
       $scope.form_changed = true;
       return $('#gmap-modal').modal('hide');
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').controller("UserStats", function($scope, TutorStates, User, UserService) {
-    bindArguments($scope, arguments);
-    $scope.state_cnt = Object.keys(TutorStates).length + 2;
-    return $scope.sum = function(arr) {
-      return _.reduce(arr, function(m, n) {
-        return m + n;
-      }, 0);
     };
   });
 
@@ -1760,6 +1887,46 @@
 }).call(this);
 
 (function() {
+  angular.module('Egerep').directive('pencilInput', function() {
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: 'directives/pencil-input',
+      scope: {
+        model: '='
+      },
+      controller: function($scope, $timeout, $element, $controller) {
+        $scope.is_being_commented = false;
+        $scope.blurComment = function() {
+          return $scope.is_being_commented = false;
+        };
+        $scope.focusComment = function() {
+          return $scope.is_being_commented = true;
+        };
+        $scope.startComment = function(event) {
+          $scope.is_being_commented = true;
+          return $timeout(function() {
+            return $(event.target).parent().children('div').focus();
+          });
+        };
+        return $scope.watchEnter = function(event) {
+          var ref;
+          if ((ref = event.keyCode) === 13 || ref === 27) {
+            if (event.keyCode === 13) {
+              $scope.model = $(event.target).parent().children('div').text();
+            }
+            $(event.target).parent().children('div').text($scope.model);
+            event.preventDefault();
+            $(event.target).blur();
+          }
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
   angular.module('Egerep').directive('phones', function() {
     return {
       restrict: 'E',
@@ -1786,9 +1953,6 @@
             return false;
           }
           return !number.match(/_/);
-        };
-        $scope.isMobile = function(number) {
-          return parseInt(number[4]) === 9 || parseInt(number[1]) === 9;
         };
         return $scope.sms = function(number) {
           $('#sms-modal').modal('show');
@@ -2031,13 +2195,16 @@
     awaiting: 'в ожидании',
     finished: 'выполненные',
     deny: 'отказы',
-    spam: 'спам'
+    motivated_deny: 'мотивированный отказ'
   }).value('ArchiveStates', {
     impossible: 'невозможно',
     possible: 'возможно'
   }).value('ReviewStates', {
     unpublished: 'не опубликован',
     published: 'опубликован'
+  }).value('AttachmentStates', {
+    0: 'показано',
+    1: 'скрыто'
   }).value('ReviewScores', {
     1: 1,
     2: 2,
@@ -2244,9 +2411,23 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').service('PhoneService', function($http) {
+  angular.module('Egerep').service('PhoneService', function($rootScope, $http) {
     this.call = function(number) {
       return location.href = "sip:" + number.replace(/[^0-9]/g, '');
+    };
+    this.isMobile = function(number) {
+      return parseInt(number[4]) === 9 || parseInt(number[1]) === 9;
+    };
+    this.clean = function(number) {
+      return number.replace(/[^0-9]/gim, "");
+    };
+    this.format = function(number) {
+      number = this.clean(number);
+      return '+' + number.substr(0, 1) + ' (' + number.substr(1, 3) + ') ' + number.substr(4, 3) + '-' + number.substr(7, 2) + '-' + number.substr(9, 2);
+    };
+    this.sms = function(number) {
+      $rootScope.sms_number = number;
+      return $('#sms-modal').modal('show');
     };
     return this;
   });

@@ -25,9 +25,9 @@
      * Возвратить чистый номер телефона.
      *
      */
-    function cleanNumber($number)
+    function cleanNumber($number, $add_seven = false)
     {
-        return preg_replace("/[^0-9]/", "", $number);
+        return ($add_seven ? '7' : '') . preg_replace("/[^0-9]/", "", $number);
     }
 
     /**
@@ -88,4 +88,22 @@
     function isProduction()
     {
         return app()->environment() == 'production';
+    }
+
+    /**
+     * Возвратить user id из сесси или 0 (system)
+     */
+    function userIdOrSystem()
+    {
+        return \App\Models\User::loggedIn() ? \App\Models\User::fromSession()->id : 0;
+    }
+
+    /**
+     * Разбить enter'ом
+     */
+    function breakLines($array)
+    {
+        return implode('
+
+', array_filter($array));
     }

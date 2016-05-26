@@ -65,7 +65,7 @@ class Request extends Model
     {
         static::saving(function ($model) {
             if (!$model->exists) {
-                $model->user_id_created = User::fromSession()->id;
+                $model->user_id_created = userIdOrSystem();
             }
         });
     }

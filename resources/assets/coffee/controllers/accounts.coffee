@@ -1,8 +1,27 @@
 angular.module('Egerep')
-    .controller 'AccountsCtrl', ($rootScope, $scope, $http, $timeout, Account, PaymentMethods, DebtTypes, AccountPeriods) ->
+    .filter 'cut', ->
+      (value, wordwise, max, tail) ->
+        if !value
+          return 'имя не указано'
+        max = parseInt(max, 10)
+        if !max
+          return value
+        if value.length <= max
+          return value
+        value = value.substr(0, max)
+        if wordwise
+          lastspace = value.lastIndexOf(' ')
+          if lastspace != -1
+            #Also remove . and , so its gives a cleaner result.
+            if value.charAt(lastspace - 1) == '.' or value.charAt(lastspace - 1) == ','
+              lastspace = lastspace - 1
+            value = value.substr(0, lastspace)
+        value + (tail or '…')
+    .controller 'AccountsCtrl', ($rootScope, $scope, $http, $timeout, Account, PaymentMethods, DebtTypes, AccountPeriods, Grades) ->
         $scope.PaymentMethods = PaymentMethods
         $scope.DebtTypes = DebtTypes
         $scope.AccountPeriods = AccountPeriods
+        $scope.Grades = Grades
         $scope.current_scope = $scope
         $scope.current_period = 0
 
@@ -19,7 +38,6 @@ angular.module('Egerep')
         renderData = (data) ->
             $scope.tutor = data.tutor
             $scope.date_limit = data.date_limit
-            $scope.client_ids = data.client_ids
             $rootScope.frontend_loading = false
             $('.accounts-table').stickyTableHeaders('destroy')
             $timeout ->
@@ -123,3 +141,85 @@ angular.module('Egerep')
             , (new_account) ->
                 $scope.tutor.last_accounts.push(new_account)
                 $scope.closeDialog 'add-account'
+
+        getCommission = (val) ->
+            if val.indexOf('/') isnt -1
+                val = val.split('/')[1]
+                return if val then parseInt(val) else 0
+            else
+                return Math.round(parseInt(val) * .25)
+
+        $scope.totalCommission = (account) ->
+            total_commission = 0
+            $.each account.data, (index, account_data) ->
+                $.each account_data, (index, val) ->
+                    total_commission += getCommission(val) if val isnt ''
+            total_commission
+
+
+
+        ## Управление кареткой ##
+
+        $scope.selectRow = (date) ->
+            $('tr[class^=\'tr-\']').removeClass 'selected'
+            $('.tr-' + date).addClass 'selected'
+            return
+
+        ###
+        * Перевести курсор, если элемент существует
+        ###
+
+        moveCursor = (x, y, direction) ->
+            # Определяем направление и изменяем координаты соответствующим образом
+            switch direction
+                when "left"     then x--
+                when "right"    then x++
+                when "up"       then y--
+                when "down"     then y++
+
+            # Если двигаемся в несуществующие поля
+            return if x < 0 or y < 0
+
+            # Получаем новый элемент
+            el = $('#i-' + y + '-' + x)
+
+            # Если элемент существует, двигаемся туда
+            if el.length
+                $scope.caret = 0
+                el.focus()
+            else
+                moveCursor x, y, direction
+                # Если не получилось, пытаемся передвинуться еще раз (перепрыгнуть через несколько ячеек сразу)
+            return
+
+        $scope.caret = 0 # Позиция каретки
+        $scope.periodsCursor = (y, x, event) ->
+            # console.log y, x, event, $("#" + y + "-" + x)
+            # Получаем начальный элемент (с которого возможно сдвинемся)
+            original_element = $("#i-#{y}-#{x}")
+
+            # Если был нажат 0, то подхватываем значение поля сверху
+            if original_element.val() is "0" and original_element.val().length
+                i = y - 1
+                while i > 0
+                    # Поверяем существует ли поле сверху
+                    if $('#i-' + i + '-' + x).length and $('#i-' + i + '-' + x).val()
+                        # Присваеваем текущему элементу значение сверху
+                        original_element.val $('#i-' + i + '-' + x).val()
+                        break
+                    i--
+
+            # Если внутри цифр, то не прыгаем к следующему элементу
+            if original_element.caret() != $scope.caret
+                $scope.caret = original_element.caret()
+                return
+
+            switch event.which
+                # ВЛЕВО
+                when 37 then moveCursor(x, y, "left")
+                # ВВЕРХ
+                when 38 then moveCursor(x, y, "up")
+                # ВПРАВО
+                when 39 then moveCursor(x, y, "right")
+                # ВНИЗ
+                when 13, 40 then moveCursor(x, y, "down")

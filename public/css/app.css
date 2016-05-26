@@ -27599,15 +27599,30 @@ a {
   -ms-flex-item-align: end;
   align-self: flex-end; }
 
-.accounts-data .mbs > span {
-  display: inline-block; }
+.accounts-data .mbs {
+  margin-bottom: 5px; }
+  .accounts-data .mbs > span:first-of-type {
+    display: inline-block;
+    width: 260px;
+    font-weight: bold;
+    float: left; }
 
 .accounts-table {
   float: left;
   margin-bottom: 10px;
-  margin-right: 1px; }
+  font-size: 14px; }
   .accounts-table input {
-    width: 100px; }
+    width: 75px; }
+  .accounts-table .attachment-start {
+    background-color: #BBDEBB; }
+  .accounts-table .archive-date {
+    background-color: #F1D0D7; }
+  .accounts-table tr.selected {
+    background-color: #dfdfdf; }
+    .accounts-table tr.selected td {
+      background-color: #dfdfdf; }
+      .accounts-table tr.selected td input {
+        background-color: #dfdfdf; }
   .accounts-table tr td {
     height: 25px;
     border: 1px solid #999999;
@@ -27623,7 +27638,7 @@ a {
       padding: 3px 3px;
       border-right: 1px solid #999999; }
     .accounts-table tr td.period-end {
-      height: 178px;
+      height: 250px;
       border-bottom: none;
       text-align: left; }
   .accounts-table thead tr td {
@@ -29437,6 +29452,12 @@ md-input-container textarea {
   .link-like.red {
     color: #a94442; }
 
+.link-like-no-color {
+  text-decoration: none;
+  cursor: pointer; }
+  .link-like-no-color:hover {
+    text-decoration: underline; }
+
 .link-gray {
   color: #999999;
   text-decoration: none; }
@@ -29986,5 +30007,8 @@ select.has-error:focus, input.has-error:focus, button.has-error:focus {
 
 .high-z-index {
   z-index: 998 !important; }
+
+.margin-right {
+  margin-right: 8px; }
 
 /*# sourceMappingURL=app.css.map */

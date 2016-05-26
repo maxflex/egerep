@@ -196,7 +196,7 @@ class Transfer extends Command
 		foreach ($tasks as $task) {
 			\App\Models\Request::insert([
 				'id_a_pers'       => $task->id,
-				'comment'		  => static::_tutorIds(static::_htmlReplace($task->description)),
+				'comment'		  => static::_tutorIdsInText(static::_htmlReplace($task->description)),
 				'user_id'	      => static::_userId($task->status_ico),
 				'state'			  => static::_convertRequestStatus($task->status),
 				'client_id'       => Client::where('id_a_pers', $task->client_id)->pluck('id')->first(),
@@ -388,7 +388,7 @@ class Transfer extends Command
 				}
 
 				// если есть отзыв
-				if ($attachment->opinion_user_id) {
+				if ($attachment->rating != 0 && ! empty($attachment->opinion)) {
 					Review::insert([
 						'attachment_id'		=> $new_attachment_id,
 						'score'				=> static::_reviewScore($attachment->rating),
@@ -440,6 +440,7 @@ class Transfer extends Command
 					'tutor_id'			=> $new_tutor_id,
 					'created_at'		=> $period->date_created,
 					'updated_at'		=> $period->date_created,
+					'user_id'			=> static::_userId($period->user_id),
 				]);
 
 				if (in_array($period->repetitor_id, $transfered_tutor_ids)) {
@@ -651,7 +652,7 @@ class Transfer extends Command
 	/**
 	 * Заменить старые ID репетиторов внутри текста
 	 */
-	public function tutorIdsInText($text)
+	private static function _tutorIdsInText($text)
 	{
 		preg_match_all('/(репетитор [\d]+)/ui', $text, $matches);
 

@@ -1,6 +1,10 @@
 @extends('app')
-@section('title', 'Отчетность')
+@section('title', 'Отчетность репетитора ' . $tutor->getName())
 @section('controller', 'AccountsCtrl')
+
+@section('scripts_after')
+    <script src="{{ asset('/js/vendor/jquery.caret.js', isProduction()) }}"></script>
+@stop
 
 @section('title-right')
     <span class="link-like link-reverse link-white" ng-click='addAccountDialog()'>добавить расчет</span>
@@ -9,6 +13,10 @@
 <style>
 .panel-body {
     overflow: hidden;
+}
+/* Нужно пофиксить этот баг, задача #854.3 */
+.input-group-btn button {
+    padding: 9px 9.5px !important;
 }
 </style>
 
