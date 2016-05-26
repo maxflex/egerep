@@ -36,6 +36,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::delete('tutors/photo/{id}', 'TutorsController@deletePhoto');
         Route::resource('tutors', 'TutorsController');
 
+        Route::post('requests/counts', 'RequestsController@counts');
         Route::resource('requests', 'RequestsController');
         Route::resource('lists', 'RequestListsController');
         Route::resource('attachments', 'AttachmentsController');

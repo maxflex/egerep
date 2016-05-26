@@ -40,6 +40,7 @@ angular.module('Egerep')
         finished: 'выполненные'
         deny: 'отказы'
         spam: 'спам'
+        all: 'все'
 
     .value 'ArchiveStates',
         impossible: 'невозможно'

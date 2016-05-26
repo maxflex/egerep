@@ -11,13 +11,25 @@ use App\Http\Controllers\Controller;
 class RequestsController extends Controller
 {
     /**
+     * Get request state counts
+     */
+    public function counts()
+    {
+        return [
+            'request_state_counts'  => \App\Models\Request::stateCounts(),
+        ];
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return \App\Models\Request::with(['client'])->paginate(20)->toJson();
+        return \App\Models\Request::searchByState($request->state)
+                                    ->with(['client'])
+                                    ->paginate(20)->toJson();
     }
 
     /**

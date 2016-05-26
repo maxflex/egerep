@@ -8,30 +8,45 @@
 
 @section('content')
 <sms number='sms_number'></sms>
+<div class="row">
+    <div class="col-sm-12">
+        <ul class="nav nav-tabs nav-tabs-links" style="margin-bottom: 20px">
+             <li ng-repeat="(state_id, state) in RequestStates" data-id="@{{state_id }}"
+                ng-class="{'active' : chosen_id == state_id || !chosen_id && state_id == 'new', 'request-status-li': status_id != 'all' && (chosen_id != status_id)}"
+                ng-hide="state_id == 'spam' && request_state_counts[state_id] == 0">
+                <a class="list-link" href="#@{{status_id}}" ng-click="changeList(state, state_id)" data-toggle="tab" aria-expanded="@{{$index == 0}}">
+                    @{{ state }} (@{{ request_state_counts[state_id] }})
+                </a>
+             </li>
+        </ul>
+    </div>
+</div>
+
 <div>
     <div class="row request-main-list"
          ng-repeat="request in requests"
          data-id="@{{request.id}}"
          ng-class="{ 'manual-request-red': request.contract_time && request.contract_time > 0 && request.contract_time <= 3600 }">
-        <div class="col-sm-12">
+         <div class="col-sm-12">
             <div>
-                    <span ng-show="request.comment" style="margin-right: 10px">@{{request.comment}}</span>
-                    <span class="half-black">
-                        <span ng-show="request.client.name">@{{request.client.name}},</span>
-                        <span ng-show="request.client.grade > 0">@{{request.client.grade}} класс,</span>
-                        <span ng-repeat="phone_field in ['phone', 'phone2', 'phone3']">
-                            <span ng-show="request.client[phone_field]">
-                                <span class="underline-hover inline-block"
-                                      ng-click="PhoneService.call(request.client[phone_field])">
-                                      @{{ PhoneService.format(request.client[phone_field]) }}</span>
+                <span ng-show="request.comment" style="margin-right: 10px">@{{request.comment}}</span>
+                <span class="half-black">
+                    <span ng-show="request.client.name">@{{request.client.name}},</span>
+                    <span ng-show="request.client.grade > 0">@{{request.client.grade}} класс,</span>
+                    <span ng-show="request.client.address">@{{ request.client.  address }}</span>
+                    <span ng-repeat="phone_field in ['phone', 'phone2', 'phone3']">
+                        <span ng-show="request.client[phone_field]">
+                            <span class="underline-hover inline-block"
+                                  ng-click="PhoneService.call(request.client[phone_field])">
+                                  @{{ PhoneService.format(request.client[phone_field]) }}</span>
 
-                                <span class="glyphicon glyphicon-envelope sms-in-list"
-                                      ng-click="PhoneService.sms(request.client[phone_field])"
-                                      ng-show="PhoneService.isMobile(PhoneService.format(request.client[phone_field]))"></span>
-                            </span>
+                            <span class="glyphicon glyphicon-envelope sms-in-list"
+                                  ng-click="PhoneService.sms(request.client[phone_field])"
+                                  ng-show="PhoneService.isMobile(PhoneService.format(request.client[phone_field]))"></span>
                         </span>
                     </span>
-                </div>
+                </span>
+            </div>
 
             <div style="margin-top: 10px">
                 <comments entity-type='request' entity-id='request.id' user='{{ $user }}'></comments>
@@ -39,7 +54,7 @@
             <div class="row" style="margin-top: 20px">
                 <div class="col-sm-6">
                     <div class="half-black">
-                        Заявка №@{{request.id}} создана @{{UserService.getLogin(request.id_user_created)}}
+                        Заявка №@{{request.id}} создана @{{UserService.getLogin(request.user_id_created)}} @{{request.id_user_created}}
                         {{-- @todo --}}
                         @{{ formatDateTime(request.created_at) }}
                         <a class="link-reverse" style="margin-left: 5px" href="requests/@{{request.id}}/edit">редактировать</a>
