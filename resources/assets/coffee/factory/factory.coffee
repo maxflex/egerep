@@ -39,7 +39,8 @@ angular.module('Egerep')
         awaiting: 'в ожидании'
         finished: 'выполненные'
         deny: 'отказы'
-        spam: 'спам'
+        motivated_deny: 'мотивированный отказ'
+        all: 'все'
 
     .value 'ArchiveStates',
         impossible: 'невозможно'

@@ -122,3 +122,62 @@ angular.module('Egerep')
             , (new_account) ->
                 $scope.tutor.last_accounts.push(new_account)
                 $scope.closeDialog 'add-account'
+
+
+
+
+
+        ## Управление кареткой ##
+
+        $scope.selectRow = (date) ->
+            $('tr[class^=\'tr-\']').removeClass 'selected'
+            $('.tr-' + date).addClass 'selected'
+
+
+        $scope.caret = 0 # Позиция каретки
+        periodsCursor(y, x, event) ->
+            # Получаем начальный элемент (с которого возможно сдвинемся)
+    	# 	original_element = $("#i-" + y + "-" + x);
+        #
+    	# 	// Если был нажат 0, то подхватываем значение поля сверху
+    	# 	if (original_element.val() == 0 && original_element.val().length) {
+    	# 		for (var i = (y - 1); i > 0; i--) {
+    	# 			// Поверяем существует ли поле сверху
+    	# 			if ($("#i-" + i + "-" + x).length && $("#i-" + i + "-" + x).val()) {
+    	# 				// Присваеваем текущему элементу значение сверху
+    	# 				original_element.val($("#i-" + i + "-" + x).val());
+    	# 				break;
+    	# 			}
+    	# 		}
+    	# 	}
+        #
+    	# 	// Если внутри цифр, то не прыгаем к следующему элементу
+    	# 	if (original_element.caret() != caret) {
+    	# 		caret = original_element.caret();
+    	# 		return;
+    	# 	}
+    	# 	console.log(event.which);
+    	# 	switch (event.which) {
+    	# 		// ВЛЕВО
+    	# 		case 37: {
+    	# 			moveCursor(x, y, "left");
+        #     break;
+    	# 		}
+    	# 		// ВВЕРХ
+    	# 		case 38: {
+    	# 			moveCursor(x, y, "up");
+    	# 			break;
+    	# 		}
+    	# 		// ВПРАВО
+    	# 		case 39: {
+    	# 			moveCursor(x, y, "right");
+    	# 			break;
+    	# 		}
+    	# 		// ВНИЗ
+    	# 		case 13:
+    	# 		case 40: {
+    	# 			moveCursor(x, y, "down");
+    	# 			break;
+    	# 		}
+    	# 	}
+    	# }

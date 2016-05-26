@@ -6,6 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Request extends Model
 {
+    public static $states = [
+        'new',
+        'awaiting',
+        'finished',
+        'deny',
+        'spam',
+        'motivated_deny'
+    ];
     protected $attributes = [
         'state' => 'new',
     ];
@@ -60,5 +68,35 @@ class Request extends Model
                 $model->user_id_created = userIdOrSystem();
             }
         });
+    }
+
+    /**
+     * Search by status.
+     */
+    public function scopeSearchByState($query, $state = 'new')
+    {
+        /**
+         *  @notice     в списке статусов нет all.
+         *              in_array для all нужен.
+         */
+        if (isset($state) && in_array($state, self::$states)) {
+            return $query->where('state', $state);
+        }
+    }
+
+    /**
+     * State counts
+     * @return array [state_id] => state_count
+     */
+    public static function stateCounts()
+    {
+        $return = [];
+        foreach (self::$states as $state) {
+            $query = static::where('state', $state);
+            $return[$state] = $query->count();
+        }
+
+        $return['all'] = array_sum($return);
+        return $return;
     }
 }

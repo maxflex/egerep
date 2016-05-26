@@ -27630,6 +27630,10 @@ a {
       height: 178px;
       border-bottom: none;
       text-align: left; }
+  .accounts-table tr.selected {
+    background-color: #dfdfdf !important; }
+    .accounts-table tr.selected td input {
+      background-color: #dfdfdf !important; }
   .accounts-table thead tr td {
     border-top: none;
     height: 70px;

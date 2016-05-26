@@ -13,7 +13,7 @@
             </tr>
         </thead>
         <tbody ng-repeat='account in tutor.last_accounts'>
-            <tr ng-repeat='date in getDates($index)'>
+            <tr ng-repeat='date in getDates($index)' class="tr-@{{ date }}">
                 <td class='date-td'>@{{ formatDate(date) }}</td>
             </tr>
             <tr>
@@ -33,12 +33,14 @@
                 </tr>
             </thead>
             <tbody ng-repeat-end>
-                <tr ng-repeat='date in getDates($index)'>
+                <tr ng-repeat='date in getDates($index)' class='tr-@{{ date }}'>
                     <td ng-repeat='client in clients' ng-class="{
                         'attachment-start': date == client.attachment_date,
                         'archive-date': date == client.archive_date,
-                    }">
+                    }" id='@{{ $parent.$index }}-@{{ $index }}'>
                         <input type="text" class='account-column no-border-outline'
+                            ng-focus='selectRow(date)'
+                            ng-keyup='periodsCursor($parent.$index, $index, $event)'
                             ng-class="{
                                 'attachment-start': date == client.attachment_date,
                                 'archive-date': date == client.archive_date,

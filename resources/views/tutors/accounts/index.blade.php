@@ -2,6 +2,11 @@
 @section('title', 'Отчетность')
 @section('controller', 'AccountsCtrl')
 
+@section('scripts')
+    <script src="{{ asset('/js/vendor/jquery.caret.js', isProduction()) }}"></script>
+    <script src="{{ asset('/js/vendor/move-cursor.js', isProduction()) }}"></script>
+@stop
+
 @section('title-right')
     <span class="link-like link-reverse link-white" ng-click='addAccountDialog()'>добавить расчет</span>
 @stop
