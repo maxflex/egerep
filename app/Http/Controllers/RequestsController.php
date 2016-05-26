@@ -14,11 +14,12 @@ class RequestsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, $state_id = 'new')
     {
         return view('requests.index')->with(
             ngInit([
-                'page' => $request->input('page'),
+                'page'  => $request->input('page'),
+                'chosen_state_id' => $state_id,
             ])
         );
     }
