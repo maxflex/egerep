@@ -20,8 +20,24 @@ class AccountsController extends Controller
             return view('tutors.accounts.no_clients');
         }
         return view('tutors.accounts.index')->with(ngInit([
-            'tutor_id'  => $id,
-            'clients'   => $clients,
+            'tutor_id'             => $id,
+            'clients'              => $clients,
+            'hidden_clients_count' => $tutor->clientsCount(1),
+        ]) + ['tutor' => $tutor]);
+    }
+
+    public function hidden($id)
+    {
+        $tutor = Tutor::find($id);
+        $clients = $tutor->getAttachmenClients(1, true);
+
+        if (! count($clients)) {
+            return view('errors.empty');
+        }
+        return view('tutors.accounts.hidden')->with(ngInit([
+            'tutor_id'             => $id,
+            'clients'              => $clients,
+            'visible_clients_count' => $tutor->clientsCount(0),
         ]) + ['tutor' => $tutor]);
     }
 }

@@ -44,6 +44,7 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
             moment(date).format "DD.MM.YY в HH:mm"
 
         $rootScope.formatDate = (date, full_year = false) ->
+            return '' if not date
             moment(date).format "DD.MM.YY" + (if full_year then "YY" else "")
 
         $rootScope.dialog = (id) ->

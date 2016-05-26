@@ -7,6 +7,7 @@
 @stop
 
 @section('title-right')
+    <a href='tutors/{{ $tutor->id }}/accounts/hidden' class="client-droppable">скрытые ученики (@{{ hidden_clients_count }})</a>
     <span class="link-like link-reverse link-white" ng-click='addAccountDialog()'>добавить расчет</span>
 @stop
 
