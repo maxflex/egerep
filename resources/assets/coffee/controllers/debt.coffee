@@ -28,15 +28,15 @@ angular
 
         $scope.blurComment = (tutor) ->
             tutor.is_being_commented = false
-            tutor.list_comment = tutor.old_list_comment
+            tutor.debt_comment = tutor.old_debt_comment
 
         $scope.focusComment = (tutor) ->
             tutor.is_being_commented = true
-            tutor.old_list_comment = tutor.list_comment
+            tutor.old_debt_comment = tutor.debt_comment
 
         $scope.startComment = (tutor) ->
             tutor.is_being_commented = true
-            tutor.old_list_comment = tutor.list_comment
+            tutor.old_debt_comment = tutor.debt_comment
             $timeout ->
                 $("#list-comment-#{tutor.id}").focus()
 
@@ -44,7 +44,7 @@ angular
             if event.keyCode is 13
                 Tutor.update
                     id: tutor.id
-                    list_comment: tutor.list_comment
+                    debt_comment: tutor.debt_comment
                 , (response) ->
-                    tutor.old_list_comment = tutor.list_comment
+                    tutor.old_debt_comment = tutor.debt_comment
                     $(event.target).blur()
