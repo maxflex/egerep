@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
         Commands\TutorRetina::class,
         Commands\Transfer::class,
         Commands\TransferTruncate::class,
+        Commands\TransferDebt::class,
     ];
 
     /**

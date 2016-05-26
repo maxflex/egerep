@@ -16,7 +16,8 @@ Route::group(['middleware' => ['web']], function () {
     Route::resource('requests', 'RequestsController', ['except' => ['index']]);
     Route::resource('clients', 'ClientsController');
     Route::get('attachments/{state?}', 'AttachmentsController@index');
-
+    Route::resource('debt', 'DebtController');
+    
     Route::controllers([
         'transfer'  => 'TransferController',
         'upload'    => 'UploadController',
@@ -44,6 +45,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('requests', 'RequestsController');
         Route::resource('lists', 'RequestListsController');
         Route::resource('attachments', 'AttachmentsController');
+        Route::resource('debt', 'DebtController');
         Route::resource('archives', 'ArchivesController');
         Route::resource('reviews', 'ReviewsController');
         Route::resource('clients', 'ClientsController');
