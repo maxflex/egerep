@@ -287,7 +287,7 @@
     * Перевести курсор, если элемент существует
      */
     moveCursor = function(x, y, direction) {
-      var caret, el;
+      var el;
       switch (direction) {
         case "left":
           x--;
@@ -301,12 +301,12 @@
         case "down":
           y++;
       }
-      if (x < 1 || y < 1) {
+      if (x < 0 || y < 0) {
         return;
       }
       el = $('#i-' + y + '-' + x);
       if (el.length) {
-        caret = 0;
+        $scope.caret = 0;
         el.focus();
       } else {
         moveCursor(x, y, direction);
@@ -1138,14 +1138,13 @@
     });
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
-    $scope.changeList = function(state, state_id, push_history) {
-      $scope.chosen_id = state_id;
-      $scope.state_id = state_id;
+    $scope.changeList = function(state_id) {
+      $scope.chosen_state_id = state_id;
       $scope.current_page = 1;
+      ajaxStart();
       loadRequests(1);
-      if (push_history) {
-        return window.history.pushState(state, '', 'requests/' + state.constant.toLowerCase());
-      }
+      ajaxEnd();
+      return window.history.pushState(state_id, '', 'requests/' + state_id.toLowerCase());
     };
     $timeout(function() {
       loadRequests($scope.page);
@@ -1165,8 +1164,8 @@
     return loadRequests = function(page) {
       var params;
       params = '?page=' + page;
-      if ($scope.state_id) {
-        params += '&state=' + $scope.state_id;
+      if ($scope.chosen_state_id) {
+        params += '&state=' + $scope.chosen_state_id;
       } else {
         params += '&state=' + 'new';
       }
@@ -1858,6 +1857,46 @@
             noneSelectedText: $scope.noneText
           });
         });
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('pencilInput', function() {
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: 'directives/pencil-input',
+      scope: {
+        model: '='
+      },
+      controller: function($scope, $timeout, $element, $controller) {
+        $scope.is_being_commented = false;
+        $scope.blurComment = function() {
+          return $scope.is_being_commented = false;
+        };
+        $scope.focusComment = function() {
+          return $scope.is_being_commented = true;
+        };
+        $scope.startComment = function(event) {
+          $scope.is_being_commented = true;
+          return $timeout(function() {
+            return $(event.target).parent().children('div').focus();
+          });
+        };
+        return $scope.watchEnter = function(event) {
+          var ref;
+          if ((ref = event.keyCode) === 13 || ref === 27) {
+            if (event.keyCode === 13) {
+              $scope.model = $(event.target).parent().children('div').text();
+              $(event.target).parent().children('div').text($scope.model);
+            }
+            event.preventDefault();
+            $(event.target).blur();
+          }
+        };
       }
     };
   });

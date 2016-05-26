@@ -1,5 +1,5 @@
 {{-- REAL DATES --}}
-<div ng-if='tutor.last_accounts.length > 0'>
+<div ng-if='tutor.last_accounts.length > 0' ng-init='i = 0'>
     <table class='accounts-table'>
         <thead class="high-z-index">
             <tr>
@@ -43,10 +43,10 @@
                     <td ng-repeat='client in clients' ng-class="{
                         'attachment-start': date == client.attachment_date,
                         'archive-date': date == client.archive_date,
-                    }" id='td-@{{ $parent.$index }}-@{{ $index }}'>
+                    }">
                         <input type="text" class='account-column no-border-outline' id='i-@{{ $parent.$index }}-@{{ $index }}'
                             ng-focus='selectRow(date)'
-                            ng-keyup='periodsCursor($parent.$index, $index, $event)'
+                            ng-keyup='periodsCursor($parent.$index, $index, $event, date)'
                             ng-class="{
                                 'attachment-start': date == client.attachment_date,
                                 'archive-date': date == client.archive_date,
@@ -56,52 +56,46 @@
                 </tr>
                 <tr>
                     <td class="period-end" width='77'>
-                        <div class='accounts-data' style="position: absolute; margin-top: -57px">
+                        <div class='accounts-data' style="position: absolute; margin-top: -86px; width: 840px">
                             <div class="mbs">
-                                <span>Итого комиссия за период:</span>
-                                <input ng-model='account.total_commission' readonly class='no-border-outline' style="width: 60px">
-                                <ng-pluralize count='account.total_commission' when="{
-                                    'one': 'рубль',
-                                    'few': 'рубля',
-                                    'many': 'рублей',
-                                }"></ng-pluralize> <span class="link-like show-on-hover" ng-click="changeDateDialog($index)">изменить дату встречи</span>
-                                <span class="link-like text-danger show-on-hover"  ng-click="remove(account)">удалить встречу</span>
+                                <span>Передано (руб.):</span>
+                                <pencil-input model='account.received'></pencil-input>
+                                <span ng-show='account.received > 0'>
+                                    – методом
+                                    <span class="link-like" ng-click="toggleEnum(account, 'payment_method', PaymentMethods)">
+                                        @{{ PaymentMethods[account.payment_method] }}
+                                    </span>
+                                </span>
                             </div>
                             <div class="mbs">
-                                <span>Передано:</span>
-                                <input ng-model='account.received' class='no-border-outline' style="width: 60px">
-                                <ng-pluralize count='account.received' when="{
-                                    'one': 'рубль',
-                                    'few': 'рубля',
-                                    'many': 'рублей',
-                                }"></ng-pluralize> методом <span class="link-like"
-                                    ng-click="toggleEnum(account, 'payment_method', PaymentMethods)">@{{ PaymentMethods[account.payment_method] }}</span>
+                                <span>Итого комиссия за период (руб.):</span>
+                                @{{ account.total_commission }}
                             </div>
                             <div class="mbs">
-                                <span>Дебет до встречи:</span>
-                                <input ng-model='account.debt_before' class='no-border-outline' style="width: 60px">
-                                <ng-pluralize count='account.debt_before' when="{
-                                    'one': 'рубль',
-                                    'few': 'рубля',
-                                    'many': 'рублей',
-                                }"></ng-pluralize>
+                                <span>Дебет до встречи (руб.):</span>
+                                <pencil-input model='account.debt_before'></pencil-input>
                             </div>
                             <div class="mbs">
-                                <span>Задолженность:</span>
-                                <input ng-model='account.debt' class='no-border-outline' style="width: 60px">
-                                <ng-pluralize count='account.debt' when="{
-                                    'one': 'рубль',
-                                    'few': 'рубля',
-                                    'many': 'рублей',
-                                }"></ng-pluralize> <span ng-if='account.debt > 0'>(репетитор <span class="link-like"
-                                        ng-click="toggleEnum(account, 'debt_type', DebtTypes)">@{{ DebtTypes[account.debt_type] }}</span>)</span>
+                                <span>Задолженность (руб.):</span>
+                                <pencil-input model='account.debt'></pencil-input>
+                                <span ng-if='account.debt > 0'> – репетитор <span class="link-like"
+                                        ng-click="toggleEnum(account, 'debt_type', DebtTypes)">@{{ DebtTypes[account.debt_type] }}</span>
+                                </span>
                             </div>
                             <div class="mbs">
-                                <span style="width: auto">Комментарий:</span>
-                                <input ng-model='account.comment' class='no-border-outline' style="width: 90%">
+                                <span>Комментарий:</span>
+                                <pencil-input model='account.comment' class="period-comment"></pencil-input>
+                                {{-- <div class='period-comment' contenteditable>@{{ account.comment }}</div> --}}
+                                {{-- <input ng-model='account.comment' class='no-border-outline' style="width: 90%"> --}}
                             </div>
                             <div class="mbs">
+                                <span>Расчет создан:</span>
                                  @{{ account.user_login }} @{{ formatDateTime(account.created_at) }}
+                            </div>
+                            <div class="mbs">
+                                <span>Действия:</span>
+                                <span class="link-like margin-right" ng-click="changeDateDialog($index)">изменить дату встречи</span>
+                                <span class="link-like text-danger margin-right"  ng-click="remove(account)">удалить встречу</span>
                             </div>
                         </div>
                     </td>

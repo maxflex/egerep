@@ -419,9 +419,12 @@
 	.accounts-data {
 		// margin-bottom: 40px;
 		& .mbs {
-			& > span {
+			margin-bottom: 5px;
+			& > span:first-of-type {
 				display: inline-block;
-				// width: 220px;
+				width: 260px;
+				font-weight: bold;
+				float: left;
 			}
 		}
 	}
@@ -440,6 +443,15 @@
 		// margin-right: 1px;
 		font-size: 14px;
 		& tr {
+			&.selected {
+				background-color: rgb(223, 223, 223);
+				& td {
+					background-color: rgb(223, 223, 223);
+					& input {
+						background-color: rgb(223, 223, 223);
+					}
+				}
+			}
 			& td {
 				height: 25px;
 				border: 1px solid $placeholder_gray;
@@ -461,15 +473,9 @@
 					border-right: 1px solid $placeholder_gray;
 				}
 				&.period-end {
-					height: 178px;
+					height: 250px;
 					border-bottom: none;
 					text-align: left;
-				}
-			}
-			&.selected {
-				background-color: rgb(223, 223, 223) !important;
-				& td input {
-					background-color: rgb(223, 223, 223) !important;
 				}
 			}
 		}
@@ -3434,4 +3440,8 @@ select.has-error:focus, input.has-error:focus, button.has-error:focus {
 
 .high-z-index {
 	z-index: 998 !important;
+}
+
+.margin-right {
+	margin-right: 8px;
 }

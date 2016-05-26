@@ -22,6 +22,6 @@ class AccountsController extends Controller
         return view('tutors.accounts.index')->with(ngInit([
             'tutor_id'  => $id,
             'clients'   => $clients,
-        ]));
+        ]) + ['tutor' => $tutor]);
     }
 }

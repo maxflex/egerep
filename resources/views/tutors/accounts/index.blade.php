@@ -1,5 +1,5 @@
 @extends('app')
-@section('title', 'Отчетность')
+@section('title', 'Отчетность репетитора ' . $tutor->getName())
 @section('controller', 'AccountsCtrl')
 
 @section('scripts_after')

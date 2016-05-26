@@ -166,14 +166,14 @@ angular.module('Egerep')
                 when "down"     then y++
 
             # Если двигаемся в несуществующие поля
-            return if x < 1 or y < 1
+            return if x < 0 or y < 0
 
             # Получаем новый элемент
             el = $('#i-' + y + '-' + x)
 
             # Если элемент существует, двигаемся туда
             if el.length
-                caret = 0
+                $scope.caret = 0
                 el.focus()
             else
                 moveCursor x, y, direction
