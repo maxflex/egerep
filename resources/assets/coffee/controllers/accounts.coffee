@@ -135,9 +135,9 @@ angular.module('Egerep')
 
 
         $scope.caret = 0 # Позиция каретки
-        periodsCursor(y, x, event) ->
+        # periodsCursor(y, x, event) ->
             # Получаем начальный элемент (с которого возможно сдвинемся)
-    	# 	original_element = $("#i-" + y + "-" + x);
+    		# original_element = $("#i-" + y + "-" + x)
         #
     	# 	// Если был нажат 0, то подхватываем значение поля сверху
     	# 	if (original_element.val() == 0 && original_element.val().length) {
