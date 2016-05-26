@@ -11,7 +11,8 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
 Route::group(['middleware' => ['web']], function () {
     Route::get('/', 'TutorsController@index');
     Route::resource('tutors', 'TutorsController');
-    Route::resource('requests', 'RequestsController');
+    Route::get('requests/{state_id?}', 'RequestsController@index');
+    Route::resource('requests', 'RequestsController', ['except' => ['index']]);
     Route::resource('clients', 'ClientsController');
 
     Route::controllers([

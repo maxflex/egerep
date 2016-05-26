@@ -9,15 +9,15 @@ angular
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
-        $scope.changeList = (state, state_id, push_history) ->
-            $scope.chosen_id = state_id
-            $scope.state_id = state_id
+        $scope.changeList = (state_id) ->
+            $scope.chosen_state_id = state_id
             $scope.current_page = 1
 
+            ajaxStart()
             loadRequests 1
+            ajaxEnd()
 
-            if push_history
-                window.history.pushState(state, '', 'requests/' + state.constant.toLowerCase());
+            window.history.pushState(state_id, '', 'requests/' + state_id.toLowerCase());
 
 
         $timeout ->
@@ -35,8 +35,8 @@ angular
 
         loadRequests = (page) ->
             params = '?page=' + page
-            if $scope.state_id
-                params += '&state=' + $scope.state_id
+            if $scope.chosen_state_id
+                params += '&state=' + $scope.chosen_state_id
             else
                 params += '&state=' + 'new'
 
