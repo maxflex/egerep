@@ -51,9 +51,13 @@ class AccountsController extends Controller
     public function show(Request $request, $id)
     {
         $type = $request->type;
+
         $tutor = Tutor::find($id);
+        $client_ids = $tutor->getClientIds();
+
         return [
             'tutor'                 => Tutor::where('id', $id)->first()->withLastAccounts($type),
+            'client_ids'            => $client_ids,
             'date_limit'            => $tutor->getDateLimit($type),
         ];
     }

@@ -37,6 +37,7 @@
           <div class="list-group">
               <a class="list-group-item active">Меню</a>
               <a href="requests" class="list-group-item">Заявки</a>
+              <a href="attachments" class="list-group-item">Стыковки</a>
               {{-- <a class="list-group-item active">Преподаватели</a> --}}
               <a href="tutors" class="list-group-item">Преподаватели</a>
               {{-- <a class="list-group-item active">Настройки</a> --}}

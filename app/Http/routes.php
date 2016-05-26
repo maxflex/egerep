@@ -15,6 +15,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('requests/{state_id?}', 'RequestsController@index');
     Route::resource('requests', 'RequestsController', ['except' => ['index']]);
     Route::resource('clients', 'ClientsController');
+    Route::get('attachments/{state?}', 'AttachmentsController@index');
 
     Route::controllers([
         'transfer'  => 'TransferController',

@@ -35,11 +35,6 @@ angular
                 $scope.$apply()
                 saveSelectedList()
 
-        # @cost
-        $scope.fake_user =
-            id: 0
-            login: 'system'
-
         # Save everything
         $scope.edit = ->
             $scope.ajaxStart()
