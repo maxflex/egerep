@@ -11,7 +11,7 @@ class Request extends Model
         'awaiting',
         'finished',
         'deny',
-        'spam',
+        'spam'
     ];
     protected $attributes = [
         'state' => 'new',
@@ -70,11 +70,15 @@ class Request extends Model
     }
 
     /**
-     * Search by status
+     * Search by status.
      */
     public function scopeSearchByState($query, $state = 'new')
     {
-        if (isset($state) && $state != 'all') {
+        /**
+         *  @notice     в списке статусов нет all.
+         *              in_array для all нужен.
+         */
+        if (isset($state) && in_array($state, self::$states)) {
             return $query->where('state', $state);
         }
     }
