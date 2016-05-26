@@ -5,6 +5,7 @@ angular
             update:
                 method: 'PUT'
     .controller 'RequestsIndex', ($rootScope, $scope, $timeout, $http, Request, RequestStates, Comment, PhoneService, UserService, Grades) ->
+        _.extend RequestStates, { all : 'Все' }
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
