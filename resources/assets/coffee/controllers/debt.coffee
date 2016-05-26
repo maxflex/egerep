@@ -13,8 +13,8 @@ angular
             $scope.current_page = $scope.page
 
         $scope.pageChanged = ->
-            loadRequests $scope.current_page
-            paginate('requests', $scope.current_page)
+            loadPage $scope.current_page
+            paginate('debt', $scope.current_page)
 
         loadPage = (page) ->
             params = '?page=' + page
