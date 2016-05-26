@@ -27888,7 +27888,7 @@ span {
     color: black;
     font-weight: bold; }
 
-.links-right a:not(:last-child) {
+.links-right a:not(:last-child), .links-right span:not(:last-child) {
   margin-right: 10px; }
 
 md-input-container label {
@@ -30008,7 +30008,24 @@ select.has-error:focus, input.has-error:focus, button.has-error:focus {
 .high-z-index {
   z-index: 998 !important; }
 
-.margin-right {
+.margin-right, .mr {
   margin-right: 8px; }
+
+.client-draggable.ui-draggable-dragging {
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.75);
+  border-radius: 5px; }
+
+.client-droppable {
+  padding: 2px 5px;
+  border-radius: 5px; }
+
+.client-droppable-hover {
+  background: white;
+  color: #158E51 !important;
+  text-decoration: none !important; }
+
+table {
+  font-size: 14px; }
 
 /*# sourceMappingURL=app.css.map */

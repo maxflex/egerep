@@ -74,7 +74,7 @@ class AttachmentsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        Attachment::where('id', $id)->update($request->input());
     }
 
     /**

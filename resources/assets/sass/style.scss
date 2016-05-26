@@ -3450,8 +3450,31 @@ select.has-error:focus, input.has-error:focus, button.has-error:focus {
 	z-index: 998 !important;
 }
 
-.margin-right {
+.margin-right, .mr {
 	margin-right: 8px;
+}
+
+.client-draggable {
+	&.ui-draggable-dragging {
+		text-align: center;
+		background-color: rgba(white, .75);
+		border-radius: 5px;
+	}
+}
+
+.client-droppable {
+	padding: 2px 5px;
+    border-radius: 5px;
+}
+
+.client-droppable-hover {
+	background: white;
+	color: $green_main !important;
+	text-decoration: none !important;
+}
+
+table {
+	font-size: 14px;
 }
 .summary-table thead {
   color: #ddd;

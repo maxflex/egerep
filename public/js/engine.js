@@ -4,7 +4,6 @@
 			rebindMasks()
 			setScope()
 			configurePlugins()
-			console.log('here')
 		}, 50)
 	})
 

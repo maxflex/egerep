@@ -91,12 +91,16 @@ class Tutor extends Model
     {
         // последние 60 дней с момента начальной стыковки
         return $this->hasMany('App\Models\Account');
-            // ->whereRaw("date_end > DATE_SUB((SELECT date_end FROM accounts WHERE tutor_id=" . $this->id . " ORDER BY date_end DESC LIMIT 1), INTERVAL 60 DAY)");
+        // ->whereRaw("date_end > DATE_SUB((SELECT date_end FROM accounts WHERE tutor_id=" . $this->id . " ORDER BY date_end DESC LIMIT 1), INTERVAL 60 DAY)");
     }
 
-    public function attachments()
+    public function attachments($hide = null)
     {
-        return $this->hasMany('App\Models\Attachment')->where('hide', 0);
+        $query = $this->hasMany('App\Models\Attachment');
+        if ($hide !== null) {
+            $query->where('hide', $hide);
+        }
+        return $query;
     }
 
 	public function responsibleUser()
@@ -208,25 +212,31 @@ class Tutor extends Model
 
     /**
      * Получить ID всех клиентов преподавателя для создания списка отчетности
-     *  id    – номер клиента,
-     *  link  - ссылка на конфигурацию (см clients.coffee : $scope.parseHash())
+     * $hide – получать только не скрытых клиентов по умолчанию
      */
-    public function getAttachmenClients()
+    public function getAttachmenClients($hide = 0, $with_lessons_count = false)
     {
         $clients = [];
 
-        foreach ($this->attachments as $attachment) {
-            if ($attachment->requestList && $attachment->requestList->request && !$attachment->hide) {
-                $clients[] = [
+        foreach ($this->attachments($hide)->get() as $attachment) {
+            if ($attachment->requestList && $attachment->requestList->request) {
+                $client = [
                     'id'                    => $attachment->requestList->request->client_id,
                     # @todo: заменить на link_url
                     'link'                  => "requests/{$attachment->requestList->request->id}/edit#{$attachment->requestList->id}#{$attachment->id}",
                     'attachment_date'       => $attachment->getOriginal('date'),
                     'archive_date'          => $attachment->archive ? $attachment->archive->getOriginal('date') : null,
                     'attachment_created_at' => $attachment->getOriginal('created_at'),
+                    'attachment_id'         => $attachment->id,
                     'name'                  => $attachment->requestList->request->client->name,
                     'grade'                 => $attachment->requestList->request->client->grade,
                 ];
+                if ($with_lessons_count) {
+                    $client['lessons_count'] = AccountData::where('client_id', $attachment->requestList->request->client_id)
+                                                            ->where('tutor_id', $this->id)
+                                                            ->count();
+                }
+                $clients[] = $client;
             }
         }
 
@@ -244,6 +254,14 @@ class Tutor extends Model
     public function getMeetingCount()
     {
         return $this->accounts()->count();
+    }
+
+    /**
+     * Получить кол-во  клиентов
+     */
+    public function clientsCount($hide = null)
+    {
+        return $this->attachments($hide)->count();
     }
 
     /**

@@ -30,6 +30,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('tutors/add/{id}', 'TutorsController@addToList');
 
     Route::get('tutors/{id}/accounts', 'AccountsController@index');
+    Route::get('tutors/{id}/accounts/hidden', 'AccountsController@hidden');
 
 	# Поиск по преподам
 	Route::post('search', 'TutorsController@index');
