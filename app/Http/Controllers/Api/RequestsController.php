@@ -29,6 +29,7 @@ class RequestsController extends Controller
     {
         return \App\Models\Request::searchByState($request->state)
                                     ->with(['client'])
+                                    ->orderBy('created_at', 'desc')
                                     ->paginate(20)->toJson();
     }
 
