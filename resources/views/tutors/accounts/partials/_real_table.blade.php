@@ -28,7 +28,13 @@
             <thead ng-repeat-start='account in tutor.last_accounts' ng-if='$index == 0'>
                 <tr>
                     <td ng-repeat='client in clients' width='77'>
-                        <a href='@{{ client.link }}'>клиент @{{ client.id }}</a>
+                        <a href='@{{ client.link }}'>@{{ client.name | cut:false:10 }}</a>
+                        <br>
+                        <span class='text-gray'>
+                            <span ng-show='client.grade'>@{{ Grades[client.grade] }}</span>
+                            <span ng-hide='client.grade'>класс не указан</span>
+                        </span>
+
                     </td>
                 </tr>
             </thead>
@@ -37,8 +43,8 @@
                     <td ng-repeat='client in clients' ng-class="{
                         'attachment-start': date == client.attachment_date,
                         'archive-date': date == client.archive_date,
-                    }" id='@{{ $parent.$index }}-@{{ $index }}'>
-                        <input type="text" class='account-column no-border-outline'
+                    }" id='td-@{{ $parent.$index }}-@{{ $index }}'>
+                        <input type="text" class='account-column no-border-outline' id='i-@{{ $parent.$index }}-@{{ $index }}'
                             ng-focus='selectRow(date)'
                             ng-keyup='periodsCursor($parent.$index, $index, $event)'
                             ng-class="{

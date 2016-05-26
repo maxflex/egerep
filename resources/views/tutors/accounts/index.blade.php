@@ -2,9 +2,8 @@
 @section('title', 'Отчетность')
 @section('controller', 'AccountsCtrl')
 
-@section('scripts')
+@section('scripts_after')
     <script src="{{ asset('/js/vendor/jquery.caret.js', isProduction()) }}"></script>
-    <script src="{{ asset('/js/vendor/move-cursor.js', isProduction()) }}"></script>
 @stop
 
 @section('title-right')

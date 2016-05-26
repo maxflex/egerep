@@ -14,6 +14,7 @@
     @foreach($js as $script_name)
         <script src="{{ asset('/js/' . $script_name . '.js', isProduction()) }}"></script>
     @endforeach
+    @yield('scripts_after')
 
 
   </head>

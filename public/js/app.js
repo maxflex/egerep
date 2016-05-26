@@ -119,11 +119,37 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').controller('AccountsCtrl', function($rootScope, $scope, $http, $timeout, Account, PaymentMethods, DebtTypes, AccountPeriods) {
-    var getAccountEndDate, getAccountStartDate, getCalendarStartDate, renderData;
+  angular.module('Egerep').filter('cut', function() {
+    return function(value, wordwise, max, tail) {
+      var lastspace;
+      if (!value) {
+        return 'имя не указано';
+      }
+      max = parseInt(max, 10);
+      if (!max) {
+        return value;
+      }
+      if (value.length <= max) {
+        return value;
+      }
+      value = value.substr(0, max);
+      if (wordwise) {
+        lastspace = value.lastIndexOf(' ');
+        if (lastspace !== -1) {
+          if (value.charAt(lastspace - 1) === '.' || value.charAt(lastspace - 1) === ',') {
+            lastspace = lastspace - 1;
+          }
+          value = value.substr(0, lastspace);
+        }
+      }
+      return value + (tail || '…');
+    };
+  }).controller('AccountsCtrl', function($rootScope, $scope, $http, $timeout, Account, PaymentMethods, DebtTypes, AccountPeriods, Grades) {
+    var getAccountEndDate, getAccountStartDate, getCalendarStartDate, moveCursor, renderData;
     $scope.PaymentMethods = PaymentMethods;
     $scope.DebtTypes = DebtTypes;
     $scope.AccountPeriods = AccountPeriods;
+    $scope.Grades = Grades;
     $scope.current_scope = $scope;
     $scope.current_period = 0;
     angular.element(document).ready(function() {
@@ -254,9 +280,69 @@
     };
     $scope.selectRow = function(date) {
       $('tr[class^=\'tr-\']').removeClass('selected');
-      return $('.tr-' + date).addClass('selected');
+      $('.tr-' + date).addClass('selected');
     };
-    return $scope.caret = 0;
+
+    /*
+    * Перевести курсор, если элемент существует
+     */
+    moveCursor = function(x, y, direction) {
+      var caret, el;
+      switch (direction) {
+        case "left":
+          x--;
+          break;
+        case "right":
+          x++;
+          break;
+        case "up":
+          y--;
+          break;
+        case "down":
+          y++;
+      }
+      if (x < 1 || y < 1) {
+        return;
+      }
+      el = $('#i-' + y + '-' + x);
+      if (el.length) {
+        caret = 0;
+        el.focus();
+      } else {
+        moveCursor(x, y, direction);
+      }
+    };
+    $scope.caret = 0;
+    return $scope.periodsCursor = function(y, x, event) {
+      var i, original_element;
+      original_element = $("#i-" + y + "-" + x);
+      console.log(original_element, original_element.val());
+      if (original_element.val() === "0" && original_element.val().length) {
+        i = y - 1;
+        while (i > 0) {
+          if ($('#i-' + i + '-' + x).length && $('#i-' + i + '-' + x).val()) {
+            original_element.val($('#i-' + i + '-' + x).val());
+            break;
+          }
+          i--;
+        }
+      }
+      if (original_element.caret() !== $scope.caret) {
+        $scope.caret = original_element.caret();
+        return;
+      }
+      switch (event.which) {
+        case 37:
+          return moveCursor(x, y, "left");
+        case 38:
+          return moveCursor(x, y, "up");
+        case 39:
+          return moveCursor(x, y, "right");
+        case 13:
+        case 40:
+          return moveCursor(x, y, "down");
+      }
+    };
   });
 
 }).call(this);
@@ -1598,83 +1684,6 @@
 }).call(this);
 
 (function() {
-  var apiPath, updateMethod;
-
-  angular.module('Egerep').factory('Account', function($resource) {
-    return $resource(apiPath('accounts'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Review', function($resource) {
-    return $resource(apiPath('reviews'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Archive', function($resource) {
-    return $resource(apiPath('archives'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Attachment', function($resource) {
-    return $resource(apiPath('attachments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('RequestList', function($resource) {
-    return $resource(apiPath('lists'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Request', function($resource) {
-    return $resource(apiPath('requests'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Sms', function($resource) {
-    return $resource(apiPath('sms'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Comment', function($resource) {
-    return $resource(apiPath('comments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Client', function($resource) {
-    return $resource(apiPath('clients'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('User', function($resource) {
-    return $resource(apiPath('users'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Tutor', function($resource) {
-    return $resource(apiPath('tutors'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      deletePhoto: {
-        url: apiPath('tutors', 'photo'),
-        method: 'DELETE'
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  });
-
-  apiPath = function(entity, additional) {
-    if (additional == null) {
-      additional = '';
-    }
-    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
-  };
-
-  updateMethod = function() {
-    return {
-      update: {
-        method: 'PUT'
-      }
-    };
-  };
-
-}).call(this);
-
-(function() {
   angular.module('Egerep').directive('comments', function() {
     return {
       restrict: 'E',
@@ -2236,6 +2245,83 @@
       color: '#ACADAF'
     }
   });
+
+}).call(this);
+
+(function() {
+  var apiPath, updateMethod;
+
+  angular.module('Egerep').factory('Account', function($resource) {
+    return $resource(apiPath('accounts'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Review', function($resource) {
+    return $resource(apiPath('reviews'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Archive', function($resource) {
+    return $resource(apiPath('archives'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Attachment', function($resource) {
+    return $resource(apiPath('attachments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('RequestList', function($resource) {
+    return $resource(apiPath('lists'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Request', function($resource) {
+    return $resource(apiPath('requests'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Sms', function($resource) {
+    return $resource(apiPath('sms'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Comment', function($resource) {
+    return $resource(apiPath('comments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Client', function($resource) {
+    return $resource(apiPath('clients'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('User', function($resource) {
+    return $resource(apiPath('users'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Tutor', function($resource) {
+    return $resource(apiPath('tutors'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      deletePhoto: {
+        url: apiPath('tutors', 'photo'),
+        method: 'DELETE'
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  });
+
+  apiPath = function(entity, additional) {
+    if (additional == null) {
+      additional = '';
+    }
+    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
+  };
+
+  updateMethod = function() {
+    return {
+      update: {
+        method: 'PUT'
+      }
+    };
+  };
 
 }).call(this);
 

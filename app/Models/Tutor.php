@@ -213,26 +213,29 @@ class Tutor extends Model
      */
     public function getAttachmenClients()
     {
-        $client_ids = [];
+        $clients = [];
 
         foreach ($this->attachments as $attachment) {
             if ($attachment->requestList && $attachment->requestList->request && !$attachment->hide) {
-                $client_ids[] = [
-                    'id'              => $attachment->requestList->request->client_id,
+                $clients[] = [
+                    'id'                    => $attachment->requestList->request->client_id,
                     # @todo: заменить на link_url
-                    'link'            => "requests/{$attachment->requestList->request->id}/edit#{$attachment->requestList->id}#{$attachment->id}",
-                    'attachment_date' => $attachment->getOriginal('date'),
-                    'archive_date'    => $attachment->archive ? $attachment->archive->getOriginal('date') : null,
+                    'link'                  => "requests/{$attachment->requestList->request->id}/edit#{$attachment->requestList->id}#{$attachment->id}",
+                    'attachment_date'       => $attachment->getOriginal('date'),
+                    'archive_date'          => $attachment->archive ? $attachment->archive->getOriginal('date') : null,
+                    'attachment_created_at' => $attachment->getOriginal('created_at'),
+                    'name'                  => $attachment->requestList->request->client->name,
+                    'grade'                 => $attachment->requestList->request->client->grade,
                 ];
             }
         }
 
-        // сортируем по ID клиента
-        usort($client_ids, function($a, $b) {
-            return $a['id'] - $b['id'];
+        // сортируем по дате и времени реквизитов клиента
+        usort($clients, function($a, $b) {
+            return $a['attachment_created_at'] - $b['attachment_created_at'];
         });
 
-        return $client_ids;
+        return $clients;
     }
 
     /**
