@@ -6,6 +6,7 @@ use DB;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Marker;
 use App\Models\Metro;
+use App\Models\Request;
 use App\Traits\Markerable;
 use App\Traits\Person;
 use App\Events\ResponsibleUserChanged;
@@ -202,13 +203,11 @@ class Tutor extends Model
       */
      public function getClientIds()
      {
-         $client_ids = [];
-         foreach ($this->attachments as $attachment) {
-             if ($attachment->requestList && $attachment->requestList->request) {
-                 $client_ids[] = $attachment->requestList->request->client_id;
-             }
-         }
-         return $client_ids;
+         return Request::join('request_lists', 'requests.id', '=', 'request_lists.request_id')
+                    ->join('attachments', 'attachments.request_list_id', '=', 'request_lists.id')
+                    ->where('attachments.tutor_id', $this->id)
+                    ->groupBy('requests.client_id')
+                    ->pluck('requests.client_id');
      }
 
     /**

@@ -27614,9 +27614,9 @@ a {
   .accounts-table input {
     width: 75px; }
   .accounts-table .attachment-start {
-    background-color: #BBDEBB; }
+    background-color: #BBDEBB !important; }
   .accounts-table .archive-date {
-    background-color: #F1D0D7; }
+    background-color: #F1D0D7 !important; }
   .accounts-table tr.selected {
     background-color: #dfdfdf; }
     .accounts-table tr.selected td {
