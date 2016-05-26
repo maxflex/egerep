@@ -45,4 +45,3 @@ angular
                 $rootScope.frontendStop()
                 $scope.data = response.data
                 $scope.attachments = $scope.data.data
-
