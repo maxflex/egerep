@@ -32,7 +32,9 @@ class AccountsController extends Controller
         $clients = $tutor->getAttachmenClients(1, true);
 
         if (! count($clients)) {
-            return view('errors.empty');
+            return view('shared.empty', [
+                'message' => 'у преподавателя нет скрытых клиентов'
+            ]);
         }
         return view('tutors.accounts.hidden')->with(ngInit([
             'tutor_id'             => $id,
