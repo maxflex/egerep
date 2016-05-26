@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Marker;
 use App\Models\Metro;
 use App\Models\Request;
+use App\Models\Account;
 use App\Traits\Markerable;
 use App\Traits\Person;
 use App\Events\ResponsibleUserChanged;
@@ -66,6 +67,8 @@ class Tutor extends Model
         'banned',
         'in_egecentr',
         'video_link',
+        'debt',
+        'debt_comment'
     ];
 
     protected $appends = [
@@ -75,6 +78,7 @@ class Tutor extends Model
         'photo_original_size',
         'photo_url',
         'age',
+        'last_debt'
     ];
 
     protected $with = ['markers'];
@@ -116,6 +120,15 @@ class Tutor extends Model
     }
 
     // ------------------------------------------------------------------------
+
+    /**
+     * Последняя задолженность
+     */
+     public function getLastDebtAttribute()
+     {
+         return $this->accounts()->take(1)->orderBy('date_end', 'desc')->first();
+        //  return Account::where('tutor_id', $this->id)->orderBy('date_end', 'desc')->select('debt')->first();
+     }
 
     /**
      * Данные по встречам в определенным периоде с момента последней встречи.

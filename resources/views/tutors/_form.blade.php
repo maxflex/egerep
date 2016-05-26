@@ -159,6 +159,12 @@
                         </select>
                     </div>
                 </div>
+                <div class="form-group">
+                    <div class="input-group custom">
+                      <span class="input-group-addon">дебет –</span>
+                      <input type="text" class="form-control digits-only" ng-model="tutor.debt">
+                    </div>
+                </div>
             </div>
         </div>
     </div>
