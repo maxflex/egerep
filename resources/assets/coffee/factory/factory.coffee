@@ -35,12 +35,11 @@ angular.module('Egerep')
         4: 'перевод на карту'
 
     .value 'RequestStates',
-        new: 'невыполненные'
-        awaiting: 'в ожидании'
-        finished: 'выполненные'
-        deny: 'отказы'
+        new:            'невыполненные'
+        awaiting:       'в ожидании'
+        finished:       'выполненные'
+        deny:           'отказы'
         motivated_deny: 'мотивированный отказ'
-        all: 'все'
 
     .value 'ArchiveStates',
         impossible: 'невозможно'
