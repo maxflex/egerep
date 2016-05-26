@@ -32,7 +32,7 @@
                 <span ng-show="request.comment" style="margin-right: 10px">@{{request.comment}}</span>
                 <span class="half-black">
                     <span ng-show="request.client.name">@{{request.client.name}},</span>
-                    <span ng-show="request.client.grade > 0">@{{request.client.grade}} класс,</span>
+                    <span ng-show="request.client.grade > 0">@{{ Grades[request.client.grade] }},</span>
                     <span ng-show="request.client.address">@{{ request.client.  address }}</span>
                     <span ng-repeat="phone_field in ['phone', 'phone2', 'phone3']">
                         <span ng-show="request.client[phone_field]">
