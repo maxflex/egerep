@@ -26,17 +26,10 @@
                     </td>
                     <td>
                         <span ng-class="{
-<<<<<<< HEAD
                             'text-danger': tutor.last_account_info.debt_type == 0,
                             'text-success': tutor.last_account_info.debt_type == 1,
                         }">
                             @{{ tutor.last_account_info.debt }}
-=======
-                            'text-danger': tutor.last_debt.debt_type == 0,
-                            'text-success': tutor.last_debt.debt_type == 1,
-                        }">
-                            @{{ tutor.last_debt.debt }}
->>>>>>> ac7ec200384100685f77fac93085baa9ea2dfb7d
                         </span>
                     </td>
                     <td>

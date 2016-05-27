@@ -21,11 +21,6 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::get('summary', 'SummaryController@index');
 
-    Route::resource('debt', 'DebtController');
-
-
-    Route::get('summary', 'SummaryController@index');
-
     Route::controllers([
         'transfer'  => 'TransferController',
         'upload'    => 'UploadController',
