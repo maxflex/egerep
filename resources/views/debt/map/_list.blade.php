@@ -1,15 +1,4 @@
-@extends('app')
-@section('title', 'Дебет')
-@section('controller', 'DebtIndex')
-
-@section('title-right')
-    {{-- нужно поправить функция link_to_route, чтобы она работала с https --}}
-    {{-- {{ link_to_route('tutors.create', 'добавить преподавателя') }} --}}
-    <a href="debt/map">карта</a>
-@stop
-
-@section('content')
-<div class="row">
+<div ng-show="mode == 'list'" class="row">
     <div class="col-sm-12">
         <table class="table">
             <thead class="bold">
@@ -49,24 +38,5 @@
                 </tr>
             </tbody>
         </table>
-        <pagination style="margin-top: 30px"
-                ng-hide='data.last_page <= 1'
-                ng-model="current_page"
-                ng-change="pageChanged()"
-                total-items="data.total"
-                max-size="10"
-                items-per-page="data.per_page"
-                first-text="«"
-                last-text="»"
-                previous-text="«"
-                next-text="»"
-            >
-        </pagination>
-    </div>
-    <div class="row" ng-hide="tutors.length">
-        <div class="col-sm-12">
-            <h3 style="text-align: center; margin: 50px 0">cписок  пуст</h3>
-        </div>
     </div>
 </div>
-@stop

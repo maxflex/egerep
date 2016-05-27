@@ -18,7 +18,7 @@ class DebtController extends Controller
     public function index(Request $request)
     {
         return Tutor::where('debt', '>', 0)
-                ->paginate(30, ['last_debt'])
+                ->paginate(30, ['last_account_info'])
                 ->toJson();
     }
 
@@ -86,5 +86,39 @@ class DebtController extends Controller
     public function destroy($id)
     {
         return Tutor::destroy($id);
+    }
+
+    public function map(Request $request)
+    {
+        extract(array_filter($request->search));
+
+        // анализируем только не закрытых преподавателей с метками
+        $query = Tutor::with(['markers'])->where('debt', '>', 0);
+
+        if (isset($debt_from)) {
+            $query->where('debt', '>=', $debt_from);
+        }
+
+        if (isset($debt_to)) {
+            $query->where('debt', '<=', $debt_to);
+        }
+
+        // if (isset($account_date_from)) {
+        //     $query->select(DB::raw('count(*) as user_count, status'))
+        // }
+
+        # выбираем только нужные поля для ускорения запроса
+        $tutors = $query->get([
+            'id',
+            'first_name',
+            'last_name',
+            'middle_name',
+            'photo_extension',
+            'birth_year',
+            'debt',
+            'debt_comment'
+        ])->append('last_account_info');
+
+        return $tutors;
     }
 }
