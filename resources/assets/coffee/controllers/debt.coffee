@@ -24,7 +24,7 @@ angular
                 $rootScope.frontendStop()
                 $scope.data = response.data
                 $scope.tutors = $scope.data.data
-
+                console.log $scope.tutors
 
         $scope.blurComment = (tutor) ->
             tutor.is_being_commented = false

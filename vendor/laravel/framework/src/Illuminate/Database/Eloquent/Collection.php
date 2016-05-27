@@ -197,6 +197,22 @@ class Collection extends BaseCollection
     }
 
     /**
+     * Dynamic append attributes
+     *
+     * @custom
+     * @param  array|string  $attributes
+     * @return $this
+     */
+    public function append($attributes)
+    {
+        $this->each(function ($model) use ($attributes) {
+            $model->append($attributes);
+        });
+
+        return $this;
+    }
+
+    /**
      * Make the given, typically hidden, attributes visible across the entire collection.
      *
      * @param  array|string  $attributes

@@ -420,13 +420,14 @@ class Builder
      *
      * @param  int  $perPage
      * @param  array  $columns
+     * @param @custom $append – append attributes
      * @param  string  $pageName
      * @param  int|null  $page
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      *
      * @throws \InvalidArgumentException
      */
-    public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
+    public function paginate($perPage = null, $append = [], $columns = ['*'], $pageName = 'page', $page = null)
     {
         $query = $this->toBase();
 
@@ -437,7 +438,7 @@ class Builder
             $perPage = $perPage ?: $this->model->getPerPage()
         );
 
-        return new LengthAwarePaginator($this->get($columns), $total, $perPage, $page, [
+        return new LengthAwarePaginator($this->get($columns)->append($append), $total, $perPage, $page, [
             'path' => Paginator::resolveCurrentPath(),
             'pageName' => $pageName,
         ]);
