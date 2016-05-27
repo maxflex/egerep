@@ -16,6 +16,9 @@ Route::group(['middleware' => ['web']], function () {
     Route::resource('requests', 'RequestsController', ['except' => ['index']]);
     Route::resource('clients', 'ClientsController');
     Route::get('attachments/{state?}', 'AttachmentsController@index');
+
+    Route::get('summary', 'SummaryController@index');
+
     Route::resource('debt', 'DebtController');
     
 
