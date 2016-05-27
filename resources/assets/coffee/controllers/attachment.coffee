@@ -4,7 +4,7 @@ angular
         $resource 'api/attachments/:id', {},
             update:
                 method: 'PUT'
-    .controller 'AttachmentsIndex', ($rootScope, $scope, $timeout, $http, AttachmentStates) ->
+    .controller 'AttachmentsIndex', ($rootScope, $scope, $timeout, $http, AttachmentStates, UserService, PhoneService, Subjects, Grades) ->
         _.extend AttachmentStates, { all : 'все' }
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
