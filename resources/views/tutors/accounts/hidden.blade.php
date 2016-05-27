@@ -26,7 +26,12 @@
         </thead>
         <tbody>
             <tr ng-repeat='client in clients'>
-                <td class="client-draggable" data-id='@{{ client.id }}'>@{{ client.name }}</td>
+                <td class="client-draggable" data-id='@{{ client.id }}'>
+                    <a href='@{{ client.link }}'>
+                        <span ng-show='client.name'>@{{ client.name }}</span>
+                        <span ng-hide='client.name'>имя не указано</span>
+                    </a>
+                </td>
                 <td>@{{ Grades[client.grade] }}</td>
                 <td>@{{ formatDate(client.attachment_date) }}</td>
                 <td>@{{ formatDate(client.archive_date) }}</td>
