@@ -40,8 +40,9 @@
               <a href="attachments" class="list-group-item">Стыковки</a>
               <a class="list-group-item active">Преподаватели</a>
               <a href="tutors" class="list-group-item">Преподаватели</a>
-              <a href="debt/map" class="list-group-item">Дебет</a>
+              <a href="debt" class="list-group-item">Дебет</a>
               <a class="list-group-item active">Настройки</a>
+              <a href="summary" class="list-group-item">Итоги</a>
               <a href="logout" class="list-group-item">Выход</a></div>
         </div>
       </div>

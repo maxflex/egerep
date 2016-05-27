@@ -61,9 +61,6 @@
       if (full_year == null) {
         full_year = false;
       }
-      if (!date) {
-        return '';
-      }
       return moment(date).format("DD.MM.YY" + (full_year ? "YY" : ""));
     };
     $rootScope.dialog = function(id) {
@@ -147,45 +144,12 @@
       }
       return value + (tail || '…');
     };
-  }).controller('AccountsHiddenCtrl', function($scope, Grades, Attachment) {
-    var bindDraggable;
-    bindArguments($scope, arguments);
-    angular.element(document).ready(function() {
-      return bindDraggable();
-    });
-    return bindDraggable = function() {
-      $(".client-draggable").draggable({
-        helper: 'clone',
-        revert: 'invalid',
-        appendTo: 'body',
-        activeClass: 'drag-active',
-        start: function(event, ui) {
-          return $(this).css("visibility", "hidden");
-        },
-        stop: function(event, ui) {
-          return $(this).css("visibility", "visible");
-        }
-      });
-      return $(".client-droppable").droppable({
-        tolerance: 'pointer',
-        hoverClass: 'client-droppable-hover',
-        drop: function(event, ui) {
-          var client, client_id;
-          client_id = $(ui.draggable).data('id');
-          client = $scope.findById($scope.clients, client_id);
-          $scope.clients = removeById($scope.clients, client_id);
-          Attachment.update({
-            id: client.attachment_id,
-            hide: 0
-          });
-          $scope.visible_clients_count++;
-          return $scope.$apply();
-        }
-      });
-    };
-  }).controller('AccountsCtrl', function($rootScope, $scope, $http, $timeout, Account, PaymentMethods, DebtTypes, AccountPeriods, Grades, Attachment) {
-    var bindDraggable, getAccountEndDate, getAccountStartDate, getCalendarStartDate, getCommission, moveCursor, renderData;
-    bindArguments($scope, arguments);
+  }).controller('AccountsCtrl', function($rootScope, $scope, $http, $timeout, Account, PaymentMethods, DebtTypes, AccountPeriods, Grades) {
+    var getAccountEndDate, getAccountStartDate, getCalendarStartDate, getCommission, moveCursor, renderData;
+    $scope.PaymentMethods = PaymentMethods;
+    $scope.DebtTypes = DebtTypes;
+    $scope.AccountPeriods = AccountPeriods;
+    $scope.Grades = Grades;
     $scope.current_scope = $scope;
     $scope.current_period = 0;
     angular.element(document).ready(function() {
@@ -205,7 +169,6 @@
       $('.accounts-table').stickyTableHeaders('destroy');
       return $timeout(function() {
         $('.accounts-table').stickyTableHeaders();
-        bindDraggable();
         return $('.right-table-scroll').scroll(function() {
           return $(window).trigger('resize.stickyTableHeaders');
         });
@@ -374,7 +337,7 @@
       }
     };
     $scope.caret = 0;
-    $scope.periodsCursor = function(y, x, event) {
+    return $scope.periodsCursor = function(y, x, event) {
       var i, original_element;
       original_element = $("#i-" + y + "-" + x);
       if (original_element.val() === "0" && original_element.val().length) {
@@ -402,36 +365,6 @@
         case 40:
           return moveCursor(x, y, "down");
       }
-    };
-    return bindDraggable = function() {
-      $(".client-draggable").draggable({
-        helper: 'clone',
-        revert: 'invalid',
-        appendTo: 'body',
-        activeClass: 'drag-active',
-        start: function(event, ui) {
-          return $(this).css("visibility", "hidden");
-        },
-        stop: function(event, ui) {
-          return $(this).css("visibility", "visible");
-        }
-      });
-      return $(".client-droppable").droppable({
-        tolerance: 'pointer',
-        hoverClass: 'client-droppable-hover',
-        drop: function(event, ui) {
-          var client, client_id;
-          client_id = $(ui.draggable).data('id');
-          client = $scope.findById($scope.clients, client_id);
-          $scope.clients = removeById($scope.clients, client_id);
-          Attachment.update({
-            id: client.attachment_id,
-            hide: 1
-          });
-          $scope.hidden_clients_count++;
-          return $scope.$apply();
-        }
-      });
     };
   });
 
@@ -634,54 +567,6 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').factory('Attachment', function($resource) {
-    return $resource('api/attachments/:id', {}, {
-      update: {
-        method: 'PUT'
-      }
-    });
-  }).controller('AttachmentsIndex', function($rootScope, $scope, $timeout, $http, AttachmentStates) {
-    var loadAttachments;
-    _.extend(AttachmentStates, {
-      all: 'все'
-    });
-    bindArguments($scope, arguments);
-    $rootScope.frontend_loading = true;
-    $scope.changeList = function(state_id) {
-      $scope.chosen_state_id = state_id;
-      $scope.current_page = 1;
-      ajaxStart();
-      loadAttachments(1);
-      ajaxEnd();
-      return window.history.pushState(state_id, '', 'attachments/' + state_id.toLowerCase());
-    };
-    $timeout(function() {
-      loadAttachments($scope.page);
-      return $scope.current_page = $scope.page;
-    });
-    $scope.pageChanged = function() {
-      loadAttachments($scope.current_page);
-      return paginate('attachments', $scope.current_page);
-    };
-    return loadAttachments = function(page) {
-      var params;
-      params = '?page=' + page;
-      if ($scope.chosen_state_id) {
-        params += '&state=' + $scope.chosen_state_id;
-      } else {
-        params += '&state=' + 'new';
-      }
-      return $http.get("api/attachments" + params).then(function(response) {
-        $rootScope.frontendStop();
-        $scope.data = response.data;
-        return $scope.attachments = $scope.data.data;
-      });
-    };
-  });
-
-}).call(this);
-
-(function() {
   angular.module('Egerep').controller("ClientsIndex", function($scope, $timeout, Client) {
     return $scope.clients = Client.query();
   }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, AttachmentStates, ReviewScores, Archive, Review, ApiService, UserService) {
@@ -703,6 +588,10 @@
         $scope.$apply();
         return saveSelectedList();
       }
+    };
+    $scope.fake_user = {
+      id: 0,
+      login: 'system'
     };
     $scope.edit = function() {
       $scope.ajaxStart();
@@ -1111,258 +1000,6 @@
 }).call(this);
 
 (function() {
-  var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
-  angular.module('Egerep').controller("DebtIndex", function($rootScope, $scope, $timeout, $http, Tutor) {
-    var loadPage;
-    $rootScope.frontend_loading = true;
-    $timeout(function() {
-      loadPage($scope.page);
-      return $scope.current_page = $scope.page;
-    });
-    $scope.pageChanged = function() {
-      loadPage($scope.current_page);
-      return paginate('debt', $scope.current_page);
-    };
-    loadPage = function(page) {
-      var params;
-      params = '?page=' + page;
-      return $http.get("api/debt" + params).then(function(response) {
-        $rootScope.frontendStop();
-        $scope.data = response.data;
-        $scope.tutors = $scope.data.data;
-        return console.log($scope.tutors);
-      });
-    };
-    $scope.blurComment = function(tutor) {
-      tutor.is_being_commented = false;
-      return tutor.debt_comment = tutor.old_debt_comment;
-    };
-    $scope.focusComment = function(tutor) {
-      tutor.is_being_commented = true;
-      return tutor.old_debt_comment = tutor.debt_comment;
-    };
-    $scope.startComment = function(tutor) {
-      tutor.is_being_commented = true;
-      tutor.old_debt_comment = tutor.debt_comment;
-      return $timeout(function() {
-        return $("#list-comment-" + tutor.id).focus();
-      });
-    };
-    return $scope.saveComment = function(event, tutor) {
-      if (event.keyCode === 13) {
-        return Tutor.update({
-          id: tutor.id,
-          debt_comment: tutor.debt_comment
-        }, function(response) {
-          tutor.old_debt_comment = tutor.debt_comment;
-          return $(event.target).blur();
-        });
-      }
-    };
-  }).controller('DebtMap', function($scope, $timeout, TutorService, Tutor) {
-    var TRANSPARENT_MARKER, bindTutorMarkerEvents, clicks, findIntersectingMetros, markerClusterer, rebindDraggable, repaintChosen, showClientOnMap, showTutorsOnMap, unsetAllMarkers;
-    bindArguments($scope, arguments);
-    TRANSPARENT_MARKER = 0.3;
-    clicks = 0;
-    markerClusterer = void 0;
-    $scope.mode = 'map';
-    $scope.loading = false;
-    $scope.search = {};
-    $scope.blurComment = function(tutor) {
-      tutor.is_being_commented = false;
-      return tutor.debt_comment = tutor.old_debt_comment;
-    };
-    $scope.focusComment = function(tutor) {
-      tutor.is_being_commented = true;
-      return tutor.old_debt_comment = tutor.debt_comment;
-    };
-    $scope.startComment = function(tutor) {
-      tutor.is_being_commented = true;
-      tutor.old_debt_comment = tutor.debt_comment;
-      return $timeout(function() {
-        return $("#list-comment-" + tutor.id).focus();
-      });
-    };
-    $scope.saveComment = function(event, tutor) {
-      if (event.keyCode === 13) {
-        return Tutor.update({
-          id: tutor.id,
-          debt_comment: tutor.debt_comment
-        }, function(response) {
-          tutor.old_debt_comment = tutor.debt_comment;
-          return $(event.target).blur();
-        });
-      }
-    };
-    angular.element(document).ready(function() {
-      return $('.map-tutor-list').droppable();
-    });
-    $scope.find = function() {
-      $scope.loading = true;
-      return TutorService.getDebtMap({
-        search: $scope.search
-      }).then(function(response) {
-        $scope.tutors = response.data;
-        showTutorsOnMap();
-        return $scope.loading = false;
-      });
-    };
-    $scope.added = function(tutor_id) {
-      return indexOf.call($scope.list.tutor_ids, tutor_id) >= 0;
-    };
-    rebindDraggable = function() {
-      return $('.temporary-tutor').draggable({
-        containment: 'window',
-        revert: function(valid) {
-          if (valid) {
-            return true;
-          }
-          $scope.tutor_list = removeById($scope.tutor_list, $scope.dragging_tutor.id);
-          return $scope.$apply();
-        }
-      });
-    };
-    $scope.startDragging = function(tutor) {
-      return $scope.dragging_tutor = tutor;
-    };
-    showTutorsOnMap = function() {
-      unsetAllMarkers();
-      $scope.marker_id = 1;
-      $scope.tutor_list = [];
-      $scope.markers = [];
-      $scope.tutors.forEach(function(tutor) {
-        return tutor.markers.forEach(function(marker) {
-          var new_marker;
-          new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, marker.type);
-          new_marker.metros = marker.metros;
-          new_marker.tutor = tutor;
-          new_marker.setMap($scope.map);
-          bindTutorMarkerEvents(new_marker);
-          return $scope.markers.push(new_marker);
-        });
-      });
-      return markerClusterer = new MarkerClusterer($scope.map, $scope.markers, {
-        gridSize: 10,
-        imagePath: 'img/maps/clusterer/m'
-      });
-    };
-    showClientOnMap = function() {
-      return $scope.client.markers.forEach(function(marker) {
-        var new_marker;
-        new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, 'white');
-        new_marker.metros = marker.metros;
-        return new_marker.setMap($scope.map);
-      });
-    };
-    unsetAllMarkers = function() {
-      if ($scope.markers !== void 0) {
-        $scope.markers.forEach(function(marker) {
-          return marker.setMap(null);
-        });
-      }
-      if (markerClusterer !== void 0) {
-        return markerClusterer.clearMarkers();
-      }
-    };
-    findIntersectingMetros = function() {
-      if ($scope.search.destination === 'r_k') {
-        $scope.markers.forEach(function(marker) {
-          marker.intersecting = false;
-          return $scope.client.markers.forEach(function(client_marker) {
-            return client_marker.metros.forEach(function(client_metro) {
-              var ref;
-              if (ref = client_metro.station_id.toString(), indexOf.call(marker.tutor.svg_map, ref) >= 0) {
-                marker.intersecting = true;
-                marker.tutor.intersecting = true;
-              }
-            });
-          });
-        });
-        return $scope.markers.forEach(function(marker) {
-          if (!marker.intersecting) {
-            return marker.setOpacity(TRANSPARENT_MARKER);
-          }
-        });
-      }
-    };
-    $scope.intersectingTutors = function() {
-      return _.where($scope.tutors, {
-        intersecting: true
-      });
-    };
-    $scope.notIntersectingTutors = function() {
-      return _.filter($scope.tutors, function(tutor) {
-        return _.isUndefined(tutor.intersecting);
-      });
-    };
-    bindTutorMarkerEvents = function(marker) {
-      google.maps.event.addListener(marker, 'click', function(event) {
-        var ref;
-        if (ref = marker.tutor, indexOf.call($scope.tutor_list, ref) >= 0) {
-          $scope.tutor_list = removeById($scope.tutor_list, marker.tutor.id);
-        } else {
-          $scope.hovered_tutor = null;
-          $scope.tutor_list.push(marker.tutor);
-        }
-        $scope.$apply();
-        return rebindDraggable();
-      });
-      google.maps.event.addListener(marker, 'mouseover', function(event) {
-        var ref;
-        if (ref = marker.tutor, indexOf.call($scope.tutor_list, ref) >= 0) {
-          return;
-        }
-        $scope.hovered_tutor = marker.tutor;
-        return $scope.$apply();
-      });
-      return google.maps.event.addListener(marker, 'mouseout', function(event) {
-        $scope.hovered_tutor = null;
-        return $scope.$apply();
-      });
-    };
-    $scope.addOrRemove = function(tutor_id) {
-      tutor_id = parseInt(tutor_id);
-      if (indexOf.call($scope.list.tutor_ids, tutor_id) >= 0) {
-        $scope.list.tutor_ids = _.without($scope.list.tutor_ids, tutor_id);
-      } else {
-        $scope.list.tutor_ids.push(tutor_id);
-      }
-      repaintChosen();
-      return $scope.list.$update();
-    };
-    repaintChosen = function() {
-      return $scope.markers.forEach(function(marker) {
-        var ref, ref1;
-        if ((ref = marker.tutor.id, indexOf.call($scope.list.tutor_ids, ref) >= 0) && !marker.chosen) {
-          marker.chosen = true;
-          marker.setOpacity(1);
-          marker.setIcon(ICON_BLUE);
-        }
-        if ((ref1 = marker.tutor.id, indexOf.call($scope.list.tutor_ids, ref1) < 0) && marker.chosen) {
-          marker.chosen = false;
-          marker.setOpacity(marker.intersecting ? 1 : TRANSPARENT_MARKER);
-          return marker.setIcon(getMarkerType(marker.type));
-        }
-      });
-    };
-    return $scope.$on('mapInitialized', function(event, map) {
-      var INIT_COORDS;
-      $scope.gmap = map;
-      INIT_COORDS = {
-        lat: 55.7387,
-        lng: 37.6032
-      };
-      $scope.RECOM_BOUNDS = new google.maps.LatLngBounds(new google.maps.LatLng(INIT_COORDS.lat - 0.5, INIT_COORDS.lng - 0.5), new google.maps.LatLng(INIT_COORDS.lat + 0.5, INIT_COORDS.lng + 0.5));
-      $scope.geocoder = new google.maps.Geocoder;
-      $scope.gmap.setCenter(new google.maps.LatLng(55.7387, 37.6032));
-      return $scope.gmap.setZoom(11);
-    });
-  });
-
-}).call(this);
-
-(function() {
   angular.module('Egerep').controller('EmptyCtrl', function() {});
 
 }).call(this);
@@ -1563,31 +1200,6 @@
     };
   }).controller('RequestsForm', function($scope) {
     return console.log('here');
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').controller('SummaryIndex', function($rootScope, $scope, $http, $timeout) {
-    var loadSummary;
-    bindArguments($scope, arguments);
-    $rootScope.frontend_loading = true;
-    $timeout(function() {
-      loadSummary($scope.page);
-      return $scope.current_page = $scope.page;
-    });
-    $scope.pageChanged = function() {
-      loadSummary($scope.current_page);
-      return paginate('summary', $scope.current_page);
-    };
-    return loadSummary = function(page) {
-      var params;
-      params = '?page=' + page;
-      return $http.post("api/summary" + params).then(function(response) {
-        $rootScope.frontendStop();
-        return $scope.summaries = response.data;
-      });
-    };
   });
 
 }).call(this);
@@ -2471,6 +2083,83 @@
 }).call(this);
 
 (function() {
+  var apiPath, updateMethod;
+
+  angular.module('Egerep').factory('Account', function($resource) {
+    return $resource(apiPath('accounts'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Review', function($resource) {
+    return $resource(apiPath('reviews'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Archive', function($resource) {
+    return $resource(apiPath('archives'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Attachment', function($resource) {
+    return $resource(apiPath('attachments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('RequestList', function($resource) {
+    return $resource(apiPath('lists'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Request', function($resource) {
+    return $resource(apiPath('requests'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Sms', function($resource) {
+    return $resource(apiPath('sms'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Comment', function($resource) {
+    return $resource(apiPath('comments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Client', function($resource) {
+    return $resource(apiPath('clients'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('User', function($resource) {
+    return $resource(apiPath('users'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Tutor', function($resource) {
+    return $resource(apiPath('tutors'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      deletePhoto: {
+        url: apiPath('tutors', 'photo'),
+        method: 'DELETE'
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  });
+
+  apiPath = function(entity, additional) {
+    if (additional == null) {
+      additional = '';
+    }
+    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
+  };
+
+  updateMethod = function() {
+    return {
+      update: {
+        method: 'PUT'
+      }
+    };
+  };
+
+}).call(this);
+
+(function() {
   angular.module('Egerep').value('AccountPeriods', {
     0: 'initial',
     1: 'month',
@@ -2514,9 +2203,8 @@
     unpublished: 'не опубликован',
     published: 'опубликован'
   }).value('AttachmentStates', {
-    "new": 'новые',
-    inprogress: 'рабочие',
-    ended: 'завершенные'
+    0: 'показано',
+    1: 'скрыто'
   }).value('ReviewScores', {
     1: 1,
     2: 2,
@@ -2696,83 +2384,6 @@
       color: '#ACADAF'
     }
   });
-
-}).call(this);
-
-(function() {
-  var apiPath, updateMethod;
-
-  angular.module('Egerep').factory('Account', function($resource) {
-    return $resource(apiPath('accounts'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Review', function($resource) {
-    return $resource(apiPath('reviews'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Archive', function($resource) {
-    return $resource(apiPath('archives'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Attachment', function($resource) {
-    return $resource(apiPath('attachments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('RequestList', function($resource) {
-    return $resource(apiPath('lists'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Request', function($resource) {
-    return $resource(apiPath('requests'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Sms', function($resource) {
-    return $resource(apiPath('sms'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Comment', function($resource) {
-    return $resource(apiPath('comments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Client', function($resource) {
-    return $resource(apiPath('clients'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('User', function($resource) {
-    return $resource(apiPath('users'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Tutor', function($resource) {
-    return $resource(apiPath('tutors'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      deletePhoto: {
-        url: apiPath('tutors', 'photo'),
-        method: 'DELETE'
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  });
-
-  apiPath = function(entity, additional) {
-    if (additional == null) {
-      additional = '';
-    }
-    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
-  };
-
-  updateMethod = function() {
-    return {
-      update: {
-        method: 'PUT'
-      }
-    };
-  };
 
 }).call(this);
 
@@ -3031,9 +2642,6 @@
     };
     this.getFiltered = function(search_data) {
       return $http.post('api/tutors/filtered', search_data);
-    };
-    this.getDebtMap = function(search_data) {
-      return $http.post('api/debt/map', search_data);
     };
     this.generateLogin = function(tutor) {
       var i, len, letter, login, ref;

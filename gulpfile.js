@@ -45,7 +45,7 @@ elixir(function(mix) {
             '../bower/jquery-ui/ui/droppable.js',
             '../bower/angular-ui-sortable/sortable.min.js',
             '../bower/angular-bootstrap/ui-bootstrap.min.js',
-            '../bower/cropper/dist/cropper.min.js',
+            '../bower/cropper/dist/cropper.js',
             '../bower/pusher/dist/pusher.min.js',
             '../bower/ladda/dist/spin.min.js',
             '../bower/ladda/dist/ladda.min.js',

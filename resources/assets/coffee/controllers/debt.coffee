@@ -49,7 +49,6 @@ angular
                     tutor.old_debt_comment = tutor.debt_comment
                     $(event.target).blur()
 
-
     .controller 'DebtMap', ($scope, $timeout, TutorService, Tutor) ->
         bindArguments($scope, arguments)
 

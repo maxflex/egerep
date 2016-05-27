@@ -2253,48 +2253,49 @@
       var offset;
       var center;
 
-      ratio = num(ratio);
+      if (_event.originalEvent.deltaY > 0 || (width < naturalWidth && height < naturalHeight)) {
+        ratio = num(ratio);
+        if (ratio >= 0 && this.isBuilt && !this.isDisabled && options.zoomable) {
+          newWidth = naturalWidth * ratio;
+          newHeight = naturalHeight * ratio;
 
-      if (ratio >= 0 && this.isBuilt && !this.isDisabled && options.zoomable) {
-        newWidth = naturalWidth * ratio;
-        newHeight = naturalHeight * ratio;
+          if (_event) {
+            originalEvent = _event.originalEvent;
+          }
 
-        if (_event) {
-          originalEvent = _event.originalEvent;
-        }
+          if (this.trigger(EVENT_ZOOM, {
+              originalEvent: originalEvent,
+              oldRatio: width / naturalWidth,
+              ratio: newWidth / naturalWidth
+            }).isDefaultPrevented()) {
+            return;
+          }
 
-        if (this.trigger(EVENT_ZOOM, {
-          originalEvent: originalEvent,
-          oldRatio: width / naturalWidth,
-          ratio: newWidth / naturalWidth
-        }).isDefaultPrevented()) {
-          return;
-        }
+          if (originalEvent) {
+            offset = this.$cropper.offset();
+            center = originalEvent.touches ? getTouchesCenter(originalEvent.touches) : {
+              pageX: _event.pageX || originalEvent.pageX || 0,
+              pageY: _event.pageY || originalEvent.pageY || 0
+            };
 
-        if (originalEvent) {
-          offset = this.$cropper.offset();
-          center = originalEvent.touches ? getTouchesCenter(originalEvent.touches) : {
-            pageX: _event.pageX || originalEvent.pageX || 0,
-            pageY: _event.pageY || originalEvent.pageY || 0
-          };
-
-          // Zoom from the triggering point of the event
-          canvas.left -= (newWidth - width) * (
+            // Zoom from the triggering point of the event
+            canvas.left -= (newWidth - width) * (
             ((center.pageX - offset.left) - canvas.left) / width
-          );
-          canvas.top -= (newHeight - height) * (
+            );
+            canvas.top -= (newHeight - height) * (
             ((center.pageY - offset.top) - canvas.top) / height
-          );
-        } else {
+            );
+          } else {
 
-          // Zoom from the center of the canvas
-          canvas.left -= (newWidth - width) / 2;
-          canvas.top -= (newHeight - height) / 2;
+            // Zoom from the center of the canvas
+            canvas.left -= (newWidth - width) / 2;
+            canvas.top -= (newHeight - height) / 2;
+          }
+
+          canvas.width = newWidth;
+          canvas.height = newHeight;
+          this.renderCanvas(true);
         }
-
-        canvas.width = newWidth;
-        canvas.height = newHeight;
-        this.renderCanvas(true);
       }
     },
 

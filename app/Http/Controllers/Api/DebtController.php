@@ -104,6 +104,18 @@ class DebtController extends Controller
         }
 
         // if (isset($account_date_from)) {
+        //     $query->join('accounts AS a1', function($join) {
+        //         $join->on('a1.tutor_id', '=', 'tutors.id')
+        //              ->on('a1.date_end', '=', DB::raw('
+        //                 (SELECT MAX(date_end)
+        //                 FROM accounts a2
+        //                 WHERE a1.tutor_id = a2.tutor_id)
+        //             '));
+        //     });
+        //     // $query->select(DB::raw('count(*) as user_count, status'))
+        // }
+
+        // if (isset($account_date_from)) {
         //     $query->select(DB::raw('count(*) as user_count, status'))
         // }
 
