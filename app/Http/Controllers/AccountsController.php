@@ -22,6 +22,7 @@ class AccountsController extends Controller
         return view('tutors.accounts.index')->with(ngInit([
             'tutor_id'             => $id,
             'clients'              => $clients,
+            'date_limit'           => $tutor->getDateLimit(),
             'hidden_clients_count' => $tutor->clientsCount(1),
         ]) + ['tutor' => $tutor]);
     }
