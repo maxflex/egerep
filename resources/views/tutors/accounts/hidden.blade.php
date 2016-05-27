@@ -35,7 +35,9 @@
                 <td>@{{ Grades[client.grade] }}</td>
                 <td>@{{ formatDate(client.attachment_date) }}</td>
                 <td>@{{ formatDate(client.archive_date) }}</td>
-                <td>@{{ client.lessons_count }}</td>
+                <td>
+                    <span ng-show='client.lessons_count > 0'>@{{ client.lessons_count }}</span>
+                </td>
             </tr>
         </tbody>
     </table>
