@@ -47,6 +47,16 @@ class Attachment extends Model
         return $this->hasOne('App\Models\Review');
     }
 
+    public function tutor()
+    {
+        return $this->belongsTo('App\Models\Tutor');
+    }
+
+    public function client()
+    {
+        return $this->requestList->request->client();
+    }
+
     // ------------------------------------------------------------------------
 
     public function getUserLoginAttribute()
