@@ -18,8 +18,7 @@ class DebtController extends Controller
     public function index(Request $request)
     {
         return Tutor::where('debt', '>', 0)
-                ->paginate(30)
-                // ->makeVisible('')
+                ->paginate(30, ['last_debt'])
                 ->toJson();
     }
 
