@@ -22,6 +22,15 @@
 	}
 
     /**
+     * Деформатировать дату
+     */
+    function fromDotDate($date)
+    {
+        $parts = explode('.', $date);
+        return implode('-', array_reverse($parts));
+    }
+
+    /**
      * Возвратить чистый номер телефона.
      *
      */
