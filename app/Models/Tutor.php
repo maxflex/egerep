@@ -17,8 +17,6 @@ class Tutor extends Model
     use Markerable;
     use Person;
 
-    // DATE(edit_date) = DATE_SUB(CURDATE(), INTERVAL 7 DAY)
-
     protected $fillable =  [
         'first_name',
         'last_name',
@@ -80,7 +78,7 @@ class Tutor extends Model
         'age'
     ];
 
-    protected $with = ['markers'];
+    // protected $with = ['markers'];
 
     protected static $commaSeparated = ['svg_map', 'subjects', 'grades', 'branches'];
     protected static $virtual = ['banned'];
@@ -254,7 +252,7 @@ class Tutor extends Model
 
         // сортируем по дате и времени реквизитов клиента
         usort($clients, function($a, $b) {
-            return $a['attachment_created_at'] - $b['attachment_created_at'];
+            return $a['attachment_created_at'] > $b['attachment_created_at'];
         });
 
         return $clients;

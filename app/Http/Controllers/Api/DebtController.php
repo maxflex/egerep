@@ -19,6 +19,7 @@ class DebtController extends Controller
     {
         return Tutor::where('debt', '>', 0)
                 ->paginate(30)
+                // ->makeVisible('')
                 ->toJson();
     }
 
