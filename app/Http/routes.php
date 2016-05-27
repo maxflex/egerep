@@ -17,6 +17,8 @@ Route::group(['middleware' => ['web']], function () {
     Route::resource('clients', 'ClientsController');
     Route::get('attachments/{state?}', 'AttachmentsController@index');
 
+    Route::get('summary', 'SummaryController@index');
+
     Route::controllers([
         'transfer'  => 'TransferController',
         'upload'    => 'UploadController',
@@ -50,6 +52,8 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('comments', 'CommentsController');
         Route::resource('accounts', 'AccountsController');
         Route::resource('sms', 'SmsController');
+
+        Route::post('summary', 'SummaryController@index');
     });
 
 

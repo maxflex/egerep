@@ -41,6 +41,7 @@
               {{-- <a class="list-group-item active">Преподаватели</a> --}}
               <a href="tutors" class="list-group-item">Преподаватели</a>
               {{-- <a class="list-group-item active">Настройки</a> --}}
+               <a href="summary" class="list-group-item">Итоги</a>
               <a href="logout" class="list-group-item">Выход</a></div>
         </div>
       </div>

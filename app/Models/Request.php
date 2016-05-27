@@ -99,4 +99,14 @@ class Request extends Model
         $return['all'] = array_sum($return);
         return $return;
     }
+
+    /**
+     * количество дней с первой заявки
+     */
+    public static function daysFromFirstReqeust()
+    {
+        $first_date = new \DateTime(\App\Models\Request::orderBy('created_at')->pluck('created_at')->first());
+        $interval = $first_date->diff(new \DateTime);
+        return $interval->format('%a');
+    }
 }

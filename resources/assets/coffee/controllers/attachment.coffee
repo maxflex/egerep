@@ -5,7 +5,7 @@ angular
             update:
                 method: 'PUT'
     .controller 'AttachmentsIndex', ($rootScope, $scope, $timeout, $http, AttachmentStates) ->
-        _.extend AttachmentStates, { all : 'Все' }
+        _.extend AttachmentStates, { all : 'все' }
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
