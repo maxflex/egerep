@@ -155,8 +155,9 @@ class Account extends Model
             }
         }
 
-        $this->debt_calc = $debt;
-        $this->save();
+        Account::where('id', $this->id)->update([
+            'debt_calc' => $debt
+        ]);
     }
 
     /**
