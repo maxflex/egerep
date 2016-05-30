@@ -121,9 +121,9 @@ class Tutor extends Model
     /**
      * Последняя задолженность
      */
-     public function getLastDebtAttribute()
+     public function getLastAccountInfoAttribute()
      {
-         return DB::table('accounts')->select('debt', 'debt_type')->where('tutor_id', $this->id)->orderBy('date_end', 'desc')->first();
+         return DB::table('accounts')->select('debt', 'debt_type', 'date_end')->where('tutor_id', $this->id)->orderBy('date_end', 'desc')->first();
         //  return $this->accounts()->take(1)->orderBy('date_end', 'desc')->first();
         //  return Account::where('tutor_id', $this->id)->orderBy('date_end', 'desc')->select('debt', 'debt_type')->first();
      }
@@ -134,23 +134,31 @@ class Tutor extends Model
     public function getLastAccountsAttribute()
     {
         $query = $this->accounts();
-       switch ($this->accounts_type) {
-           case 'month':
-               $days = 90;
-               break;
-           case 'year':
-               $days = 365;
-               break;
-           case 'all':
-               return $query->get();
-           default:
-               $days = 60;
-               break;
-       }
-       return $query
-           ->whereRaw("date_end > DATE_SUB((SELECT date_end FROM accounts WHERE tutor_id=" . $this->id . " ORDER BY date_end DESC LIMIT 1), INTERVAL {$days} DAY)")
-           ->orderBy('date_end', 'asc')
-           ->get();
+
+        // если отчетности нет, возвращаем пустой массив, дальше ничего делать не нужно
+        if (! $query->exists()) {
+            return [];
+        }
+
+        if ($this->current_period) {
+            // находим отчетность перед date_limit
+            $date_limit = DB::table('accounts')->where('tutor_id', $this->id)
+                                               ->where('date_end', '<', $this->getDateLimit())
+                                               ->orderBy('date_end', 'desc')
+                                               ->take(1)
+                                               ->skip($this->current_period - 1)
+                                               ->value('date_end');
+            // если дата не нашлась, то всё уже отобразили
+            if (! $date_limit) {
+                return null;
+            }
+        } else {
+            $date_limit = $this->getDateLimit();
+        }
+        return $query
+            ->where('date_end', '>=', $date_limit)
+            ->orderBy('date_end', 'asc')
+            ->get();
     }
 
     public function getBannedAttribute()
@@ -452,43 +460,21 @@ class Tutor extends Model
     /**
      * Данные по встречам 60 дней с момента последней встречи
      *
-     * $type
-     *  initial – первые 60 дней
-     *  month   – + 1 месяц
-     *  year    – + 1 год
-     *  all     – всё
      */
-     public function withLastAccounts($type = 'initial')
+     public function withLastAccounts($current_period = 0)
      {
-        $this->accounts_type = $type;
+        $this->current_period = $current_period;
         $this->append('last_accounts');
         return $this;
      }
 
      /**
-      * Данные по встречам в указанном периоде.
-      *
-      * @param string $type    Длина периода: 60 дней + год|месяц|вся история.
-      *                        По умолчанию 60 дней
-      *
-      * @return Date            дата встречи.
+      * Лимит даты для отображения начальной отчетности
+      * (дата последней встречи - 60 дней)
       */
-     public function getDateLimit($type = 'initial')
+     public function getDateLimit()
      {
-         switch ($type) {
-             case 'month':
-                 $days = 90;
-                 break;
-             case 'year':
-                 $days = 365;
-                 break;
-             case 'all':
-                 return Account::where('tutor_id', $this->id)->orderBy('date_end', 'desc')->pluck('date_end')->first();
-             default:
-                 $days = 60;
-                 break;
-         }
-         return Account::select(DB::raw("DATE_SUB(date_end, INTERVAL {$days} DAY) as date_limit"))
+         return Account::select(DB::raw("DATE_SUB(date_end, INTERVAL 60 DAY) as date_limit"))
                             ->where('tutor_id', $this->id)->orderBy('date_end', 'desc')->pluck('date_limit')->first();
      }
 

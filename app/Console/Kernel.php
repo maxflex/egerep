@@ -20,6 +20,8 @@ class Kernel extends ConsoleKernel
         Commands\Transfer::class,
         Commands\TransferTruncate::class,
         Commands\TransferDebt::class,
+        Commands\AttachmentClientId::class,
+        Commands\RecalcDebt::class,
     ];
 
     /**

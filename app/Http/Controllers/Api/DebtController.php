@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 
+use DB;
 use App\Models\Tutor;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -18,7 +19,7 @@ class DebtController extends Controller
     public function index(Request $request)
     {
         return Tutor::where('debt', '>', 0)
-                ->paginate(30, ['last_debt'])
+                ->paginate(30, ['last_account_info'])
                 ->toJson();
     }
 
@@ -86,5 +87,52 @@ class DebtController extends Controller
     public function destroy($id)
     {
         return Tutor::destroy($id);
+    }
+
+    public function map(Request $request)
+    {
+        extract(array_filter($request->search));
+
+        // анализируем только не закрытых преподавателей с метками
+        $query = Tutor::with(['markers'])->where('tutors.debt', '>', 0);
+
+        if (isset($debt_from)) {
+            $query->where('tutors.debt', '>=', $debt_from);
+        }
+
+        if (isset($debt_to)) {
+            $query->where('tutors.debt', '<=', $debt_to);
+        }
+
+        if (isset($account_date_from) || isset($account_date_to)) {
+            $query->join('accounts', function($join) {
+                $join->on('accounts.tutor_id', '=', 'tutors.id')
+                     ->on('accounts.date_end', '=', DB::raw('
+                        (SELECT MAX(date_end)
+                        FROM accounts a2
+                        WHERE accounts.tutor_id = a2.tutor_id)
+                    '));
+            });
+            if (isset($account_date_from)) {
+                $query->where('accounts.date_end', '>=', fromDotDate($account_date_from));
+            }
+            if (isset($account_date_to)) {
+                $query->where('accounts.date_end', '<=', fromDotDate($account_date_to));
+            }
+        }
+
+        # выбираем только нужные поля для ускорения запроса
+        $tutors = $query->get([
+            'tutors.id',
+            'tutors.first_name',
+            'tutors.last_name',
+            'tutors.middle_name',
+            'tutors.photo_extension',
+            'tutors.birth_year',
+            'tutors.debt',
+            'tutors.debt_comment'
+        ])->append('last_account_info');
+
+        return $tutors;
     }
 }

@@ -49,24 +49,28 @@ angular.module('Egerep')
 
                     $scope.visible_clients_count++
                     $scope.$apply()
-    .controller 'AccountsCtrl', ($rootScope, $scope, $http, $timeout, Account, PaymentMethods, DebtTypes, AccountPeriods, Grades, Attachment) ->
+    .controller 'AccountsCtrl', ($rootScope, $scope, $http, $timeout, Account, PaymentMethods, DebtTypes, Grades, Attachment) ->
         bindArguments($scope, arguments)
-        $scope.current_scope = $scope
+        $scope.current_scope  = $scope
         $scope.current_period = 0
+        $scope.all_displayed  = false
 
         angular.element(document).ready ->
             $scope.loadPage()
 
         $scope.loadPage = (type) ->
             $rootScope.frontend_loading = true
-            $http.get "api/accounts/#{$scope.tutor_id}?type=#{AccountPeriods[$scope.current_period]}"
+            $http.get "api/accounts/#{$scope.tutor_id}?current_period=#{$scope.current_period}"
             .success (response) ->
                     renderData(response)
                     $scope.current_period++
 
         renderData = (data) ->
-            $scope.tutor = data.tutor
-            $scope.date_limit = data.date_limit
+            # если у нового tutor last_accounts=null, то загрузили всё
+            if data.last_accounts is null
+                $scope.all_displayed = true
+            else
+                $scope.tutor = data
             $rootScope.frontend_loading = false
             $('.accounts-table').stickyTableHeaders('destroy')
             $timeout ->
@@ -134,7 +138,18 @@ angular.module('Egerep')
             # если нулевой элемент, то отсчитываем от даты первой стыковки (самой ранней стыковки)
             # иначе отсчитываем от даты конца предыдущего периода
             if not index
-                current_date = moment($scope.date_limit).format('YYYY-MM-DD')
+                # если нажимали на "+1 период", то отображать от конца самого раннего периода
+                # в диапазоне видимости - 7 дней
+                if $scope.current_period > 1
+                    # -7 дней делать только в том случае, если еще не все периоды отображены
+                    current_date = moment($scope.tutor.last_accounts[0].date_end).subtract((if $scope.all_displayed then 60 else 7), 'days').format('YYYY-MM-DD')
+                else
+                # иначе отображаем от date_limit, что равно дата самой последней встречи -60 дней
+                    if not $scope.date_limit
+                        # если date_limit не установлен, значит, мы только что создали первую отчетность
+                        # устанавливаем date_limit = конец_периода - 60 дней
+                        $scope.date_limit = moment($scope.tutor.last_accounts[0].date_end).subtract(60, 'days').format('YYYY-MM-DD')
+                    current_date = moment($scope.date_limit).format('YYYY-MM-DD')
             else
                 current_date = moment($scope.tutor.last_accounts[index - 1].date_end).add(1, 'days').format('YYYY-MM-DD')
 

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\AccountData;
 use Carbon\Carbon;
+use DB;
 
 class Account extends Model
 {
@@ -117,6 +118,86 @@ class Account extends Model
     }
 
     // ------------------------------------------------------------------------
+
+    /**
+     * Пересчитать расчетный дебет
+     */
+    public function recalcDebt()
+    {
+        // Получить клиентов, соответствующих периоду
+        $data = DB::table('attachments')->leftJoin('archives', 'archives.attachment_id', '=', 'attachments.id')
+            ->where('attachments.tutor_id', $this->tutor_id)
+            ->where('attachments.date', '<=', $this->date_end)
+            ->where(function($query) {
+                $query->where('archives.id', null)
+                      ->orWhere('archives.date', '>', $this->date_start); // может >= ?
+            })
+            ->select(DB::raw('
+                attachments.forecast,
+                attachments.client_id,
+                attachments.date as attachment_date,
+                archives.date as archive_date'))
+            ->get();
+
+        if (! $data) {
+            return;
+        }
+
+        // Пересчитываем
+        $debt = 0;
+
+        foreach (dateRange($this->date_start, $this->date_end) as $date) {
+            $coef = static::_pissimisticCoef($date);
+            foreach ($data as $d) {
+                if (($d->attachment_date <= $date) && ($d->archive_date >= $date)) {
+                    $debt += ($d->forecast / 7) * $coef;
+                }
+            }
+        }
+
+        Account::where('id', $this->id)->update([
+            'debt_calc' => $debt
+        ]);
+    }
+
+    /**
+     * Писсимизирующий коэффициент
+     */
+    private static function _pissimisticCoef($date)
+    {
+        $date = date('m-d', strtotime($date));
+
+        // первые 7 дней ноября
+        if ($date >= '11-01' && $date <= '11-07') {
+            return .6;
+        }
+        // последние 7 дней декабря 0,54
+        if ($date >= '12-25' && $date <= '12-31') {
+            return .54;
+        }
+        // первые 10 дней января - 0,12
+        if ($date >= '01-01' && $date <= '01-10') {
+            return .12;
+        }
+        // первые 14 дней мая - 0,54
+        if ($date >= '05-01' && $date <= '05-14') {
+            return .54;
+        }
+        // с 1 июня по 20 августа - 0,02 (или 0,72 если была архивации в летный период)
+        if ($date >= '06-01' && $date <= '08-20') {
+            return .02;
+        }
+        // последние 7 дней декабря 0,54
+        if ($date >= '12-25' && $date <= '12-31') {
+            return .54;
+        }
+        // с 21 августа по 31 августа - 0,1 (или 0,72 если была архивации в летный период)
+        if ($date >= '08-21' && $date <= '08-31') {
+            return .1;
+        }
+        // остальные дни - 0,72
+        return .72;
+    }
 
     protected static function boot()
     {

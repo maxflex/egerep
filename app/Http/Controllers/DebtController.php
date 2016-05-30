@@ -88,4 +88,9 @@ class DebtController extends Controller
     {
         //
     }
+
+    public function map()
+    {
+        return view('debt.map.index');
+    }
 }

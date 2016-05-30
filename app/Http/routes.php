@@ -16,10 +16,10 @@ Route::group(['middleware' => ['web']], function () {
     Route::resource('requests', 'RequestsController', ['except' => ['index']]);
     Route::resource('clients', 'ClientsController');
     Route::get('attachments/{state?}', 'AttachmentsController@index');
+    // Route::resource('debt', 'DebtController', ['only' => 'index']);
+    Route::get('debt/map', 'DebtController@map');
 
     Route::get('summary/{filter?}', 'SummaryController@index');
-
-    Route::resource('debt', 'DebtController');
 
     Route::controllers([
         'transfer'  => 'TransferController',
@@ -48,6 +48,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('requests', 'RequestsController');
         Route::resource('lists', 'RequestListsController');
         Route::resource('attachments', 'AttachmentsController');
+        Route::post('debt/map', 'DebtController@map');
         Route::resource('debt', 'DebtController');
         Route::resource('archives', 'ArchivesController');
         Route::resource('reviews', 'ReviewsController');
@@ -58,6 +59,9 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('sms', 'SmsController');
 
         Route::post('summary', 'SummaryController@index');
+        Route::controllers([
+            'command'  => 'CommandsController',
+        ]);
     });
 
 

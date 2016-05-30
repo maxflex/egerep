@@ -82,6 +82,9 @@ angular.module 'Egerep'
         this.getFiltered = (search_data) ->
             $http.post 'api/tutors/filtered', search_data
 
+        this.getDebtMap = (search_data) ->
+            $http.post 'api/debt/map', search_data
+
         this.generateLogin = (tutor) ->
             login = ''
             login += this.translit[letter] for letter in tutor.last_name.toLowerCase()

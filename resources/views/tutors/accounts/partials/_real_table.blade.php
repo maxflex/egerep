@@ -4,10 +4,8 @@
         <thead class="high-z-index">
             <tr>
                 <td class='empty-td'>
-                    <span class='link-like' ng-click='loadPage()' ng-hide='current_period == 4'>
-                        <span ng-show='current_period == 1'>+1 месяц</span>
-                        <span ng-show='current_period == 2'>+1 год</span>
-                        <span ng-show='current_period == 3'>всё время</span>
+                    <span class='link-like' ng-hide='all_displayed' ng-click='loadPage()'>
+                        +1 период
                     </span>
                 </td>
             </tr>
@@ -74,6 +72,10 @@
                             <div class="mbs">
                                 <span>Дебет до встречи (руб.):</span>
                                 <pencil-input model='account.debt_before'></pencil-input>
+                            </div>
+                            <div class="mbs">
+                                <span>Дебет до встречи (расчетный):</span>
+                                <span>@{{ account.debt_calc }}</span>
                             </div>
                             <div class="mbs">
                                 <span>Задолженность (руб.):</span>
