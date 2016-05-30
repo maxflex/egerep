@@ -49,15 +49,17 @@ class ExternalController extends Controller
      */
     public function request($data)
     {
+		$phone = cleanNumber($data->phone, true);
+
 		// находим клиента, если клиент уже существует, прикрепляем его к заявке
 		try {
-			$client = Client::findByPhone($data->phone)->firstOrFail();
+			$client = Client::findByPhone($phone)->firstOrFail();
 		}
 		catch (\Exception $e) {
 			// создаем нового клиента
 	        $client = Client::create([
 	            'name'  => $data->name,
-	            'phone' => cleanNumber($data->phone, true),
+	            'phone' => $phone,
 	        ]);
 		}
 
