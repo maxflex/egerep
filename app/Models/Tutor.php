@@ -17,6 +17,8 @@ class Tutor extends Model
     use Markerable;
     use Person;
 
+    public $timestamps = false;
+    
     protected $fillable =  [
         'first_name',
         'last_name',
