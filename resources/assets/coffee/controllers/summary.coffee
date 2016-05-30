@@ -9,7 +9,10 @@ angular
             $scope.current_page = $scope.page
 
         $scope.pageChanged = ->
+            ajaxStart()
             loadSummary $scope.current_page
+            ajaxEnd()
+
             paginate 'summary/' + $scope.filter, $scope.current_page
 
         loadSummary = (page) ->
