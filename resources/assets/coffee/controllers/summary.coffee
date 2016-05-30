@@ -10,10 +10,11 @@ angular
 
         $scope.pageChanged = ->
             loadSummary $scope.current_page
-            paginate 'summary', $scope.current_page
+            paginate 'summary/' + $scope.filter, $scope.current_page
 
         loadSummary = (page) ->
-            params = '?page=' + page
+            params  = '?page='   + page
+            params += '&filter=' + $scope.filter
 
             $http.post "api/summary#{ params }"
             .then (response) ->

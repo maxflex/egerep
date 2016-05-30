@@ -17,12 +17,9 @@ Route::group(['middleware' => ['web']], function () {
     Route::resource('clients', 'ClientsController');
     Route::get('attachments/{state?}', 'AttachmentsController@index');
 
-    Route::get('summary', 'SummaryController@index');
+    Route::get('summary/{filter?}', 'SummaryController@index');
 
     Route::resource('debt', 'DebtController');
-    
-
-    Route::get('summary', 'SummaryController@index');
 
     Route::controllers([
         'transfer'  => 'TransferController',

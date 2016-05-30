@@ -12,7 +12,7 @@ angular.module('Egerep')
         1: 'работает в ЕГЭ-Центре'
 
     .value 'Genders',
-        male: 'мужской'
+        male:   'мужской'
         female: 'женский'
 
     .value 'TutorStates',
@@ -47,7 +47,7 @@ angular.module('Egerep')
 
     .value 'ReviewStates',
         unpublished: 'не опубликован'
-        published: 'опубликован'
+        published:   'опубликован'
 
     .value 'AttachmentStates',
         new:        'новые'

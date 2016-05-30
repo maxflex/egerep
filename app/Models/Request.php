@@ -101,12 +101,29 @@ class Request extends Model
     }
 
     /**
-     * количество дней с первой заявки
+     * количество элементов пагинации в странице итогов.
      */
-    public static function daysFromFirstReqeust()
+    public static function summaryItemsCount($filter = 'day')
     {
         $first_date = new \DateTime(\App\Models\Request::orderBy('created_at')->pluck('created_at')->first());
-        $interval = $first_date->diff(new \DateTime);
-        return $interval->format('%a');
+
+        switch ($filter) {
+            case 'day':
+                return $first_date->diff(new \DateTime)->format('%a');
+            case 'week':
+                return intval($first_date->diff(new \DateTime)->format('%a') / 7);
+            case 'month':
+                return ((new \DateTime)->format('Y') -  $first_date->format('Y'))*12 + $first_date->diff(new \DateTime)->format('%m') + 1;
+            case 'year':
+                $cnt = (new \DateTime)->format('Y') - $first_date->format('Y');
+                $cnt += (new \DateTime)->format('m') < 7
+                        ? $first_date->format('m') < 7
+                            ? 1
+                            : 0
+                        : $first_date->format('m') < 7
+                          ? 2
+                          : 1;
+                return $cnt;
+        }
     }
 }
