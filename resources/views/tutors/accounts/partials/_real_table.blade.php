@@ -74,6 +74,10 @@
                                 <pencil-input model='account.debt_before'></pencil-input>
                             </div>
                             <div class="mbs">
+                                <span>Дебет до встречи (расчетный):</span>
+                                <span>@{{ account.debt_calc }}</span>
+                            </div>
+                            <div class="mbs">
                                 <span>Задолженность (руб.):</span>
                                 <pencil-input model='account.debt'></pencil-input>
                                 <span ng-if='account.debt > 0'> – репетитор <span class="link-like-no-color"

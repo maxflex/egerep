@@ -139,6 +139,10 @@ class Account extends Model
                 archives.date as archive_date'))
             ->get();
 
+        if (! $data) {
+            return;
+        }
+
         // Пересчитываем
         $debt = 0;
 
