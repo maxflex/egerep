@@ -3,6 +3,12 @@
 @section('controller', 'SummaryIndex')
 
 @section('content')
+    <div class="top-links">
+        <a href="summary/@{{ period_id }}"
+           ng-repeat="(period_id, period) in {day:'дни', week:'недели', month:'месяцы', year:'годы'}"
+           ng-class="{active : filter == period_id}">@{{ period }}</a>
+    </div>
+
     <table class="table table-hover summary-table">
 		<thead>
 			<tr>
@@ -52,6 +58,7 @@
     <pagination
     	  ng-model="current_page"
     	  ng-change="pageChanged()"
+    	  ng-hide="{{ $per_page > $item_cnt }}"
     	  total-items="{{ $item_cnt }}"
     	  max-size="10"
     	  items-per-page="{{ $per_page }}"

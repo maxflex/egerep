@@ -7,9 +7,9 @@
     <div class="col-sm-12">
         <ul class="nav nav-tabs nav-tabs-links" style="margin-bottom: 20px">
              <li ng-repeat="(state_id, state) in AttachmentStates" data-id="@{{state_id }}"
-                ng-class="{'active' : chosen_state_id == state_id || !chosen_state_id && state_id == 'new', 'request-status-li': status_id != 'all' && (chosen_state_id != status_id)}"
+                ng-class="{'active' : chosen_state_id == state_id || !chosen_state_id && state_id == 'new', 'request-status-li': state_id != 'all' && (chosen_state_id != state_id)}"
                 >
-                <a class="list-link" href="#@{{status_id}}" ng-click="changeList(state_id)" data-toggle="tab" aria-expanded="@{{$index == 0}}">
+                <a class="list-link" href="#@{{state_id}}" ng-click="changeList(state_id)" data-toggle="tab" aria-expanded="@{{$index == 0}}">
                     @{{ state }}
                 </a>
              </li>
@@ -18,7 +18,11 @@
 </div>
 
 <div class="row attachment-list" ng-repeat="attachment in attachments">
-    <div class="col-sm-12 attachment-list-item">
+    <div class="col-sm-12" ng-if="chosen_state_id == 'all'">
+        <a href="#">стыковка @{{ attachment.id }}</a>
+    </div>
+
+    <div ng-if="chosen_state_id != 'all'" class="col-sm-12 attachment-list-item">
         <div>
             <span ng-show="attachment.client.name">@{{ attachment.client.name }},</span>
             <span ng-show="attachment.client.grade > 0">@{{ Grades[attachment.client.grade] }},</span>

@@ -19,7 +19,7 @@ Route::group(['middleware' => ['web']], function () {
     // Route::resource('debt', 'DebtController', ['only' => 'index']);
     Route::get('debt/map', 'DebtController@map');
 
-    Route::get('summary', 'SummaryController@index');
+    Route::get('summary/{filter?}', 'SummaryController@index');
 
     Route::controllers([
         'transfer'  => 'TransferController',

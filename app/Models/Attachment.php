@@ -80,9 +80,8 @@ class Attachment extends Model
 
     public function getAccountDataCountAttribute()
     {
-        $client_id = $this->requestList()->first()->request()->first()->client_id;
         return AccountData::where('tutor_id',  $this->tutor_id)
-                          ->where('client_id', $client_id)
+                          ->where('client_id', $this->client_id)
                           ->count();
     }
 

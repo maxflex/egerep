@@ -6,8 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'AddClientIdToAttachments' => $baseDir . '/database/migrations/2016_05_30_141049_add_client_id_to_attachments.php',
-    'AddDebtCalcToAccounts' => $baseDir . '/database/migrations/2016_05_30_135837_add_debt_calc_to_accounts.php',
     'AddDebtToTutors' => $baseDir . '/database/migrations/2016_05_26_182758_add_debt_to_tutors.php',
     'AddDeparturePriceToTeachers' => $baseDir . '/database/migrations/2016_02_17_121119_add_departure_price_to_teachers.php',
     'AddFieldsToTeachers' => $baseDir . '/database/migrations/2016_01_15_122608_add_fields_to_teachers.php',
@@ -25,7 +23,6 @@ return array(
     'AddListsToClient' => $baseDir . '/database/migrations/2016_01_22_152742_add_lists_to_client.php',
     'AddMoscowmapIdToStations' => $baseDir . '/database/migrations/2016_03_14_225432_add_moscowmap_id_to_stations.php',
     'AddNullableToAccountInts' => $baseDir . '/database/migrations/2016_05_26_123437_add_nullable_to_account_ints.php',
-    'AddNullableToTimestamps' => $baseDir . '/database/migrations/2016_05_30_175647_add_nullable_to_timestamps.php',
     'AddPhone4ToClients' => $baseDir . '/database/migrations/2016_03_10_160148_add_phone4_to_clients.php',
     'AddPhotoToTutors' => $baseDir . '/database/migrations/2016_02_29_140442_add_photo_to_tutors.php',
     'AddReadyToWorkToTeachers' => $baseDir . '/database/migrations/2016_03_16_171801_add_ready_to_work_to_teachers.php',
