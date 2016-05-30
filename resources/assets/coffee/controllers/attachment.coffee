@@ -13,6 +13,7 @@ angular
             $scope.chosen_state_id = state_id
             $scope.current_page = 1
 
+            $rootScope.frontend_loading = true
             ajaxStart()
             loadAttachments 1
             ajaxEnd()
