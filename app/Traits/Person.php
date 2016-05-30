@@ -46,6 +46,17 @@
         }
 
         /**
+         * Найти по номеру телефона
+         */
+        public function scopeFindByPhone($query, $phone)
+        {
+            return $query->where('phone',    $phone)
+                         ->orWhere('phone2', $phone)
+                         ->orWhere('phone3', $phone)
+                         ->orWhere('phone4', $phone);
+        }
+
+        /**
          * Вставить следующий номер телефона, если не существует
          */
          public function addPhone($phone)
