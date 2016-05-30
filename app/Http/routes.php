@@ -59,6 +59,9 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('sms', 'SmsController');
 
         Route::post('summary', 'SummaryController@index');
+        Route::controllers([
+            'command'  => 'CommandsController',
+        ]);
     });
 
 
