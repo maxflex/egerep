@@ -23,6 +23,7 @@ class Kernel extends ConsoleKernel
         Commands\AttachmentClientId::class,
         Commands\RecalcDebt::class,
         Commands\TransferAttachmentCreatedAt::class,
+        Commands\ChangeZeroTime::class,
     ];
 
     /**
