@@ -30028,4 +30028,24 @@ select.has-error:focus, input.has-error:focus, button.has-error:focus {
 table {
   font-size: 14px; }
 
+.summary-table thead {
+  color: #ddd; }
+
+table.summary-table tr td:not(:first-child) {
+  text-align: center; }
+
+table.summary-table.left-align tr td {
+  text-align: left; }
+
+.summary-table .no-hover td {
+  border-top: none !important; }
+
+.attachment-list-item hr {
+  margin-top: 5px;
+  margin-bottom: 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.4); }
+
+.attachment-list-item-comments {
+  margin-bottom: 5px; }
+
 /*# sourceMappingURL=app.css.map */

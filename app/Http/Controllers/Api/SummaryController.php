@@ -61,11 +61,11 @@ class SummaryController extends Controller
             ->groupBy('time')->get();
 
 
-        $clients = DB::table('clients')
-            ->select(DB::raw('count(*) as cnt, DATE(created_at) as time'))
-            ->whereRaw("DATE(created_at) > '{$end_date}'")
-            ->whereRaw("DATE(created_at) <= '{$start_date}'")
-            ->groupBy('time')->get();
+        // $clients = DB::table('clients')
+        //     ->select(DB::raw('count(*) as cnt, DATE(created_at) as time'))
+        //     ->whereRaw("DATE(created_at) > '{$end_date}'")
+        //     ->whereRaw("DATE(created_at) <= '{$start_date}'")
+        //     ->groupBy('time')->get();
 
 
         /**
