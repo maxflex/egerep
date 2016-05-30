@@ -54,7 +54,7 @@ class Attachment extends Model
 
     public function client()
     {
-        return $this->requestList->request->client();
+        return $this->belongsTo('App\Models\Client');
     }
 
     // ------------------------------------------------------------------------
