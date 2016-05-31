@@ -165,7 +165,7 @@ class Account extends Model
             ]);
             // если это последний период, то обновить в промежутке
             // поседний период ... сегодня
-            if ($this->id == static::take(1)->orderBy('date_end', 'desc')->value('id')) {
+            if ($this->id == static::where('tutor_id', $this->tutor_id)->take(1)->orderBy('date_end', 'desc')->value('id')) {
                 // @todo: нужно проверить ситуацию, когда конец периода = сегодня
                 $this->recalcDebt($this->date_end, now(true), true);
             }
