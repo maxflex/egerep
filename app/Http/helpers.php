@@ -17,7 +17,7 @@
         }
         return $aryRange;
     }
-    
+
     function preType($Object)
     {
         echo '<pre>';
@@ -124,6 +124,11 @@
     function userIdOrSystem()
     {
         return \App\Models\User::loggedIn() ? \App\Models\User::fromSession()->id : 0;
+    }
+
+    function now($no_time = false)
+    {
+        return date('Y-m-d' . ($no_time ? '' : ' H:i:s'));
     }
 
     /**

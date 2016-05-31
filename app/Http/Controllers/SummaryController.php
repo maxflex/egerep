@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Models\Tutor;
+use App\Models\Settings;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
@@ -24,8 +25,10 @@ class SummaryController extends Controller
                         'per_page' => self::PER_PAGE
                     ])->with(
                         ngInit([
-                            'page'   => $request->page,
-                            'filter' => $filter
+                            'page'          => $request->page,
+                            'filter'        => $filter,
+                            'total_debt'    => Tutor::totalDebt(),
+                            'debt_updated'  => Settings::get('debt_updated'),
                         ])
                     );
     }

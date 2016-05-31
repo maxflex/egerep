@@ -159,12 +159,18 @@
                         </select>
                     </div>
                 </div>
-                <div class="form-group">
-                    <div class="input-group custom">
-                      <span class="input-group-addon">дебет –</span>
-                      <input type="text" class="form-control digits-only" ng-model="tutor.debt">
+                <span ng-if='tutor.id'>
+                    <div class="form-group">
+                        <div class="input-group custom">
+                          <span class="input-group-addon">дебет –</span>
+                          <input type="text" class="form-control digits-only" ng-model="tutor.debt">
+                        </div>
                     </div>
-                </div>
+                    <div class="form-group small text-gray" ng-if='tutor.debt_calc !== null'>
+                        расчетный дебет: @{{ tutor.debt_calc | number }}<br>
+                        обновлено: @{{ formatDateTime(tutor.debt_updated) }}
+                    </div>
+                </span>
             </div>
         </div>
     </div>

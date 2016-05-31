@@ -18,7 +18,7 @@ class Tutor extends Model
     use Person;
 
     public $timestamps = false;
-    
+
     protected $fillable =  [
         'first_name',
         'last_name',
@@ -470,6 +470,7 @@ class Tutor extends Model
         return $this;
      }
 
+
      /**
       * Лимит даты для отображения начальной отчетности
       * (дата последней встречи - 60 дней)
@@ -478,6 +479,14 @@ class Tutor extends Model
      {
          return Account::select(DB::raw("DATE_SUB(date_end, INTERVAL 60 DAY) as date_limit"))
                             ->where('tutor_id', $this->id)->orderBy('date_end', 'desc')->pluck('date_limit')->first();
+     }
+
+     /**
+      * Общий дебет на сегодня
+      */
+     public static function totalDebt()
+     {
+         return DB::table('tutors')->sum('debt_calc');
      }
 
     /**

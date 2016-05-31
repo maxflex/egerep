@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Models\Settings;
 
 class RecalcDebt extends Command
 {
@@ -44,9 +45,11 @@ class RecalcDebt extends Command
         $bar = $this->output->createProgressBar($accounts->count());
 
         foreach ($accounts as $account) {
-            $account->recalcDebt();
+            $account->recalcDebt($account->date_start, $account->date_end);
             $bar->advance();
         }
+
+        Settings::set('debt_updated', now());
 
         $bar->finish();
     }
