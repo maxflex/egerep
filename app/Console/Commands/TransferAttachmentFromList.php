@@ -41,7 +41,7 @@ class TransferAttachmentFromList extends Command
         $attachments = DB::table('attachments')->where('subjects', '')->get();
         foreach ($attachments as $attachment) {
             \App\Models\Attachment::where('id', $attachment->id)->update([
-                'subjects' => DB::table('request_lists')->where('id', $attachment->request_list_id)->value('subjects');
+                'subjects' => DB::table('request_lists')->where('id', $attachment->request_list_id)->value('subjects')
             ]);
         }
     }
