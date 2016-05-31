@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Settings extends Model
 {
+    public $timestamps = false;
+    
     public static function set($key, $value)
     {
         static::where('key', $key)->update([
