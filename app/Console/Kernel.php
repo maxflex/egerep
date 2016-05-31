@@ -26,6 +26,7 @@ class Kernel extends ConsoleKernel
         Commands\ChangeZeroTime::class,
         Commands\TransferAttachmentFromList::class,
         Commands\UpdateClientGrade::class,
+        Commands\ForecastCalc::class,
     ];
 
     /**
