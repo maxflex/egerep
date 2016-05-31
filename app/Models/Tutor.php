@@ -407,11 +407,21 @@ class Tutor extends Model
         }
     }
 
+    private static function addPublishedCondition($query, $state)
+    {
+        if (isset($state)) {
+            if ($state) {
+                $query->where('description', '!=', '');
+            } else {
+                $query->whereRaw("(description IS NULL OR description = '')");
+            }
+        }
+        return $query;
+    }
+
     public function scopeSearchByPublishedState($query, $published_state)
     {
-        if (isset($published_state)) {
-            return $query->where('published', $published_state);
-        }
+        return self::addPublishedCondition($query, $published_state);
     }
 
     /**
@@ -427,7 +437,7 @@ class Tutor extends Model
                 $query->where('responsible_user_id', $user_id);
             }
             if (! empty($published_state)) {
-                $query->where('published', $published_state);
+                static::addPublishedCondition($query, $published_state);
             }
             $return[$i] = $query->count();
         }
@@ -448,7 +458,7 @@ class Tutor extends Model
                 $query->where('state', $state);
             }
             if (! empty($published_state)) {
-                $query->where('published', $published_state);
+                self::addPublishedCondition($query, $published_state);
             }
             $return[$user_id] = $query->count();
         }
@@ -463,7 +473,7 @@ class Tutor extends Model
     {
         $return = [];
         foreach (range(0, 1) as $i) {
-            $query = static::where('published', $i);
+            $query = self::addPublishedCondition(self::query(), $i);
             if (! empty($state)) {
                 $query->where('state', $state);
             }

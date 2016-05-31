@@ -9,7 +9,7 @@
              <li ng-repeat="(state_id, state) in AttachmentStates" data-id="@{{state_id }}"
                 ng-class="{'active' : chosen_state_id == state_id || !chosen_state_id && state_id == 'new', 'request-status-li': state_id != 'all' && (chosen_state_id != state_id)}"
                 >
-                <a class="list-link" href="#@{{state_id}}" ng-click="changeState(state_id)" data-toggle="tab" aria-expanded="@{{$index == 0}}">
+                <a class="list-link" href="@{{state_id}}" ng-click="changeState(state_id)" data-toggle="tab" aria-expanded="@{{$index == 0}}">
                     @{{ state }} <span ng-if="state_id != 'all'">(@{{ state_counts[state_id] }})</span>
                 </a>
              </li>
@@ -59,7 +59,7 @@
     </div>
 </div>
 
-<div ng-if="['inprogress', 'ended'].indexof(chosen_state_id) != -1">
+<div ng-if="['inprogress', 'ended'].indexOf(chosen_state_id) != -1">
     <table class="attachment-table-items">
         <thead>
             <tr>
