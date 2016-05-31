@@ -115,4 +115,16 @@ class Attachment extends Model
             }
         }
     }
+
+    /**
+     * @return array    attachment counts by state.
+     */
+    public static function stateCounts()
+    {
+        $counts = [];
+        foreach (Attachment::$states as $state) {
+            $counts[$state] = Attachment::searchByState($state)->count();
+        }
+        return $counts;
+    }
 }

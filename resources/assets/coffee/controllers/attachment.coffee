@@ -9,14 +9,12 @@ angular
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
-        $scope.changeList = (state_id) ->
+        $scope.changeState = (state_id) ->
             $scope.chosen_state_id = state_id
             $scope.current_page = 1
 
             $rootScope.frontend_loading = true
-            ajaxStart()
             loadAttachments 1
-            ajaxEnd()
 
             window.history.pushState(state_id, '', 'attachments/' + state_id.toLowerCase());
 

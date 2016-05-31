@@ -22,6 +22,7 @@ class AttachmentsController extends Controller
             ngInit([
                 'page'            => $request->input('page'),
                 'chosen_state_id' => $state,
+                'state_counts'    => Attachment::stateCounts()
             ])
         );
     }

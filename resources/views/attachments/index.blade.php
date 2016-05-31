@@ -9,20 +9,20 @@
              <li ng-repeat="(state_id, state) in AttachmentStates" data-id="@{{state_id }}"
                 ng-class="{'active' : chosen_state_id == state_id || !chosen_state_id && state_id == 'new', 'request-status-li': state_id != 'all' && (chosen_state_id != state_id)}"
                 >
-                <a class="list-link" href="#@{{state_id}}" ng-click="changeList(state_id)" data-toggle="tab" aria-expanded="@{{$index == 0}}">
-                    @{{ state }}
+                <a class="list-link" href="#@{{state_id}}" ng-click="changeState(state_id)" data-toggle="tab" aria-expanded="@{{$index == 0}}">
+                    @{{ state }} <span ng-if="state_id != 'all'">(@{{ state_counts[state_id] }})</span>
                 </a>
              </li>
         </ul>
     </div>
 </div>
 
-<div class="row attachment-list" ng-repeat="attachment in attachments">
-    <div class="col-sm-12" ng-if="chosen_state_id == 'all'">
-        <a href="#">стыковка @{{ attachment.id }}</a>
-    </div>
+<div ng-if="chosen_state_id == 'all'" ng-repeat="attachment in attachments" class="attachment-list">
+    <a href="#">стыковка @{{ attachment.id }}</a>
+</div>
 
-    <div ng-if="chosen_state_id != 'all'" class="col-sm-12 attachment-list-item">
+<div ng-if="chosen_state_id == 'new'" ng-repeat="attachment in attachments" class="attachment-list">
+    <div class="attachment-list-item">
         <div>
             <span ng-show="attachment.client.name">@{{ attachment.client.name }},</span>
             <span ng-show="attachment.client.grade > 0">@{{ Grades[attachment.client.grade] }},</span>
@@ -57,6 +57,31 @@
         </div>
         <hr ng-hide="   $last"/>
     </div>
+</div>
+
+<div ng-if="['inprogress', 'ended'].indexof(chosen_state_id) != -1">
+    <table class="attachment-table-items">
+        <thead>
+            <tr>
+                <td class="col-sm-3">Преподаватель</td>
+                <td>Дата стыковки</td>
+                <td>Количество занятий</td>
+                <td>Прогноз</td>
+                <td ng-if="chosen_state_id == 'ended'">Дата ахривации</td>
+                <td ng-if="chosen_state_id == 'ended'">Количество не проставленных занятий</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="attachment in attachments">
+                <td><a href="tutors/@{{ attachment.tutor_id }}/edit">@{{ attachment.tutor.full_name}}</a></td>
+                <td>@{{ formatDate(attachment.created_at) }}</td>
+                <td>@{{ attachment.account_data_count }}</td>
+                <td>@{{ attachment.forecast }}</td>
+                <td ng-if="chosen_state_id == 'ended'">@{{ formatDate(attachment.archive.created_at) }}</td>
+                <td ng-if="chosen_state_id == 'ended'">@{{ attachment.archive.total_lessons_missing }}</td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 
 <div class="row" ng-hide="attachments.length">
