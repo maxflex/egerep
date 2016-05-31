@@ -405,17 +405,27 @@ class Tutor extends Model
         }
     }
 
+    public function scopeSearchByPublishedState($query, $published_state)
+    {
+        if (isset($published_state)) {
+            return $query->where('published', $published_state);
+        }
+    }
+
     /**
      * State counts
      * @return array [state_id] => state_count
      */
-    public static function stateCounts($user_id)
+    public static function stateCounts($user_id, $published_state)
     {
         $return = [];
         foreach (range(0, 5) as $i) {
             $query = static::where('state', $i);
             if (! empty($user_id)) {
                 $query->where('responsible_user_id', $user_id);
+            }
+            if (! empty($published_state)) {
+                $query->where('published', $published_state);
             }
             $return[$i] = $query->count();
         }
@@ -426,7 +436,7 @@ class Tutor extends Model
      * State counts
      * @return array [user_id] => state_count
      */
-    public static function userCounts($state)
+    public static function userCounts($state, $published_state)
     {
         $user_ids = static::where('responsible_user_id', '>', 0)->groupBy('responsible_user_id')->pluck('responsible_user_id');
         $return = [];
@@ -435,7 +445,31 @@ class Tutor extends Model
             if (! empty($state)) {
                 $query->where('state', $state);
             }
+            if (! empty($published_state)) {
+                $query->where('published', $published_state);
+            }
             $return[$user_id] = $query->count();
+        }
+        return $return;
+    }
+
+    /**
+     * Published state counts
+     * @return array [state_id] => state_count
+     */
+    public static function publishedCounts($state, $user_id)
+    {
+        $return = [];
+        foreach (range(0, 1) as $i) {
+            $query = static::where('published', $i);
+            if (! empty($state)) {
+                $query->where('state', $state);
+            }
+            if (! empty($user_id)) {
+                $query->where('responsible_user_id', $user_id);
+            }
+
+            $return[$i] = $query->count();
         }
         return $return;
     }

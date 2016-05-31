@@ -37,6 +37,17 @@
             ></option>
         </select>
     </div>
+    <div class="col-sm-4">
+        <select class="form-control" ng-model='published_state' ng-change="changePublishedSate()" id='change-published'>
+            <option value="">все</option>
+            <option disabled>──────────────</option>
+            <option
+                ng-repeat="(state_id, label) in TutorPublishedStates"
+                data-subtext="@{{ published_counts[state_id] || '' }}"
+                value="@{{ state_id }}"
+            >@{{ label }}</option>
+        </select>
+    </div>
 </div>
 
 <table id="tutorList" class="table table-divlike" style="position: relative">

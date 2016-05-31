@@ -16,8 +16,9 @@ class TutorsController extends Controller
     public function counts(Request $request)
     {
         return [
-            'state_counts'  => Tutor::stateCounts($request->user_id),
-            'user_counts'   => Tutor::userCounts($request->state),
+            'state_counts'      => Tutor::stateCounts($request->user_id, $request->published_state),
+            'user_counts'       => Tutor::userCounts($request->state, $request->published_state),
+            'published_counts'  => Tutor::publishedCounts($request->state, $request->user_id),
         ];
     }
 
@@ -29,9 +30,10 @@ class TutorsController extends Controller
     public function index(Request $request)
     {
         return Tutor::searchByState($request->state)
-                        ->searchByUser($request->user_id)
-                        ->searchByLastNameAndPhone($request->global_search)
-                        ->paginate(30)->toJson();
+                    ->searchByUser($request->user_id)
+                    ->searchByLastNameAndPhone($request->global_search)
+                    ->searchByPublishedState($request->published_state)
+                    ->paginate(30)->toJson();
     }
 
     /**

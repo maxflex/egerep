@@ -18,6 +18,10 @@ angular.module('Egerep')
         4: 'к одобрению'
         5: 'одобрено'
 
+    .value 'TutorPublishedStates',
+        0: 'не опубликован'
+        1: 'опубликован'
+
     .value 'DebtTypes',
         0: 'не доплатил'
         1: 'переплатил'
