@@ -121,6 +121,32 @@ class DebtController extends Controller
             }
         }
 
+        /**
+         * #878
+         * количество непроведенных занятий по архивированным стыковкам
+         */
+            $query->leftJoin(
+                /* таблица [tutor|непроведенные занятия] */
+                DB::raw(
+                    '('.
+                        'select attachments.tutor_id, sum(archives.total_lessons_missing) as missed_lessons_cnt '.
+                        'from attachments '.
+                        'left outer join archives on archives.attachment_id  = attachments.id and archives.total_lessons_missing > 0 '.
+                        'group by attachments.tutor_id '.
+                        'having missed_lessons_cnt > 0 '.
+                    ') archive_lessons'
+                ),
+                function($join) {
+                    $join->on('archive_lessons.tutor_id', '=', 'tutors.id');
+                }
+            );
+
+            /* преподы с dept >0  или sum(непроведенные занятия) > 0 */
+            $query->orWhere('archive_lessons.missed_lessons_cnt', '>', '0');
+        /**
+         *  #878
+         */
+
         # выбираем только нужные поля для ускорения запроса
         $tutors = $query->get([
             'tutors.id',
@@ -130,6 +156,7 @@ class DebtController extends Controller
             'tutors.photo_extension',
             'tutors.birth_year',
             'tutors.debt',
+            'tutors.debt_calc',
             'tutors.debt_comment'
         ])->append('last_account_info');
 
