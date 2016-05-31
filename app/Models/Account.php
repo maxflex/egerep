@@ -219,6 +219,11 @@ class Account extends Model
 
     protected static function boot()
     {
+        static::saving(function ($account) {
+            if (! $account->exists()) {
+                $account->user_id = User::fromSession()->id;
+            } 
+        });
         static::deleting(function ($account) {
             // Delete account data
             $account->accountData()->delete();
