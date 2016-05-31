@@ -37,7 +37,7 @@
             ></option>
         </select>
     </div>
-    <div class="col-sm-4">
+    <div class="col-sm-3">
         <select class="form-control" ng-model='published_state' ng-change="changePublishedSate()" id='change-published'>
             <option value="">все</option>
             <option disabled>──────────────</option>
