@@ -146,8 +146,8 @@ class Account extends Model
         $debt = 0;
 
         foreach (dateRange($date_start, $date_end) as $date) {
-            $coef = static::_pissimisticCoef($date);
             foreach ($data as $d) {
+                $coef = static::_pissimisticCoef($date, $d->archive_date);
                 if (($d->attachment_date <= $date) && ($d->archive_date >= $date)) {
                     $debt += ($d->forecast / 7) * $coef;
                 }
@@ -175,8 +175,18 @@ class Account extends Model
     /**
      * Писсимизирующий коэффициент
      */
-    private static function _pissimisticCoef($date)
+    private static function _pissimisticCoef($date, $archive_date)
     {
+        // заархивирован этим летом?
+        if ($archive_date) {
+            $archive_year = date('Y', strtotime($archive_date));
+            $date_year = date('Y', strtotime($date));
+            $archive_month_day = date('m-d', strtotime($archive_date));
+            $summer_archive = (($archive_year == $date_year) && ($archive_month_day >= '06-01' && $archive_month_day <= '08-31'));
+        } else {
+            $summer_archive = false;
+        }
+
         $date = date('m-d', strtotime($date));
 
         // первые 7 дней ноября
@@ -197,15 +207,11 @@ class Account extends Model
         }
         // с 1 июня по 20 августа - 0,02 (или 0,72 если была архивации в летный период)
         if ($date >= '06-01' && $date <= '08-20') {
-            return .02;
-        }
-        // последние 7 дней декабря 0,54
-        if ($date >= '12-25' && $date <= '12-31') {
-            return .54;
+            return $summer_archive ? .72 : .02;
         }
         // с 21 августа по 31 августа - 0,1 (или 0,72 если была архивации в летный период)
         if ($date >= '08-21' && $date <= '08-31') {
-            return .1;
+            return $summer_archive ? .72 : .1;
         }
         // остальные дни - 0,72
         return .72;
