@@ -40,8 +40,10 @@ class ForecastCalc extends Command
     {
         $attachments = DB::table('attachments')->select(DB::raw('attachments.date as attachment_date, archives.date as archive_date, attachments.client_id, attachments.tutor_id, attachments.id'))
                             ->join('archives', 'archives.attachment_id', '=', 'attachments.id')
-                            ->where('archives.total_lessons_missing', 0)
+                            ->where('archives.total_lessons_missing', null)
                             ->get();
+
+		$bar = $this->output->createProgressBar(count($attachments));
 
         foreach ($attachments as $attachment) {
             $lessons = DB::table('account_datas')
@@ -50,8 +52,18 @@ class ForecastCalc extends Command
 
             // если занятия есть
             if ($lessons->exists()) {
+	            $comm1 = DB::table('account_datas')
+                            ->where('tutor_id', $attachment->tutor_id)
+                            ->where('client_id', $attachment->client_id)
+                            ->where('commission', 0)->sum('sum');
+
+                $comm2 = DB::table('account_datas')
+                            ->where('tutor_id', $attachment->tutor_id)
+                            ->where('client_id', $attachment->client_id)
+                            ->where('commission', '>', 0)->sum('commission');
+
                 // сумма комиссий
-                $sum = ($lessons->where('commission', 0)->sum('sum') * 0.25) + ($lessons->where('commission', '>', 0)->sum('commission'));
+                $sum = ($comm1 * 0.25) + ($comm2);
 
                 // сумма коэффициентов
                 $coef_sum = 0;
@@ -72,6 +84,8 @@ class ForecastCalc extends Command
                     'forecast' => $forecast
                 ]);
             }
+            $bar->advance();
         }
+        $bar->finish();
     }
 }

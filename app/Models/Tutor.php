@@ -411,9 +411,9 @@ class Tutor extends Model
     {
         if (isset($state)) {
             if ($state) {
-                $query->where('description', '!=', '');
+                $query->where('public_desc', '!=', '');
             } else {
-                $query->whereRaw("(description IS NULL OR description = '')");
+                $query->whereRaw("(public_desc IS NULL OR public_desc = '')");
             }
         }
         return $query;
