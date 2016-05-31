@@ -24,6 +24,7 @@ class Kernel extends ConsoleKernel
         Commands\RecalcDebt::class,
         Commands\TransferAttachmentCreatedAt::class,
         Commands\ChangeZeroTime::class,
+        Commands\TransferAttachmentFromList::class,
     ];
 
     /**

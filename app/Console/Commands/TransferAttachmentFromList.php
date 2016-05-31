@@ -2,24 +2,24 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Attachment;
 use Illuminate\Console\Command;
+use DB;
 
-class ChangeZeroTime extends Command
+class TransferAttachmentFromList extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'once:zero_time';
+    protected $signature = 'once:subjects_from_lists';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Transfer attachment subjects from lists';
 
     /**
      * Create a new command instance.
@@ -38,16 +38,10 @@ class ChangeZeroTime extends Command
      */
     public function handle()
     {
-        $this->info('Starting...');
-
-        $attachments = Attachment::whereRaw("created_at LIKE '%00:00:00%'")->get();
-
+        $attachments = DB::table('attachments')->where('subjects', '')->get();
         foreach ($attachments as $attachment) {
-            $new_date = date('Y-m-d', strtotime($attachment->getClean('created_at')));
-
-            Attachment::where('id', $attachment->id)->update([
-                'created_at' => $new_date .' 12:34:00',
-                'updated_at' => $new_date .' 12:34:00',
+            \App\Models\Attachment::where('id', $attachment->id)->update([
+                'subjects' => DB::table('request_lists')->where('id', $attachment->request_list_id)->value('subjects');
             ]);
         }
     }
