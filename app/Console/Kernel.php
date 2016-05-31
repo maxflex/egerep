@@ -25,6 +25,7 @@ class Kernel extends ConsoleKernel
         Commands\TransferAttachmentCreatedAt::class,
         Commands\ChangeZeroTime::class,
         Commands\TransferAttachmentFromList::class,
+        Commands\UpdateClientGrade::class,
     ];
 
     /**
