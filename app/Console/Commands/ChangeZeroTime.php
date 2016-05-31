@@ -3,16 +3,15 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\Settings;
 
-class RecalcDebt extends Command
+class ChangeZeroTime extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'once:recalc_debt';
+    protected $signature = 'once:zero_time';
 
     /**
      * The console command description.
@@ -38,19 +37,17 @@ class RecalcDebt extends Command
      */
     public function handle()
     {
-        $this->line('Starting...');
+        $this->info('Starting...');
 
-        $accounts = \App\Models\Account::all();
+        $attachments = Attachment::whereRaw("created_at LIKE '%00:00:00%'")->get();
 
-        $bar = $this->output->createProgressBar($accounts->count());
+        foreach ($attachments as $attachment) {
+            $new_date = date('Y-m-d', strtotime($attachment->getClean('created_at')));
 
-        foreach ($accounts as $account) {
-            $account->recalcDebt($account->date_start, $account->date_end);
-            $bar->advance();
+            Attachment::where('id', $attachment->id)->update([
+                'created_at' => $new_date .' 00:00:00',
+                'updated_at' => $new_date .' 00:00:00',
+            ]);
         }
-
-        Settings::set('debt_updated', now());
-
-        $bar->finish();
     }
 }

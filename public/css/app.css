@@ -30028,4 +30028,52 @@ select.has-error:focus, input.has-error:focus, button.has-error:focus {
 table {
   font-size: 14px; }
 
+.summary-table thead {
+  color: #ddd; }
+
+table.summary-table tr td:not(:first-child) {
+  text-align: center; }
+
+table.summary-table.left-align tr td {
+  text-align: left; }
+
+.summary-table .no-hover td {
+  border-top: none !important; }
+
+.attachment-list-item hr {
+  margin-top: 5px;
+  margin-bottom: 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.4); }
+
+.attachment-list-item-comments {
+  margin-bottom: 5px; }
+
+@-webkit-keyframes spin {
+  from {
+    -webkit-transform: rotate(0deg); }
+  to {
+    -webkit-transform: rotate(360deg); } }
+
+@keyframes spin {
+  from {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg); }
+  to {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg); } }
+
+.spinning {
+  -webkit-animation-name: spin;
+  -webkit-animation-duration: 2000ms;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+  -webkit-animation-name: spin;
+  animation-name: spin;
+  -webkit-animation-duration: 2000ms;
+  animation-duration: 2000ms;
+  -webkit-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+  animation-timing-function: linear; }
+
 /*# sourceMappingURL=app.css.map */

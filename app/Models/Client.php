@@ -12,6 +12,8 @@ class Client extends Model
     use Markerable;
     use Person;
 
+    public $timestamps = false;
+    
     protected $with = ['requests', 'markers'];
 
     protected $fillable = [

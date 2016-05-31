@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\AccountData;
+use App\Models\Tutor;
 use Carbon\Carbon;
 use DB;
 
@@ -94,7 +95,7 @@ class Account extends Model
             $date_start = Carbon::createFromFormat('Y-m-d', $this->tutor->getFirstAttachmentDate())->subDay();
         }
 
-        return $date_start;
+        return date('Y-m-d', strtotime($date_start));
     }
 
     /**
@@ -121,16 +122,18 @@ class Account extends Model
 
     /**
      * Пересчитать расчетный дебет
+     *
+     * $last_debt – поседний период ... сегодня (хранится в таблице преподавателей)
      */
-    public function recalcDebt()
+    public function recalcDebt($date_start, $date_end, $last_debt = false)
     {
         // Получить клиентов, соответствующих периоду
         $data = DB::table('attachments')->leftJoin('archives', 'archives.attachment_id', '=', 'attachments.id')
             ->where('attachments.tutor_id', $this->tutor_id)
-            ->where('attachments.date', '<=', $this->date_end)
-            ->where(function($query) {
+            ->where('attachments.date', '<=', $date_end)
+            ->where(function($query) use ($date_start) {
                 $query->where('archives.id', null)
-                      ->orWhere('archives.date', '>', $this->date_start); // может >= ?
+                      ->orWhere('archives.date', '>', $date_start); // может >= ?
             })
             ->select(DB::raw('
                 attachments.forecast,
@@ -139,32 +142,51 @@ class Account extends Model
                 archives.date as archive_date'))
             ->get();
 
-        if (! $data) {
-            return;
-        }
-
         // Пересчитываем
         $debt = 0;
 
-        foreach (dateRange($this->date_start, $this->date_end) as $date) {
-            $coef = static::_pissimisticCoef($date);
+        foreach (dateRange($date_start, $date_end) as $date) {
             foreach ($data as $d) {
+                $coef = static::_pissimisticCoef($date, $d->archive_date);
                 if (($d->attachment_date <= $date) && ($d->archive_date >= $date)) {
                     $debt += ($d->forecast / 7) * $coef;
                 }
             }
         }
 
-        Account::where('id', $this->id)->update([
-            'debt_calc' => $debt
-        ]);
+        if ($last_debt) {
+            Tutor::where('id', $this->tutor_id)->update([
+                'debt_calc'     => $debt,
+                'debt_updated'  => now(),
+            ]);
+        } else {
+            Account::where('id', $this->id)->update([
+                'debt_calc' => $debt
+            ]);
+            // если это последний период, то обновить в промежутке
+            // поседний период ... сегодня
+            if ($this->id == static::where('tutor_id', $this->tutor_id)->take(1)->orderBy('date_end', 'desc')->value('id')) {
+                // @todo: нужно проверить ситуацию, когда конец периода = сегодня
+                $this->recalcDebt($this->date_end, now(true), true);
+            }
+        }
     }
 
     /**
      * Писсимизирующий коэффициент
      */
-    private static function _pissimisticCoef($date)
+    private static function _pissimisticCoef($date, $archive_date)
     {
+        // заархивирован этим летом?
+        if ($archive_date) {
+            $archive_year = date('Y', strtotime($archive_date));
+            $date_year = date('Y', strtotime($date));
+            $archive_month_day = date('m-d', strtotime($archive_date));
+            $summer_archive = (($archive_year == $date_year) && ($archive_month_day >= '06-01' && $archive_month_day <= '08-31'));
+        } else {
+            $summer_archive = false;
+        }
+
         $date = date('m-d', strtotime($date));
 
         // первые 7 дней ноября
@@ -185,15 +207,11 @@ class Account extends Model
         }
         // с 1 июня по 20 августа - 0,02 (или 0,72 если была архивации в летный период)
         if ($date >= '06-01' && $date <= '08-20') {
-            return .02;
-        }
-        // последние 7 дней декабря 0,54
-        if ($date >= '12-25' && $date <= '12-31') {
-            return .54;
+            return $summer_archive ? .72 : .02;
         }
         // с 21 августа по 31 августа - 0,1 (или 0,72 если была архивации в летный период)
         if ($date >= '08-21' && $date <= '08-31') {
-            return .1;
+            return $summer_archive ? .72 : .1;
         }
         // остальные дни - 0,72
         return .72;

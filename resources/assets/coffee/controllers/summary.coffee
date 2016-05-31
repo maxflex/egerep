@@ -3,6 +3,15 @@ angular
     .controller 'SummaryIndex', ($rootScope, $scope, $http, $timeout) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
+        $scope.debt_updating = false
+
+        $scope.updateDebt = ->
+            $scope.debt_updating = true
+            $http.get 'api/command/recalc-debt'
+                .then (response) ->
+                    $scope.debt_updating = false
+                    $scope.debt_updated = response.data.debt_updated
+                    $scope.total_debt   = response.data.total_debt 
 
         $timeout ->
             loadSummary $scope.page

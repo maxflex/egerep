@@ -101,612 +101,6 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').directive('comments', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/comments',
-      scope: {
-        user: '=',
-        entityId: '=',
-        entityType: '@'
-      },
-      controller: function($scope, $timeout, Comment) {
-        $scope.$watch('entityId', function(newVal, oldVal) {
-          return $scope.comments = Comment.query({
-            entity_type: $scope.entityType,
-            entity_id: newVal
-          });
-        });
-        $scope.formatDateTime = function(date) {
-          return moment(date).format("DD.MM.YY в HH:mm");
-        };
-        $scope.startCommenting = function(event) {
-          $scope.start_commenting = true;
-          return $timeout(function() {
-            return $(event.target).parent().find('input').focus();
-          });
-        };
-        $scope.endCommenting = function() {
-          $scope.comment = '';
-          return $scope.start_commenting = false;
-        };
-        $scope.remove = function(comment) {
-          $scope.comments = _.without($scope.comments, _.findWhere($scope.comments, {
-            id: comment.id
-          }));
-          return comment.$remove();
-        };
-        $scope.edit = function(comment, event) {
-          var element, old_text;
-          old_text = comment.comment;
-          element = $(event.target);
-          element.unbind('keydown').unbind('blur');
-          element.attr('contenteditable', 'true').focus().on('keydown', function(e) {
-            console.log(old_text);
-            if (e.keyCode === 13) {
-              $(this).removeAttr('contenteditable').blur();
-              comment.comment = $(this).text();
-              comment.$update();
-            }
-            if (e.keyCode === 27) {
-              return $(this).blur();
-            }
-          }).on('blur', function(e) {
-            if (element.attr('contenteditable')) {
-              console.log(old_text);
-              return element.removeAttr('contenteditable').html(old_text);
-            }
-          });
-        };
-        return $scope.submitComment = function(event) {
-          var new_comment;
-          if (event.keyCode === 13) {
-            new_comment = new Comment({
-              comment: $scope.comment,
-              user_id: $scope.user.id,
-              entity_id: $scope.entityId,
-              entity_type: $scope.entityType
-            });
-            new_comment.$save().then(function(response) {
-              console.log(response);
-              new_comment.user = $scope.user;
-              new_comment.id = response.id;
-              return $scope.comments.push(new_comment);
-            });
-            $scope.endCommenting();
-          }
-          if (event.keyCode === 27) {
-            return $(event.target).blur();
-          }
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('email', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/email',
-      scope: {
-        entity: '='
-      },
-      controller: function($scope) {
-        return $scope.send = function() {
-          return $('#email-modal').modal('show');
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('inputComment', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/input-comment',
-      scope: {
-        entity: '=',
-        commentField: '@'
-      },
-      controller: function($scope, $timeout) {
-        $scope.is_being_commented = false;
-        $scope.blurComment = function() {
-          return $scope.is_being_commented = false;
-        };
-        $scope.focusComment = function() {
-          return $scope.is_being_commented = true;
-        };
-        $scope.startComment = function(event) {
-          $scope.is_being_commented = true;
-          return $timeout(function() {
-            return $(event.target).parent().children('input').focus();
-          });
-        };
-        return $scope.endComment = function(event) {
-          if (event.keyCode === 13) {
-            $(event.target).blur();
-          }
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('metroList', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/metro-list',
-      scope: {
-        markers: '='
-      },
-      controller: function($scope) {
-        $scope.short = function(title) {
-          return title.slice(0, 3).toUpperCase();
-        };
-        return $scope.minutes = function(minutes) {
-          return Math.round(minutes);
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('ngMulti', function() {
-    return {
-      restrict: 'E',
-      replace: true,
-      scope: {
-        object: '=',
-        model: '=',
-        noneText: '@'
-      },
-      templateUrl: 'directives/ngmulti',
-      controller: function($scope, $element, $attrs, $timeout) {
-        return $timeout(function() {
-          return $($element).selectpicker({
-            noneSelectedText: $scope.noneText
-          });
-        });
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('pencilInput', function() {
-    return {
-      restrict: 'E',
-      replace: true,
-      templateUrl: 'directives/pencil-input',
-      scope: {
-        model: '='
-      },
-      controller: function($scope, $timeout, $element, $controller) {
-        $scope.is_being_commented = false;
-        $scope.blurComment = function() {
-          return $scope.is_being_commented = false;
-        };
-        $scope.focusComment = function() {
-          return $scope.is_being_commented = true;
-        };
-        $scope.startComment = function(event) {
-          $scope.is_being_commented = true;
-          return $timeout(function() {
-            return $(event.target).parent().children('div').focus();
-          });
-        };
-        return $scope.watchEnter = function(event) {
-          var ref;
-          if ((ref = event.keyCode) === 13 || ref === 27) {
-            if (event.keyCode === 13) {
-              $scope.model = $(event.target).parent().children('div').text();
-            }
-            $(event.target).parent().children('div').text($scope.model);
-            event.preventDefault();
-            $(event.target).blur();
-          }
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('phones', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/phones',
-      scope: {
-        entity: '='
-      },
-      controller: function($scope, $timeout, $rootScope, PhoneService) {
-        $scope.PhoneService = PhoneService;
-        $rootScope.dataLoaded.promise.then(function(data) {
-          return $scope.level = $scope.entity.phones.length || 1;
-        });
-        $scope.nextLevel = function() {
-          return $scope.level++;
-        };
-        $scope.phoneMaskControl = function(event) {
-          var el, phone_id;
-          el = $(event.target);
-          phone_id = el.attr('ng-model').split('.')[1];
-          return $scope.entity[phone_id] = $(event.target).val();
-        };
-        $scope.isFull = function(number) {
-          if (number === void 0 || number === "") {
-            return false;
-          }
-          return !number.match(/_/);
-        };
-        return $scope.sms = function(number) {
-          $('#sms-modal').modal('show');
-          return $scope.$parent.sms_number = number;
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('plural', function() {
-    return {
-      restrict: 'E',
-      scope: {
-        count: '=',
-        type: '@',
-        noneText: '@'
-      },
-      templateUrl: 'directives/plural',
-      controller: function($scope, $element, $attrs, $timeout) {
-        $scope.textOnly = $attrs.hasOwnProperty('textOnly');
-        return $scope.when = {
-          'age': ['год', 'года', 'лет'],
-          'student': ['ученик', 'ученика', 'учеников'],
-          'minute': ['минуту', 'минуты', 'минут'],
-          'meeting': ['встреча', 'встречи', 'встреч'],
-          'score': ['балл', 'балла', 'баллов'],
-          'rubbles': ['рубль', 'рубля', 'рублей']
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('ngSelect', function() {
-    return {
-      restrict: 'E',
-      replace: true,
-      scope: {
-        object: '=',
-        model: '=',
-        noneText: '@'
-      },
-      templateUrl: 'directives/ngselect',
-      controller: function($scope, $element, $attrs) {
-        if (!$scope.noneText) {
-          return $scope.model = _.first(Object.keys($scope.object));
-        }
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('sms', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/sms',
-      scope: {
-        number: '='
-      },
-      controller: function($scope, $timeout, Sms) {
-        $scope.mass = false;
-        $scope.smsCount = function() {
-          return SmsCounter.count($scope.message || '').messages;
-        };
-        $scope.send = function() {
-          var sms;
-          if ($scope.message) {
-            sms = new Sms({
-              message: $scope.message,
-              to: $scope.number,
-              mass: $scope.mass
-            });
-            return sms.$save();
-          }
-        };
-        return $scope.$watch('number', function(newVal, oldVal) {
-          console.log($scope.$parent.formatDateTime($scope.created_at));
-          if (newVal) {
-            return $scope.history = Sms.query({
-              number: newVal
-            });
-          }
-        });
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('tutorPhoto', function() {
-    return {
-      restrict: 'E',
-      replace: true,
-      scope: {
-        tutor: '=',
-        version: '='
-      },
-      templateUrl: 'directives/tutor-photo'
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('userSwitch', function() {
-    return {
-      restrict: 'E',
-      scope: {
-        entity: '=',
-        resource: '=',
-        userId: '@'
-      },
-      templateUrl: 'directives/user-switch',
-      controller: function($scope) {
-        return $scope.UserService = $scope.$parent.UserService;
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').value('AccountPeriods', {
-    0: 'initial',
-    1: 'month',
-    2: 'year',
-    3: 'all'
-  }).value('Destinations', {
-    r_k: 'репетитор едет к клиенту',
-    k_r: 'клиент едет к репетитору'
-  }).value('Workplaces', {
-    0: 'не работает в ЕГЭ-Центре',
-    1: 'работает в ЕГЭ-Центре'
-  }).value('Genders', {
-    male: 'мужской',
-    female: 'женский'
-  }).value('TutorStates', {
-    0: 'не установлено',
-    1: 'на проверку',
-    2: 'к закрытию',
-    3: 'закрыто',
-    4: 'к одобрению',
-    5: 'одобрено'
-  }).value('DebtTypes', {
-    0: 'не доплатил',
-    1: 'переплатил'
-  }).value('PaymentMethods', {
-    0: 'не установлено',
-    1: 'стандартный расчет',
-    2: 'яндекс.деньги',
-    3: 'перевод на сотовый',
-    4: 'перевод на карту'
-  }).value('RequestStates', {
-    "new": 'невыполненные',
-    awaiting: 'в ожидании',
-    finished: 'выполненные',
-    deny: 'отказы',
-    motivated_deny: 'мотивированный отказ'
-  }).value('ArchiveStates', {
-    impossible: 'невозможно',
-    possible: 'возможно'
-  }).value('ReviewStates', {
-    unpublished: 'не опубликован',
-    published: 'опубликован'
-  }).value('AttachmentStates', {
-    "new": 'новые',
-    inprogress: 'рабочие',
-    ended: 'завершенные'
-  }).value('ReviewScores', {
-    1: 1,
-    2: 2,
-    3: 3,
-    4: 4,
-    5: 5,
-    6: 6,
-    7: 7,
-    8: 8,
-    9: 9,
-    10: 10,
-    11: 'отзыв не собирать'
-  }).value('Grades', {
-    1: '1 класс',
-    2: '2 класс',
-    3: '3 класс',
-    4: '4 класс',
-    5: '5 класс',
-    6: '6 класс',
-    7: '7 класс',
-    8: '8 класс',
-    9: '9 класс',
-    10: '10 класс',
-    11: '11 класс',
-    12: 'студенты',
-    13: 'остальные'
-  }).value('Subjects', {
-    all: {
-      1: 'математика',
-      2: 'физика',
-      3: 'химия',
-      4: 'биология',
-      5: 'информатика',
-      6: 'русский',
-      7: 'литература',
-      8: 'обществознание',
-      9: 'история',
-      10: 'английский',
-      11: 'неизвестный предмет'
-    },
-    full: {
-      1: 'Математика',
-      2: 'Физика',
-      3: 'Химия',
-      4: 'Биология',
-      5: 'Информатика',
-      6: 'Русский язык',
-      7: 'Литература',
-      8: 'Обществознание',
-      9: 'История',
-      10: 'Английский язык'
-    },
-    dative: {
-      1: 'математике',
-      2: 'физике',
-      3: 'химии',
-      4: 'биологии',
-      5: 'информатике',
-      6: 'русскому языку',
-      7: 'литературе',
-      8: 'обществознанию',
-      9: 'истории',
-      10: 'английскому языку',
-      11: 'неизвестному предмету'
-    },
-    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
-    three_letters: {
-      1: 'МАТ',
-      2: 'ФИЗ',
-      3: 'ХИМ',
-      4: 'БИО',
-      5: 'ИНФ',
-      6: 'РУС',
-      7: 'ЛИТ',
-      8: 'ОБЩ',
-      9: 'ИСТ',
-      10: 'АНГ'
-    },
-    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
-  }).value('Branches', {
-    1: {
-      code: 'TRG',
-      full: 'Тургеневская',
-      short: 'ТУР',
-      address: 'Мясницкая 40с1',
-      color: '#FBAA33'
-    },
-    2: {
-      code: 'PVN',
-      full: 'Проспект Вернадского',
-      short: 'ВЕР',
-      address: '',
-      color: '#EF1E25'
-    },
-    3: {
-      code: 'BGT',
-      full: 'Багратионовская',
-      short: 'БАГ',
-      address: '',
-      color: '#019EE0'
-    },
-    5: {
-      code: 'IZM',
-      full: 'Измайловская',
-      short: 'ИЗМ',
-      address: '',
-      color: '#0252A2'
-    },
-    6: {
-      code: 'OPL',
-      full: 'Октябрьское поле',
-      short: 'ОКТ',
-      address: '',
-      color: '#B61D8E'
-    },
-    7: {
-      code: 'RPT',
-      full: 'Рязанский Проспект',
-      short: 'РЯЗ',
-      address: '',
-      color: '#B61D8E'
-    },
-    8: {
-      code: 'VKS',
-      full: 'Войковская',
-      short: 'ВОЙ',
-      address: '',
-      color: '#029A55'
-    },
-    9: {
-      code: 'ORH',
-      full: 'Орехово',
-      short: 'ОРЕ',
-      address: '',
-      color: '#029A55'
-    },
-    11: {
-      code: 'UJN',
-      full: 'Южная',
-      short: 'ЮЖН',
-      address: '',
-      color: '#ACADAF'
-    },
-    12: {
-      code: 'PER',
-      full: 'Перово',
-      short: 'ПЕР',
-      address: '',
-      color: '#FFD803'
-    },
-    13: {
-      code: 'KLG',
-      full: 'Калужская',
-      short: 'КЛЖ',
-      address: 'Научный проезд 8с1',
-      color: '#C07911'
-    },
-    14: {
-      code: 'BRT',
-      full: 'Братиславская',
-      short: 'БРА',
-      address: '',
-      color: '#B1D332'
-    },
-    15: {
-      code: 'MLD',
-      full: 'Молодежная',
-      short: 'МОЛ',
-      address: '',
-      color: '#0252A2'
-    },
-    16: {
-      code: 'VLD',
-      full: 'Владыкино',
-      short: 'ВЛА',
-      address: '',
-      color: '#ACADAF'
-    }
-  });
-
-}).call(this);
-
-(function() {
   angular.module('Egerep').factory('Model', function($resource) {
     return $resource('api/models/:id', {}, {
       update: {
@@ -789,24 +183,28 @@
         }
       });
     };
-  }).controller('AccountsCtrl', function($rootScope, $scope, $http, $timeout, Account, PaymentMethods, DebtTypes, AccountPeriods, Grades, Attachment) {
+  }).controller('AccountsCtrl', function($rootScope, $scope, $http, $timeout, Account, PaymentMethods, DebtTypes, Grades, Attachment) {
     var bindDraggable, getAccountEndDate, getAccountStartDate, getCalendarStartDate, getCommission, moveCursor, renderData;
     bindArguments($scope, arguments);
     $scope.current_scope = $scope;
     $scope.current_period = 0;
+    $scope.all_displayed = false;
     angular.element(document).ready(function() {
       return $scope.loadPage();
     });
     $scope.loadPage = function(type) {
       $rootScope.frontend_loading = true;
-      return $http.get("api/accounts/" + $scope.tutor_id + "?type=" + AccountPeriods[$scope.current_period]).success(function(response) {
+      return $http.get("api/accounts/" + $scope.tutor_id + "?current_period=" + $scope.current_period).success(function(response) {
         renderData(response);
         return $scope.current_period++;
       });
     };
     renderData = function(data) {
-      $scope.tutor = data.tutor;
-      $scope.date_limit = data.date_limit;
+      if (data.last_accounts === null) {
+        $scope.all_displayed = true;
+      } else {
+        $scope.tutor = data;
+      }
       $rootScope.frontend_loading = false;
       $('.accounts-table').stickyTableHeaders('destroy');
       return $timeout(function() {
@@ -882,7 +280,14 @@
       var current_date, dates;
       dates = [];
       if (!index) {
-        current_date = moment($scope.date_limit).format('YYYY-MM-DD');
+        if ($scope.current_period > 1) {
+          current_date = moment($scope.tutor.last_accounts[0].date_end).subtract(($scope.all_displayed ? 60 : 7), 'days').format('YYYY-MM-DD');
+        } else {
+          if (!$scope.date_limit) {
+            $scope.date_limit = moment($scope.tutor.last_accounts[0].date_end).subtract(60, 'days').format('YYYY-MM-DD');
+          }
+          current_date = moment($scope.date_limit).format('YYYY-MM-DD');
+        }
       } else {
         current_date = moment($scope.tutor.last_accounts[index - 1].date_end).add(1, 'days').format('YYYY-MM-DD');
       }
@@ -1246,7 +651,7 @@
         method: 'PUT'
       }
     });
-  }).controller('AttachmentsIndex', function($rootScope, $scope, $timeout, $http, AttachmentStates) {
+  }).controller('AttachmentsIndex', function($rootScope, $scope, $timeout, $http, AttachmentStates, UserService, PhoneService, Subjects, Grades) {
     var loadAttachments;
     _.extend(AttachmentStates, {
       all: 'все'
@@ -1256,6 +661,7 @@
     $scope.changeList = function(state_id) {
       $scope.chosen_state_id = state_id;
       $scope.current_page = 1;
+      $rootScope.frontend_loading = true;
       ajaxStart();
       loadAttachments(1);
       ajaxEnd();
@@ -1717,6 +1123,8 @@
 }).call(this);
 
 (function() {
+  var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
   angular.module('Egerep').controller("DebtIndex", function($rootScope, $scope, $timeout, $http, Tutor) {
     var loadPage;
     $rootScope.frontend_loading = true;
@@ -1764,6 +1172,204 @@
         });
       }
     };
+  }).controller('DebtMap', function($scope, $timeout, TutorService, Tutor) {
+    var TRANSPARENT_MARKER, bindTutorMarkerEvents, clicks, findIntersectingMetros, markerClusterer, rebindDraggable, repaintChosen, showClientOnMap, showTutorsOnMap, unsetAllMarkers;
+    bindArguments($scope, arguments);
+    TRANSPARENT_MARKER = 0.3;
+    clicks = 0;
+    markerClusterer = void 0;
+    $scope.mode = 'map';
+    $scope.loading = false;
+    $scope.search = {};
+    $scope.blurComment = function(tutor) {
+      tutor.is_being_commented = false;
+      return tutor.debt_comment = tutor.old_debt_comment;
+    };
+    $scope.focusComment = function(tutor) {
+      tutor.is_being_commented = true;
+      return tutor.old_debt_comment = tutor.debt_comment;
+    };
+    $scope.startComment = function(tutor) {
+      tutor.is_being_commented = true;
+      tutor.old_debt_comment = tutor.debt_comment;
+      return $timeout(function() {
+        return $("#list-comment-" + tutor.id).focus();
+      });
+    };
+    $scope.saveComment = function(event, tutor) {
+      if (event.keyCode === 13) {
+        return Tutor.update({
+          id: tutor.id,
+          debt_comment: tutor.debt_comment
+        }, function(response) {
+          tutor.old_debt_comment = tutor.debt_comment;
+          return $(event.target).blur();
+        });
+      }
+    };
+    angular.element(document).ready(function() {
+      return $('.map-tutor-list').droppable();
+    });
+    $scope.find = function() {
+      $scope.loading = true;
+      return TutorService.getDebtMap({
+        search: $scope.search
+      }).then(function(response) {
+        $scope.tutors = response.data;
+        showTutorsOnMap();
+        return $scope.loading = false;
+      });
+    };
+    $scope.added = function(tutor_id) {
+      return indexOf.call($scope.list.tutor_ids, tutor_id) >= 0;
+    };
+    rebindDraggable = function() {
+      return $('.temporary-tutor').draggable({
+        containment: 'window',
+        revert: function(valid) {
+          if (valid) {
+            return true;
+          }
+          $scope.tutor_list = removeById($scope.tutor_list, $scope.dragging_tutor.id);
+          return $scope.$apply();
+        }
+      });
+    };
+    $scope.startDragging = function(tutor) {
+      return $scope.dragging_tutor = tutor;
+    };
+    showTutorsOnMap = function() {
+      unsetAllMarkers();
+      $scope.marker_id = 1;
+      $scope.tutor_list = [];
+      $scope.markers = [];
+      $scope.tutors.forEach(function(tutor) {
+        return tutor.markers.forEach(function(marker) {
+          var new_marker;
+          new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, marker.type);
+          new_marker.metros = marker.metros;
+          new_marker.tutor = tutor;
+          new_marker.setMap($scope.map);
+          bindTutorMarkerEvents(new_marker);
+          return $scope.markers.push(new_marker);
+        });
+      });
+      return markerClusterer = new MarkerClusterer($scope.map, $scope.markers, {
+        gridSize: 10,
+        imagePath: 'img/maps/clusterer/m'
+      });
+    };
+    showClientOnMap = function() {
+      return $scope.client.markers.forEach(function(marker) {
+        var new_marker;
+        new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, 'white');
+        new_marker.metros = marker.metros;
+        return new_marker.setMap($scope.map);
+      });
+    };
+    unsetAllMarkers = function() {
+      if ($scope.markers !== void 0) {
+        $scope.markers.forEach(function(marker) {
+          return marker.setMap(null);
+        });
+      }
+      if (markerClusterer !== void 0) {
+        return markerClusterer.clearMarkers();
+      }
+    };
+    findIntersectingMetros = function() {
+      if ($scope.search.destination === 'r_k') {
+        $scope.markers.forEach(function(marker) {
+          marker.intersecting = false;
+          return $scope.client.markers.forEach(function(client_marker) {
+            return client_marker.metros.forEach(function(client_metro) {
+              var ref;
+              if (ref = client_metro.station_id.toString(), indexOf.call(marker.tutor.svg_map, ref) >= 0) {
+                marker.intersecting = true;
+                marker.tutor.intersecting = true;
+              }
+            });
+          });
+        });
+        return $scope.markers.forEach(function(marker) {
+          if (!marker.intersecting) {
+            return marker.setOpacity(TRANSPARENT_MARKER);
+          }
+        });
+      }
+    };
+    $scope.intersectingTutors = function() {
+      return _.where($scope.tutors, {
+        intersecting: true
+      });
+    };
+    $scope.notIntersectingTutors = function() {
+      return _.filter($scope.tutors, function(tutor) {
+        return _.isUndefined(tutor.intersecting);
+      });
+    };
+    bindTutorMarkerEvents = function(marker) {
+      google.maps.event.addListener(marker, 'click', function(event) {
+        var ref;
+        if (ref = marker.tutor, indexOf.call($scope.tutor_list, ref) >= 0) {
+          $scope.tutor_list = removeById($scope.tutor_list, marker.tutor.id);
+        } else {
+          $scope.hovered_tutor = null;
+          $scope.tutor_list.push(marker.tutor);
+        }
+        $scope.$apply();
+        return rebindDraggable();
+      });
+      google.maps.event.addListener(marker, 'mouseover', function(event) {
+        var ref;
+        if (ref = marker.tutor, indexOf.call($scope.tutor_list, ref) >= 0) {
+          return;
+        }
+        $scope.hovered_tutor = marker.tutor;
+        return $scope.$apply();
+      });
+      return google.maps.event.addListener(marker, 'mouseout', function(event) {
+        $scope.hovered_tutor = null;
+        return $scope.$apply();
+      });
+    };
+    $scope.addOrRemove = function(tutor_id) {
+      tutor_id = parseInt(tutor_id);
+      if (indexOf.call($scope.list.tutor_ids, tutor_id) >= 0) {
+        $scope.list.tutor_ids = _.without($scope.list.tutor_ids, tutor_id);
+      } else {
+        $scope.list.tutor_ids.push(tutor_id);
+      }
+      repaintChosen();
+      return $scope.list.$update();
+    };
+    repaintChosen = function() {
+      return $scope.markers.forEach(function(marker) {
+        var ref, ref1;
+        if ((ref = marker.tutor.id, indexOf.call($scope.list.tutor_ids, ref) >= 0) && !marker.chosen) {
+          marker.chosen = true;
+          marker.setOpacity(1);
+          marker.setIcon(ICON_BLUE);
+        }
+        if ((ref1 = marker.tutor.id, indexOf.call($scope.list.tutor_ids, ref1) < 0) && marker.chosen) {
+          marker.chosen = false;
+          marker.setOpacity(marker.intersecting ? 1 : TRANSPARENT_MARKER);
+          return marker.setIcon(getMarkerType(marker.type));
+        }
+      });
+    };
+    return $scope.$on('mapInitialized', function(event, map) {
+      var INIT_COORDS;
+      $scope.gmap = map;
+      INIT_COORDS = {
+        lat: 55.7387,
+        lng: 37.6032
+      };
+      $scope.RECOM_BOUNDS = new google.maps.LatLngBounds(new google.maps.LatLng(INIT_COORDS.lat - 0.5, INIT_COORDS.lng - 0.5), new google.maps.LatLng(INIT_COORDS.lat + 0.5, INIT_COORDS.lng + 0.5));
+      $scope.geocoder = new google.maps.Geocoder;
+      $scope.gmap.setCenter(new google.maps.LatLng(55.7387, 37.6032));
+      return $scope.gmap.setZoom(11);
+    });
   });
 
 }).call(this);
@@ -1969,6 +1575,43 @@
     };
   }).controller('RequestsForm', function($scope) {
     return console.log('here');
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').controller('SummaryIndex', function($rootScope, $scope, $http, $timeout) {
+    var loadSummary;
+    bindArguments($scope, arguments);
+    $rootScope.frontend_loading = true;
+    $scope.debt_updating = false;
+    $scope.updateDebt = function() {
+      $scope.debt_updating = true;
+      return $http.get('api/command/recalc-debt').then(function(response) {
+        $scope.debt_updating = false;
+        $scope.debt_updated = response.data.debt_updated;
+        return $scope.total_debt = response.data.total_debt;
+      });
+    };
+    $timeout(function() {
+      loadSummary($scope.page);
+      return $scope.current_page = $scope.page;
+    });
+    $scope.pageChanged = function() {
+      ajaxStart();
+      loadSummary($scope.current_page);
+      ajaxEnd();
+      return paginate('summary/' + $scope.filter, $scope.current_page);
+    };
+    return loadSummary = function(page) {
+      var params;
+      params = '?page=' + page;
+      params += '&filter=' + $scope.filter;
+      return $http.post("api/summary" + params).then(function(response) {
+        $rootScope.frontendStop();
+        return $scope.summaries = response.data;
+      });
+    };
   });
 
 }).call(this);
@@ -2475,6 +2118,384 @@
 }).call(this);
 
 (function() {
+  angular.module('Egerep').directive('comments', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/comments',
+      scope: {
+        user: '=',
+        entityId: '=',
+        entityType: '@'
+      },
+      controller: function($scope, $timeout, Comment) {
+        $scope.$watch('entityId', function(newVal, oldVal) {
+          return $scope.comments = Comment.query({
+            entity_type: $scope.entityType,
+            entity_id: newVal
+          });
+        });
+        $scope.formatDateTime = function(date) {
+          return moment(date).format("DD.MM.YY в HH:mm");
+        };
+        $scope.startCommenting = function(event) {
+          $scope.start_commenting = true;
+          return $timeout(function() {
+            return $(event.target).parent().find('input').focus();
+          });
+        };
+        $scope.endCommenting = function() {
+          $scope.comment = '';
+          return $scope.start_commenting = false;
+        };
+        $scope.remove = function(comment) {
+          $scope.comments = _.without($scope.comments, _.findWhere($scope.comments, {
+            id: comment.id
+          }));
+          return comment.$remove();
+        };
+        $scope.edit = function(comment, event) {
+          var element, old_text;
+          old_text = comment.comment;
+          element = $(event.target);
+          element.unbind('keydown').unbind('blur');
+          element.attr('contenteditable', 'true').focus().on('keydown', function(e) {
+            console.log(old_text);
+            if (e.keyCode === 13) {
+              $(this).removeAttr('contenteditable').blur();
+              comment.comment = $(this).text();
+              comment.$update();
+            }
+            if (e.keyCode === 27) {
+              return $(this).blur();
+            }
+          }).on('blur', function(e) {
+            if (element.attr('contenteditable')) {
+              console.log(old_text);
+              return element.removeAttr('contenteditable').html(old_text);
+            }
+          });
+        };
+        return $scope.submitComment = function(event) {
+          var new_comment;
+          if (event.keyCode === 13) {
+            new_comment = new Comment({
+              comment: $scope.comment,
+              user_id: $scope.user.id,
+              entity_id: $scope.entityId,
+              entity_type: $scope.entityType
+            });
+            new_comment.$save().then(function(response) {
+              console.log(response);
+              new_comment.user = $scope.user;
+              new_comment.id = response.id;
+              return $scope.comments.push(new_comment);
+            });
+            $scope.endCommenting();
+          }
+          if (event.keyCode === 27) {
+            return $(event.target).blur();
+          }
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('email', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/email',
+      scope: {
+        entity: '='
+      },
+      controller: function($scope) {
+        return $scope.send = function() {
+          return $('#email-modal').modal('show');
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('inputComment', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/input-comment',
+      scope: {
+        entity: '=',
+        commentField: '@'
+      },
+      controller: function($scope, $timeout) {
+        $scope.is_being_commented = false;
+        $scope.blurComment = function() {
+          return $scope.is_being_commented = false;
+        };
+        $scope.focusComment = function() {
+          return $scope.is_being_commented = true;
+        };
+        $scope.startComment = function(event) {
+          $scope.is_being_commented = true;
+          return $timeout(function() {
+            return $(event.target).parent().children('input').focus();
+          });
+        };
+        return $scope.endComment = function(event) {
+          if (event.keyCode === 13) {
+            $(event.target).blur();
+          }
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('metroList', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/metro-list',
+      scope: {
+        markers: '='
+      },
+      controller: function($scope) {
+        $scope.short = function(title) {
+          return title.slice(0, 3).toUpperCase();
+        };
+        return $scope.minutes = function(minutes) {
+          return Math.round(minutes);
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('ngMulti', function() {
+    return {
+      restrict: 'E',
+      replace: true,
+      scope: {
+        object: '=',
+        model: '=',
+        noneText: '@'
+      },
+      templateUrl: 'directives/ngmulti',
+      controller: function($scope, $element, $attrs, $timeout) {
+        return $timeout(function() {
+          return $($element).selectpicker({
+            noneSelectedText: $scope.noneText
+          });
+        });
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('pencilInput', function() {
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: 'directives/pencil-input',
+      scope: {
+        model: '='
+      },
+      controller: function($scope, $timeout, $element, $controller) {
+        $scope.is_being_commented = false;
+        $scope.blurComment = function() {
+          return $scope.is_being_commented = false;
+        };
+        $scope.focusComment = function() {
+          return $scope.is_being_commented = true;
+        };
+        $scope.startComment = function(event) {
+          $scope.is_being_commented = true;
+          return $timeout(function() {
+            return $(event.target).parent().children('div').focus();
+          });
+        };
+        return $scope.watchEnter = function(event) {
+          var ref;
+          if ((ref = event.keyCode) === 13 || ref === 27) {
+            if (event.keyCode === 13) {
+              $scope.model = $(event.target).parent().children('div').text();
+            }
+            $(event.target).parent().children('div').text($scope.model);
+            event.preventDefault();
+            $(event.target).blur();
+          }
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('phones', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/phones',
+      scope: {
+        entity: '='
+      },
+      controller: function($scope, $timeout, $rootScope, PhoneService) {
+        $scope.PhoneService = PhoneService;
+        $rootScope.dataLoaded.promise.then(function(data) {
+          return $scope.level = $scope.entity.phones.length || 1;
+        });
+        $scope.nextLevel = function() {
+          return $scope.level++;
+        };
+        $scope.phoneMaskControl = function(event) {
+          var el, phone_id;
+          el = $(event.target);
+          phone_id = el.attr('ng-model').split('.')[1];
+          return $scope.entity[phone_id] = $(event.target).val();
+        };
+        $scope.isFull = function(number) {
+          if (number === void 0 || number === "") {
+            return false;
+          }
+          return !number.match(/_/);
+        };
+        return $scope.sms = function(number) {
+          $('#sms-modal').modal('show');
+          return $scope.$parent.sms_number = number;
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('plural', function() {
+    return {
+      restrict: 'E',
+      scope: {
+        count: '=',
+        type: '@',
+        noneText: '@'
+      },
+      templateUrl: 'directives/plural',
+      controller: function($scope, $element, $attrs, $timeout) {
+        $scope.textOnly = $attrs.hasOwnProperty('textOnly');
+        return $scope.when = {
+          'age': ['год', 'года', 'лет'],
+          'student': ['ученик', 'ученика', 'учеников'],
+          'minute': ['минуту', 'минуты', 'минут'],
+          'meeting': ['встреча', 'встречи', 'встреч'],
+          'score': ['балл', 'балла', 'баллов'],
+          'rubbles': ['рубль', 'рубля', 'рублей'],
+          'lesson': ['занятие', 'занятия', 'занятий']
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('ngSelect', function() {
+    return {
+      restrict: 'E',
+      replace: true,
+      scope: {
+        object: '=',
+        model: '=',
+        noneText: '@'
+      },
+      templateUrl: 'directives/ngselect',
+      controller: function($scope, $element, $attrs) {
+        if (!$scope.noneText) {
+          return $scope.model = _.first(Object.keys($scope.object));
+        }
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('sms', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/sms',
+      scope: {
+        number: '='
+      },
+      controller: function($scope, $timeout, Sms) {
+        $scope.mass = false;
+        $scope.smsCount = function() {
+          return SmsCounter.count($scope.message || '').messages;
+        };
+        $scope.send = function() {
+          var sms;
+          if ($scope.message) {
+            sms = new Sms({
+              message: $scope.message,
+              to: $scope.number,
+              mass: $scope.mass
+            });
+            return sms.$save();
+          }
+        };
+        return $scope.$watch('number', function(newVal, oldVal) {
+          console.log($scope.$parent.formatDateTime($scope.created_at));
+          if (newVal) {
+            return $scope.history = Sms.query({
+              number: newVal
+            });
+          }
+        });
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('tutorPhoto', function() {
+    return {
+      restrict: 'E',
+      replace: true,
+      scope: {
+        tutor: '=',
+        version: '='
+      },
+      templateUrl: 'directives/tutor-photo'
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('userSwitch', function() {
+    return {
+      restrict: 'E',
+      scope: {
+        entity: '=',
+        resource: '=',
+        userId: '@'
+      },
+      templateUrl: 'directives/user-switch',
+      controller: function($scope) {
+        return $scope.UserService = $scope.$parent.UserService;
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
   var apiPath, updateMethod;
 
   angular.module('Egerep').factory('Account', function($resource) {
@@ -2548,6 +2569,230 @@
       }
     };
   };
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').value('Destinations', {
+    r_k: 'репетитор едет к клиенту',
+    k_r: 'клиент едет к репетитору'
+  }).value('Workplaces', {
+    0: 'не работает в ЕГЭ-Центре',
+    1: 'работает в ЕГЭ-Центре'
+  }).value('Genders', {
+    male: 'мужской',
+    female: 'женский'
+  }).value('TutorStates', {
+    0: 'не установлено',
+    1: 'на проверку',
+    2: 'к закрытию',
+    3: 'закрыто',
+    4: 'к одобрению',
+    5: 'одобрено'
+  }).value('DebtTypes', {
+    0: 'не доплатил',
+    1: 'переплатил'
+  }).value('PaymentMethods', {
+    0: 'не установлено',
+    1: 'стандартный расчет',
+    2: 'яндекс.деньги',
+    3: 'перевод на сотовый',
+    4: 'перевод на карту'
+  }).value('RequestStates', {
+    "new": 'невыполненные',
+    awaiting: 'в ожидании',
+    finished: 'выполненные',
+    deny: 'отказы',
+    motivated_deny: 'мотивированный отказ'
+  }).value('ArchiveStates', {
+    impossible: 'невозможно',
+    possible: 'возможно'
+  }).value('ReviewStates', {
+    unpublished: 'не опубликован',
+    published: 'опубликован'
+  }).value('AttachmentStates', {
+    "new": 'новые',
+    inprogress: 'рабочие',
+    ended: 'завершенные'
+  }).value('ReviewScores', {
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+    6: 6,
+    7: 7,
+    8: 8,
+    9: 9,
+    10: 10,
+    11: 'отзыв не собирать'
+  }).value('Grades', {
+    1: '1 класс',
+    2: '2 класс',
+    3: '3 класс',
+    4: '4 класс',
+    5: '5 класс',
+    6: '6 класс',
+    7: '7 класс',
+    8: '8 класс',
+    9: '9 класс',
+    10: '10 класс',
+    11: '11 класс',
+    12: 'студенты',
+    13: 'остальные'
+  }).value('Subjects', {
+    all: {
+      1: 'математика',
+      2: 'физика',
+      3: 'химия',
+      4: 'биология',
+      5: 'информатика',
+      6: 'русский',
+      7: 'литература',
+      8: 'обществознание',
+      9: 'история',
+      10: 'английский',
+      11: 'неизвестный предмет'
+    },
+    full: {
+      1: 'Математика',
+      2: 'Физика',
+      3: 'Химия',
+      4: 'Биология',
+      5: 'Информатика',
+      6: 'Русский язык',
+      7: 'Литература',
+      8: 'Обществознание',
+      9: 'История',
+      10: 'Английский язык'
+    },
+    dative: {
+      1: 'математике',
+      2: 'физике',
+      3: 'химии',
+      4: 'биологии',
+      5: 'информатике',
+      6: 'русскому языку',
+      7: 'литературе',
+      8: 'обществознанию',
+      9: 'истории',
+      10: 'английскому языку',
+      11: 'неизвестному предмету'
+    },
+    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
+    three_letters: {
+      1: 'МАТ',
+      2: 'ФИЗ',
+      3: 'ХИМ',
+      4: 'БИО',
+      5: 'ИНФ',
+      6: 'РУС',
+      7: 'ЛИТ',
+      8: 'ОБЩ',
+      9: 'ИСТ',
+      10: 'АНГ'
+    },
+    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
+  }).value('Branches', {
+    1: {
+      code: 'TRG',
+      full: 'Тургеневская',
+      short: 'ТУР',
+      address: 'Мясницкая 40с1',
+      color: '#FBAA33'
+    },
+    2: {
+      code: 'PVN',
+      full: 'Проспект Вернадского',
+      short: 'ВЕР',
+      address: '',
+      color: '#EF1E25'
+    },
+    3: {
+      code: 'BGT',
+      full: 'Багратионовская',
+      short: 'БАГ',
+      address: '',
+      color: '#019EE0'
+    },
+    5: {
+      code: 'IZM',
+      full: 'Измайловская',
+      short: 'ИЗМ',
+      address: '',
+      color: '#0252A2'
+    },
+    6: {
+      code: 'OPL',
+      full: 'Октябрьское поле',
+      short: 'ОКТ',
+      address: '',
+      color: '#B61D8E'
+    },
+    7: {
+      code: 'RPT',
+      full: 'Рязанский Проспект',
+      short: 'РЯЗ',
+      address: '',
+      color: '#B61D8E'
+    },
+    8: {
+      code: 'VKS',
+      full: 'Войковская',
+      short: 'ВОЙ',
+      address: '',
+      color: '#029A55'
+    },
+    9: {
+      code: 'ORH',
+      full: 'Орехово',
+      short: 'ОРЕ',
+      address: '',
+      color: '#029A55'
+    },
+    11: {
+      code: 'UJN',
+      full: 'Южная',
+      short: 'ЮЖН',
+      address: '',
+      color: '#ACADAF'
+    },
+    12: {
+      code: 'PER',
+      full: 'Перово',
+      short: 'ПЕР',
+      address: '',
+      color: '#FFD803'
+    },
+    13: {
+      code: 'KLG',
+      full: 'Калужская',
+      short: 'КЛЖ',
+      address: 'Научный проезд 8с1',
+      color: '#C07911'
+    },
+    14: {
+      code: 'BRT',
+      full: 'Братиславская',
+      short: 'БРА',
+      address: '',
+      color: '#B1D332'
+    },
+    15: {
+      code: 'MLD',
+      full: 'Молодежная',
+      short: 'МОЛ',
+      address: '',
+      color: '#0252A2'
+    },
+    16: {
+      code: 'VLD',
+      full: 'Владыкино',
+      short: 'ВЛА',
+      address: '',
+      color: '#ACADAF'
+    }
+  });
 
 }).call(this);
 
@@ -2806,6 +3051,9 @@
     };
     this.getFiltered = function(search_data) {
       return $http.post('api/tutors/filtered', search_data);
+    };
+    this.getDebtMap = function(search_data) {
+      return $http.post('api/debt/map', search_data);
     };
     this.generateLogin = function(tutor) {
       var i, len, letter, login, ref;

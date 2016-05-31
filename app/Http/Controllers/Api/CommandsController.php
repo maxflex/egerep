@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use App\Models\Tutor;
+use App\Models\Account;
+use App\Models\Settings;
 use App\Http\Controllers\Controller;
 
 class CommandsController extends Controller
@@ -14,10 +17,17 @@ class CommandsController extends Controller
      */
     public function getRecalcDebt()
     {
-        $accounts = \App\Models\Account::all();
+        $accounts = Account::all();
 
         foreach ($accounts as $account) {
-            $account->recalcDebt();
+            $account->recalcDebt($account->date_start, $account->date_end);
         }
+
+        Settings::set('debt_updated', now());
+
+        return [
+            'total_debt'    => Tutor::totalDebt(),
+            'debt_updated'  => now(),
+        ];
     }
 }
