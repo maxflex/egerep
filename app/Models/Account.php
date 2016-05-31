@@ -148,7 +148,7 @@ class Account extends Model
         foreach (dateRange($date_start, $date_end) as $date) {
             foreach ($data as $d) {
                 $coef = static::_pissimisticCoef($date, $d->archive_date);
-                if (($d->attachment_date <= $date) && ($d->archive_date >= $date)) {
+                if (($d->attachment_date <= $date) && (!$d->archive_date || $d->archive_date >= $date)) {
                     $debt += ($d->forecast / 7) * $coef;
                 }
             }
