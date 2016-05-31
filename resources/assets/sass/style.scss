@@ -3496,6 +3496,24 @@ table.summary-table.left-align tr td {
 .attachment-list-item-comments {
   margin-bottom: 5px;
 }
+.attachment-table-items {
+  width:100%;
+  & thead {
+	text-transform: uppercase;
+	font-weight: bold;
+  }
+  & tr {
+	border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+	text-align: center;
+	& td:first-child {
+	  padding: 5px;
+	  text-align: left;
+	}
+	&:last-child {
+	  border-bottom: none;
+	}
+  }
+}
 
 @-webkit-keyframes spin {
     from { -webkit-transform: rotate(0deg); }
