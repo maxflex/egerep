@@ -29,7 +29,9 @@
                 </td>
                 <td>@{{ period.user_login }}</td>
                 <td>@{{ period.debt_before | number }}</td>
-                <td>@{{ period.received | number }}</td>
+                <td>
+                    <span ng-show='period.received > 0'>@{{ period.received | number }}</span>
+                </td>
                 <td>
                     @{{ totalCommission(period) }}
                 </td>
