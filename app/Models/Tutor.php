@@ -407,13 +407,13 @@ class Tutor extends Model
         }
     }
 
-    private static function addPublishedCondition($query, $state)
+    private static function addPublishedCondition($query, $published_state)
     {
-        if (isset($state)) {
-            if ($state) {
-                $query->where('description', '!=', '');
+        if ($published_state !== '' && $published_state !== null && ($published_state == 0 || $published_state == 1)) {
+            if ($published_state) {
+                $query->where('public_desc', '!=', '');
             } else {
-                $query->whereRaw("(description IS NULL OR description = '')");
+                $query->whereRaw("(public_desc IS NULL OR public_desc = '')");
             }
         }
         return $query;
@@ -436,9 +436,7 @@ class Tutor extends Model
             if (! empty($user_id)) {
                 $query->where('responsible_user_id', $user_id);
             }
-            if (! empty($published_state)) {
-                static::addPublishedCondition($query, $published_state);
-            }
+            static::addPublishedCondition($query, $published_state);
             $return[$i] = $query->count();
         }
         return $return;
@@ -457,9 +455,9 @@ class Tutor extends Model
             if (! empty($state)) {
                 $query->where('state', $state);
             }
-            if (! empty($published_state)) {
-                self::addPublishedCondition($query, $published_state);
-            }
+
+            self::addPublishedCondition($query, $published_state);
+
             $return[$user_id] = $query->count();
         }
         return $return;
