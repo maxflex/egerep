@@ -13,6 +13,7 @@ class Attachment extends Model
         'request_list_id',
         'user_id',
         'tutor_id',
+        'client_id',
         'date',
         'grade',
         'subjects',
