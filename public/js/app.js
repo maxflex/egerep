@@ -1224,7 +1224,9 @@
             return true;
           }
           $scope.tutor_list = removeById($scope.tutor_list, $scope.dragging_tutor.id);
-          return $scope.$apply();
+          $scope.tutor_ids = _.without($scope.tutor_ids, $scope.dragging_tutor.id);
+          $scope.$apply();
+          return repaintChosen();
         }
       });
     };
