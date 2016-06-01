@@ -17,7 +17,7 @@ class PeriodsController extends Controller
      */
     public function index()
     {
-        return Account::with(['tutors'])->orderBy('created_at', 'desc')->paginate(30)->toJson();
+        return Account::with(['tutor'])->orderBy('created_at', 'desc')->paginate(30)->toJson();
     }
 
     /**
