@@ -854,7 +854,8 @@
         grade: $scope.client.grade,
         tutor_id: tutor_id,
         subjects: $scope.selected_list.subjects,
-        request_list_id: $scope.selected_list.id
+        request_list_id: $scope.selected_list.id,
+        client_id: $scope.client.id
       }, function(new_attachment) {
         $scope.selected_attachment = new_attachment;
         return $scope.selected_list.attachments.push(new_attachment);

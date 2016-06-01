@@ -457,7 +457,7 @@ class Tutor extends Model
             if (! empty($state)) {
                 $query->where('state', $state);
             }
-            if (! empty($published_state)) {
+            if ($published_state != "") {
                 self::addPublishedCondition($query, $published_state);
             }
             $return[$user_id] = $query->count();
