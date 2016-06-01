@@ -29687,11 +29687,12 @@ h4 {
 .request-main-list {
   margin-bottom: 10px;
   background-color: rgba(255, 255, 255, 0.1); }
-  .request-main-list hr {
-    border-top: 1px solid rgba(0, 0, 0, 0.4);
-    margin-top: 5px; }
   .request-main-list.ui-draggable-dragging {
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); }
+
+hr.list-separate {
+  border-top: 1px solid rgba(0, 0, 0, 0.4);
+  margin-top: 5px; }
 
 .is-draggable {
   margin-bottom: 10px;
@@ -30040,11 +30041,6 @@ table.summary-table.left-align tr td {
 .summary-table .no-hover td {
   border-top: none !important; }
 
-.attachment-list-item hr {
-  margin-top: 5px;
-  margin-bottom: 20px;
-  border-top: 1px solid rgba(0, 0, 0, 0.4); }
-
 .attachment-list-item-comments {
   margin-bottom: 5px; }
 
@@ -30089,5 +30085,9 @@ table.summary-table.left-align tr td {
   animation-iteration-count: infinite;
   -webkit-animation-timing-function: linear;
   animation-timing-function: linear; }
+
+.table thead {
+  font-weight: bold;
+  text-transform: uppercase; }
 
 /*# sourceMappingURL=app.css.map */

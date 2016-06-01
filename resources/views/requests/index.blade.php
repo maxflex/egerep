@@ -65,7 +65,7 @@
                     <user-switch entity='request' user-id='user_id' resource='Request'>
                 </div>
             </div>
-            <hr ng-hide="$last">
+            <hr class='list-separate' ng-hide="$last">
         </div>
     </div>
 
