@@ -21,7 +21,7 @@
         <tbody>
             <tr ng-repeat='period in periods'>
                 <td>
-                    <a href="tutors/@{{ period.tutor.id }}/edit">@{{ period.tutor.full_name }}</a>
+                    <a href="tutors/@{{ period.tutor.id }}/edit">@{{ period.tutor.full_name || "имя не указано" }}</a>
                 </td>
                 <td>@{{ formatDateTime(period.created_at) }}</td>
                 <td>
