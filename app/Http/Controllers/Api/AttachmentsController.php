@@ -19,7 +19,7 @@ class AttachmentsController extends Controller
     {
         return Attachment::searchByState($request->state)
                         ->with(['requestList', 'client', 'tutor'])
-                        ->orderBy('created_at', 'desc')
+                        ->orderBy('created_at', 'asc')
                         ->paginate(30)
                         ->toJson();
     }
