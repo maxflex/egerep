@@ -87,8 +87,8 @@ angular
                 containment: 'window'
                 revert: (valid) ->
                     return true if valid
-                    $scope.tutor_list = removeById($scope.tutor_list, $scope.dragging_tutor.id)
-                    $scope.tutor_ids = _.without($scope.tutor_ids, $scope.dragging_tutor.id)
+                    $scope.tutor_list   = removeById($scope.tutor_list, $scope.dragging_tutor.id)
+                    $scope.tutor_ids    = _.without($scope.tutor_ids, $scope.dragging_tutor.id)
                     $scope.$apply()
                     repaintChosen()
 

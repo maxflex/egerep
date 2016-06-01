@@ -1516,6 +1516,56 @@
 }).call(this);
 
 (function() {
+  angular.module('Egerep').controller('PeriodsIndex', function($scope, $timeout, $rootScope, $http, DebtTypes, PaymentMethods) {
+    var getCommission, load;
+    bindArguments($scope, arguments);
+    $rootScope.frontend_loading = true;
+    $timeout(function() {
+      load($scope.page);
+      return $scope.current_page = $scope.page;
+    });
+    getCommission = function(val) {
+      if (val.indexOf('/') !== -1) {
+        val = val.split('/')[1];
+        if (val) {
+          return parseInt(val);
+        } else {
+          return 0;
+        }
+      } else {
+        return Math.round(parseInt(val) * .25);
+      }
+    };
+    $scope.totalCommission = function(account) {
+      var total_commission;
+      total_commission = 0;
+      $.each(account.data, function(index, account_data) {
+        return $.each(account_data, function(index, val) {
+          if (val !== '') {
+            return total_commission += getCommission(val);
+          }
+        });
+      });
+      return total_commission;
+    };
+    $scope.pageChanged = function() {
+      load($scope.current_page);
+      return paginate('periods', $scope.current_page);
+    };
+    return load = function(page) {
+      var params;
+      params = '?page=' + page;
+      return $http.get("api/periods" + params).then(function(response) {
+        $rootScope.frontendStop();
+        $scope.data = response.data;
+        return $scope.periods = $scope.data.data;
+      });
+    };
+  });
+
+}).call(this);
+
+(function() {
   angular.module('Egerep').factory('Request', function($resource) {
     return $resource('api/requests/:id', {}, {
       update: {

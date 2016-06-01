@@ -15,6 +15,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('requests/{state_id?}', 'RequestsController@index');
     Route::resource('requests', 'RequestsController', ['except' => ['index']]);
     Route::resource('clients', 'ClientsController');
+    Route::resource('periods', 'PeriodsController');
     Route::get('attachments/{state?}', 'AttachmentsController@index');
     // Route::resource('debt', 'DebtController', ['only' => 'index']);
     Route::get('debt/map', 'DebtController@map');
@@ -56,6 +57,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('comments', 'CommentsController');
         Route::resource('accounts', 'AccountsController');
         Route::resource('sms', 'SmsController');
+        Route::resource('periods', 'PeriodsController');
 
         Route::post('summary', 'SummaryController@index');
         Route::controllers([
