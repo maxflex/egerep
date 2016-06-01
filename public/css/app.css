@@ -27487,7 +27487,10 @@ email .input-group {
       border-radius: 0; }
     .double-input div:last-child span {
       border-left: none;
-      border-radius: 0; }
+      border-radius: 0;
+      padding-left: 3px; }
+  .double-input > .input-group:first-child > input {
+    padding-right: 0 !important; }
 
 .pagination > li > a:focus, .pagination > li > a:hover, .pagination > li > span:focus, .pagination > li > span:hover {
   color: #0e6238 !important; }

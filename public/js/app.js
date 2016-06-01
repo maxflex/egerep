@@ -1140,54 +1140,7 @@
 (function() {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  angular.module('Egerep').controller("DebtIndex", function($rootScope, $scope, $timeout, $http, Tutor) {
-    var loadPage;
-    $rootScope.frontend_loading = true;
-    $timeout(function() {
-      loadPage($scope.page);
-      return $scope.current_page = $scope.page;
-    });
-    $scope.pageChanged = function() {
-      loadPage($scope.current_page);
-      return paginate('debt', $scope.current_page);
-    };
-    loadPage = function(page) {
-      var params;
-      params = '?page=' + page;
-      return $http.get("api/debt" + params).then(function(response) {
-        $rootScope.frontendStop();
-        $scope.data = response.data;
-        $scope.tutors = $scope.data.data;
-        return console.log($scope.tutors);
-      });
-    };
-    $scope.blurComment = function(tutor) {
-      tutor.is_being_commented = false;
-      return tutor.debt_comment = tutor.old_debt_comment;
-    };
-    $scope.focusComment = function(tutor) {
-      tutor.is_being_commented = true;
-      return tutor.old_debt_comment = tutor.debt_comment;
-    };
-    $scope.startComment = function(tutor) {
-      tutor.is_being_commented = true;
-      tutor.old_debt_comment = tutor.debt_comment;
-      return $timeout(function() {
-        return $("#list-comment-" + tutor.id).focus();
-      });
-    };
-    return $scope.saveComment = function(event, tutor) {
-      if (event.keyCode === 13) {
-        return Tutor.update({
-          id: tutor.id,
-          debt_comment: tutor.debt_comment
-        }, function(response) {
-          tutor.old_debt_comment = tutor.debt_comment;
-          return $(event.target).blur();
-        });
-      }
-    };
-  }).controller('DebtMap', function($scope, $timeout, TutorService, Tutor) {
+  angular.module('Egerep').controller('DebtMap', function($scope, $timeout, TutorService, Tutor, Subjects) {
     var TRANSPARENT_MARKER, bindTutorMarkerEvents, clicks, findIntersectingMetros, markerClusterer, rebindDraggable, repaintChosen, showClientOnMap, showTutorsOnMap, unsetAllMarkers;
     bindArguments($scope, arguments);
     TRANSPARENT_MARKER = 0.3;
@@ -1196,6 +1149,7 @@
     $scope.mode = 'map';
     $scope.loading = false;
     $scope.search = {};
+    $scope.tutor_ids = [];
     $scope.sortType = 'debt';
     $scope.sortReverse = false;
     $scope.totalLastDebt = function() {
@@ -1260,7 +1214,7 @@
       });
     };
     $scope.added = function(tutor_id) {
-      return indexOf.call($scope.list.tutor_ids, tutor_id) >= 0;
+      return indexOf.call($scope.tutor_ids, tutor_id) >= 0;
     };
     rebindDraggable = function() {
       return $('.temporary-tutor').draggable({
@@ -1356,6 +1310,7 @@
           $scope.hovered_tutor = null;
           $scope.tutor_list.push(marker.tutor);
         }
+        $scope.addOrRemove(marker.tutor.id);
         $scope.$apply();
         return rebindDraggable();
       });
@@ -1374,25 +1329,22 @@
     };
     $scope.addOrRemove = function(tutor_id) {
       tutor_id = parseInt(tutor_id);
-      if (indexOf.call($scope.list.tutor_ids, tutor_id) >= 0) {
-        $scope.list.tutor_ids = _.without($scope.list.tutor_ids, tutor_id);
+      if (indexOf.call($scope.tutor_ids, tutor_id) >= 0) {
+        $scope.tutor_ids = _.without($scope.tutor_ids, tutor_id);
       } else {
-        $scope.list.tutor_ids.push(tutor_id);
+        $scope.tutor_ids.push(tutor_id);
       }
-      repaintChosen();
-      return $scope.list.$update();
+      return repaintChosen();
     };
     repaintChosen = function() {
       return $scope.markers.forEach(function(marker) {
         var ref, ref1;
-        if ((ref = marker.tutor.id, indexOf.call($scope.list.tutor_ids, ref) >= 0) && !marker.chosen) {
+        if ((ref = marker.tutor.id, indexOf.call($scope.tutor_ids, ref) >= 0) && !marker.chosen) {
           marker.chosen = true;
-          marker.setOpacity(1);
           marker.setIcon(ICON_BLUE);
         }
-        if ((ref1 = marker.tutor.id, indexOf.call($scope.list.tutor_ids, ref1) < 0) && marker.chosen) {
+        if ((ref1 = marker.tutor.id, indexOf.call($scope.tutor_ids, ref1) < 0) && marker.chosen) {
           marker.chosen = false;
-          marker.setOpacity(marker.intersecting ? 1 : TRANSPARENT_MARKER);
           return marker.setIcon(getMarkerType(marker.type));
         }
       });
@@ -2545,83 +2497,6 @@
 }).call(this);
 
 (function() {
-  var apiPath, updateMethod;
-
-  angular.module('Egerep').factory('Account', function($resource) {
-    return $resource(apiPath('accounts'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Review', function($resource) {
-    return $resource(apiPath('reviews'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Archive', function($resource) {
-    return $resource(apiPath('archives'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Attachment', function($resource) {
-    return $resource(apiPath('attachments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('RequestList', function($resource) {
-    return $resource(apiPath('lists'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Request', function($resource) {
-    return $resource(apiPath('requests'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Sms', function($resource) {
-    return $resource(apiPath('sms'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Comment', function($resource) {
-    return $resource(apiPath('comments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Client', function($resource) {
-    return $resource(apiPath('clients'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('User', function($resource) {
-    return $resource(apiPath('users'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Tutor', function($resource) {
-    return $resource(apiPath('tutors'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      deletePhoto: {
-        url: apiPath('tutors', 'photo'),
-        method: 'DELETE'
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  });
-
-  apiPath = function(entity, additional) {
-    if (additional == null) {
-      additional = '';
-    }
-    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
-  };
-
-  updateMethod = function() {
-    return {
-      update: {
-        method: 'PUT'
-      }
-    };
-  };
-
-}).call(this);
-
-(function() {
   angular.module('Egerep').value('Destinations', {
     r_k: 'репетитор едет к клиенту',
     k_r: 'клиент едет к репетитору'
@@ -2845,6 +2720,83 @@
       color: '#ACADAF'
     }
   });
+
+}).call(this);
+
+(function() {
+  var apiPath, updateMethod;
+
+  angular.module('Egerep').factory('Account', function($resource) {
+    return $resource(apiPath('accounts'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Review', function($resource) {
+    return $resource(apiPath('reviews'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Archive', function($resource) {
+    return $resource(apiPath('archives'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Attachment', function($resource) {
+    return $resource(apiPath('attachments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('RequestList', function($resource) {
+    return $resource(apiPath('lists'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Request', function($resource) {
+    return $resource(apiPath('requests'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Sms', function($resource) {
+    return $resource(apiPath('sms'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Comment', function($resource) {
+    return $resource(apiPath('comments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Client', function($resource) {
+    return $resource(apiPath('clients'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('User', function($resource) {
+    return $resource(apiPath('users'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Tutor', function($resource) {
+    return $resource(apiPath('tutors'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      deletePhoto: {
+        url: apiPath('tutors', 'photo'),
+        method: 'DELETE'
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  });
+
+  apiPath = function(entity, additional) {
+    if (additional == null) {
+      additional = '';
+    }
+    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
+  };
+
+  updateMethod = function() {
+    return {
+      update: {
+        method: 'PUT'
+      }
+    };
+  };
 
 }).call(this);
 

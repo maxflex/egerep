@@ -112,6 +112,14 @@ class DebtController extends Controller
             $query->where('tutors.debt_calc', '<=', $debt_calc_to);
         }
 
+        if (isset($subjects)) {
+            $sql = [];
+            foreach ($subjects as $subject_id) {
+                $sql[] = "FIND_IN_SET({$subject_id}, tutors.subjects)";
+            }
+            $query->whereRaw('(' . implode(' OR ', $sql) . ')');
+        }
+
         if (isset($account_date_from) || isset($account_date_to)) {
             $query->join('accounts', function($join) {
                 $join->on('accounts.tutor_id', '=', 'tutors.id')
