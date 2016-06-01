@@ -115,6 +115,11 @@ angular
             TutorService.getDebtMap {search: $scope.search}
                 .then (response) ->
                     $scope.tutors = response.data
+                    angular.forEach $scope.tutors, (tutor) ->
+                        if tutor.last_account_info
+                            tutor.last_debt = if tutor.last_account_info.debt_type then tutor.last_account_info.debt else -tutor.last_account_info.debt
+                        else
+                            tutor.last_debt = 0
                     showTutorsOnMap()
                     $scope.loading = false
 

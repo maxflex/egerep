@@ -5,7 +5,7 @@
                 <tr>
                     <td>ПРЕПОДАВАТЕЛЬ</td>
                     <td>
-                        <span class='link-like' ng-click="sortType = 'last_account_info.debt'; sortReverse = !sortReverse">ПОСЛЕДНЯЯ ЗАДОЛЖЕННОСТЬ</span>
+                        <span class='link-like' ng-click="sortType = 'last_debt'; sortReverse = !sortReverse">ПОСЛЕДНЯЯ ЗАДОЛЖЕННОСТЬ</span>
                     </td>
                     <td>
                         <span class='link-like' ng-click="sortType = 'debt'; sortReverse = !sortReverse">ДЕБЕТ</span>
