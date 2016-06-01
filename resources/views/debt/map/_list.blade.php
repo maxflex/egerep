@@ -4,15 +4,25 @@
             <thead class="bold">
                 <tr>
                     <td>ПРЕПОДАВАТЕЛЬ</td>
-                    <td>ПОСЛЕДНЯЯ ЗАДОЛЖЕННОСТЬ</td>
-                    <td>ДЕБЕТ</td>
-                    <td>РАССЧЕТНЫЙ ДЕБЕТ</td>
-                    <td>ДАТА ПОСЛЕДНОГО РАССЧЕТА</td>
+                    <td>
+                        <span class='link-like' ng-click="sortType = 'last_account_info.debt'; sortReverse = !sortReverse">ПОСЛЕДНЯЯ ЗАДОЛЖЕННОСТЬ</span>
+                    </td>
+                    <td>
+                        <span class='link-like' ng-click="sortType = 'debt'; sortReverse = !sortReverse">ДЕБЕТ</span>
+                        {{-- <span ng-show="sortType == 'debt' && !sortReverse" class="glyphicon glyphicon-triangle-bottom"></span>
+                        <span ng-show="sortType == 'debt' && sortReverse" class="glyphicon glyphicon-triangle-top"></span> --}}
+                    </td>
+                    <td>
+                        <span class='link-like' ng-click="sortType = 'debt_calc'; sortReverse = !sortReverse">РАСЧЕТНЫЙ ДЕБЕТ</span>
+                    </td>
+                    <td>
+                        <span class='link-like' ng-click="sortType = 'last_account_info.date_end'; sortReverse = !sortReverse">ДАТА ПОСЛЕДНОГО РАСЧЕТА</span>
+                    </td>
                     <td>КОММЕНТАРИЙ</td>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="tutor in tutors">
+                <tr ng-repeat="tutor in tutors | orderBy:sortType:sortReverse">
                     <td>
                         <a href='tutors/@{{ tutor.id }}/edit'>@{{ tutor.full_name }}</a>
                     </td>
@@ -44,6 +54,22 @@
                         >
                     </td>
                 </tr>
+                <tfoot ng-show='tutors && tutors.length'>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <span ng-class="{
+                                'text-danger': totalLastDebt().debt_type == 0,
+                                'text-success': totalLastDebt().debt_type == 1,
+                            }">
+                                @{{ totalLastDebt().debt }}
+                            </span>
+                        </td>
+                        <td>@{{ total(tutors, 'debt') }}</td>
+                        <td>@{{ total(tutors, 'debt_calc') }}</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
             </tbody>
         </table>
     </div>

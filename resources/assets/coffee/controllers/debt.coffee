@@ -70,6 +70,20 @@ angular
         # search params
         $scope.search = {}
 
+        $scope.sortType     = 'debt'
+        $scope.sortReverse  = false
+
+        $scope.totalLastDebt = ->
+            sum = 0
+            $.each $scope.tutors, (index, tutor) ->
+                if tutor.last_account_info isnt null
+                    debt = tutor.last_account_info.debt
+                    sum += if tutor.last_account_info.debt_type then +debt else -debt
+            {
+                debt_type: if sum < 0 then 0 else 1
+                debt: Math.abs(sum)
+            }
+
         $scope.blurComment = (tutor) ->
             tutor.is_being_commented = false
             tutor.debt_comment = tutor.old_debt_comment

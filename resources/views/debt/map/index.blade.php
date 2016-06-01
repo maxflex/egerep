@@ -33,6 +33,20 @@
                 </div>
             </div>
         </div>
+        <div class="col-sm-3">
+            <div class="form-group">
+                <div class="double-input">
+                    <div class="input-group custom" style="width: 70%">
+                      <span class="input-group-addon">расчетный дебет от </span>
+                      <input type="text" class="form-control digits-only" ng-model="search.debt_calc_from">
+                    </div>
+                    <div class="input-group custom" style="width: 30%">
+                      <span class="input-group-addon">до </span>
+                      <input type="text" class="form-control digits-only" ng-model="search.debt_calc_to">
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col-sm-4">
             <div class="form-group">
                 <div class="double-input">
@@ -47,7 +61,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-2">
             <div class="form-group">
                 <button class="btn btn-primary full-width" ng-click='find()' ng-disabled='loading'>
                     @{{ loading ? 'поиск...' : 'найти' }}

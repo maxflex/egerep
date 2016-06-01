@@ -85,6 +85,22 @@
         id: parseInt(id)
       });
     };
+    $rootScope.total = function(array, prop, prop2) {
+      var sum;
+      if (prop2 == null) {
+        prop2 = false;
+      }
+      sum = 0;
+      $.each(array, function(index, value) {
+        var v;
+        v = value[prop];
+        if (prop2) {
+          v = v[prop2];
+        }
+        return sum += v;
+      });
+      return sum;
+    };
     return $rootScope.formatBytes = function(bytes) {
       if (bytes < 1024) {
         return bytes + ' Bytes';
@@ -1180,6 +1196,23 @@
     $scope.mode = 'map';
     $scope.loading = false;
     $scope.search = {};
+    $scope.sortType = 'debt';
+    $scope.sortReverse = false;
+    $scope.totalLastDebt = function() {
+      var sum;
+      sum = 0;
+      $.each($scope.tutors, function(index, tutor) {
+        var debt;
+        if (tutor.last_account_info !== null) {
+          debt = tutor.last_account_info.debt;
+          return sum += tutor.last_account_info.debt_type ? +debt : -debt;
+        }
+      });
+      return {
+        debt_type: sum < 0 ? 0 : 1,
+        debt: Math.abs(sum)
+      };
+    };
     $scope.blurComment = function(tutor) {
       tutor.is_being_commented = false;
       return tutor.debt_comment = tutor.old_debt_comment;
