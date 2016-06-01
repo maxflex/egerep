@@ -21,14 +21,22 @@ class CommandsController extends Controller
         $accounts = Account::all();
 
         foreach ($accounts as $account) {
-            $account->recalcDebt($account->date_start, $account->date_end);
+            Account::recalcDebt($account->date_start, $account->date_end, $account->tutor_id, $account->id);
         }
 
         // Преподаватели с клиентами, но без встреч
-        // Tutor::doesntHave('accounts')
-        // $attachments = Attachment::doesntHave('accounts')
-        // DB::table('attachments')->leftJoin('accounts', 'accounts.tutor_id', '=', 'attachments.tutor_id')
-        //     ->whereNull('accounts.id');
+        $no_accounts = DB::table('tutors')
+            ->join('attachments', 'attachments.tutor_id', '=', 'tutors.id')
+            ->leftJoin('accounts', 'accounts.tutor_id', '=', 'tutors.id')
+            ->whereNull('accounts.id')
+            ->orderBy('attachments.date', 'asc')
+            ->select('attachments.tutor_id', 'attachments.date')
+            ->groupBy('attachments.tutor_id')
+            ->get();
+
+        foreach ($no_accounts as $account) {
+            Account::recalcDebt($account->date, now(true), $account->tutor_id);
+        }
 
         Settings::set('debt_updated', now());
 

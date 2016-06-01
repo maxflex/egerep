@@ -123,13 +123,13 @@ class Account extends Model
     /**
      * Пересчитать расчетный дебет
      *
-     * $last_debt – поседний период ... сегодня (хранится в таблице преподавателей)
+     * $account_id – если не указан, то поседний период ... сегодня (хранится в таблице преподавателей)
      */
-    public function recalcDebt($date_start, $date_end, $last_debt = false)
+    public static function recalcDebt($date_start, $date_end, $tutor_id, $account_id = false)
     {
         // Получить клиентов, соответствующих периоду
         $data = DB::table('attachments')->leftJoin('archives', 'archives.attachment_id', '=', 'attachments.id')
-            ->where('attachments.tutor_id', $this->tutor_id)
+            ->where('attachments.tutor_id', $tutor_id)
             ->where('attachments.date', '<=', $date_end)
             ->where(function($query) use ($date_start) {
                 $query->where('archives.id', null)
@@ -154,20 +154,20 @@ class Account extends Model
             }
         }
 
-        if ($last_debt) {
-            Tutor::where('id', $this->tutor_id)->update([
+        if (! $account_id) {
+            Tutor::where('id', $tutor_id)->update([
                 'debt_calc'     => $debt,
                 'debt_updated'  => now(),
             ]);
         } else {
-            Account::where('id', $this->id)->update([
+            Account::where('id', $account_id)->update([
                 'debt_calc' => $debt
             ]);
             // если это последний период, то обновить в промежутке
             // поседний период ... сегодня
-            if ($this->id == static::where('tutor_id', $this->tutor_id)->take(1)->orderBy('date_end', 'desc')->value('id')) {
+            if ($account_id == static::where('tutor_id', $tutor_id)->take(1)->orderBy('date_end', 'desc')->value('id')) {
                 // @todo: нужно проверить ситуацию, когда конец периода = сегодня
-                $this->recalcDebt($this->date_end, now(true), true);
+                static::recalcDebt($date_end, now(true), $tutor_id);
             }
         }
     }
