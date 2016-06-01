@@ -27,7 +27,7 @@ class Kernel extends ConsoleKernel
         Commands\TransferAttachmentFromList::class,
         Commands\UpdateClientGrade::class,
         Commands\ForecastCalc::class,
-        Commands\TransferPhones::class,
+        Commands\ClientPhonesTransfer::class,
     ];
 
     /**

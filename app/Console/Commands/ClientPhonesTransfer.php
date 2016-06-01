@@ -3,15 +3,16 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Models\Client;
 
-class TransferPhones extends Command
+class ClientPhonesTransfer extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'transfer:phones';
+    protected $signature = 'client:phones';
 
     /**
      * The console command description.
@@ -37,7 +38,8 @@ class TransferPhones extends Command
      */
     public function handle()
     {
-        $this->getNumbers();
+        $numbers = $this->getNumbers();
+        $this->info(count($numbers));
     }
 
     public function getNumbers()
@@ -49,11 +51,10 @@ class TransferPhones extends Command
         foreach ($clients as $client) {
             preg_match("/([\d]{7})/imu", $client->address, $numbers);
             if (count($numbers)) {
-	            // echo $tutor->contacts . '<br>';
                 $client_ids[] = $client->id;
             }
         }
 
-        $this->info(count($client_ids));
+        return $client_ids;
     }
 }
