@@ -41,7 +41,7 @@
                     }">@{{ period.debt }}</span>
                 </td>
                 <td>
-                    @{{ PaymentMethods[period.payment_method] }}
+                    <span ng-show='period.received > 0'>@{{ PaymentMethods[period.payment_method] }}</span>
                 </td>
             </tr>
         </tbody>
