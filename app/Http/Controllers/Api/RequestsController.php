@@ -31,16 +31,21 @@ class RequestsController extends Controller
         $client = Client::where('id', $client_id);
 
         if ($client->exists()) {
-            $r = \App\Models\Request::find($id);
             $r->client_id = $client_id;
-            if ($r->requestList && $r->requestList->attachment) {
-                \App\Models\AccountData::where('tutor_id', $r->requestList->attachment->tutor_id)
-                    ->where('client_id', $r->requestList->attachment->client_id)
-                    ->update([
-                        'client_id' => $client_id
-                    ]);
-                $r->requestList->attachment->client_id = $client_id;
-                $r->requestList->attachment->save();
+            if ($r->lists) {
+                foreach($r->lists as $list) {
+                    if ($list->attachments) {
+                        foreach($list->attachments as $attachment) {
+                            \App\Models\AccountData::where('tutor_id', $attachment->tutor_id)
+                                ->where('client_id', $attachment->client_id)
+                                ->update([
+                                    'client_id' => $client_id
+                                ]);
+                        }
+                        $attachment->client_id = $client_id;
+                        $attachment->save();
+                    }
+                }
             }
             $r->save();
             return 1;
