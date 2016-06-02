@@ -31,6 +31,7 @@ class RequestsController extends Controller
         $client = Client::where('id', $client_id);
 
         if ($client->exists()) {
+            $r = \App\Models\Request::find($id);
             $r->client_id = $client_id;
             if ($r->lists) {
                 foreach($r->lists as $list) {

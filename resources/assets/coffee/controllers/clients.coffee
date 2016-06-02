@@ -8,7 +8,7 @@ angular
     #
     .controller "ClientsIndex", ($scope, $rootScope, $timeout, $http, Client) ->
         $rootScope.frontend_loading = true
-        
+
         $scope.pageChanged = ->
             load $scope.current_page
             paginate('clients', $scope.current_page)

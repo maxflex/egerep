@@ -49,7 +49,7 @@ angular.module('Egerep')
 
                     $scope.visible_clients_count++
                     $scope.$apply()
-    .controller 'AccountsCtrl', ($rootScope, $scope, $http, $timeout, Account, PaymentMethods, DebtTypes, Grades, Attachment) ->
+    .controller 'AccountsCtrl', ($rootScope, $scope, $http, $timeout, Account, PaymentMethods, DebtTypes, Grades, Attachment, Weekdays) ->
         bindArguments($scope, arguments)
         $scope.current_scope  = $scope
         $scope.current_period = 0
@@ -96,6 +96,9 @@ angular.module('Egerep')
                 ''
             else
                 moment($scope.tutor.last_accounts[index + 1].date_end).subtract(1, 'days').toDate()
+
+        $scope.getDay = (date) ->
+            moment(date).day()
 
         $scope.changeDateDialog = (index) ->
             $('#date-end-change').datepicker('destroy')
@@ -200,9 +203,12 @@ angular.module('Egerep')
         ## Управление кареткой ##
 
         $scope.selectRow = (date) ->
-            $('tr[class^=\'tr-\']').removeClass 'selected'
             $('.tr-' + date).addClass 'selected'
             return
+        $scope.deselectRow = (date) ->
+            $('.tr-' + date).removeClass 'selected'
+            return
+
 
         ###
         * Перевести курсор, если элемент существует

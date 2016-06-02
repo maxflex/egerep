@@ -1,18 +1,21 @@
 {{-- REAL DATES --}}
 <div ng-if='tutor.last_accounts.length > 0' ng-init='i = 0'>
     <table class='accounts-table'>
-        <thead class="high-z-index">
+        <thead class="high-z-index small">
             <tr>
                 <td class='empty-td'>
                     <span class='link-like' ng-hide='all_displayed' ng-click='loadPage()'>
-                         @{{ left == 1 ? 'все время' : '+1 период'}}
+                        @{{ left == 1 ? 'все время' : '+1 период'}}
                     </span>
                 </td>
             </tr>
         </thead>
         <tbody ng-repeat='account in tutor.last_accounts'>
             <tr ng-repeat='date in getDates($index)' class="tr-@{{ date }}">
-                <td class='date-td'>@{{ formatDate(date) }}</td>
+                <td class='date-td' ng-class="{'double-border-bottom': getDay(date) == 6}">
+                    @{{ formatDate(date) }}
+                    <span class="text-gray" style='margin: 0 5px'>@{{ Weekdays[getDay(date)] }}</span>
+                </td>
             </tr>
             <tr>
                 <td class="period-end">
@@ -23,7 +26,7 @@
 
     <div class="right-table-scroll">
         <table class='accounts-table'>
-            <thead ng-repeat-start='account in tutor.last_accounts' ng-if='$index == 0'>
+            <thead class='small' ng-repeat-start='account in tutor.last_accounts' ng-if='$index == 0'>
                 <tr>
                     <td ng-repeat='client in clients' width='77' class="client-draggable" data-id='@{{ client.id }}'>
                         <a href='@{{ client.link }}'>@{{ client.name | cut:false:10 }}</a>
@@ -41,9 +44,11 @@
                     <td ng-repeat='client in clients' ng-class="{
                         'attachment-start': date == client.attachment_date,
                         'archive-date': date == client.archive_date,
+                        'double-border-bottom': getDay(date) == 6
                     }">
                         <input type="text" class='account-column no-border-outline' id='i-@{{ $parent.$index }}-@{{ $index }}'
                             ng-focus='selectRow(date)'
+                            ng-blur='deselectRow(date)'
                             ng-keyup='periodsCursor($parent.$index, $index, $event, date)'
                             ng-class="{
                                 'attachment-start': date == client.attachment_date,
