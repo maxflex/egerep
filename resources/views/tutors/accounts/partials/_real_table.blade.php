@@ -18,13 +18,13 @@
                 </td>
             </tr>
             <tr>
-                <td class='invisible-td'>всего занятий</td>
+                <td class='invisible-td small'>всего занятий</td>
             </tr>
             <tr>
-                <td class='invisible-td'>в периоде</td>
+                <td class='invisible-td small'>в периоде</td>
             </tr>
             <tr>
-                <td class='invisible-td'>прогноз (руб.)</td>
+                <td class='invisible-td small'>прогноз (руб.)</td>
             </tr>
             <tr>
                 <td class="period-end">
@@ -67,17 +67,17 @@
                     </td>
                 </tr>
                 <tr>
-                    <td ng-repeat='client in clients' class="invisible-td">
+                    <td ng-repeat='client in clients' class="invisible-td small" style='text-align: center'>
                         @{{ totalLessons(account, client.id) }}<span style='text-gray'><span ng-show='totalLessons(account, client.id ) > 0 && client.total_lessons_missing > 0' class='text-gray'>+</span><span ng-show='client.total_lessons_missing' class="text-gray">@{{ client.total_lessons_missing }}</span></span>
                     </td>
                 </tr>
                 <tr>
-                    <td ng-repeat='client in clients' class="invisible-td">
+                    <td ng-repeat='client in clients' class="invisible-td small" style='text-align: center'>
                         @{{ periodLessons(account, client.id) }}
                     </td>
                 </tr>
                 <tr>
-                    <td ng-repeat='client in clients' class="invisible-td">
+                    <td ng-repeat='client in clients' class="invisible-td small" style='text-align: center'>
                         @{{ client.forecast | number }}
                     </td>
                 </tr>
