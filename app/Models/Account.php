@@ -147,7 +147,7 @@ class Account extends Model
 
         foreach (dateRange($date_start, $date_end) as $date) {
             foreach ($data as $d) {
-                $coef = static::_pissimisticCoef($date, $d->archive_date);
+                $coef = static::pissimisticCoef($date, $d->archive_date);
                 if (($d->attachment_date <= $date) && (!$d->archive_date || $d->archive_date >= $date)) {
                     $debt += ($d->forecast / 7) * $coef;
                 }
@@ -175,7 +175,7 @@ class Account extends Model
     /**
      * Писсимизирующий коэффициент
      */
-    private static function _pissimisticCoef($date, $archive_date)
+    public static function pissimisticCoef($date, $archive_date)
     {
         // заархивирован этим летом?
         if ($archive_date) {
@@ -219,6 +219,11 @@ class Account extends Model
 
     protected static function boot()
     {
+        static::saving(function ($account) {
+            if (! $account->exists()) {
+                $account->user_id = User::fromSession()->id;
+            }
+        });
         static::deleting(function ($account) {
             // Delete account data
             $account->accountData()->delete();

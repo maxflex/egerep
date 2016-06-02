@@ -22,7 +22,6 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('summary/{filter?}', 'SummaryController@index');
 
     Route::controllers([
-        'transfer'  => 'TransferController',
         'upload'    => 'UploadController',
         'command'   => 'CommandsController',
         'graph'     => 'GraphController',
