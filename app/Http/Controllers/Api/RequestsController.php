@@ -49,6 +49,8 @@ class RequestsController extends Controller
                 }
             }
             $r->save();
+            // удалить клиентов без заявок
+            Client::removeWithoutRequests();
             return 1;
         } else {
             return null;

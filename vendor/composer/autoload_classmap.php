@@ -11,6 +11,7 @@ return array(
     'AddDebtCalcToTutors' => $baseDir . '/database/migrations/2016_05_31_104820_add_debt_calc_to_tutors.php',
     'AddDebtToTutors' => $baseDir . '/database/migrations/2016_05_26_182758_add_debt_to_tutors.php',
     'AddDeparturePriceToTeachers' => $baseDir . '/database/migrations/2016_02_17_121119_add_departure_price_to_teachers.php',
+    'AddDoubledToClients' => $baseDir . '/database/migrations/2016_06_02_191234_add_doubled_to_clients.php',
     'AddFieldsToTeachers' => $baseDir . '/database/migrations/2016_01_15_122608_add_fields_to_teachers.php',
     'AddForecastToAttachment' => $baseDir . '/database/migrations/2016_02_23_224011_add_forecast_to_attachment.php',
     'AddForeignKeys' => $baseDir . '/database/migrations/2016_05_19_180538_add_foreign_keys.php',

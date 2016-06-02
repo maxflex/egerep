@@ -54,10 +54,13 @@ class ExternalController extends Controller
 		// находим клиента, если клиент уже существует, прикрепляем его к заявке
 		try {
 			$client = Client::findByPhone($phone)->firstOrFail();
+			// Если в заявке номер телефона совпадает с номером телефона,
+			// указанным в другой невыполненной заявке, то такие заявки нужно сливать
+			$new_request = $client->requests()->where('state', 'new')->orderBy('created_at', 'desc')->firstOrFail();
 		}
 		catch (\Exception $e) {
 			// создаем нового клиента
-	        $client = Client::create([
+	        $new_client = Client::create([
 	            'name'  => $data->name,
 	            'phone' => $phone,
 	        ]);
@@ -66,18 +69,13 @@ class ExternalController extends Controller
 		// ID преподавателя в новой базе
 		$new_tutor_id = Tutor::newTutorId($data->repetitor_id);
 
-		// Если в заявке номер телефона совпадает с номером телефона,
-		// указанным в другой невыполненной заявке, то такие заявки нужно сливать
-		$new_request = $client->requests()->where('state', 'new');
-
-		if ($new_request->exists() && $new_tutor_id) {
-			$new_request = $new_request->first();
+		if ($client && $new_tutor_id) {
 			$new_request->comment = "Репетитор " . $new_tutor_id . " " . $new_request->comment;
 			$new_request->save();
 		} else {
 			$comment = breakLines([($new_tutor_id ? "Репетитор " . $new_tutor_id : null), $data->message, "Метро: " . $data->metro_name]);
 			// создаем заявку клиента
-	        $client->requests()->create([
+	        $new_client->requests()->create([
 	            'comment' => $comment,
 	        ]);
 		}

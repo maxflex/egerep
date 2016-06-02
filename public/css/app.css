@@ -29099,6 +29099,9 @@ h4.row-header {
   padding: 1px 3px;
   color: rgba(0, 0, 0, 0.5) !important; }
 
+.phone-duplicate-new {
+  text-shadow: 0 0 7px #ff0039; }
+
 .label-red {
   background: #ffcccc;
   border-radius: 5px;

@@ -49,10 +49,30 @@ class Client extends Model
         }
     }
 
+    /**
+     * Удалить клиентов без заявок
+     */
+    public static function removeWithoutRequests()
+    {
+        Client::doesntHave('requests')->delete();
+    }
+
     protected static function boot()
     {
-        static::saving(function($tutor) {
-            cleanNumbers($tutor);
+        static::saving(function($client) {
+            cleanNumbers($client);
+
+            if ($client->changed(static::$phone_fields)) {
+                foreach($client->phones as $phone) {
+                    if (Client::searchByPhone($phone)->where('id', '!=', $client->id)) {
+                        $client->duplicate = true;
+                        break;
+                    }
+                }
+            }
+        });
+        static::deleted(function($client) {
+            static::removeWithoutRequests();
         });
     }
 }
