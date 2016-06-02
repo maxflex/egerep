@@ -142,6 +142,8 @@ class Attachment extends Model
         foreach (Attachment::$states as $state) {
             $counts[$state] = Attachment::searchByState($state)->count();
         }
+        $counts['all'] = array_sum($counts);
+        
         return $counts;
     }
 }

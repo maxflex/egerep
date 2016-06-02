@@ -695,15 +695,27 @@
     });
   }).controller('AttachmentsIndex', function($rootScope, $scope, $timeout, $http, AttachmentStates, UserService, PhoneService, Subjects, Grades) {
     var loadAttachments;
-    _.extend(AttachmentStates, {
-      all: 'все'
-    });
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
+    $scope.sort_field = 'created_at';
+    $scope.sort_type = 'desc';
+    $scope.sort = function(field) {
+      if ($scope.sort_field === field) {
+        $scope.sort_type = $scope.sort_type === 'desc' ? 'asc' : 'desc';
+      } else {
+        $scope.sort_field = field;
+        $scope.sort_type = 'desc';
+      }
+      return loadAttachments($scope.current_page);
+    };
     $scope.changeState = function(state_id) {
-      $scope.chosen_state_id = state_id;
-      $scope.current_page = 1;
       $rootScope.frontend_loading = true;
+      $scope.attachments = [];
+      $scope.chosen_state_id = state_id;
+      $scope.chosen_state_page_size = AttachmentStates[state_id].page_size;
+      $scope.sort_field = AttachmentStates[state_id].sort.field;
+      $scope.sort_type = AttachmentStates[state_id].sort.type;
+      $scope.current_page = 1;
       loadAttachments(1);
       return window.history.pushState(state_id, '', 'attachments/' + state_id.toLowerCase());
     };
@@ -717,14 +729,14 @@
     };
     return loadAttachments = function(page) {
       var params;
-      params = '?page=' + page;
-      if ($scope.chosen_state_id) {
-        params += '&state=' + $scope.chosen_state_id;
-      } else {
-        params += '&state=' + 'new';
+      if (!$scope.chosen_state_id) {
+        $scope.chosen_state_id = 'new';
       }
+      params = '?page=' + page;
+      params += '&sort_field=' + $scope.sort_field + '&sort_type=' + $scope.sort_type;
+      params += '&state=' + $scope.chosen_state_id + '&page_size=' + AttachmentStates[$scope.chosen_state_id].page_size;
       return $http.get("api/attachments" + params).then(function(response) {
-        $rootScope.frontendStop();
+        $rootScope.frontend_loading = false;
         $scope.data = response.data;
         return $scope.attachments = $scope.data.data;
       });
@@ -2613,94 +2625,6 @@
 }).call(this);
 
 (function() {
-  var apiPath, updateMethod;
-
-  angular.module('Egerep').factory('Account', function($resource) {
-    return $resource(apiPath('accounts'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Review', function($resource) {
-    return $resource(apiPath('reviews'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Archive', function($resource) {
-    return $resource(apiPath('archives'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Attachment', function($resource) {
-    return $resource(apiPath('attachments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('RequestList', function($resource) {
-    return $resource(apiPath('lists'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Request', function($resource) {
-    return $resource(apiPath('requests'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      transfer: {
-        method: 'POST',
-        url: apiPath('requests', 'transfer')
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  }).factory('Sms', function($resource) {
-    return $resource(apiPath('sms'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Comment', function($resource) {
-    return $resource(apiPath('comments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Client', function($resource) {
-    return $resource(apiPath('clients'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('User', function($resource) {
-    return $resource(apiPath('users'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Tutor', function($resource) {
-    return $resource(apiPath('tutors'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      deletePhoto: {
-        url: apiPath('tutors', 'photo'),
-        method: 'DELETE'
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  });
-
-  apiPath = function(entity, additional) {
-    if (additional == null) {
-      additional = '';
-    }
-    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
-  };
-
-  updateMethod = function() {
-    return {
-      update: {
-        method: 'PUT'
-      }
-    };
-  };
-
-}).call(this);
-
-(function() {
   angular.module('Egerep').value('Weekdays', {
     0: 'пн',
     1: 'вт',
@@ -2750,9 +2674,38 @@
     unpublished: 'не опубликован',
     published: 'опубликован'
   }).value('AttachmentStates', {
-    "new": 'новые',
-    inprogress: 'рабочие',
-    ended: 'завершенные'
+    "new": {
+      label: 'новые',
+      page_size: 30,
+      sort: {
+        field: 'created_at',
+        type: 'asc'
+      }
+    },
+    inprogress: {
+      label: 'рабочие',
+      page_size: 200,
+      sort: {
+        field: 'created_at',
+        type: 'desc'
+      }
+    },
+    ended: {
+      label: 'завершенные',
+      page_size: 200,
+      sort: {
+        field: 'created_at',
+        type: 'desc'
+      }
+    },
+    all: {
+      label: 'все',
+      page_size: 30,
+      sort: {
+        field: 'id',
+        type: 'asc'
+      }
+    }
   }).value('ReviewScores', {
     1: 1,
     2: 2,
@@ -3276,6 +3229,94 @@
     };
     return this;
   });
+
+}).call(this);
+
+(function() {
+  var apiPath, updateMethod;
+
+  angular.module('Egerep').factory('Account', function($resource) {
+    return $resource(apiPath('accounts'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Review', function($resource) {
+    return $resource(apiPath('reviews'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Archive', function($resource) {
+    return $resource(apiPath('archives'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Attachment', function($resource) {
+    return $resource(apiPath('attachments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('RequestList', function($resource) {
+    return $resource(apiPath('lists'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Request', function($resource) {
+    return $resource(apiPath('requests'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      transfer: {
+        method: 'POST',
+        url: apiPath('requests', 'transfer')
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  }).factory('Sms', function($resource) {
+    return $resource(apiPath('sms'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Comment', function($resource) {
+    return $resource(apiPath('comments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Client', function($resource) {
+    return $resource(apiPath('clients'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('User', function($resource) {
+    return $resource(apiPath('users'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Tutor', function($resource) {
+    return $resource(apiPath('tutors'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      deletePhoto: {
+        url: apiPath('tutors', 'photo'),
+        method: 'DELETE'
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  });
+
+  apiPath = function(entity, additional) {
+    if (additional == null) {
+      additional = '';
+    }
+    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
+  };
+
+  updateMethod = function() {
+    return {
+      update: {
+        method: 'PUT'
+      }
+    };
+  };
 
 }).call(this);
 
