@@ -30053,7 +30053,7 @@ table.summary-table.left-align tr td {
     text-transform: uppercase;
     font-weight: bold; }
   .attachment-table-items tr {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+    border-bottom: 1px solid #ddd;
     text-align: center; }
     .attachment-table-items tr td:first-child {
       padding: 5px;
