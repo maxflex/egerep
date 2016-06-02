@@ -49,7 +49,7 @@ angular.module('Egerep')
 
                     $scope.visible_clients_count++
                     $scope.$apply()
-    .controller 'AccountsCtrl', ($rootScope, $scope, $http, $timeout, Account, PaymentMethods, DebtTypes, Grades, Attachment) ->
+    .controller 'AccountsCtrl', ($rootScope, $scope, $http, $timeout, Account, PaymentMethods, DebtTypes, Grades, Attachment, Weekdays, AttachmentStates) ->
         bindArguments($scope, arguments)
         $scope.current_scope  = $scope
         $scope.current_period = 0
@@ -60,17 +60,23 @@ angular.module('Egerep')
 
         $scope.loadPage = (type) ->
             $rootScope.frontend_loading = true
-            $http.get "api/accounts/#{$scope.tutor_id}?current_period=#{$scope.current_period}"
+            $http.get "api/accounts/#{$scope.tutor_id}" + (if $scope.current_period then "?date_limit=#{$scope.date_limit}" else "")
             .success (response) ->
                     renderData(response)
                     $scope.current_period++
 
         renderData = (data) ->
             # если у нового tutor last_accounts=null, то загрузили всё
-            if data.last_accounts is null
+            if data.account is null
+                $scope.date_limit = $scope.first_attachment_date
                 $scope.all_displayed = true
             else
-                $scope.tutor = data
+                if not $scope.current_period
+                    $scope.tutor = data
+                else
+                    $scope.tutor.last_accounts.unshift(data.account)
+                    $scope.date_limit = moment(data.account.date_end).subtract(7, 'days').format('YYYY-MM-DD')
+                    $scope.left       = data.left
             $rootScope.frontend_loading = false
             $('.accounts-table').stickyTableHeaders('destroy')
             $timeout ->
@@ -90,6 +96,9 @@ angular.module('Egerep')
                 ''
             else
                 moment($scope.tutor.last_accounts[index + 1].date_end).subtract(1, 'days').toDate()
+
+        $scope.getDay = (date) ->
+            moment(date).day()
 
         $scope.changeDateDialog = (index) ->
             $('#date-end-change').datepicker('destroy')
@@ -138,18 +147,7 @@ angular.module('Egerep')
             # если нулевой элемент, то отсчитываем от даты первой стыковки (самой ранней стыковки)
             # иначе отсчитываем от даты конца предыдущего периода
             if not index
-                # если нажимали на "+1 период", то отображать от конца самого раннего периода
-                # в диапазоне видимости - 7 дней
-                if $scope.current_period > 1
-                    # -7 дней делать только в том случае, если еще не все периоды отображены
-                    current_date = moment($scope.tutor.last_accounts[0].date_end).subtract((if $scope.all_displayed then 60 else 7), 'days').format('YYYY-MM-DD')
-                else
-                # иначе отображаем от date_limit, что равно дата самой последней встречи -60 дней
-                    if not $scope.date_limit
-                        # если date_limit не установлен, значит, мы только что создали первую отчетность
-                        # устанавливаем date_limit = конец_периода - 60 дней
-                        $scope.date_limit = moment($scope.tutor.last_accounts[0].date_end).subtract(60, 'days').format('YYYY-MM-DD')
-                    current_date = moment($scope.date_limit).format('YYYY-MM-DD')
+                current_date = $scope.date_limit
             else
                 current_date = moment($scope.tutor.last_accounts[index - 1].date_end).add(1, 'days').format('YYYY-MM-DD')
 
@@ -193,6 +191,22 @@ angular.module('Egerep')
             else
                 return Math.round(parseInt(val) * .25)
 
+        # всего занятий
+        $scope.totalLessons = (account, client_id) ->
+            lessons_count = 0
+            $.each $scope.tutor.last_accounts, (index, account) ->
+                lessons_count += $scope.periodLessons(account, client_id)
+            lessons_count || null
+
+        # всего занятий в периоде
+        $scope.periodLessons = (account, client_id) ->
+            return null if not account.data[client_id]
+            lessons_count = 0
+            $.each account.data[client_id], (index, value) ->
+                lessons_count++ if value
+            lessons_count || null
+            # if account.data[client_id] then Object.keys(account.data[client_id]).length else 0
+
         $scope.totalCommission = (account) ->
             total_commission = 0
             $.each account.data, (index, account_data) ->
@@ -205,9 +219,12 @@ angular.module('Egerep')
         ## Управление кареткой ##
 
         $scope.selectRow = (date) ->
-            $('tr[class^=\'tr-\']').removeClass 'selected'
             $('.tr-' + date).addClass 'selected'
             return
+        $scope.deselectRow = (date) ->
+            $('.tr-' + date).removeClass 'selected'
+            return
+
 
         ###
         * Перевести курсор, если элемент существует

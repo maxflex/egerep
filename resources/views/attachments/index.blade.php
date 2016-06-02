@@ -55,13 +55,13 @@
         <div>
             Стыковку №@{{ attachment.id }} создал: @{{ UserService.getLogin(attachment.user_id) }} @{{ formatDateTime(attachment.created_at) }} <a href="requests/@{{ attachment.request_id }}/edit#@{{ attachment.request_list_id }}#@{{ attachment.id }}">редактировать</a>
         </div>
-        <hr ng-hide="   $last"/>
+        <hr class='list-separate' ng-hide="$last">
     </div>
 </div>
 
 <div ng-if="['inprogress', 'ended'].indexOf(chosen_state_id) != -1">
-    <table class="attachment-table-items">
-        <thead>
+    <table class="table">
+        <thead class="bold">
             <tr>
                 <td class="col-sm-2">
                     Преподаватель

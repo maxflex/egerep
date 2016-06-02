@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use App\Models\Client;
 use App\Http\Controllers\Controller;
 
 class RequestsController extends Controller
@@ -18,6 +19,40 @@ class RequestsController extends Controller
         return [
             'request_state_counts'  => \App\Models\Request::stateCounts(),
         ];
+    }
+
+    /**
+     * Переместить заявку
+     */
+    public function transfer($id, Request $request)
+    {
+        $client_id = $request->client_id;
+
+        $client = Client::where('id', $client_id);
+
+        if ($client->exists()) {
+            $r = \App\Models\Request::find($id);
+            $r->client_id = $client_id;
+            if ($r->lists) {
+                foreach($r->lists as $list) {
+                    if ($list->attachments) {
+                        foreach($list->attachments as $attachment) {
+                            \App\Models\AccountData::where('tutor_id', $attachment->tutor_id)
+                                ->where('client_id', $attachment->client_id)
+                                ->update([
+                                    'client_id' => $client_id
+                                ]);
+                            $attachment->client_id = $client_id;
+                            $attachment->save();
+                        }
+                    }
+                }
+            }
+            $r->save();
+            return 1;
+        } else {
+            return null;
+        }
     }
 
     /**

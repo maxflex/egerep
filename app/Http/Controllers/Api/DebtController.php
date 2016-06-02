@@ -93,8 +93,8 @@ class DebtController extends Controller
     {
         extract(array_filter($request->search));
 
-        // анализируем только не закрытых преподавателей с метками
-        $query = Tutor::with(['markers'])->where('tutors.debt', '>', 0);
+        // показывать в списке нужно преподавателей, у которых а) дебет не = 0 либо б) расчетный дебет не = 0
+        $query = Tutor::with(['markers'])->whereRaw('(tutors.debt > 0 OR tutors.debt_calc > 0)');
 
         if (isset($debt_from)) {
             $query->where('tutors.debt', '>=', $debt_from);
@@ -102,6 +102,22 @@ class DebtController extends Controller
 
         if (isset($debt_to)) {
             $query->where('tutors.debt', '<=', $debt_to);
+        }
+
+        if (isset($debt_calc_from)) {
+            $query->where('tutors.debt_calc', '>=', $debt_calc_from);
+        }
+
+        if (isset($debt_calc_to)) {
+            $query->where('tutors.debt_calc', '<=', $debt_calc_to);
+        }
+
+        if (isset($subjects)) {
+            $sql = [];
+            foreach ($subjects as $subject_id) {
+                $sql[] = "FIND_IN_SET({$subject_id}, tutors.subjects)";
+            }
+            $query->whereRaw('(' . implode(' OR ', $sql) . ')');
         }
 
         if (isset($account_date_from) || isset($account_date_to)) {
@@ -121,32 +137,6 @@ class DebtController extends Controller
             }
         }
 
-        /**
-         * #878
-         * количество непроведенных занятий по архивированным стыковкам
-         */
-            $query->leftJoin(
-                /* таблица [tutor|непроведенные занятия] */
-                DB::raw(
-                    '('.
-                        'select attachments.tutor_id, sum(archives.total_lessons_missing) as missed_lessons_cnt '.
-                        'from attachments '.
-                        'left outer join archives on archives.attachment_id  = attachments.id and archives.total_lessons_missing > 0 '.
-                        'group by attachments.tutor_id '.
-                        'having missed_lessons_cnt > 0 '.
-                    ') archive_lessons'
-                ),
-                function($join) {
-                    $join->on('archive_lessons.tutor_id', '=', 'tutors.id');
-                }
-            );
-
-            /* преподы с dept >0  или sum(непроведенные занятия) > 0 */
-            $query->orWhere('archive_lessons.missed_lessons_cnt', '>', '0');
-        /**
-         *  #878
-         */
-
         # выбираем только нужные поля для ускорения запроса
         $tutors = $query->get([
             'tutors.id',
@@ -157,7 +147,7 @@ class DebtController extends Controller
             'tutors.birth_year',
             'tutors.debt',
             'tutors.debt_calc',
-            'tutors.debt_comment'
+            'tutors.debt_comment',
         ])->append('last_account_info');
 
         return $tutors;

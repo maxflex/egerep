@@ -1,26 +1,22 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
-use Log;
-use App\Models\Client;
 use Illuminate\Http\Request;
-
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class ClientsController extends Controller
+class PeriodsController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $search_text = substr($request->global_search, 1);
-        return Client::searchByPhone($search_text)->paginate(30)->toJson();
+        return view('periods.index');
     }
 
     /**
@@ -52,7 +48,7 @@ class ClientsController extends Controller
      */
     public function show($id)
     {
-        return Client::find($id)->toJson();
+        //
     }
 
     /**
@@ -75,7 +71,7 @@ class ClientsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Client::find($id)->update($request->input());
+        //
     }
 
     /**

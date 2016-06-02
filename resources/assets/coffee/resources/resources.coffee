@@ -15,7 +15,14 @@ angular.module('Egerep')
         $resource apiPath('lists'), {id: '@id'}, updateMethod()
 
     .factory 'Request', ($resource) ->
-        $resource apiPath('requests'), {id: '@id'}, updateMethod()
+        $resource apiPath('requests'), {id: '@id'},
+            update:
+                method: 'PUT'
+            transfer:
+                method: 'POST'
+                url: apiPath('requests', 'transfer')
+            list:
+                method: 'GET'
 
     .factory 'Sms', ($resource) ->
         $resource apiPath('sms'), {id: '@id'}, updateMethod()

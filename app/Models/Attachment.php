@@ -62,7 +62,11 @@ class Attachment extends Model
 
     public function getUserLoginAttribute()
     {
-        return User::where('id', $this->user_id)->pluck('login')->first();
+        if (! $this->user_id) {
+            return 'system';
+        } else {
+            return User::where('id', $this->user_id)->pluck('login')->first();
+        }
     }
 
     public function setArchiveAttribute($archive)
@@ -114,6 +118,18 @@ class Attachment extends Model
                     return $query->whereNull('forecast');
                 }
             }
+        }
+    }
+
+    /**
+     * Получить статус стыковки
+     */
+    public function getState()
+    {
+        if ($this->archive()->exists()) {
+            return 'ended';
+        } else {
+            return ($this->forecast ? 'inprogress' : 'new');
         }
     }
 

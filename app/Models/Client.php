@@ -13,7 +13,7 @@ class Client extends Model
     use Person;
 
     public $timestamps = false;
-    
+
     protected $with = ['requests', 'markers'];
 
     protected $fillable = [
@@ -35,5 +35,24 @@ class Client extends Model
         foreach ($value as $request) {
             Request::find($request['id'])->update($request);
         }
+    }
+
+    public function scopeSearchByPhone($query, $searchText)
+    {
+        if ($searchText) {
+            // @todo: цикл по номерам телефона
+            return $query->where("phone", "like", "%{$searchText}%")
+                         ->orWhere("phone2", "like", "%{$searchText}%")
+                         ->orWhere("phone3", "like", "%{$searchText}%")
+                         ->orWhere("phone4", "like", "%{$searchText}%");
+
+        }
+    }
+
+    protected static function boot()
+    {
+        static::saving(function($tutor) {
+            cleanNumbers($tutor);
+        });
     }
 }

@@ -6,10 +6,29 @@ angular
     #
     #   LIST CONTROLLER
     #
-    .controller "ClientsIndex", ($scope, $timeout, Client) ->
-        $scope.clients = Client.query()
+    .controller "ClientsIndex", ($scope, $rootScope, $timeout, $http, Client) ->
+        $rootScope.frontend_loading = true
 
+        $scope.pageChanged = ->
+            load $scope.current_page
+            paginate('clients', $scope.current_page)
 
+        load = (page) ->
+            $rootScope.frontend_loading = true
+            params = '?page=' + page
+            params += "&global_search=#{ $scope.global_search }" if $scope.global_search
+
+            # update repetitors
+            # @todo: why ugly params? maybe use $http.post instead?
+            $http.get "api/clients#{ params }"
+                .then (response) ->
+                    $rootScope.frontendStop()
+                    $scope.data = response.data
+                    $scope.clients = $scope.data.data
+
+        $timeout ->
+            load $scope.page
+            $scope.current_page = $scope.page
 
     #
     #   ADD/EDIT CONTROLLER
@@ -176,6 +195,17 @@ angular
                     Request.delete {id: $scope.selected_request.id}, ->
                         $scope.client.requests = removeById $scope.client.requests, $scope.selected_request.id
                         unsetSelected(true, true, true)
+
+        $scope.transferRequest = ->
+            $('#transfer-request').modal 'show'
+
+        $scope.transferRequestGo = ->
+            $('#transfer-request').modal 'hide'
+            $http.post "api/requests/transfer/#{$scope.selected_request.id}",
+                client_id: $scope.transfer_client_id
+            .then (response) ->
+                console.log response
+                if response.data isnt '' then location.reload() else bootbox.alert('Клиент не существует')
 
         # Снять выбор с выбранной комбинации
         unsetSelected = (request = false, list = false, attachment = false) ->

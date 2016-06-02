@@ -10,11 +10,21 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
 });
 
 Route::group(['middleware' => ['web']], function () {
+    Route::get('client/{id}', function($id) {
+        $request_id = \App\Models\Request::where('client_id', $id)->value('id');
+        if ($request_id) {
+            return redirect()->to("https://lk.a-perspektiva.ru/requests/{$request_id}/edit");
+            // return redirect()->route('requests.edit', $request_id);
+        } else {
+            return redirect()->to('/');
+        }
+    });
     Route::get('/', 'TutorsController@index');
     Route::resource('tutors', 'TutorsController');
     Route::get('requests/{state_id?}', 'RequestsController@index');
     Route::resource('requests', 'RequestsController', ['except' => ['index']]);
     Route::resource('clients', 'ClientsController');
+    Route::resource('periods', 'PeriodsController');
     Route::get('attachments/{state?}', 'AttachmentsController@index');
     // Route::resource('debt', 'DebtController', ['only' => 'index']);
     Route::get('debt/map', 'DebtController@map');
@@ -44,6 +54,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('tutors', 'TutorsController');
 
         Route::post('requests/counts', 'RequestsController@counts');
+        Route::post('requests/transfer/{id}', 'RequestsController@transfer');
         Route::resource('requests', 'RequestsController');
         Route::resource('lists', 'RequestListsController');
         Route::resource('attachments', 'AttachmentsController');
@@ -56,6 +67,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('comments', 'CommentsController');
         Route::resource('accounts', 'AccountsController');
         Route::resource('sms', 'SmsController');
+        Route::resource('periods', 'PeriodsController');
 
         Route::post('summary', 'SummaryController@index');
         Route::controllers([

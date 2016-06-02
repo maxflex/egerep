@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Laravel</title>
+    <title>ЕГЭ-Репетитор</title>
     <meta charset="utf-8">
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <meta charset="utf-8">
     <base href="{{ config('app.url') }}">
     <link href="{{ asset('css/app.css', isProduction()) }}" rel="stylesheet" type="text/css">
+    <link rel="shortcut icon" href="favicon.png" />
     {{-- <link href='https://fonts.googleapis.com/css?family=Ubuntu&subset=latin,cyrillic' rel='stylesheet' type='text/css'> --}}
     @yield('scripts')
     <script src="{{ asset('/js/vendor.js', isProduction()) }}"></script>
@@ -38,10 +39,14 @@
               <a class="list-group-item active">Меню</a>
               <a href="requests" class="list-group-item">Заявки</a>
               <a href="attachments" class="list-group-item">Стыковки</a>
-              <a class="list-group-item active">Преподаватели</a>
               <a href="tutors" class="list-group-item">Преподаватели</a>
-              <a href="debt/map" class="list-group-item">Дебет</a>
-              <a class="list-group-item active">Настройки</a>
+              @if (\App\Models\User::fromSession()->show_accounts)
+                  <a href="periods" class="list-group-item">Расчеты</a>
+              @endif
+
+              @if (\App\Models\User::fromSession()->show_debt)
+                  <a href="debt/map" class="list-group-item">Дебет</a>
+              @endif
               <a href="summary" class="list-group-item">Итоги</a>
               <a href="logout" class="list-group-item">Выход</a></div>
         </div>

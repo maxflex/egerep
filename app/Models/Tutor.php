@@ -142,23 +142,8 @@ class Tutor extends Model
             return [];
         }
 
-        if ($this->current_period) {
-            // находим отчетность перед date_limit
-            $date_limit = DB::table('accounts')->where('tutor_id', $this->id)
-                                               ->where('date_end', '<', $this->getDateLimit())
-                                               ->orderBy('date_end', 'desc')
-                                               ->take(1)
-                                               ->skip($this->current_period - 1)
-                                               ->value('date_end');
-            // если дата не нашлась, то всё уже отобразили
-            if (! $date_limit) {
-                return null;
-            }
-        } else {
-            $date_limit = $this->getDateLimit();
-        }
         return $query
-            ->where('date_end', '>=', $date_limit)
+            ->where('date_end', '>=', $this->getDateLimit())
             ->orderBy('date_end', 'asc')
             ->get();
     }
@@ -251,6 +236,10 @@ class Tutor extends Model
                     'attachment_id'         => $attachment->id,
                     'name'                  => $attachment->requestList->request->client->name,
                     'grade'                 => $attachment->requestList->request->client->grade,
+                    'total_lessons_missing' => $attachment->archive ? $attachment->archive->total_lessons_missing : null,
+                    'total_lessons'         => DB::table('account_datas')->where('tutor_id', $attachment->tutor_id)->where('client_id', $attachment->client_id)->count(),
+                    'forecast'              => $attachment->forecast,
+                    'state'                 => $attachment->getState(),
                 ];
                 if ($with_lessons_count) {
                     $client['lessons_count'] = AccountData::where('client_id', $attachment->requestList->request->client_id)
@@ -409,6 +398,7 @@ class Tutor extends Model
 
     private static function addPublishedCondition($query, $published_state)
     {
+
         if ($published_state !== '' && $published_state !== null && ($published_state == 0 || $published_state == 1)) {
             if ($published_state) {
                 $query->where('public_desc', '!=', '');
@@ -455,9 +445,7 @@ class Tutor extends Model
             if (! empty($state)) {
                 $query->where('state', $state);
             }
-
             self::addPublishedCondition($query, $published_state);
-
             $return[$user_id] = $query->count();
         }
         return $return;
@@ -501,17 +489,6 @@ class Tutor extends Model
         }
     }
 
-    /**
-     * Данные по встречам 60 дней с момента последней встречи
-     *
-     */
-     public function withLastAccounts($current_period = 0)
-     {
-        $this->current_period = $current_period;
-        $this->append('last_accounts');
-        return $this;
-     }
-
 
      /**
       * Лимит даты для отображения начальной отчетности
@@ -531,22 +508,19 @@ class Tutor extends Model
          return DB::table('tutors')->sum('debt_calc');
      }
 
+
     /**
-     * @param string $type      initial|month|year|all.
-     * @return int              Days for period.
+     * Возвращаем
      */
-     private function _defineAccountDays($type = 'initial') {
-         switch ($type) {
-             case 'month':
-                 return 90;
-             case 'year':
-                 return 365;
-             case 'all':
-                 return 0;
-             default:
-                 return 60;
-         }
-     }
+    public static function plusPeriod($id, $date_limit)
+    {
+        $query = Account::where('date_end', '<', $date_limit)
+                        ->where('tutor_id', $id);
+        return [
+            'left'      => $query->count(),
+            'account'   => $query->orderBy('date_end', 'desc')->first(),
+        ];
+    }
 
     /**
  	 * Соответствия межу ID преподавателей

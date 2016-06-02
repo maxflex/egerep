@@ -66,6 +66,15 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
         $rootScope.findById = (object, id) ->
             _.findWhere(object, {id: parseInt(id)})
 
+        # prop2 – второй уровень вложенности
+        $rootScope.total = (array, prop, prop2 = false) ->
+            sum = 0
+            $.each array, (index, value) ->
+                v = value[prop]
+                v = v[prop2] if prop2
+                sum += v
+            sum
+
         $rootScope.formatBytes = (bytes) ->
           if bytes < 1024
             bytes + ' Bytes'
