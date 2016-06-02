@@ -5,7 +5,7 @@
             <tr>
                 <td class='empty-td'>
                     <span class='link-like' ng-hide='all_displayed' ng-click='loadPage()'>
-                        +1 период
+                         @{{ left == 1 ? 'все время' : '+1 период'}}
                     </span>
                 </td>
             </tr>

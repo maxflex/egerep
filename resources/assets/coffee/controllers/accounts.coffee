@@ -67,15 +67,16 @@ angular.module('Egerep')
 
         renderData = (data) ->
             # если у нового tutor last_accounts=null, то загрузили всё
-            if data is ""
+            if data.account is null
                 $scope.date_limit = $scope.first_attachment_date
                 $scope.all_displayed = true
             else
                 if not $scope.current_period
                     $scope.tutor = data
                 else
-                    $scope.tutor.last_accounts.unshift(data)
-                    $scope.date_limit = moment(data.date_end).subtract(7, 'days').format('YYYY-MM-DD')
+                    $scope.tutor.last_accounts.unshift(data.account)
+                    $scope.date_limit = moment(data.account.date_end).subtract(7, 'days').format('YYYY-MM-DD')
+                    $scope.left       = data.left
             $rootScope.frontend_loading = false
             $('.accounts-table').stickyTableHeaders('destroy')
             $timeout ->

@@ -508,12 +508,17 @@ class Tutor extends Model
      }
 
 
+    /**
+     * Возвращаем
+     */
     public static function plusPeriod($id, $date_limit)
     {
-        return Account::where('date_end', '<', $date_limit)
-                        ->where('tutor_id', $id)
-                        ->orderBy('date_end', 'desc')
-                        ->first();
+        $query = Account::where('date_end', '<', $date_limit)
+                        ->where('tutor_id', $id);
+        return [
+            'left'      => $query->count(),
+            'account'   => $query->orderBy('date_end', 'desc')->first(),
+        ];
     }
 
     /**

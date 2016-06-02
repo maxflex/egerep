@@ -7,6 +7,7 @@
     <meta charset="utf-8">
     <base href="{{ config('app.url') }}">
     <link href="{{ asset('css/app.css', isProduction()) }}" rel="stylesheet" type="text/css">
+    <link rel="shortcut icon" href="favicon.png" />
     {{-- <link href='https://fonts.googleapis.com/css?family=Ubuntu&subset=latin,cyrillic' rel='stylesheet' type='text/css'> --}}
     @yield('scripts')
     <script src="{{ asset('/js/vendor.js', isProduction()) }}"></script>
