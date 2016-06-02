@@ -17,11 +17,33 @@ class AttachmentsController extends Controller
      */
     public function index(Request $request)
     {
-        return Attachment::searchByState($request->state)
-                        ->with(['requestList', 'client', 'tutor'])
-                        ->orderBy('created_at')
-                        ->paginate(30)
-                        ->toJson();
+        /**
+         * сделал с join чтобы сортировать
+         */
+        $query = Attachment::searchByState($request->state)->with(['tutor', 'client']);
+        $query->join('request_lists as r', 'request_list_id', '=', 'r.id');             /* request_id нужен чтобы генерить правильную ссылку для редактирования */
+        $query->leftJoin('archives as a', 'a.attachment_id', '=', 'attachments.id');
+
+        /**
+         * количество занятий - есть и атирибут account_data_count.
+         * но чтобы сортировка была правильной, должны через join получить.
+         */
+        $query->leftJoin('account_datas as ad', function($query) {
+            $query->on('ad.tutor_id', '=', 'attachments.tutor_id');
+            $query->on('ad.client_id', '=', 'attachments.client_id');
+        })->groupBy('attachments.id');
+
+
+        $query->select(
+            'attachments.*', 'r.request_id',
+            'a.created_at AS archive_date', 'a.total_lessons_missing',
+            \DB::raw('count(ad.id) as lesson_count')
+        );
+
+
+        $query->orderBy($request->sort_field, $request->sort_type);
+        return $query->paginate($request->page_size)->toJson();
+
     }
 
     /**

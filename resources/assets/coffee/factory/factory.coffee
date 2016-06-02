@@ -49,9 +49,30 @@ angular.module('Egerep')
         published:   'опубликован'
 
     .value 'AttachmentStates',
-        new:        'новые'
-        inprogress: 'рабочие'
-        ended:      'завершенные'
+        new:
+            label:     'новые'
+            page_size: 30
+            sort:
+                field: 'created_at'
+                type:  'asc'
+        inprogress:
+            label:     'рабочие'
+            page_size: 200
+            sort:
+                field: 'created_at'
+                type:  'desc'
+        ended:
+            label:     'завершенные'
+            page_size: 200
+            sort:
+                field: 'created_at'
+                type:  'desc'
+        all:
+            label: 'все'
+            page_size: 30
+            sort:
+                field: 'id'
+                type:  'asc'
 
     .value 'ReviewScores',
         1: 1

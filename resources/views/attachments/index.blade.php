@@ -10,7 +10,7 @@
                 ng-class="{'active' : chosen_state_id == state_id || !chosen_state_id && state_id == 'new', 'request-status-li': state_id != 'all' && (chosen_state_id != state_id)}"
                 >
                 <a class="list-link" href="@{{state_id}}" ng-click="changeState(state_id)" data-toggle="tab" aria-expanded="@{{$index == 0}}">
-                    @{{ state }} <span ng-if="state_id != 'all'">(@{{ state_counts[state_id] }})</span>
+                    @{{ state.label }} (@{{ state_counts[state_id] }})
                 </a>
              </li>
         </ul>
@@ -26,7 +26,7 @@
         <div>
             <span ng-show="attachment.client.name">@{{ attachment.client.name }},</span>
             <span ng-show="attachment.client.grade > 0">@{{ Grades[attachment.client.grade] }},</span>
-            <span ng-show="attachment.client.address">@{{ attachment.client.address }}</span>
+            <span ng-show="attachment.client.address">@{{ attachment.client.address }},</span>
             <span ng-repeat="phone_field in ['phone', 'phone2', 'phone3']">
                 <span ng-show="attachment.client[phone_field]">
                     <span class="underline-hover inline-block"
@@ -53,7 +53,7 @@
             <comments entity-type='attachment' entity-id='attachment.id' user='{{ $user }}'></comments>
         </div>
         <div>
-            Стыковку №@{{ attachment.id }} создал: @{{ UserService.getLogin(attachment.user_id) }} @{{ formatDateTime(attachment.created_at) }} <a href="requests/@{{ attachment.request_list.request_id }}/edit#@{{ attachment.request_list_id }}#@{{ attachment.id }}">редактировать</a>
+            Стыковку №@{{ attachment.id }} создал: @{{ UserService.getLogin(attachment.user_id) }} @{{ formatDateTime(attachment.created_at) }} <a href="requests/@{{ attachment.request_id }}/edit#@{{ attachment.request_list_id }}#@{{ attachment.id }}">редактировать</a>
         </div>
         <hr ng-hide="   $last"/>
     </div>
@@ -63,22 +63,34 @@
     <table class="attachment-table-items">
         <thead>
             <tr>
-                <td class="col-sm-3">Преподаватель</td>
-                <td>Дата стыковки</td>
-                <td>Количество занятий</td>
-                <td>Прогноз</td>
-                <td ng-if="chosen_state_id == 'ended'">Дата ахривации</td>
-                <td ng-if="chosen_state_id == 'ended'">Количество не проставленных занятий</td>
+                <td class="col-sm-2">
+                    Преподаватель
+                </td>
+                <td ng-click="sort('created_at')" class="col-sm-2">
+                    Cтыковка
+                </td>
+                <td ng-click="sort('lesson_count')" class="col-sm-2">
+                    Занятия
+                </td>
+                <td ng-click="sort('total_lessons_missing')" ng-if="chosen_state_id == 'ended'" class="col-sm-3">
+                    Не проставленные занятия
+                </td>
+                <td ng-click="sort('forecast')" class="col-sm-1">
+                    Прогноз
+                </td>
+                <td ng-click="sort('archive_date')" ng-if="chosen_state_id == 'ended'" class="col-sm-2">
+                    Архивация
+                </td>
             </tr>
         </thead>
         <tbody>
             <tr ng-repeat="attachment in attachments">
                 <td><a href="tutors/@{{ attachment.tutor_id }}/edit">@{{ attachment.tutor.full_name}}</a></td>
                 <td>@{{ formatDate(attachment.created_at) }}</td>
-                <td>@{{ attachment.account_data_count }}</td>
-                <td>@{{ attachment.forecast }}</td>
-                <td ng-if="chosen_state_id == 'ended'">@{{ formatDate(attachment.archive.created_at) }}</td>
+                <td>@{{ attachment.lesson_count }}</td>
                 <td ng-if="chosen_state_id == 'ended'">@{{ attachment.archive.total_lessons_missing }}</td>
+                <td>@{{ attachment.forecast | number }}</td>
+                <td ng-if="chosen_state_id == 'ended'">@{{ formatDate(attachment.archive.created_at) }}</td>
             </tr>
         </tbody>
     </table>
@@ -86,7 +98,7 @@
 
 <div class="row" ng-hide="attachments.length">
     <div class="col-sm-12">
-        <h3 style="text-align: center; margin: 50px 0">Список стыковок пуст</h3>
+        <h3 style="text-align: center; margin: 50px 0">Загрузка данных...</h3>
     </div>
 </div>
 
