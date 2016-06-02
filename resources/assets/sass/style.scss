@@ -478,7 +478,11 @@
 				}
 				&.period-end {
 					height: 250px;
-					border-bottom: none;
+					border: none;
+					text-align: left;
+				}
+				&.invisible-td {
+					border: none;
 					text-align: left;
 				}
 			}
@@ -3546,4 +3550,23 @@ table.summary-table.left-align tr td {
 
 .double-border-bottom {
 	border-bottom-width: 2px !important;
+}
+
+
+.attachment-status {
+	border-radius: 50% !important;
+    height: 10px;
+    width: 10px;
+    top: .5px;
+    position: relative;
+	margin: 0 auto;
+	&.new {
+		background-color: $placeholder_gray;
+	}
+	&.inprogress {
+		background-color: $green_main;
+	}
+	&.ended {
+		background-color: $red;
+	}
 }

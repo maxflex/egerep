@@ -199,7 +199,7 @@
         }
       });
     };
-  }).controller('AccountsCtrl', function($rootScope, $scope, $http, $timeout, Account, PaymentMethods, DebtTypes, Grades, Attachment, Weekdays) {
+  }).controller('AccountsCtrl', function($rootScope, $scope, $http, $timeout, Account, PaymentMethods, DebtTypes, Grades, Attachment, Weekdays, AttachmentStates) {
     var bindDraggable, getAccountEndDate, getAccountStartDate, getCalendarStartDate, getCommission, moveCursor, renderData;
     bindArguments($scope, arguments);
     $scope.current_scope = $scope;
@@ -356,6 +356,27 @@
       } else {
         return Math.round(parseInt(val) * .25);
       }
+    };
+    $scope.totalLessons = function(account, client_id) {
+      var lessons_count;
+      lessons_count = 0;
+      $.each($scope.tutor.last_accounts, function(index, account) {
+        return lessons_count += $scope.periodLessons(account, client_id);
+      });
+      return lessons_count || null;
+    };
+    $scope.periodLessons = function(account, client_id) {
+      var lessons_count;
+      if (!account.data[client_id]) {
+        return null;
+      }
+      lessons_count = 0;
+      $.each(account.data[client_id], function(index, value) {
+        if (value) {
+          return lessons_count++;
+        }
+      });
+      return lessons_count || null;
     };
     $scope.totalCommission = function(account) {
       var total_commission;

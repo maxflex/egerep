@@ -118,6 +118,18 @@ class Attachment extends Model
     }
 
     /**
+     * Получить статус стыковки
+     */
+    public function getState()
+    {
+        if ($this->archive()->exists()) {
+            return 'ended';
+        } else {
+            return ($this->forecast ? 'inprogress' : 'new');
+        }
+    }
+
+    /**
      * @return array    attachment counts by state.
      */
     public static function stateCounts()

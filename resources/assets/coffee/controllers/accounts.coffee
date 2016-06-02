@@ -49,7 +49,7 @@ angular.module('Egerep')
 
                     $scope.visible_clients_count++
                     $scope.$apply()
-    .controller 'AccountsCtrl', ($rootScope, $scope, $http, $timeout, Account, PaymentMethods, DebtTypes, Grades, Attachment, Weekdays) ->
+    .controller 'AccountsCtrl', ($rootScope, $scope, $http, $timeout, Account, PaymentMethods, DebtTypes, Grades, Attachment, Weekdays, AttachmentStates) ->
         bindArguments($scope, arguments)
         $scope.current_scope  = $scope
         $scope.current_period = 0
@@ -190,6 +190,22 @@ angular.module('Egerep')
                 return if val then parseInt(val) else 0
             else
                 return Math.round(parseInt(val) * .25)
+
+        # всего занятий
+        $scope.totalLessons = (account, client_id) ->
+            lessons_count = 0
+            $.each $scope.tutor.last_accounts, (index, account) ->
+                lessons_count += $scope.periodLessons(account, client_id)
+            lessons_count || null
+
+        # всего занятий в периоде
+        $scope.periodLessons = (account, client_id) ->
+            return null if not account.data[client_id]
+            lessons_count = 0
+            $.each account.data[client_id], (index, value) ->
+                lessons_count++ if value
+            lessons_count || null
+            # if account.data[client_id] then Object.keys(account.data[client_id]).length else 0
 
         $scope.totalCommission = (account) ->
             total_commission = 0

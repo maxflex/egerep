@@ -236,6 +236,9 @@ class Tutor extends Model
                     'attachment_id'         => $attachment->id,
                     'name'                  => $attachment->requestList->request->client->name,
                     'grade'                 => $attachment->requestList->request->client->grade,
+                    'total_lessons_missing' => $attachment->archive ? $attachment->archive->total_lessons_missing : null,
+                    'forecast'              => $attachment->forecast,
+                    'state'                 => $attachment->getState(),
                 ];
                 if ($with_lessons_count) {
                     $client['lessons_count'] = AccountData::where('client_id', $attachment->requestList->request->client_id)

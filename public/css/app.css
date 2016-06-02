@@ -27642,7 +27642,10 @@ a {
       border-right: 1px solid #999999; }
     .accounts-table tr td.period-end {
       height: 250px;
-      border-bottom: none;
+      border: none;
+      text-align: left; }
+    .accounts-table tr td.invisible-td {
+      border: none;
       text-align: left; }
   .accounts-table thead tr td {
     border-top: none;
@@ -30095,5 +30098,19 @@ table.summary-table.left-align tr td {
 
 .double-border-bottom {
   border-bottom-width: 2px !important; }
+
+.attachment-status {
+  border-radius: 50% !important;
+  height: 10px;
+  width: 10px;
+  top: .5px;
+  position: relative;
+  margin: 0 auto; }
+  .attachment-status.new {
+    background-color: #999999; }
+  .attachment-status.inprogress {
+    background-color: #158E51; }
+  .attachment-status.ended {
+    background-color: #ff0039; }
 
 /*# sourceMappingURL=app.css.map */
