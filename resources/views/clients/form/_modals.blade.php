@@ -46,3 +46,21 @@
     </div>
   </div>
 </div>
+
+{{-- ПЕРЕМЕЩЕНИЕ ЗАЯВКИ --}}
+<div id="transfer-request" class="modal" role="dialog" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Переместить заявку</h4>
+      </div>
+      <div class="modal-body">
+          <input placeholder='номер клиента' type="text" ng-model='transfer_client_id' class="form-control digits-only">
+      </div>
+      <div class="modal-footer center">
+        <button type="button" class="btn btn-primary" ng-click="transferRequestGo()"
+            ng-disabled="!transfer_client_id">Переместить</button>
+      </div>
+    </div>
+  </div>
+</div>

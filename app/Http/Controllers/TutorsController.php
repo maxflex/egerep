@@ -14,12 +14,23 @@ class TutorsController extends Controller
 {
     public function index(Request $request)
     {
-        return view('tutors.index')->with(
-            ngInit([
-                'page'          => $request->input('page'),
-                'global_search' => $request->input('global_search'),
-            ])
-        );
+        $search_text = $request->global_search;
+
+        if ($search_text[0] == 'c') {
+            return view('clients.index')->with(
+                ngInit([
+                    'page'          => $request->input('page'),
+                    'global_search' => $request->input('global_search'),
+                ])
+            );
+        } else {
+            return view('tutors.index')->with(
+                ngInit([
+                    'page'          => $request->input('page'),
+                    'global_search' => $request->input('global_search'),
+                ])
+            );
+        }
     }
 
     public function create()

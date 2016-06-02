@@ -10,6 +10,14 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
 });
 
 Route::group(['middleware' => ['web']], function () {
+    Route::get('client/{id}', function($id) {
+        $request_id = \App\Models\Request::where('client_id', $id)->value('id');
+        if ($request_id) {
+            return redirect()->to("requests/$request_id/edit");
+        } else {
+            return redirect()->to('/');
+        }
+    });
     Route::get('/', 'TutorsController@index');
     Route::resource('tutors', 'TutorsController');
     Route::get('requests/{state_id?}', 'RequestsController@index');
@@ -45,6 +53,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('tutors', 'TutorsController');
 
         Route::post('requests/counts', 'RequestsController@counts');
+        Route::post('requests/transfer/{id}', 'RequestsController@transfer');
         Route::resource('requests', 'RequestsController');
         Route::resource('lists', 'RequestListsController');
         Route::resource('attachments', 'AttachmentsController');

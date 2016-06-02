@@ -17,9 +17,10 @@ class ClientsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $search_text = substr($request->global_search, 1);
+        return Client::searchByPhone($search_text)->paginate(30)->toJson();
     }
 
     /**

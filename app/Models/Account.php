@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\AccountData;
 use App\Models\Tutor;
+use App\Models\User;
 use Carbon\Carbon;
 use DB;
 
@@ -17,6 +18,7 @@ class Account extends Model
         'date_end',
         'tutor_id',
         'received',
+        'user_id',
         'debt',
         'debt_type',
         'debt_before',
@@ -219,8 +221,8 @@ class Account extends Model
 
     protected static function boot()
     {
-        static::saving(function ($account) {
-            if (! $account->exists()) {
+        static::saving(function($account) {
+            if (! $account->exists) {
                 $account->user_id = User::fromSession()->id;
             }
         });

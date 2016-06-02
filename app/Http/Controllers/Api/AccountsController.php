@@ -50,7 +50,11 @@ class AccountsController extends Controller
      */
     public function show(Request $request, $id)
     {
-        return Tutor::find($id)->withLastAccounts($request->current_period);
+        if (! $request->date_limit) {
+            return Tutor::find($id)->append('last_accounts');
+        } else {
+            return Tutor::plusPeriod($id, $request->date_limit);
+        }
     }
 
     /**

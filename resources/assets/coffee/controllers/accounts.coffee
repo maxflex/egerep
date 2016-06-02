@@ -60,7 +60,7 @@ angular.module('Egerep')
 
         $scope.loadPage = (type) ->
             $rootScope.frontend_loading = true
-            $http.get "api/accounts/#{$scope.tutor_id}?current_period=#{$scope.current_period}"
+            $http.get "api/accounts/#{$scope.tutor_id}" + (if $scope.current_period then "?date_limit=#{$scope.date_limit}" else "")
             .success (response) ->
                     renderData(response)
                     $scope.current_period++
@@ -70,7 +70,11 @@ angular.module('Egerep')
             if data.last_accounts is null
                 $scope.all_displayed = true
             else
-                $scope.tutor = data
+                if not $scope.current_period
+                    $scope.tutor = data
+                else
+                    $scope.tutor.last_accounts = $scope.tutor.last_accounts.unshift(data)
+                    $scope.date_limit = moment(data.date_end).subtract(7, 'days').format('YYYY-MM-DD')
             $rootScope.frontend_loading = false
             $('.accounts-table').stickyTableHeaders('destroy')
             $timeout ->

@@ -210,7 +210,7 @@
     });
     $scope.loadPage = function(type) {
       $rootScope.frontend_loading = true;
-      return $http.get("api/accounts/" + $scope.tutor_id + "?current_period=" + $scope.current_period).success(function(response) {
+      return $http.get(("api/accounts/" + $scope.tutor_id) + ($scope.current_period ? "?date_limit=" + $scope.date_limit : "")).success(function(response) {
         renderData(response);
         return $scope.current_period++;
       });
@@ -219,7 +219,12 @@
       if (data.last_accounts === null) {
         $scope.all_displayed = true;
       } else {
-        $scope.tutor = data;
+        if (!$scope.current_period) {
+          $scope.tutor = data;
+        } else {
+          $scope.tutor.last_accounts = $scope.tutor.last_accounts.unshift(data);
+          $scope.date_limit = moment(data.date_end).subtract(7, 'days').format('YYYY-MM-DD');
+        }
       }
       $rootScope.frontend_loading = false;
       $('.accounts-table').stickyTableHeaders('destroy');
@@ -708,8 +713,30 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').controller("ClientsIndex", function($scope, $timeout, Client) {
-    return $scope.clients = Client.query();
+  angular.module('Egerep').controller("ClientsIndex", function($scope, $rootScope, $timeout, $http, Client) {
+    var load;
+    $rootScope.frontend_loading = true;
+    $scope.pageChanged = function() {
+      load($scope.current_page);
+      return paginate('clients', $scope.current_page);
+    };
+    load = function(page) {
+      var params;
+      $rootScope.frontend_loading = true;
+      params = '?page=' + page;
+      if ($scope.global_search) {
+        params += "&global_search=" + $scope.global_search;
+      }
+      return $http.get("api/clients" + params).then(function(response) {
+        $rootScope.frontendStop();
+        $scope.data = response.data;
+        return $scope.clients = $scope.data.data;
+      });
+    };
+    return $timeout(function() {
+      load($scope.page);
+      return $scope.current_page = $scope.page;
+    });
   }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, AttachmentStates, ReviewScores, Archive, Review, ApiService, UserService) {
     var filterMarkers, saveSelectedList, unsetSelected;
     bindArguments($scope, arguments);
@@ -897,6 +924,22 @@
             $scope.client.requests = removeById($scope.client.requests, $scope.selected_request.id);
             return unsetSelected(true, true, true);
           });
+        }
+      });
+    };
+    $scope.transferRequest = function() {
+      return $('#transfer-request').modal('show');
+    };
+    $scope.transferRequestGo = function() {
+      $('#transfer-request').modal('hide');
+      return $http.post("api/requests/transfer/" + $scope.selected_request.id, {
+        client_id: $scope.transfer_client_id
+      }).then(function(response) {
+        console.log(response);
+        if (response.data !== '') {
+          return location.reload();
+        } else {
+          return bootbox.alert('Клиент не существует');
         }
       });
     };
@@ -2801,7 +2844,18 @@
   }).factory('Request', function($resource) {
     return $resource(apiPath('requests'), {
       id: '@id'
-    }, updateMethod());
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      transfer: {
+        method: 'POST',
+        url: apiPath('requests', 'transfer')
+      },
+      list: {
+        method: 'GET'
+      }
+    });
   }).factory('Sms', function($resource) {
     return $resource(apiPath('sms'), {
       id: '@id'
