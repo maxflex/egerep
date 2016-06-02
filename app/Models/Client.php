@@ -64,7 +64,7 @@ class Client extends Model
 
             if ($client->changed(static::$phone_fields)) {
                 foreach($client->phones as $phone) {
-                    if (Client::searchByPhone($phone)->where('id', '!=', $client->id)) {
+                    if (Client::searchByPhone($phone)->where('id', '!=', $client->id)->exists()) {
                         $client->duplicate = true;
                         break;
                     }
