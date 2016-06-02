@@ -216,13 +216,13 @@
       });
     };
     renderData = function(data) {
-      if (data.last_accounts === null) {
+      if (data === "") {
         $scope.all_displayed = true;
       } else {
         if (!$scope.current_period) {
           $scope.tutor = data;
         } else {
-          $scope.tutor.last_accounts = $scope.tutor.last_accounts.unshift(data);
+          $scope.tutor.last_accounts.unshift(data);
           $scope.date_limit = moment(data.date_end).subtract(7, 'days').format('YYYY-MM-DD');
         }
       }
@@ -301,14 +301,7 @@
       var current_date, dates;
       dates = [];
       if (!index) {
-        if ($scope.current_period > 1) {
-          current_date = moment($scope.tutor.last_accounts[0].date_end).subtract(($scope.all_displayed ? 60 : 7), 'days').format('YYYY-MM-DD');
-        } else {
-          if (!$scope.date_limit) {
-            $scope.date_limit = moment($scope.tutor.last_accounts[0].date_end).subtract(60, 'days').format('YYYY-MM-DD');
-          }
-          current_date = moment($scope.date_limit).format('YYYY-MM-DD');
-        }
+        current_date = $scope.date_limit;
       } else {
         current_date = moment($scope.tutor.last_accounts[index - 1].date_end).add(1, 'days').format('YYYY-MM-DD');
       }

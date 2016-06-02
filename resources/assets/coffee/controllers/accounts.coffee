@@ -67,13 +67,14 @@ angular.module('Egerep')
 
         renderData = (data) ->
             # если у нового tutor last_accounts=null, то загрузили всё
-            if data.last_accounts is null
+            if data is ""
+                $scope.date_limit = $scope.first_attachment_date
                 $scope.all_displayed = true
             else
                 if not $scope.current_period
                     $scope.tutor = data
                 else
-                    $scope.tutor.last_accounts = $scope.tutor.last_accounts.unshift(data)
+                    $scope.tutor.last_accounts.unshift(data)
                     $scope.date_limit = moment(data.date_end).subtract(7, 'days').format('YYYY-MM-DD')
             $rootScope.frontend_loading = false
             $('.accounts-table').stickyTableHeaders('destroy')
@@ -142,18 +143,7 @@ angular.module('Egerep')
             # если нулевой элемент, то отсчитываем от даты первой стыковки (самой ранней стыковки)
             # иначе отсчитываем от даты конца предыдущего периода
             if not index
-                # если нажимали на "+1 период", то отображать от конца самого раннего периода
-                # в диапазоне видимости - 7 дней
-                if $scope.current_period > 1
-                    # -7 дней делать только в том случае, если еще не все периоды отображены
-                    current_date = moment($scope.tutor.last_accounts[0].date_end).subtract((if $scope.all_displayed then 60 else 7), 'days').format('YYYY-MM-DD')
-                else
-                # иначе отображаем от date_limit, что равно дата самой последней встречи -60 дней
-                    if not $scope.date_limit
-                        # если date_limit не установлен, значит, мы только что создали первую отчетность
-                        # устанавливаем date_limit = конец_периода - 60 дней
-                        $scope.date_limit = moment($scope.tutor.last_accounts[0].date_end).subtract(60, 'days').format('YYYY-MM-DD')
-                    current_date = moment($scope.date_limit).format('YYYY-MM-DD')
+                current_date = $scope.date_limit
             else
                 current_date = moment($scope.tutor.last_accounts[index - 1].date_end).add(1, 'days').format('YYYY-MM-DD')
 
