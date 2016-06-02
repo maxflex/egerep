@@ -42,9 +42,9 @@ class RequestsController extends Controller
                                 ->update([
                                     'client_id' => $client_id
                                 ]);
+                            $attachment->client_id = $client_id;
+                            $attachment->save();
                         }
-                        $attachment->client_id = $client_id;
-                        $attachment->save();
                     }
                 }
             }
