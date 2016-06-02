@@ -63,8 +63,12 @@ class Request extends Model
 
     protected static function boot()
     {
+        static::deleted(function($request) {
+            Client::removeWithoutRequests();
+        });
+        
         static::saving(function ($model) {
-            if (!$model->exists) {
+            if (! $model->exists) {
                 $model->user_id_created = userIdOrSystem();
             }
         });

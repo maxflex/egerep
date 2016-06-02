@@ -61,18 +61,14 @@ class Client extends Model
     {
         static::saving(function($client) {
             cleanNumbers($client);
-
             if ($client->changed(static::$phone_fields)) {
                 foreach($client->phones as $phone) {
-                    if (Client::searchByPhone($phone)->where('id', '!=', $client->id)->exists()) {
+                    if (Client::searchByPhone($phone)->where('id', '<>', $client->exists ? $client->id : 0)->exists()) {
                         $client->duplicate = true;
                         break;
                     }
                 }
             }
-        });
-        static::deleted(function($client) {
-            static::removeWithoutRequests();
         });
     }
 }

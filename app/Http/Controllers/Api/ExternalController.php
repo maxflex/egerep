@@ -57,25 +57,27 @@ class ExternalController extends Controller
 			// Если в заявке номер телефона совпадает с номером телефона,
 			// указанным в другой невыполненной заявке, то такие заявки нужно сливать
 			$new_request = $client->requests()->where('state', 'new')->orderBy('created_at', 'desc')->firstOrFail();
+			$duplicate = true;
 		}
 		catch (\Exception $e) {
 			// создаем нового клиента
-	        $new_client = Client::create([
+	        $client = Client::create([
 	            'name'  => $data->name,
 	            'phone' => $phone,
 	        ]);
+	        $duplicate = false;
 		}
 
 		// ID преподавателя в новой базе
 		$new_tutor_id = Tutor::newTutorId($data->repetitor_id);
 
-		if ($client && $new_tutor_id) {
+		if ($duplicate && $new_tutor_id) {
 			$new_request->comment = "Репетитор " . $new_tutor_id . " " . $new_request->comment;
 			$new_request->save();
 		} else {
 			$comment = breakLines([($new_tutor_id ? "Репетитор " . $new_tutor_id : null), $data->message, "Метро: " . $data->metro_name]);
 			// создаем заявку клиента
-	        $new_client->requests()->create([
+	        $client->requests()->create([
 	            'comment' => $comment,
 	        ]);
 		}
