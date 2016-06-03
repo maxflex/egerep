@@ -65,9 +65,10 @@ class Client extends Model
                 foreach($client->phones as $phone) {
                     if (Client::searchByPhone($phone)->where('id', '<>', $client->exists ? $client->id : 0)->exists()) {
                         $client->duplicate = true;
-                        break;
+                        return;
                     }
                 }
+                $client->duplicate = false;
             }
         });
     }
