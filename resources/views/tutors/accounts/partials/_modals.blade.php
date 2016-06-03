@@ -35,8 +35,8 @@
 
 {{-- ПАРАМЕТРЫ СТЫКОВКИ --}}
 <div class="modal" id='account-info' tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
+    <div class="modal-dialog" style="width: 50%">
+        <div class="modal-content" style="height: 50%">
             <div class="div-loading" ng-show='!popup_attachment'>
                 <span>загрузка...</span>
             </div>
@@ -60,9 +60,9 @@
                 </div>
                 <div class="mbs">Прогноз:
                     <span ng-show='selected_client.forecast'>@{{ selected_client.forecast | number }} руб./неделя</span>
-                    <span ng-hide='selected_client.forecast'>не установлен</span>
+                    <span ng-hide='selected_client.forecast'>не указан</span>
                 </div>
-                <div>
+                <div ng-if='popup_attachment.archive'>
                     Дата архивации:
                     <span class="text-danger">@{{ popup_attachment.archive.date }}</span>, @{{ popup_attachment.archive.comment }}
                 </div>
