@@ -39,10 +39,10 @@
             <b>Статус стыковки:</b>
             {{-- #859 --}}
             @{{ selected_attachment.archive
-                    ? AttachmentStates['ended']
+                    ? AttachmentStates['ended'].label
                     : selected_attachment.forecast
-                        ? AttachmentStates['inprogress']
-                        : AttachmentStates['new']
+                        ? AttachmentStates['inprogress'].label
+                        : AttachmentStates['new'].label
             }}
         </div>
         <div class='mbs'>
