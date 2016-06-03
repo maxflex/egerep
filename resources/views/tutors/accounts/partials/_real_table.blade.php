@@ -91,7 +91,7 @@
                                 @{{ totalCommission(account) }}
                             </div>
                             <div class="mbs">
-                                <span>Дебет до встречи (расчетный):</span>
+                                <span>Дебет:</span>
                                 <span>@{{ account.debt_calc }}</span>
                             </div>
                             <div class="mbs">
