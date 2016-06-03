@@ -30156,4 +30156,7 @@ table.summary-table.left-align tr td {
   .attachment-status.ended {
     background-color: #ff0039; }
 
+.text-success {
+  color: #158E51 !important; }
+
 /*# sourceMappingURL=app.css.map */

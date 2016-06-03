@@ -40,7 +40,7 @@
             <div class="div-loading" ng-show='!popup_attachment'>
                 <span>загрузка...</span>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style='overflow: scroll; max-height: 100%'>
                 <div class="mbs">
                     Ученик: <a href='@{{ selected_client.link }}'>@{{ popup_attachment.client.name | cut:true:100:'имя не указано' }}</a>, @{{ popup_attachment.client.grade ? Grades[popup_attachment.client.grade] : 'класс не указан' }},
                     <span ng-repeat="phone_field in ['phone', 'phone2', 'phone3', 'phone4']">
@@ -53,7 +53,7 @@
                         </span>
                     </span>
                 </div>
-                <div class="mbs">Дата стыковки: <span class="text-success">@{{ popup_attachment.date }}</span>, @{{ popup_attachment.comment }}</div>
+                <div class="mbs">Дата стыковки: <span class="text-success bold">@{{ popup_attachment.date }}</span>, @{{ popup_attachment.comment }}</div>
                 <div class="mbs">
                     Проведено занятий:
                     @{{ selected_client.total_lessons > 0 ? selected_client.total_lessons : null }}<span style='text-gray'><span ng-show='selected_client.total_lessons > 0 && selected_client.total_lessons_missing > 0' class='text-gray'>+</span><span ng-show='selected_client.total_lessons_missing' class="text-gray">@{{ selected_client.total_lessons_missing }}</span></span>
@@ -64,7 +64,7 @@
                 </div>
                 <div ng-if='popup_attachment.archive'>
                     Дата архивации:
-                    <span class="text-danger">@{{ popup_attachment.archive.date }}</span>, @{{ popup_attachment.archive.comment }}
+                    <span class="text-danger bold">@{{ popup_attachment.archive.date }}</span>, @{{ popup_attachment.archive.comment }}
                 </div>
 
                 <div style="margin-top: 30px">
