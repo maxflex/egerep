@@ -17,9 +17,6 @@
     </div>
 </div>
 
-<div ng-if="chosen_state_id == 'all'" ng-repeat="attachment in attachments" class="attachment-list">
-    <a href="#">стыковка @{{ attachment.id }}</a>
-</div>
 
 <div ng-if="chosen_state_id == 'new'" ng-repeat="attachment in attachments" class="attachment-list">
     <div class="attachment-list-item">
@@ -66,20 +63,30 @@
                 <td class="col-sm-2">
                     Преподаватель
                 </td>
-                <td ng-click="sort('created_at')" class="col-sm-2">
-                    Cтыковка
+                <td class="col-sm-2">
+                    <span ng-click="sort('created_at')" role="button">
+                        Cтыковка
+                    </span>
                 </td>
-                <td ng-click="sort('lesson_count')" class="col-sm-2">
-                    Занятия
+                <td class="col-sm-2">
+                    <span ng-click="sort('lesson_count')" role="button">
+                        Занятия
+                    </span>
                 </td>
-                <td ng-click="sort('total_lessons_missing')" ng-if="chosen_state_id == 'ended'" class="col-sm-3">
-                    Не проставленные занятия
+                <td ng-if="chosen_state_id == 'ended'" class="col-sm-3">
+                    <span ng-click="sort('total_lessons_missing')" role="button">
+                        Не проставленные занятия
+                    </span>
                 </td>
-                <td ng-click="sort('forecast')" class="col-sm-1">
-                    Прогноз
+                <td class="col-sm-1">
+                    <span ng-click="sort('forecast')" role="button">
+                        Прогноз
+                    </span>
                 </td>
-                <td ng-click="sort('archive_date')" ng-if="chosen_state_id == 'ended'" class="col-sm-2">
-                    Архивация
+                <td ng-if="chosen_state_id == 'ended'" class="col-sm-2">
+                    <span ng-click="sort('archive_date')" role="button">
+                        Архивация
+                    </span>
                 </td>
             </tr>
         </thead>
@@ -92,6 +99,77 @@
                 <td>@{{ attachment.forecast | number }}</td>
                 <td ng-if="chosen_state_id == 'ended'">@{{ formatDate(attachment.archive.created_at) }}</td>
             </tr>
+        </tbody>
+    </table>
+</div>
+
+<div ng-if="chosen_state_id == 'all'">
+    <table class="table attachment-table" style="font-size: 0.8em;">
+        <thead class="bold">
+        <tr>
+            <td></td>
+            <td class="col-sm-2">
+                Преподаватель
+            </td>
+            <td class="col-sm-1">
+                <span ng-click="sort('created_at')" role="button">
+                    Cтыковка
+                </span>
+            </td>
+            <td class="col-sm-1">
+                <span ng-click="sort('lesson_count')" role="button">
+                    Занятия
+                </span>
+            </td>
+            <td class="col-sm-2">
+                <span ng-click="sort('total_lessons_missing')" role="button">
+                    Не проставленные занятия
+                </span>
+            </td>
+            <td class="col-sm-1">
+                <span ng-click="sort('forecast')" role="button">
+                    Прогноз
+                </span>
+            </td>
+            <td class="col-sm-1">
+                <span ng-click="sort('archive_date')" role="button">
+                    Архивация
+                </span>
+            </td>
+            <td class="col-sm-1">Статус</td>
+            <td>Ответственный</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="attachment in attachments">
+            <td>
+                <a href="requests/@{{ attachment.request_id }}/edit#@{{ attachment.request_list_id }}#@{{ attachment.id }}">стыковка @{{ attachment.id }}</a>
+            </td>
+            <td>
+                <a href="tutors/@{{ attachment.tutor_id }}/edit">@{{ attachment.tutor.full_name}}</a>
+            </td>
+            <td>
+                @{{ formatDate(attachment.created_at) }}
+            </td>
+            <td>
+                @{{ attachment.lesson_count }}
+            </td>
+            <td>
+                @{{ attachment.archive.total_lessons_missing }}
+            </td>
+            <td>
+                @{{ attachment.forecast | number }}
+            </td>
+            <td>
+                @{{ formatDate(attachment.archive.created_at) }}
+            </td>
+            <td>
+                @{{ AttachmentService.getStatus(attachment) }}
+            </td>
+            <td>
+                @{{ UserService.getLogin(attachment.user_id) }}, @{{ formatDateTime(attachment.created_at) }}
+            </td>
+        </tr>
         </tbody>
     </table>
 </div>

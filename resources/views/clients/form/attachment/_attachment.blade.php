@@ -38,16 +38,10 @@
         <div class='mbs'>
             <b>Статус стыковки:</b>
             {{-- #859 --}}
-            @{{ selected_attachment.archive
-                    ? AttachmentStates['ended'].label
-                    : selected_attachment.forecast
-                        ? AttachmentStates['inprogress'].label
-                        : AttachmentStates['new'].label
-            }}
+            @{{ AttachmentService.getStatus(selected_attachment) }}
         </div>
         <div class='mbs'>
             <b>Видимость:</b>
-            {{-- @todo AttachmentStates enumtoggle --}}
             <span ng-click="selected_attachment.hide = +(!selected_attachment.hide)" class="link-like">
                 <span ng-show="selected_attachment.hide">скрыто</span>
                 <span ng-show="!selected_attachment.hide">показано</span>

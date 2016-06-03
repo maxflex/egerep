@@ -81,10 +81,10 @@ angular.module('Egerep')
                 type:  'desc'
         all:
             label: 'все'
-            page_size: 30
+            page_size: 50
             sort:
-                field: 'id'
-                type:  'asc'
+                field: 'created_at'
+                type:  'desc'
 
     .value 'ReviewScores',
         1: 1
