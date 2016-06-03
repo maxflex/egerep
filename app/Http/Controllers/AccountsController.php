@@ -15,8 +15,9 @@ class AccountsController extends Controller
     {
         $tutor = Tutor::find($id);
         $clients = $tutor->getAttachmenClients();
+        $hidden_clients_count = $tutor->clientsCount(1);
 
-        if (! count($clients)) {
+        if (! count($clients) && !$hidden_clients_count) {
             return view('tutors.accounts.no_clients');
         }
         return view('tutors.accounts.index')->with(ngInit([
@@ -24,7 +25,7 @@ class AccountsController extends Controller
             'clients'              => $clients,
             'first_attachment_date'=> $tutor->getFirstAttachmentDate(),
             'date_limit'           => $tutor->getDateLimit(),
-            'hidden_clients_count' => $tutor->clientsCount(1),
+            'hidden_clients_count' => $hidden_clients_count,
         ]) + ['tutor' => $tutor]);
     }
 

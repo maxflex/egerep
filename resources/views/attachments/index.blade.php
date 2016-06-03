@@ -56,54 +56,7 @@
     </div>
 </div>
 
-<div ng-if="['inprogress', 'ended'].indexOf(chosen_state_id) != -1">
-    <table class="table attachment-table">
-        <thead class="bold">
-            <tr>
-                <td class="col-sm-2">
-                    Преподаватель
-                </td>
-                <td class="col-sm-2">
-                    <span ng-click="sort('created_at')" role="button">
-                        Cтыковка
-                    </span>
-                </td>
-                <td class="col-sm-2">
-                    <span ng-click="sort('lesson_count')" role="button">
-                        Занятия
-                    </span>
-                </td>
-                <td ng-if="chosen_state_id == 'ended'" class="col-sm-3">
-                    <span ng-click="sort('total_lessons_missing')" role="button">
-                        Занятия к проводке
-                    </span>
-                </td>
-                <td class="col-sm-1">
-                    <span ng-click="sort('forecast')" role="button">
-                        Прогноз
-                    </span>
-                </td>
-                <td ng-if="chosen_state_id == 'ended'" class="col-sm-2">
-                    <span ng-click="sort('archive_date')" role="button">
-                        Архивация
-                    </span>
-                </td>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="attachment in attachments">
-                <td align="left"><a href="tutors/@{{ attachment.tutor_id }}/edit">@{{ attachment.tutor.full_name}}</a></td>
-                <td>@{{ attachment.date }}</td>
-                <td>@{{ attachment.lesson_count | hideZero }}</td>
-                <td ng-if="chosen_state_id == 'ended'">@{{ attachment.archive.total_lessons_missing | hideZero }}</td>
-                <td>@{{ attachment.forecast | number }}</td>
-                <td ng-if="chosen_state_id == 'ended'">@{{ formatDate(attachment.archive.created_at) }}</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-
-<div ng-if="chosen_state_id == 'all'">
+<div ng-if="['inprogress', 'ended', 'all'].indexOf(chosen_state_id) != -1">
     <table class="table attachment-table" style="font-size: 0.8em;">
         <thead class="bold">
         <tr>
