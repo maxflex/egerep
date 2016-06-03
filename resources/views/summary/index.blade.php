@@ -20,42 +20,36 @@
 			<tr>
 				<td width="150">
 				</td>
-				<td width="100">
+				<td>
 					заявок
 				</td>
-				<td width="100">
+				<td>
 					стыковок
 				</td>
-				<td ng-show="user.show_stat">
-					прогноз
+				<td ng-show="user.show_summary">
+					полученные наличные
 				</td>
-				<td ng-show="user.show_stat">
-					новых клиентов
-				</td>
-				<td ng-show="user.show_stat">
-					активных клиентов
+				<td ng-show="user.show_summary">
+					проведенные занятия
 				</td>
 			</tr>
 		</thead>
 		<tbody>
 			<tr ng-repeat="(date, summary) in summaries">
-				<td width="150">
+				<td>
 					@{{ date | date:'dd MMMM yyyy' }}
 				</td>
-				<td width="100">
-					@{{ summary.requests.cnt }}
+				<td>
+					<span ng-show="summary.requests.cnt">@{{ summary.requests.cnt }}</span>
 				</td>
-				<td width="100">
-					@{{ summary.attachments.cnt }}
+				<td>
+					<span ng-show="summary.attachments.cnt">@{{ summary.attachments.cnt }}</span>
 				</td>
-				<td ng-show="user.show_stat">
-					@{{ summary.forecast }}
+				<td ng-show="user.show_summary">
+					@{{ summary.received.sum | number }}
 				</td>
-				<td ng-show="user.show_stat">
-					@{{ summary.clients.cnt }}
-				</td>
-				<td ng-show="user.show_stat">
-					@{{ summary.active_clients.cnt }}
+				<td ng-show="user.show_summary">
+					@{{ summary.commission.sum | number }}
 				</td>
 			</tr>
 		</tbody>

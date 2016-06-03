@@ -9,6 +9,7 @@ use DB;
 
 class SummaryController extends Controller
 {
+    private $columns = ['requests', 'attachments', 'received', 'commission'];
     /**
      * Display a listing of the resource.
      *
@@ -49,23 +50,29 @@ class SummaryController extends Controller
          *                   и этот приводит к ошибке "ambiguous field"
          */
         $requests = DB::table('requests')
-            ->select(DB::raw('COUNT(*) as cnt, DATE(created_at) as time'))
-            ->whereRaw("DATE(created_at) > '{$end_date}'")
-            ->whereRaw("DATE(created_at) <= '{$start_date}'")
-            ->groupBy('time')->get();
+                    ->select(DB::raw('COUNT(*) as cnt, DATE(created_at) as time'))
+                    ->whereRaw("DATE(created_at) > '{$end_date}'")
+                    ->whereRaw("DATE(created_at) <= '{$start_date}'")
+                    ->groupBy('time')->get();
 
         $attachments = DB::table('attachments')
-            ->select(DB::raw('COUNT(*) as cnt, DATE(created_at) as time'))
-            ->whereRaw("date(created_at) > '{$end_date}'")
-            ->whereRaw("DATE(created_at) <= '{$start_date}'")
-            ->groupBy('time')->get();
+                        ->select(DB::raw('COUNT(*) as cnt, DATE(created_at) as time'))
+                        ->whereRaw("date(created_at) > '{$end_date}'")
+                        ->whereRaw("DATE(created_at) <= '{$start_date}'")
+                        ->groupBy('time')->get();
 
 
-        // $clients = DB::table('clients')
-        //     ->select(DB::raw('count(*) as cnt, DATE(created_at) as time'))
-        //     ->whereRaw("DATE(created_at) > '{$end_date}'")
-        //     ->whereRaw("DATE(created_at) <= '{$start_date}'")
-        //     ->groupBy('time')->get();
+        $received = DB::table('accounts')
+                        ->select(DB::raw('sum(received) as sum, DATE(created_at) as time'))
+                        ->whereRaw("DATE(created_at) > '{$end_date}'")
+                        ->whereRaw("DATE(created_at) <= '{$start_date}'")
+                        ->groupBy('time')->get();
+
+        $commission = DB::table('account_datas')
+                        ->select(DB::raw('sum(if(commission > 0, commission, 0.25*sum)) as sum, date as time'))
+                        ->whereRaw("date > '{$end_date}'")
+                        ->whereRaw("date <= '{$start_date}'")
+                        ->groupBy('time')->get();
 
 
         /**
@@ -77,7 +84,7 @@ class SummaryController extends Controller
         $return = [];
         foreach ($period as $dt) {
             $return[$dt->format("Y-m-d")] = []; // для лоопа в ангуляре все даты.
-            foreach (['requests', 'attachments' /*, 'clients' */] as $elems) {
+            foreach ($this->columns as $elems) {
                 foreach ($$elems as $elem) {
                     if ($elem->time == $dt->format("Y-m-d")) {
                         $return[$dt->format("Y-m-d")][$elems] = $elem;
@@ -103,18 +110,32 @@ class SummaryController extends Controller
         $end_date   = $date->sub(new \DateInterval('P210D'))->format('Y-m-d'); // 210 = 7 days * 30 weeks
 
         $requests = DB::table('requests')
-            ->select(DB::raw('COUNT(*) as cnt, STR_TO_DATE(CONCAT(YEARWEEK(created_at, 1) + 1, \'Sunday\'), \'%X%V %W\') as time'))
-            ->whereRaw("DATE(created_at) >= '{$end_date}'")
-            ->whereRaw("DATE(created_at) <= '{$start_date}'")
-            ->groupBy(DB::raw('YEARWEEK(created_at, 1)'))
-            ->get();
+                        ->select(DB::raw('COUNT(*) as cnt, STR_TO_DATE(CONCAT(YEARWEEK(created_at, 1) + 1, \'Sunday\'), \'%X%V %W\') as time'))
+                        ->whereRaw("DATE(created_at) >= '{$end_date}'")
+                        ->whereRaw("DATE(created_at) <= '{$start_date}'")
+                        ->groupBy(DB::raw('YEARWEEK(created_at, 1)'))
+                        ->get();
 
         $attachments = DB::table('attachments')
-            ->select(DB::raw('COUNT(*) as cnt, STR_TO_DATE(CONCAT(YEARWEEK(created_at, 1) + 1, \'Sunday\'), \'%X%V %W\') as time'))
-            ->whereRaw("date(created_at) >= '{$end_date}'")
-            ->whereRaw("DATE(created_at) <= '{$start_date}'")
-            ->groupBy(DB::raw('YEARWEEK(created_at, 1)'))
-            ->get();
+                        ->select(DB::raw('COUNT(*) as cnt, STR_TO_DATE(CONCAT(YEARWEEK(created_at, 1) + 1, \'Sunday\'), \'%X%V %W\') as time'))
+                        ->whereRaw("date(created_at) >= '{$end_date}'")
+                        ->whereRaw("DATE(created_at) <= '{$start_date}'")
+                        ->groupBy(DB::raw('YEARWEEK(created_at, 1)'))
+                        ->get();
+
+        $received = DB::table('accounts')
+                        ->select(DB::raw('sum(received) as sum, STR_TO_DATE(CONCAT(YEARWEEK(created_at, 1) + 1, \'Sunday\'), \'%X%V %W\') as time'))
+                        ->whereRaw("DATE(created_at) > '{$end_date}'")
+                        ->whereRaw("DATE(created_at) <= '{$start_date}'")
+                        ->groupBy(DB::raw('YEARWEEK(created_at, 1)'))
+                        ->get();
+
+        $commission = DB::table('account_datas')
+                        ->select(DB::raw('sum(if(commission > 0, commission, 0.25*sum)) as sum, STR_TO_DATE(CONCAT(YEARWEEK(date, 1) + 1, \'Sunday\'), \'%X%V %W\') as time'))
+                        ->whereRaw("date > '{$end_date}'")
+                        ->whereRaw("date <= '{$start_date}'")
+                        ->groupBy(DB::raw('YEARWEEK(date, 1)'))
+                        ->get();
 
         $return = [];
         $start = new \DateTime($start_date);
@@ -129,7 +150,7 @@ class SummaryController extends Controller
 
             $return[$today ? $today : $end->format("Y-m-d")] = [];
 
-            foreach (['requests', 'attachments'] as $elems) {
+            foreach ($this->columns as $elems) {
                 foreach ($$elems as $elem) {
                     if ($elem->time == $end->format("Y-m-d")) {
                         $return[$today ? $today : $end->format("Y-m-d")][$elems] = $elem;
@@ -157,20 +178,36 @@ class SummaryController extends Controller
         $end_date   = $date->sub(new \DateInterval('P30M'))->format('Y-m-d');
 
         $requests = DB::table('requests')
-            ->select(DB::raw('COUNT(*) as cnt, LAST_DAY(created_at) as time'))
-            ->whereRaw("DATE(created_at) >= '{$end_date}'")
-            ->whereRaw("DATE(created_at) <= '{$start_date}'")
-            ->groupBy(DB::raw('YEAR(created_at)'))
-            ->groupBy(DB::raw('MONTH(created_at)'))
-            ->get();
+                        ->select(DB::raw('COUNT(*) as cnt, LAST_DAY(created_at) as time'))
+                        ->whereRaw("DATE(created_at) >= '{$end_date}'")
+                        ->whereRaw("DATE(created_at) <= '{$start_date}'")
+                        ->groupBy(DB::raw('YEAR(created_at)'))
+                        ->groupBy(DB::raw('MONTH(created_at)'))
+                        ->get();
 
         $attachments = DB::table('attachments')
-            ->select(DB::raw('COUNT(*) as cnt, LAST_DAY(created_at) as time'))
-            ->whereRaw("date(created_at) >= '{$end_date}'")
-            ->whereRaw("DATE(created_at) <= '{$start_date}'")
-            ->groupBy(DB::raw('YEAR(created_at)'))
-            ->groupBy(DB::raw('MONTH(created_at)'))
-            ->get();
+                            ->select(DB::raw('COUNT(*) as cnt, LAST_DAY(created_at) as time'))
+                            ->whereRaw("DATE(created_at) >= '{$end_date}'")
+                            ->whereRaw("DATE(created_at) <= '{$start_date}'")
+                            ->groupBy(DB::raw('YEAR(created_at)'))
+                            ->groupBy(DB::raw('MONTH(created_at)'))
+                            ->get();
+
+        $received = DB::table('accounts')
+                        ->select(DB::raw('sum(received) as sum, LAST_DAY(created_at) as time'))
+                        ->whereRaw("DATE(created_at) > '{$end_date}'")
+                        ->whereRaw("DATE(created_at) <= '{$start_date}'")
+                        ->groupBy(DB::raw('YEAR(created_at)'))
+                        ->groupBy(DB::raw('MONTH(created_at)'))
+                        ->get();
+
+        $commission = DB::table('account_datas')
+                        ->select(DB::raw('sum(if(commission > 0, commission, 0.25*sum)) as sum, LAST_DAY(date) as time'))
+                        ->whereRaw("date > '{$end_date}'")
+                        ->whereRaw("date <= '{$start_date}'")
+                        ->groupBy(DB::raw('YEAR(date)'))
+                        ->groupBy(DB::raw('MONTH(date)'))
+                        ->get();
 
         $return = [];
 
@@ -186,7 +223,7 @@ class SummaryController extends Controller
 
             $return[$today ? $today : $end->format("Y-m-t")] = [];
 
-            foreach (['requests', 'attachments'] as $elems) {
+            foreach ($this->columns as $elems) {
                 foreach ($$elems as $elem) {
                     if ($elem->time == $end->format("Y-m-t")) {
                         $return[$today ? $today : $end->format("Y-m-t")][$elems] = $elem;
@@ -222,17 +259,28 @@ class SummaryController extends Controller
             $end_date   = $period_end_date->format('Y-m-d');
 
             $requests = DB::table('requests')
-                ->select(DB::raw('COUNT(*) as cnt'))
-                ->whereRaw("DATE(created_at) >= '{$end_date}'")
-                ->whereRaw("DATE(created_at) < '{$start_date}'")
-                ->get();
+                            ->select(DB::raw('COUNT(*) as cnt'))
+                            ->whereRaw("DATE(created_at) >= '{$end_date}'")
+                            ->whereRaw("DATE(created_at) < '{$start_date}'")
+                            ->get();
 
             $attachments = DB::table('attachments')
-                ->select(DB::raw('COUNT(*) as cnt'))
-                ->whereRaw("DATE(created_at) >= '{$end_date}'")
-                ->whereRaw("DATE(created_at) < '{$start_date}'")
-                ->get();
+                            ->select(DB::raw('COUNT(*) as cnt'))
+                            ->whereRaw("DATE(created_at) >= '{$end_date}'")
+                            ->whereRaw("DATE(created_at) < '{$start_date}'")
+                            ->get();
 
+            $received = DB::table('accounts')
+                            ->select(DB::raw('sum(received) as sum'))
+                            ->whereRaw("DATE(created_at) > '{$end_date}'")
+                            ->whereRaw("DATE(created_at) <= '{$start_date}'")
+                            ->get();
+
+            $commission = DB::table('account_datas')
+                            ->select(DB::raw('sum(if(commission > 0, commission, 0.25*sum)) as sum'))
+                            ->whereRaw("date > '{$end_date}'")
+                            ->whereRaw("date <= '{$start_date}'")
+                            ->get();
 
             if ($period_start_date > new \DateTime()) {
                 $start_date = (new \DateTime())->format('Y-m-d');
@@ -240,11 +288,9 @@ class SummaryController extends Controller
 
             $return[$start_date] = []; // для лоопа в ангуляре все даты.
 
-            foreach (['requests', 'attachments' /*, 'clients' */] as $elems) {
+            foreach ($this->columns as $elems) {
                 foreach ($$elems as $elem) {
-                    if ($elem->cnt) {
                         $return[$start_date][$elems] = $elem;
-                    }
                 }
             }
 
