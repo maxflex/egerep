@@ -49,7 +49,7 @@
             </div>
 
             <div style="margin-top: 10px">
-                <comments entity-type='request' entity-id='request.id' user='{{ $user }}'></comments>
+                <comments entity-type='request' entity-id='request.id' user='{{ $user }}' track-loading='1'></comments>
             </div>
             <div class="row" style="margin-top: 20px">
                 <div class="col-sm-6">
