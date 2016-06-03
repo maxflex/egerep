@@ -210,7 +210,7 @@
         }
       });
     };
-  }).controller('AccountsCtrl', function($rootScope, $scope, $http, $timeout, Account, PaymentMethods, DebtTypes, Grades, Attachment, Weekdays, AttachmentStates, PhoneService, AttachmentVisibility) {
+  }).controller('AccountsCtrl', function($rootScope, $scope, $http, $timeout, Account, PaymentMethods, Grades, Attachment, Weekdays, AttachmentStates, PhoneService, AttachmentVisibility) {
     var bindDraggable, getAccountEndDate, getAccountStartDate, getCalendarStartDate, getCommission, moveCursor, renderData;
     bindArguments($scope, arguments);
     $scope.current_scope = $scope;
@@ -1264,23 +1264,8 @@
     $scope.loading = false;
     $scope.search = {};
     $scope.tutor_ids = [];
-    $scope.sortType = 'debt';
+    $scope.sortType = 'debt_calc';
     $scope.sortReverse = false;
-    $scope.totalLastDebt = function() {
-      var sum;
-      sum = 0;
-      $.each($scope.tutors, function(index, tutor) {
-        var debt;
-        if (tutor.last_account_info !== null) {
-          debt = tutor.last_account_info.debt;
-          return sum += tutor.last_account_info.debt_type ? +debt : -debt;
-        }
-      });
-      return {
-        debt_type: sum < 0 ? 0 : 1,
-        debt: Math.abs(sum)
-      };
-    };
     $scope.blurComment = function(tutor) {
       tutor.is_being_commented = false;
       return tutor.debt_comment = tutor.old_debt_comment;
@@ -1316,13 +1301,7 @@
         search: $scope.search
       }).then(function(response) {
         $scope.tutors = response.data;
-        angular.forEach($scope.tutors, function(tutor) {
-          if (tutor.last_account_info) {
-            return tutor.last_debt = tutor.last_account_info.debt_type ? tutor.last_account_info.debt : -tutor.last_account_info.debt;
-          } else {
-            return tutor.last_debt = 0;
-          }
-        });
+        angular.forEach($scope.tutors, function(tutor) {});
         showTutorsOnMap();
         return $scope.loading = false;
       });
@@ -2709,9 +2688,6 @@
   }).value('TutorPublishedStates', {
     0: 'не опубликован',
     1: 'опубликован'
-  }).value('DebtTypes', {
-    0: 'не доплатил',
-    1: 'переплатил'
   }).value('PaymentMethods', {
     0: 'не установлено',
     1: 'стандартный расчет',

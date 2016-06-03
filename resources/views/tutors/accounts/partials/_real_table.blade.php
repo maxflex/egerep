@@ -99,17 +99,6 @@
                                 <span>@{{ account.debt_calc }}</span>
                             </div>
                             <div class="mbs">
-                                <span>Задолженность (руб.):</span>
-                                <pencil-input model='account.debt'></pencil-input>
-                                <span ng-if='account.debt > 0'> – репетитор <span class="link-like-no-color"
-                                        ng-class="{
-                                            'text-danger': account.debt_type == 0,
-                                            'text-success': account.debt_type == 1,
-                                        }"
-                                        ng-click="toggleEnum(account, 'debt_type', DebtTypes)">@{{ DebtTypes[account.debt_type] }}</span>
-                                </span>
-                            </div>
-                            <div class="mbs">
                                 <span>Комментарий:</span>
                                 <pencil-input model='account.comment' class="period-comment"></pencil-input>
                                 {{-- <div class='period-comment' contenteditable>@{{ account.comment }}</div> --}}

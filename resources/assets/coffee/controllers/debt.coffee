@@ -23,19 +23,8 @@ angular
 
         $scope.tutor_ids = []
 
-        $scope.sortType     = 'debt'
+        $scope.sortType     = 'debt_calc'
         $scope.sortReverse  = false
-
-        $scope.totalLastDebt = ->
-            sum = 0
-            $.each $scope.tutors, (index, tutor) ->
-                if tutor.last_account_info isnt null
-                    debt = tutor.last_account_info.debt
-                    sum += if tutor.last_account_info.debt_type then +debt else -debt
-            {
-                debt_type: if sum < 0 then 0 else 1
-                debt: Math.abs(sum)
-            }
 
         $scope.blurComment = (tutor) ->
             tutor.is_being_commented = false
@@ -69,10 +58,6 @@ angular
                 .then (response) ->
                     $scope.tutors = response.data
                     angular.forEach $scope.tutors, (tutor) ->
-                        if tutor.last_account_info
-                            tutor.last_debt = if tutor.last_account_info.debt_type then tutor.last_account_info.debt else -tutor.last_account_info.debt
-                        else
-                            tutor.last_debt = 0
                     showTutorsOnMap()
                     $scope.loading = false
 

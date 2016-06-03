@@ -94,15 +94,8 @@ class DebtController extends Controller
         extract(array_filter($request->search));
 
         // показывать в списке нужно преподавателей, у которых а) дебет не = 0 либо б) расчетный дебет не = 0
-        $query = Tutor::with(['markers'])->whereRaw('(tutors.debt > 0 OR tutors.debt_calc > 0)');
+        $query = Tutor::with(['markers'])->where('tutors.debt_calc', '>', 0);
 
-        if (isset($debt_from)) {
-            $query->where('tutors.debt', '>=', $debt_from);
-        }
-
-        if (isset($debt_to)) {
-            $query->where('tutors.debt', '<=', $debt_to);
-        }
 
         if (isset($debt_calc_from)) {
             $query->where('tutors.debt_calc', '>=', $debt_calc_from);
@@ -145,7 +138,6 @@ class DebtController extends Controller
             'tutors.middle_name',
             'tutors.photo_extension',
             'tutors.birth_year',
-            'tutors.debt',
             'tutors.debt_calc',
             'tutors.debt_comment',
         ])->append('last_account_info');

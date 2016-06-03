@@ -22,18 +22,6 @@
         <div class="col-sm-3">
             <div class="form-group">
                 <div class="double-input">
-                    <div class="input-group custom">
-                      <span class="input-group-addon">дебет от </span>
-                      <input type="text" class="form-control digits-only" ng-model="search.debt_from">
-                    </div>
-                    <div class="input-group custom">
-                      <span class="input-group-addon">до </span>
-                      <input type="text" class="form-control digits-only" ng-model="search.debt_to">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="double-input">
                     <div class="input-group custom" style="width: 70%">
                       <span class="input-group-addon">расчетный дебет от </span>
                       <input type="text" class="form-control digits-only" ng-model="search.debt_calc_from">

@@ -6,7 +6,7 @@
     <a href="tutors/@{{ _tutor.id }}/edit" target="_blank">@{{ _tutor.full_name }}</a>
 </div>
 <div class="info-line">
-    дебет: @{{ _tutor.debt | number }} руб.
+    дебет: @{{ _tutor.debt_calc | number }} руб.
 </div>
 <div class="info-line">
     дата последнего расчета: @{{ formatDate(_tutor.last_account_info.date_end) }}

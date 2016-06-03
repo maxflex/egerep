@@ -19,8 +19,6 @@ class Account extends Model
         'tutor_id',
         'received',
         'user_id',
-        'debt',
-        'debt_type',
         'debt_before',
         'comment',
         'payment_method',
