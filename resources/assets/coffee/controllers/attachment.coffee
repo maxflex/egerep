@@ -7,7 +7,6 @@ angular
     .controller 'AttachmentsIndex', ($rootScope, $scope, $timeout, $http, AttachmentStates, UserService, PhoneService, Subjects, Grades) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
-        $rootScope.loaded_comments = 0
 
         $scope.sort_field = 'created_at'
         $scope.sort_type = 'desc'
@@ -22,12 +21,14 @@ angular
             loadAttachments $scope.current_page
 
         # track comment loading.
+        $rootScope.loaded_comments = 0
         $scope.$watch () ->
             console.log $rootScope.loaded_comments
             $rootScope.loaded_comments
         , (val) ->
             console.log val
             $rootScope.frontend_loading = false if $scope.attachments and $scope.attachments.length == val
+        # /track comment loading.
 
         $scope.changeState = (state_id) ->
             $rootScope.frontend_loading = true

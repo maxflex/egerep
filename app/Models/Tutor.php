@@ -442,7 +442,7 @@ class Tutor extends Model
         $return = [];
         foreach ($user_ids as $user_id) {
             $query = static::where('responsible_user_id', $user_id);
-            if (! empty($state)) {
+            if (! empty($state) || strlen($state) > 0) {
                 $query->where('state', $state);
             }
             self::addPublishedCondition($query, $published_state);
@@ -460,7 +460,7 @@ class Tutor extends Model
         $return = [];
         foreach (range(0, 1) as $i) {
             $query = self::addPublishedCondition(self::query(), $i);
-            if (! empty($state)) {
+            if (! empty($state) || strlen($state) > 0) {
                 $query->where('state', $state);
             }
             if (! empty($user_id)) {
