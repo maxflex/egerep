@@ -30081,6 +30081,9 @@ table {
 .summary-table thead, .attachment-table thead {
   color: #ddd; }
 
+.attachment-table {
+  text-align: center; }
+
 table.summary-table tr td:not(:first-child) {
   text-align: center; }
 
