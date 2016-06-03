@@ -1,6 +1,5 @@
 angular
     .module 'Egerep'
-
     .controller 'DebtMap', ($scope, $timeout, TutorService, Tutor, Subjects) ->
         bindArguments($scope, arguments)
 
