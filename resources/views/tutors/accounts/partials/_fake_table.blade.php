@@ -1,13 +1,13 @@
 {{-- FAKE DATES IF NO ACCOUNTS --}}
 <div ng-if='tutor.last_accounts.length == 0'>
     <table class='accounts-table'>
-        <thead>
+        <thead class="small">
             <tr>
                 <td width='75'></td>
                 @include('tutors.accounts.partials.thead')
             </tr>
         </thead>
-        <tbody class="small">
+        <tbody>
             <tr ng-repeat='date in getFakeDates()'>
                 <td>@{{ formatDate(date) }}</td>
                 <td ng-repeat='client in clients'>
