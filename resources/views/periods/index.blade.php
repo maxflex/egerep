@@ -36,6 +36,12 @@
                     @{{ totalCommission(period) | number }}
                 </td>
                 <td>
+                    <span ng-class="{
+                        'text-danger': period.debt_type == 0,
+                        'text-success': period.debt_type == 1,
+                    }">@{{ period.debt }}</span>
+                </td>
+                <td>
                     <span ng-show='period.received > 0'>@{{ PaymentMethods[period.payment_method] }}</span>
                 </td>
             </tr>

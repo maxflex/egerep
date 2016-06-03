@@ -160,12 +160,6 @@
                     </div>
                 </div>
             </div>
-            <span ng-if='tutor.id'>
-                <div class="form-group small text-gray" ng-if='tutor.debt_calc !== null'>
-                    расчетный дебет: @{{ tutor.debt_calc | number }}<br>
-                    обновлено: @{{ formatDateTime(tutor.debt_updated) }}
-                </div>
-            </span>
         </div>
     </div>
 </div>

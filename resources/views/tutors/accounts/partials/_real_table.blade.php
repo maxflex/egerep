@@ -34,7 +34,15 @@
         <table class='accounts-table'>
             <thead class='small' ng-repeat-start='account in tutor.last_accounts' ng-if='$index == 0'>
                 <tr>
-                    @include('tutors.accounts.partials.thead')
+                    <td ng-repeat='client in clients' width='77' class="client-draggable" data-id='@{{ client.id }}'>
+                        <a href='@{{ client.link }}'>@{{ client.name | cut:false:10:'имя не указано' }}</a>
+                        <br>
+                        <span class='text-gray'>
+                            <span ng-show='client.grade'>@{{ Grades[client.grade] }}</span>
+                            <span ng-hide='client.grade'>класс не указан</span>
+                        </span>
+                        <div ng-click='accountInfo(client)' class='attachment-status @{{ client.state }}'></div>
+                    </td>
                 </tr>
             </thead>
             <tbody ng-repeat-end>
@@ -83,12 +91,30 @@
                                 @{{ totalCommission(account) }}
                             </div>
                             <div class="mbs">
-                                <span>Дебет до встречи (руб.):</span>
-                                <pencil-input model='account.debt_before'></pencil-input>
-                            </div>
-                            <div class="mbs">
                                 <span>Дебет до встречи (расчетный):</span>
                                 <span>@{{ account.debt_calc }}</span>
+                            </div>
+                            <div class="mbs">
+                               <span>Задолженность:</span>
+                               <pencil-input model='account.debt'></pencil-input>
+                               <span ng-if='account.debt > 0'> – репетитор <span class="link-like-no-color"
+                                       ng-class="{
+                                           'text-danger': account.debt_type == 0,
+                                           'text-success': account.debt_type == 1,
+                                       }"
+                                       ng-click="toggleEnum(account, 'debt_type', DebtTypes)">@{{ DebtTypes[account.debt_type] }}</span>
+                               </span>
+                           </div>
+                            <div class="mbs">
+                                <span>Задолженность (руб.):</span>
+                                <pencil-input model='account.debt'></pencil-input>
+                                <span ng-if='account.debt > 0'> – репетитор <span class="link-like-no-color"
+                                        ng-class="{
+                                            'text-danger': account.debt_type == 0,
+                                            'text-success': account.debt_type == 1,
+                                        }"
+                                        ng-click="toggleEnum(account, 'debt_type', DebtTypes)">@{{ DebtTypes[account.debt_type] }}</span>
+                                </span>
                             </div>
                             <div class="mbs">
                                 <span>Комментарий:</span>

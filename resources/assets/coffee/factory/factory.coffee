@@ -1,4 +1,7 @@
 angular.module('Egerep')
+    .value 'DebtTypes',
+        0: 'не доплатил'
+        1: 'переплатил'
     .value 'Weekdays',
         0: 'пн'
         1: 'вт'

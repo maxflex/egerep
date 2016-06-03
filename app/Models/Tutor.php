@@ -125,7 +125,7 @@ class Tutor extends Model
      */
      public function getLastAccountInfoAttribute()
      {
-         return DB::table('accounts')->select('debt_calc', 'date_end')->where('tutor_id', $this->id)->orderBy('date_end', 'desc')->first();
+         return DB::table('accounts')->select('debt', 'debt_type', 'debt_calc', 'date_end')->where('tutor_id', $this->id)->orderBy('date_end', 'desc')->first();
         //  return $this->accounts()->take(1)->orderBy('date_end', 'desc')->first();
         //  return Account::where('tutor_id', $this->id)->orderBy('date_end', 'desc')->select('debt', 'debt_type')->first();
      }
