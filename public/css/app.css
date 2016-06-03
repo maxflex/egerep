@@ -30163,4 +30163,7 @@ table.summary-table.left-align tr td {
 .text-success {
   color: #158E51 !important; }
 
+.fake-cell {
+  border: none !important; }
+
 /*# sourceMappingURL=app.css.map */
