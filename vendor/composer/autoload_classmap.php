@@ -68,6 +68,7 @@ return array(
     'DropAttachmentColumns' => $baseDir . '/database/migrations/2016_02_19_133212_drop_attachment_columns.php',
     'DropClientSubjectList' => $baseDir . '/database/migrations/2016_02_19_112701_drop_client_subject_list.php',
     'DropDebtFromAccounts' => $baseDir . '/database/migrations/2016_06_03_154739_drop_debt_from_accounts.php',
+    'DropDebtFromTutors' => $baseDir . '/database/migrations/2016_06_03_182030_drop_debt_from_tutors.php',
     'DropMoscowmapIdFromStations' => $baseDir . '/database/migrations/2016_03_17_110405_drop_moscowmap_id_from_stations.php',
     'DropTotalCommissionFromAccounts' => $baseDir . '/database/migrations/2016_05_13_190547_drop_total_commission_from_accounts.php',
     'File_Iterator' => $vendorDir . '/phpunit/php-file-iterator/src/Iterator.php',

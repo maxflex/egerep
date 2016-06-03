@@ -30137,7 +30137,8 @@ table.summary-table.left-align tr td {
 
 .table thead {
   font-weight: bold;
-  text-transform: uppercase; }
+  text-transform: uppercase;
+  color: #ddd; }
 
 .double-border-bottom {
   border-bottom-width: 2px !important; }

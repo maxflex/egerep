@@ -5,18 +5,13 @@
                 <tr>
                     <td>ПРЕПОДАВАТЕЛЬ</td>
                     <td>
-                        <span class='link-like' ng-click="sortType = 'last_debt'; sortReverse = !sortReverse">ПОСЛЕДНЯЯ ЗАДОЛЖЕННОСТЬ</span>
+                        <span ng-click="sortType = 'last_debt'; sortReverse = !sortReverse">ДОЛГ</span>
                     </td>
                     <td>
-                        <span class='link-like' ng-click="sortType = 'debt'; sortReverse = !sortReverse">ДЕБЕТ</span>
-                        {{-- <span ng-show="sortType == 'debt' && !sortReverse" class="glyphicon glyphicon-triangle-bottom"></span>
-                        <span ng-show="sortType == 'debt' && sortReverse" class="glyphicon glyphicon-triangle-top"></span> --}}
+                        <span ng-click="sortType = 'debt_calc'; sortReverse = !sortReverse">ДЕБЕТ</span>
                     </td>
                     <td>
-                        <span class='link-like' ng-click="sortType = 'debt_calc'; sortReverse = !sortReverse">РАСЧЕТНЫЙ ДЕБЕТ</span>
-                    </td>
-                    <td>
-                        <span class='link-like' ng-click="sortType = 'last_account_info.date_end'; sortReverse = !sortReverse">ДАТА ПОСЛЕДНОГО РАСЧЕТА</span>
+                        <span ng-click="sortType = 'last_account_info.date_end'; sortReverse = !sortReverse">ПОСЛЕДНИЙ РАСЧЕТ</span>
                     </td>
                     <td>КОММЕНТАРИЙ</td>
                 </tr>
@@ -33,9 +28,6 @@
                         }">
                             @{{ tutor.last_account_info.debt }}
                         </span>
-                    </td>
-                    <td>
-                        @{{ tutor.debt }}
                     </td>
                     <td>
                         @{{ tutor.debt_calc }}

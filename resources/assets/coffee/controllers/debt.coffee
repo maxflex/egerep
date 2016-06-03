@@ -23,7 +23,7 @@ angular
 
         $scope.tutor_ids = []
 
-        $scope.sortType     = 'debt'
+        $scope.sortType     = 'debt_calc'
         $scope.sortReverse  = false
 
         $scope.totalLastDebt = ->

@@ -67,7 +67,6 @@ class Tutor extends Model
         'banned',
         'in_egecentr',
         'video_link',
-        'debt',
         'debt_comment'
     ];
 

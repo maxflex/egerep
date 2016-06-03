@@ -138,7 +138,6 @@ class DebtController extends Controller
             'tutors.middle_name',
             'tutors.photo_extension',
             'tutors.birth_year',
-            'tutors.debt',
             'tutors.debt_calc',
             'tutors.debt_comment',
         ])->append('last_account_info');
