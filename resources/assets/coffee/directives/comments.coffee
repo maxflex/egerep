@@ -4,14 +4,17 @@ angular.module('Egerep').directive 'comments', ->
     scope:
         user: '='
         entityId: '='
+        trackLoading: '='
         entityType: '@'
-    controller: ($scope, $timeout, Comment) ->
+    controller: ($rootScope, $scope, $timeout, Comment) ->
         
         # перезагружаем комменты, если меняется entity_id
         $scope.$watch 'entityId', (newVal, oldVal) ->
             $scope.comments = Comment.query
                 entity_type: $scope.entityType
                 entity_id: newVal
+            $rootScope.loaded_comments++ if $scope.trackLoading
+            console.log $rootScope.loaded_comments if $scope.trackLoading
 
         $scope.formatDateTime = (date) ->
             moment(date).format "DD.MM.YY в HH:mm"

@@ -50,7 +50,7 @@
         <div ng-show="attachment.comment">Условия: @{{ attachment.comment }}</div>
         <br/>
         <div class="attachment-list-item-comments">
-            <comments entity-type='attachment' entity-id='attachment.id' user='{{ $user }}'></comments>
+            <comments entity-type='attachment' entity-id='attachment.id' user='{{ $user }}' track-loading='1'></comments>
         </div>
         <div>
             Стыковку №@{{ attachment.id }} создал: @{{ UserService.getLogin(attachment.user_id) }} @{{ formatDateTime(attachment.created_at) }} <a href="requests/@{{ attachment.request_id }}/edit#@{{ attachment.request_list_id }}#@{{ attachment.id }}">редактировать</a>
@@ -60,7 +60,7 @@
 </div>
 
 <div ng-if="['inprogress', 'ended'].indexOf(chosen_state_id) != -1">
-    <table class="table">
+    <table class="table attachment-table">
         <thead class="bold">
             <tr>
                 <td class="col-sm-2">
@@ -98,7 +98,10 @@
 
 <div class="row" ng-hide="attachments.length">
     <div class="col-sm-12">
-        <h3 style="text-align: center; margin: 50px 0">Загрузка данных...</h3>
+        <h3 style="text-align: center; margin: 50px 0; color: #ddd;">
+            <span ng-show="frontend_loading">Загрузка данных...</span>
+            <span ng-hide="frontend_loading">Список стыковок пуст</span>
+        </h3>
     </div>
 </div>
 
