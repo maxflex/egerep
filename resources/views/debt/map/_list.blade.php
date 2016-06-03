@@ -57,8 +57,8 @@
                                 @{{ totalLastDebt().debt }}
                             </span>
                         </td>
-                        <td>@{{ total(tutors, 'debt') }}</td>
                         <td>@{{ total(tutors, 'debt_calc') }}</td>
+                        <td></td>
                         <td></td>
                     </tr>
                 </tfoot>
