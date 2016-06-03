@@ -7,7 +7,7 @@
                 @include('tutors.accounts.partials.thead')
             </tr>
         </thead>
-        <tbody>
+        <tbody class="small">
             <tr ng-repeat='date in getFakeDates()'>
                 <td>@{{ formatDate(date) }}</td>
                 <td ng-repeat='client in clients'>
