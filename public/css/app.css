@@ -30038,7 +30038,7 @@ select.has-error:focus, input.has-error:focus, button.has-error:focus {
 table {
   font-size: 14px; }
 
-.summary-table thead {
+.summary-table thead, .attachment-table thead {
   color: #ddd; }
 
 table.summary-table tr td:not(:first-child) {
