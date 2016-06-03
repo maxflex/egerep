@@ -7,27 +7,37 @@ angular
     .controller 'AttachmentsIndex', ($rootScope, $scope, $timeout, $http, AttachmentStates, UserService, PhoneService, Subjects, Grades) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
+        $rootScope.loaded_comments = 0
 
         $scope.sort_field = 'created_at'
         $scope.sort_type = 'desc'
 
         $scope.sort = (field) ->
+            $rootScope.frontend_loading = true
             if $scope.sort_field == field
                 $scope.sort_type = if $scope.sort_type == 'desc' then 'asc' else 'desc'
             else
                 $scope.sort_field = field
                 $scope.sort_type  = 'desc'
-
             loadAttachments $scope.current_page
+
+        # track comment loading.
+        $scope.$watch () ->
+            console.log $rootScope.loaded_comments
+            $rootScope.loaded_comments
+        , (val) ->
+            console.log val
+            $rootScope.frontend_loading = false if $scope.attachments and $scope.attachments.length == val
 
         $scope.changeState = (state_id) ->
             $rootScope.frontend_loading = true
+            $rootScope.loaded_comments = 0
             $scope.attachments = []
+            $scope.current_page = 1
             $scope.chosen_state_id = state_id
             $scope.chosen_state_page_size = AttachmentStates[state_id].page_size
             $scope.sort_field = AttachmentStates[state_id].sort.field
             $scope.sort_type = AttachmentStates[state_id].sort.type
-            $scope.current_page = 1
 
             loadAttachments 1
             window.history.pushState(state_id, '', 'attachments/' + state_id.toLowerCase());
@@ -38,8 +48,11 @@ angular
             $scope.current_page = $scope.page
 
         $scope.pageChanged = ->
+            $rootScope.frontend_loading = true
+            $rootScope.loaded_comments = 0
+            $rootScope.attachments = []
             loadAttachments $scope.current_page
-            paginate('attachments', $scope.current_page)
+            paginate('attachments/' + $scope.chosen_state_id, $scope.current_page)
 
         loadAttachments = (page) ->
             $scope.chosen_state_id = 'new' if not $scope.chosen_state_id
@@ -50,6 +63,6 @@ angular
 
             $http.get "api/attachments#{ params }"
             .then (response) ->
-                $rootScope.frontend_loading = false
                 $scope.data = response.data
                 $scope.attachments = $scope.data.data
+                $rootScope.frontend_loading = false if not AttachmentStates[$scope.chosen_state_id].track_comment_load

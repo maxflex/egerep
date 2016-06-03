@@ -63,6 +63,7 @@ angular.module('Egerep')
             sort:
                 field: 'created_at'
                 type:  'asc'
+            track_comment_load: true
         inprogress:
             label:     'рабочие'
             page_size: 200
