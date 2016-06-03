@@ -33,7 +33,7 @@
                     <span ng-show='period.received > 0'>@{{ period.received | number }}</span>
                 </td>
                 <td>
-                    @{{ totalCommission(period) }}
+                    @{{ totalCommission(period) | number }}
                 </td>
                 <td>
 
