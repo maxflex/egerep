@@ -39,6 +39,7 @@
             </thead>
             <tbody ng-repeat-end>
                 <tr ng-repeat='date in getDates($index)' class='tr-@{{ date }}'>
+                    <td ng-if='!clients.length' class="fake-cell"></td>
                     <td ng-repeat='client in clients' ng-class="{
                         'attachment-start': date == client.attachment_date,
                         'archive-date': date == client.archive_date,
@@ -56,11 +57,13 @@
                     </td>
                 </tr>
                 <tr>
+                    <td ng-if='!clients.length' class="fake-cell"></td>
                     <td ng-repeat='client in clients' class="invisible-td small" style='text-align: center'>
                         @{{ client.total_lessons > 0 ? client.total_lessons : null }}<span style='text-gray'><span ng-show='client.total_lessons > 0 && client.total_lessons_missing > 0' class='text-gray'>+</span><span ng-show='client.total_lessons_missing' class="text-gray">@{{ client.total_lessons_missing }}</span></span>
                     </td>
                 </tr>
                 <tr>
+                    <td ng-if='!clients.length' class="fake-cell"></td>
                     <td ng-repeat='client in clients' class="invisible-td small" style='text-align: center'>
                         @{{ periodLessons(account, client.id) }}
                     </td>

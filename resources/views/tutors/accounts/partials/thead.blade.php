@@ -1,3 +1,4 @@
+<td ng-if='!clients.length' class="fake-cell"></td>
 <td ng-repeat='client in clients' width='77' class="client-draggable" data-id='@{{ client.id }}'>
     <a href='@{{ client.link }}'>@{{ client.name | cut:false:10:'имя не указано' }}</a>
     <br>
