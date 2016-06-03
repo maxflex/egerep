@@ -75,7 +75,7 @@
                 </td>
                 <td ng-if="chosen_state_id == 'ended'" class="col-sm-3">
                     <span ng-click="sort('total_lessons_missing')" role="button">
-                        Не проставленные занятия
+                        Занятия к проводке
                     </span>
                 </td>
                 <td class="col-sm-1">
@@ -92,10 +92,10 @@
         </thead>
         <tbody>
             <tr ng-repeat="attachment in attachments">
-                <td><a href="tutors/@{{ attachment.tutor_id }}/edit">@{{ attachment.tutor.full_name}}</a></td>
-                <td>@{{ formatDate(attachment.created_at) }}</td>
-                <td>@{{ attachment.lesson_count }}</td>
-                <td ng-if="chosen_state_id == 'ended'">@{{ attachment.archive.total_lessons_missing }}</td>
+                <td align="left"><a href="tutors/@{{ attachment.tutor_id }}/edit">@{{ attachment.tutor.full_name}}</a></td>
+                <td>@{{ attachment.date }}</td>
+                <td>@{{ attachment.lesson_count | hideZero }}</td>
+                <td ng-if="chosen_state_id == 'ended'">@{{ attachment.archive.total_lessons_missing | hideZero }}</td>
                 <td>@{{ attachment.forecast | number }}</td>
                 <td ng-if="chosen_state_id == 'ended'">@{{ formatDate(attachment.archive.created_at) }}</td>
             </tr>
@@ -108,7 +108,7 @@
         <thead class="bold">
         <tr>
             <td></td>
-            <td class="col-sm-2">
+            <td class="col-sm-2"  align="left">
                 Преподаватель
             </td>
             <td class="col-sm-1">
@@ -121,9 +121,9 @@
                     Занятия
                 </span>
             </td>
-            <td class="col-sm-2">
+            <td class="col-sm-1">
                 <span ng-click="sort('total_lessons_missing')" role="button">
-                    Не проставленные занятия
+                    Занятия к проводке
                 </span>
             </td>
             <td class="col-sm-1">
@@ -137,28 +137,28 @@
                 </span>
             </td>
             <td class="col-sm-1">Статус</td>
-            <td>Ответственный</td>
+            <td>Реквизиты</td>
         </tr>
         </thead>
         <tbody>
         <tr ng-repeat="attachment in attachments">
-            <td>
+            <td align="left">
                 <a href="requests/@{{ attachment.request_id }}/edit#@{{ attachment.request_list_id }}#@{{ attachment.id }}">стыковка @{{ attachment.id }}</a>
             </td>
-            <td>
+            <td align="left">
                 <a href="tutors/@{{ attachment.tutor_id }}/edit">@{{ attachment.tutor.full_name}}</a>
             </td>
             <td>
-                @{{ formatDate(attachment.created_at) }}
+                @{{ attachment.date }}
             </td>
             <td>
-                @{{ attachment.lesson_count }}
+                @{{ attachment.lesson_count | hideZero }}
             </td>
             <td>
-                @{{ attachment.archive.total_lessons_missing }}
+                @{{ attachment.archive.total_lessons_missing | hideZero }}
             </td>
             <td>
-                @{{ attachment.forecast | number }}
+                @{{ attachment.forecast | hideZero | number}}
             </td>
             <td>
                 @{{ formatDate(attachment.archive.created_at) }}
@@ -167,7 +167,7 @@
                 @{{ AttachmentService.getStatus(attachment) }}
             </td>
             <td>
-                @{{ UserService.getLogin(attachment.user_id) }}, @{{ formatDateTime(attachment.created_at) }}
+                @{{ UserService.getLogin(attachment.user_id) }}: @{{ formatDateTime(attachment.created_at) }}
             </td>
         </tr>
         </tbody>

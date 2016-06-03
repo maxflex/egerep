@@ -40,16 +40,16 @@
 					@{{ date | date:'dd MMMM yyyy' }}
 				</td>
 				<td>
-					<span ng-show="summary.requests.cnt">@{{ summary.requests.cnt }}</span>
+					@{{ summary.requests.cnt | hideZero }}
 				</td>
 				<td>
-					<span ng-show="summary.attachments.cnt">@{{ summary.attachments.cnt }}</span>
+					@{{ summary.attachments.cnt | hideZero }}
 				</td>
 				<td ng-show="user.show_summary">
-					@{{ summary.received.sum | number }}
+					@{{ summary.received.sum | hideZero | number }}
 				</td>
 				<td ng-show="user.show_summary">
-					@{{ summary.commission.sum | number }}
+					@{{ summary.commission.sum | number | hideZero }}
 				</td>
 			</tr>
 		</tbody>

@@ -56,9 +56,9 @@ class SummaryController extends Controller
                     ->groupBy('time')->get();
 
         $attachments = DB::table('attachments')
-                        ->select(DB::raw('COUNT(*) as cnt, DATE(created_at) as time'))
-                        ->whereRaw("date(created_at) > '{$end_date}'")
-                        ->whereRaw("DATE(created_at) <= '{$start_date}'")
+                        ->select(DB::raw('COUNT(*) as cnt, DATE(date) as time'))
+                        ->whereRaw("date > '{$end_date}'")
+                        ->whereRaw("date <= '{$start_date}'")
                         ->groupBy('time')->get();
 
 
@@ -117,10 +117,10 @@ class SummaryController extends Controller
                         ->get();
 
         $attachments = DB::table('attachments')
-                        ->select(DB::raw('COUNT(*) as cnt, STR_TO_DATE(CONCAT(YEARWEEK(created_at, 1) + 1, \'Sunday\'), \'%X%V %W\') as time'))
-                        ->whereRaw("date(created_at) >= '{$end_date}'")
-                        ->whereRaw("DATE(created_at) <= '{$start_date}'")
-                        ->groupBy(DB::raw('YEARWEEK(created_at, 1)'))
+                        ->select(DB::raw('COUNT(*) as cnt, STR_TO_DATE(CONCAT(YEARWEEK(date, 1) + 1, \'Sunday\'), \'%X%V %W\') as time'))
+                        ->whereRaw("date >= '{$end_date}'")
+                        ->whereRaw("date <= '{$start_date}'")
+                        ->groupBy(DB::raw('YEARWEEK(date, 1)'))
                         ->get();
 
         $received = DB::table('accounts')
@@ -186,11 +186,11 @@ class SummaryController extends Controller
                         ->get();
 
         $attachments = DB::table('attachments')
-                            ->select(DB::raw('COUNT(*) as cnt, LAST_DAY(created_at) as time'))
-                            ->whereRaw("DATE(created_at) >= '{$end_date}'")
-                            ->whereRaw("DATE(created_at) <= '{$start_date}'")
-                            ->groupBy(DB::raw('YEAR(created_at)'))
-                            ->groupBy(DB::raw('MONTH(created_at)'))
+                            ->select(DB::raw('COUNT(*) as cnt, LAST_DAY(date) as time'))
+                            ->whereRaw("date >= '{$end_date}'")
+                            ->whereRaw("date <= '{$start_date}'")
+                            ->groupBy(DB::raw('YEAR(date)'))
+                            ->groupBy(DB::raw('MONTH(date)'))
                             ->get();
 
         $received = DB::table('accounts')
@@ -266,8 +266,8 @@ class SummaryController extends Controller
 
             $attachments = DB::table('attachments')
                             ->select(DB::raw('COUNT(*) as cnt'))
-                            ->whereRaw("DATE(created_at) >= '{$end_date}'")
-                            ->whereRaw("DATE(created_at) < '{$start_date}'")
+                            ->whereRaw("date >= '{$end_date}'")
+                            ->whereRaw("date < '{$start_date}'")
                             ->get();
 
             $received = DB::table('accounts')
