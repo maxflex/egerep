@@ -4,9 +4,7 @@
         <thead>
             <tr>
                 <td width='75'></td>
-                <td ng-repeat='client in clients' width='50'>
-                    <a href='@{{ client.link }}'>клиент @{{ client.id }}</a>
-                </td>
+                @include('tutors.accounts.partials.thead')
             </tr>
         </thead>
         <tbody>
