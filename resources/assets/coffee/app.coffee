@@ -4,6 +4,9 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
         ($compileProvider) ->
             $compileProvider.aHrefSanitizationWhitelist /^\s*(https?|ftp|mailto|chrome-extension|sip):/
 	]
+    .filter 'hideZero', ->
+        (item) ->
+            if item > 0 then item else null
     .run ($rootScope, $q) ->
         $rootScope.laroute = laroute
 
