@@ -93,7 +93,7 @@
         <tbody>
             <tr ng-repeat="attachment in attachments">
                 <td align="left"><a href="tutors/@{{ attachment.tutor_id }}/edit">@{{ attachment.tutor.full_name}}</a></td>
-                <td>@{{ formatDate(attachment.created_at) }}</td>
+                <td>@{{ attachment.date }}</td>
                 <td>@{{ attachment.lesson_count | hideZero }}</td>
                 <td ng-if="chosen_state_id == 'ended'">@{{ attachment.archive.total_lessons_missing | hideZero }}</td>
                 <td>@{{ attachment.forecast | number }}</td>
@@ -149,7 +149,7 @@
                 <a href="tutors/@{{ attachment.tutor_id }}/edit">@{{ attachment.tutor.full_name}}</a>
             </td>
             <td>
-                @{{ formatDate(attachment.created_at) }}
+                @{{ attachment.date }}
             </td>
             <td>
                 @{{ attachment.lesson_count | hideZero }}
