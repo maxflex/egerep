@@ -12,6 +12,7 @@ class Archive extends Model
         'date',
         'comment',
         'state',
+        'checked',
     ];
     protected $appends = ['user_login'];
     protected static $dotDates = ['date'];

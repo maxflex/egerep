@@ -27720,6 +27720,46 @@ span {
     -webkit-animation-name: frontendLoading;
     animation-name: frontendLoading; }
 
+.frontend-loading {
+  position: absolute;
+  width: calc(100%);
+  margin-left: -15px;
+  height: calc(100% - 30px);
+  background: rgba(255, 255, 255, 0.95);
+  z-index: 999; }
+  .frontend-loading span {
+    text-align: center;
+    margin: 300px 0;
+    display: block;
+    color: #999999;
+    -webkit-animation-duration: 3s;
+    animation-duration: 3s;
+    -webkit-animation-name: frontendLoading;
+    animation-name: frontendLoading; }
+
+.div-loading {
+  position: absolute;
+  background: white;
+  width: 100%;
+  height: 100%;
+  z-index: 99;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border-radius: 5px;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center; }
+  .div-loading span {
+    color: #999999;
+    -webkit-animation-duration: 3s;
+    animation-duration: 3s;
+    -webkit-animation-name: frontendLoading;
+    animation-name: frontendLoading; }
+
 .bootstrap-select {
   width: 100% !important; }
 

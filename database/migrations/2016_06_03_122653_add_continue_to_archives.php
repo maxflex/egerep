@@ -13,7 +13,7 @@ class AddContinueToArchives extends Migration
     public function up()
     {
         Schema::table('archives', function (Blueprint $table) {
-            //
+            $table->boolean('checked')->default(0);
         });
     }
 

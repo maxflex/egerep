@@ -39,6 +39,10 @@
             <b>Разархивация и продолжение:</b> <span class="link-like"
                 ng-click="toggleEnum(selected_attachment.archive, 'state', ArchiveStates)">@{{ ArchiveStates[selected_attachment.archive.state] }}</span>
         </div>
+        <div class='mbs'>
+            <b>Статус проверки:</b> <span class="link-like"
+                ng-click="toggleEnum(selected_attachment.archive, 'checked', ArchiveCheck)">@{{ ArchiveCheck[selected_attachment.archive.checked] }}</span>
+        </div>
     </div>
 
     <div class="col-sm-12">

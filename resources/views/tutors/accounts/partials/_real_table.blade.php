@@ -44,7 +44,7 @@
                             <span ng-show='client.grade'>@{{ Grades[client.grade] }}</span>
                             <span ng-hide='client.grade'>класс не указан</span>
                         </span>
-                        <div class='attachment-status @{{ client.state }}'></div>
+                        <div ng-click='accountInfo(client)' class='attachment-status @{{ client.state }}'></div>
                     </td>
                 </tr>
             </thead>

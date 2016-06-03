@@ -210,7 +210,7 @@
         }
       });
     };
-  }).controller('AccountsCtrl', function($rootScope, $scope, $http, $timeout, Account, PaymentMethods, DebtTypes, Grades, Attachment, Weekdays, AttachmentStates) {
+  }).controller('AccountsCtrl', function($rootScope, $scope, $http, $timeout, Account, PaymentMethods, DebtTypes, Grades, Attachment, Weekdays, AttachmentStates, PhoneService, AttachmentVisibility) {
     var bindDraggable, getAccountEndDate, getAccountStartDate, getCalendarStartDate, getCommission, moveCursor, renderData;
     bindArguments($scope, arguments);
     $scope.current_scope = $scope;
@@ -265,6 +265,16 @@
     };
     $scope.getDay = function(date) {
       return moment(date).day();
+    };
+    $scope.accountInfo = function(client) {
+      $scope.popup_attachment = null;
+      $('#account-info').modal('show');
+      $scope.selected_client = client;
+      return Attachment.get({
+        id: client.attachment_id
+      }, function(response) {
+        return $scope.popup_attachment = response;
+      });
     };
     $scope.changeDateDialog = function(index) {
       $('#date-end-change').datepicker('destroy');
@@ -798,7 +808,7 @@
       load($scope.page);
       return $scope.current_page = $scope.page;
     });
-  }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, AttachmentStates, ReviewScores, Archive, Review, ApiService, UserService) {
+  }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, AttachmentStates, ReviewScores, Archive, Review, ApiService, UserService, ArchiveCheck) {
     var filterMarkers, saveSelectedList, unsetSelected;
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
@@ -2805,9 +2815,15 @@
   }).value('ArchiveStates', {
     impossible: 'невозможно',
     possible: 'возможно'
+  }).value('ArchiveCheck', {
+    0: 'не проверено',
+    1: 'проверено'
   }).value('ReviewStates', {
     unpublished: 'не опубликован',
     published: 'опубликован'
+  }).value('AttachmentVisibility', {
+    0: 'скрыто',
+    1: 'показано'
   }).value('AttachmentStates', {
     "new": {
       label: 'новые',

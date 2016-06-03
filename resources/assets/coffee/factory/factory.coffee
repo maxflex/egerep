@@ -52,10 +52,17 @@ angular.module('Egerep')
         impossible: 'невозможно'
         possible: 'возможно'
 
+    .value 'ArchiveCheck',
+        0: 'не проверено'
+        1: 'проверено'
+
     .value 'ReviewStates',
         unpublished: 'не опубликован'
         published:   'опубликован'
 
+    .value 'AttachmentVisibility',
+        0: 'скрыто'
+        1: 'показано'
     .value 'AttachmentStates',
         new:
             label:     'новые'

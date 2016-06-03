@@ -75,7 +75,7 @@ class AttachmentsController extends Controller
      */
     public function show($id)
     {
-        //
+        return Attachment::with(['client'])->find($id);
     }
 
     /**

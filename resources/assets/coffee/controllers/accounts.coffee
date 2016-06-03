@@ -31,7 +31,7 @@ angular.module('Egerep')
 
                     $scope.visible_clients_count++
                     $scope.$apply()
-    .controller 'AccountsCtrl', ($rootScope, $scope, $http, $timeout, Account, PaymentMethods, DebtTypes, Grades, Attachment, Weekdays, AttachmentStates) ->
+    .controller 'AccountsCtrl', ($rootScope, $scope, $http, $timeout, Account, PaymentMethods, DebtTypes, Grades, Attachment, Weekdays, AttachmentStates, PhoneService, AttachmentVisibility) ->
         bindArguments($scope, arguments)
         $scope.current_scope  = $scope
         $scope.current_period = 0
@@ -81,6 +81,15 @@ angular.module('Egerep')
 
         $scope.getDay = (date) ->
             moment(date).day()
+
+        $scope.accountInfo = (client) ->
+            $scope.popup_attachment = null
+            $('#account-info').modal 'show'
+
+            $scope.selected_client = client
+
+            Attachment.get {id: client.attachment_id}, (response) ->
+                $scope.popup_attachment = response
 
         $scope.changeDateDialog = (index) ->
             $('#date-end-change').datepicker('destroy')
