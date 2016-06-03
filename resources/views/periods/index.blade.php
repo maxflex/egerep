@@ -28,7 +28,7 @@
                     @{{ formatDate(period.date_end) }}
                 </td>
                 <td>@{{ period.user_login }}</td>
-                <td>@{{ period.debt_calc | hideZero}}</td>
+                <td>@{{ period.debt_calc | hideZero | number}}</td>
                 <td>
                     <span ng-show='period.received > 0'>@{{ period.received | number }}</span>
                 </td>
