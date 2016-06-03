@@ -1,5 +1,5 @@
 @extends('app')
-@section('title', 'Отчетность репетитора ' . $tutor->getName())
+@section('title', "Отчетность репетитора <a href='tutors/{$tutor->id}/edit'>" . $tutor->getName() . '</a>')
 @section('controller', 'AccountsCtrl')
 
 @section('scripts_after')
@@ -7,7 +7,8 @@
 @stop
 
 @section('title-right')
-    <a href='tutors/{{ $tutor->id }}/accounts/hidden' class="client-droppable">скрытые ученики (@{{ hidden_clients_count }})</a>
+    <a href='tutors/{{ $tutor->id }}/accounts/hidden' class="client-droppable" style="position: absolute; left: calc(50% - 71px)">скрытые ученики (@{{ hidden_clients_count }})</a>
+    <span ng-show='tutor.debt_calc !== null'>дебет на сегодня: @{{ tutor.debt_calc | number }} руб.</span>
     <span class="link-like link-reverse link-white" ng-click='addAccountDialog()'>добавить расчет</span>
 @stop
 

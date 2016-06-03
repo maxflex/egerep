@@ -24,9 +24,6 @@
                 <td class='invisible-td small'>в периоде</td>
             </tr>
             <tr>
-                <td class='invisible-td small'>прогноз (руб.)</td>
-            </tr>
-            <tr>
                 <td class="period-end">
                 </td>
             </tr>
@@ -74,11 +71,6 @@
                 <tr>
                     <td ng-repeat='client in clients' class="invisible-td small" style='text-align: center'>
                         @{{ periodLessons(account, client.id) }}
-                    </td>
-                </tr>
-                <tr>
-                    <td ng-repeat='client in clients' class="invisible-td small" style='text-align: center'>
-                        @{{ client.forecast | number }}
                     </td>
                 </tr>
                 <tr>
