@@ -21,7 +21,6 @@ class Kernel extends ConsoleKernel
         Commands\TransferTruncate::class,
         Commands\TransferDebt::class,
         Commands\AttachmentClientId::class,
-        Commands\RecalcDebt::class,
         Commands\TransferAttachmentCreatedAt::class,
         Commands\ChangeZeroTime::class,
         Commands\TransferAttachmentFromList::class,

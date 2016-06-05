@@ -1756,7 +1756,7 @@
     $scope.debt_updating = false;
     $scope.updateDebt = function() {
       $scope.debt_updating = true;
-      return $http.get('api/command/recalc-debt').then(function(response) {
+      return $http.post('api/command/recalc-debt').then(function(response) {
         $scope.debt_updating = false;
         $scope.debt_updated = response.data.debt_updated;
         return $scope.total_debt = response.data.total_debt;

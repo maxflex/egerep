@@ -7,11 +7,11 @@ angular
 
         $scope.updateDebt = ->
             $scope.debt_updating = true
-            $http.get 'api/command/recalc-debt'
+            $http.post 'api/command/recalc-debt'
                 .then (response) ->
                     $scope.debt_updating = false
                     $scope.debt_updated = response.data.debt_updated
-                    $scope.total_debt   = response.data.total_debt 
+                    $scope.total_debt   = response.data.total_debt
 
         $timeout ->
             loadSummary $scope.page

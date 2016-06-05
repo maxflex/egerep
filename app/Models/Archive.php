@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Events\DebtRecalc;
 
 class Archive extends Model
 {
@@ -16,6 +17,13 @@ class Archive extends Model
     ];
     protected $appends = ['user_login'];
     protected static $dotDates = ['date'];
+
+    // ------------------------------------------------------------------------
+
+    public function attachment()
+    {
+        return $this->belongsTo('App\Models\Attachment');
+    }
 
     // ------------------------------------------------------------------------
 
@@ -38,5 +46,23 @@ class Archive extends Model
                 $model->user_id = User::fromSession()->id;
             }
         });
+
+        static::created(function ($model) {
+            event(new DebtRecalc($model->attachment->tutor_id));
+        });
+        static::deleted(function ($model) {
+            event(new DebtRecalc($model->attachment->tutor_id));
+        });
+    }
+
+    public function save(array $options = [])
+    {
+        $fire_event = $this->changed(['date']);
+
+        parent::save($options);
+
+        if ($fire_event) {
+            event(new DebtRecalc($this->attachment->tutor_id));
+        }
     }
 }

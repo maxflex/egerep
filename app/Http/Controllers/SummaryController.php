@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Tutor;
-use App\Models\Settings;
+use App\Models\Service\Settings;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 

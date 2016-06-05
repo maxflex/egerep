@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use App\Events\DebtRecalc;
 
 class Attachment extends Model
 {
@@ -92,16 +93,6 @@ class Attachment extends Model
 
     // ------------------------------------------------------------------------
 
-    protected static function boot()
-    {
-        static::saving(function ($model) {
-            if (!$model->exists) {
-                $model->date = date('Y-m-d');
-                $model->user_id = User::fromSession()->id;
-            }
-        });
-    }
-
     /**
      * Search by status.
      */
@@ -143,7 +134,37 @@ class Attachment extends Model
             $counts[$state] = Attachment::searchByState($state)->count();
         }
         $counts['all'] = array_sum($counts);
-        
+
         return $counts;
+    }
+
+    // ------------------------------------------------------------------------
+
+    protected static function boot()
+    {
+        static::saving(function ($model) {
+            if (! $model->exists) {
+                $model->date    = date('Y-m-d');
+                $model->user_id = User::fromSession()->id;
+            }
+        });
+
+        static::created(function ($model) {
+            event(new DebtRecalc($model->tutor_id));
+        });
+        static::deleted(function ($model) {
+            event(new DebtRecalc($model->tutor_id));
+        });
+    }
+
+    public function save(array $options = [])
+    {
+        $fire_event = $this->changed(['date', 'forecast', 'client_id']);
+
+        parent::save($options);
+
+        if ($fire_event) {
+            event(new DebtRecalc($this->tutor_id));
+        }
     }
 }
