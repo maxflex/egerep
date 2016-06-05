@@ -57,7 +57,7 @@ class Archive extends Model
 
     public function save(array $options = [])
     {
-        $fire_event = $this->changed(['date']);
+        $fire_event = $this->exists && $this->changed(['date']);
 
         parent::save($options);
 

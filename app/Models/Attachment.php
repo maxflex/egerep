@@ -159,7 +159,7 @@ class Attachment extends Model
 
     public function save(array $options = [])
     {
-        $fire_event = $this->changed(['date', 'forecast', 'client_id']);
+        $fire_event = $this->exists && $this->changed(['date', 'forecast', 'client_id']);
 
         parent::save($options);
 

@@ -127,7 +127,6 @@ class Account extends Model
         static::saving(function($model) {
             if (! $model->exists) {
                 $model->user_id = User::fromSession()->id;
-                event(new DebtRecalc($model->tutor_id));
             }
         });
 
@@ -147,7 +146,7 @@ class Account extends Model
 
     public function save(array $options = [])
     {
-        $fire_event = $this->changed(['date_end']);
+        $fire_event = $this->exists && $this->changed(['date_end']);
 
         parent::save($options);
 
