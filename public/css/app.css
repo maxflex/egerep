@@ -27571,6 +27571,9 @@ md-tooltip {
   transform: translateX(0); }
 
 .hint--bottom-right:after {
+  white-space: inherit;
+  min-width: 400px;
+  border-radius: 5px;
   margin-left: -12px; }
 
 .hint--bottom-right:hover:before {
@@ -27578,7 +27581,6 @@ md-tooltip {
   transform: translateY(8px); }
 
 .hint--bottom-right:hover:after {
-  border-radius: 5px;
   -webkit-transform: translateY(8px);
   transform: translateY(8px); }
 
