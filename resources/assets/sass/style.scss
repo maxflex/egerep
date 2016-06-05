@@ -3584,10 +3584,18 @@ table.summary-table.left-align tr td {
     animation-timing-function: linear;
 }
 
-.table thead {
-    font-weight: bold;
-    text-transform: uppercase;
-	color: #ddd;
+.table {
+	&.reverse-borders {
+		& > tbody > tr > td {
+			border-top: none;
+			border-bottom: 1px solid #ddd;
+		}
+	}
+	& thead {
+	    font-weight: bold;
+	    text-transform: uppercase;
+		color: #ddd;
+	}
 }
 
 .double-border-bottom {

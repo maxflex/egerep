@@ -30138,6 +30138,10 @@ table.summary-table.left-align tr td {
   -webkit-animation-timing-function: linear;
   animation-timing-function: linear; }
 
+.table.reverse-borders > tbody > tr > td {
+  border-top: none;
+  border-bottom: 1px solid #ddd; }
+
 .table thead {
   font-weight: bold;
   text-transform: uppercase;

@@ -208,6 +208,10 @@ class TutorsController extends Controller
              'svg_map',
              'photo_extension',
              'birth_year',
+             'subjects',
+             'tb',
+             'lk',
+             'js',
          ] + Tutor::$phone_fields);
 
          foreach($tutors as $tutor) {

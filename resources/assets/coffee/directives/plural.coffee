@@ -8,11 +8,13 @@ angular.module 'Egerep'
         templateUrl: 'directives/plural'
         controller: ($scope, $element, $attrs, $timeout) ->
             $scope.textOnly = $attrs.hasOwnProperty('textOnly')
+            $scope.hideZero = $attrs.hasOwnProperty('hideZero')
 
             $scope.when =
                 'age': ['год', 'года', 'лет']
                 'student': ['ученик', 'ученика', 'учеников']
                 'minute': ['минуту', 'минуты', 'минут']
+                'hour': ['час', 'часа', 'часов']
                 'meeting': ['встреча', 'встречи', 'встреч']
                 'score': ['балл', 'балла', 'баллов']
                 'rubbles': ['рубль', 'рубля', 'рублей']

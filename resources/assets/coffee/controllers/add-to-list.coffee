@@ -21,6 +21,12 @@ angular.module 'Egerep'
             $scope.list = new RequestList($scope.list)
             $('.map-tutor-list').droppable()
 
+        $scope.getHours = (minutes) ->
+            Math.floor(minutes / 60)
+
+        $scope.getMinutes = (minutes) ->
+            minutes % 60
+
         $scope.find = ->
             $scope.loading = true
             TutorService.getFiltered {search: $scope.search, client_marker: $scope.client.markers[0]}

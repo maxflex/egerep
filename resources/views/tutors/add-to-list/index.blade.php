@@ -3,7 +3,7 @@
 @section('title', 'Добавление преподавателя')
 
 @section('title-right')
-    <a href="requests/@{{ request_id }}/edit">вернуться к заявке</a>
+    <a href="requests/@{{ request_id }}/edit#@{{ list.id }}">вернуться к списку</a>
 @stop
 
 @section('scripts')
