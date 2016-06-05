@@ -33,11 +33,51 @@ angular
     #
     #   ADD/EDIT CONTROLLER
     #
-    .controller "ClientsForm", ($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, AttachmentStates, ReviewScores, Archive, Review, ApiService, UserService, ArchiveCheck) ->
+    .controller "ClientsForm", ($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, AttachmentStates, ReviewScores, Archive, Review, ApiService, UserService, ArchiveCheck, Recommendations, RecommendationTypes) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
-        # @todo: доделать позиционирование
+        $scope.getRecommendation = (tutor) ->
+            month = moment().format 'M'
+            # не 10 класс?
+            if $scope.client.grade isnt 10
+                if month >= 7 && month <= 10
+                    if tutor.meeting_count >= 2
+                        return Recommendations[1]
+                    else
+                        if tutor.meeting_count == 1
+                            return Recommendations[2]
+                        else
+                            if tutor.active_clients_count >= 2
+                                return Recommendations[3]
+                            else
+                                return Recommendations[4]
+                else
+                    if month >= 11 or month <= 2
+                        if tutor.meeting_count >= 1
+                            return Recommendations[5]
+                        else
+                            if tutor.active_clients_count >= 2
+                                return Recommendations[6]
+                            else
+                                return Recommendations[7]
+                    else
+                        if tutor.meeting_count >= 2
+                            return Recommendations[8]
+                        else
+                            return Recommendations[9]
+            else
+                if tutor.meeting_count >= 2
+                    return Recommendations[10]
+                else
+                    if tutor.meeting_count == 1
+                        return Recommendations[11]
+                    else
+                        if tutor.active_clients_count >= 2
+                            return Recommendations[12]
+                        else
+                            return Recommendations[13]
+
         $scope.is_dragging_teacher = false
         $scope.sortableOptions =
             tolerance: 'pointer'

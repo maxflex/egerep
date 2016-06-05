@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Tutor;
 use Illuminate\Database\Eloquent\Model;
 
 class RequestList extends Model
 {
     protected $with = ['attachments'];
+    protected $appends = [
+        'tutors'
+    ];
     protected $fillable = [
         'request_id',
         'tutor_ids',
@@ -35,6 +39,21 @@ class RequestList extends Model
         foreach ($value as $attachment) {
             Attachment::find($attachment['id'])->update($attachment);
         }
+    }
+
+    public function getTutorsAttribute()
+    {
+        return Tutor::whereIn('id', $this->tutor_ids)->get([
+            'id',
+            'first_name',
+            'last_name',
+            'middle_name',
+            'birth_year',
+            'subjects',
+            'tb',
+            'lk',
+            'js',
+        ])->append(['clients_count', 'meeting_count', 'active_clients_count']);
     }
 
     // ------------------------------------------------------------------------

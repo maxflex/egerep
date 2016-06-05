@@ -128,8 +128,6 @@ class Tutor extends Model
      public function getLastAccountInfoAttribute()
      {
          return DB::table('accounts')->select('debt', 'debt_type', 'debt_calc', 'date_end')->where('tutor_id', $this->id)->orderBy('date_end', 'desc')->first();
-        //  return $this->accounts()->take(1)->orderBy('date_end', 'desc')->first();
-        //  return Account::where('tutor_id', $this->id)->orderBy('date_end', 'desc')->select('debt', 'debt_type')->first();
      }
 
     /**
@@ -201,7 +199,20 @@ class Tutor extends Model
 
     public function getClientsCountAttribute()
     {
-        return count($this->getClientIds());
+        return $this->clientsCount();
+    }
+
+    public function getActiveClientsCountAttribute()
+    {
+        return $this->clientsCount(0);
+    }
+
+    /**
+     * Количество встреч
+     */
+    public function getMeetingCountAttribute()
+    {
+        return $this->accounts()->count();
     }
 
     // ------------------------------------------------------------------------
@@ -209,13 +220,9 @@ class Tutor extends Model
     /**
       * Получить ID всех клиентов преподавателя
       */
-     public function getClientIds()
+     public function getClientIds($hide = null)
      {
-         return Request::join('request_lists', 'requests.id', '=', 'request_lists.request_id')
-                    ->join('attachments', 'attachments.request_list_id', '=', 'request_lists.id')
-                    ->where('attachments.tutor_id', $this->id)
-                    ->groupBy('requests.client_id')
-                    ->pluck('requests.client_id');
+         return $this->attachments($hide)->pluck('client_id');
      }
 
     /**
@@ -258,14 +265,6 @@ class Tutor extends Model
         });
 
         return $clients;
-    }
-
-    /**
-     * Получить количество встреч
-     */
-    public function getMeetingCount()
-    {
-        return $this->accounts()->count();
     }
 
     /**

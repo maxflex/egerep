@@ -13,24 +13,54 @@
 </div>
 
 <div class="row">
-    <div class="col-sm-6">
+    <div class="col-sm-12">
         <div ui-sortable='sortableOptions' ng-model="selected_list.tutor_ids" class="mbs">
-            <div class='mbs' ng-repeat="tutor_id in selected_list.tutor_ids" data-id='@{{tutor_id}}'>
-                <a href="tutors/@{{ tutor_id }}/edit">@{{ tutors[tutor_id] }}</a>
-                <span ng-hide="attachmentExists(tutor_id)"
-                    class="link-like link-gray" style="margin-left: 10px"
-                    ng-click="newAttachment(tutor_id)">начать процесс</span>
+            <table class="table reverse-borders">
+                <tr ng-repeat="tutor in selected_list.tutors" data-id='@{{tutor.id}}'>
+                    <td width='300'>
+                        <a href="tutors/@{{ tutor.id }}/edit">@{{ tutor.full_name }}</a>
+                    </td>
+                    <td>
+                        @include('modules.subjects-list', ['subjects' => 'tutor.subjects', 'type' => 'three_letters'])
+                    </td>
+                    <td width='100'>
+                        <plural count='tutor.age' type='age'></plural>
+                    </td>
+                    <td width='50'>
+                        @{{ tutor.lk }}
+                    </td>
+                    <td width='50'>
+                        @{{ tutor.tb }}
+                    </td>
+                    <td width='50'>
+                        @{{ tutor.js }}
+                    </td>
+                    <td ng-init='recommendation = getRecommendation(tutor)'>
+                        <span aria-label='@{{ recommendation.text }}' class='hint--bottom-right cursor-default' ng-class="{
+                            'text-success': recommendation.type == 0,
+                            'text-warning': recommendation.type == 1,
+                            'text-danger': recommendation.type == 2,
+                        }">
+                            @{{ RecommendationTypes[recommendation.type] }}
+                        </span>
+                    </td>
+                    <td>
+                        <plural count='tutor.clients_count' type='client' none-text='клиентов нет'></plural>
+                    </td>
+                    <td>
+                        <span ng-hide="attachmentExists(tutor_id)"
+                        class="link-like link-gray" style="margin-left: 10px"
+                        ng-click="newAttachment(tutor_id)">создать стыковку</span>
+                    </td>
+                </tr>
+            </table>
+            <div class='mbs' >
+
+
             </div>
         </div>
         <p ng-show='selected_list'>
             <a class="link-gray" href='tutors/add/@{{ selected_list.id }}'>добавить репетитора</a>
         </p>
-    </div>
-    <div class="col-sm-6">
-        <div class='mbs request-list-props' ng-show='selected_list'>
-            <b>Список создал:</b>
-                @{{ UserService.getLogin(selected_list.user_id) }}
-                @{{ selected_list.created_at ? formatDateTime(selected_list.created_at) : '' }}
-        </div>
     </div>
 </div>

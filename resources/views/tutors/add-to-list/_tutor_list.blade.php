@@ -2,7 +2,6 @@
   <a href='tutors/@{{ tutor.id }}/edit' target="_blank">@{{ tutor.full_name }}</a>
 </td>
 <td width='150'>
-    {{-- <span ng-repeat='subject_id in tutor.subjects'>@{{ Subjects['three_letters'][subject_id] }}@{{ $last ? '' : '+' }}</span> --}}
     @include('modules.subjects-list', ['subjects' => 'tutor.subjects', 'type' => 'three_letters'])
 </td>
 <td width='100'>
@@ -18,7 +17,7 @@
     @{{ tutor.js }}
 </td>
 <td width='150'>
-    <plural count='tutor.clients_count' type='student' none-text='учеников нет'></plural>
+    <plural count='tutor.clients_count' type='client' none-text='клиентов нет'></plural>
 </td>
 <td width='150'>
   <plural count='getHours(tutor.minutes)' type='hour' hide-zero></plural>

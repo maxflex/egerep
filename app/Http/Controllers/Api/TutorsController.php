@@ -215,11 +215,8 @@ class TutorsController extends Controller
          ] + Tutor::$phone_fields);
 
          foreach($tutors as $tutor) {
-            # Количество учеников
-            $tutor->append('clients_count');
-
-            # Количество встреч
-            $tutor->meeting_count = $tutor->getMeetingCount();
+            # Количество учеников, Количество встреч
+            $tutor->append(['clients_count', 'meeting_count']);
 
             # Получить минуты
             $tutor->minutes = $tutor->getMinutes($request->client_marker);
