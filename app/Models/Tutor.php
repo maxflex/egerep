@@ -369,7 +369,7 @@ class Tutor extends Model
             }
         });
 
-        static::deleting(function($tutor) {
+        static::deleted(function($tutor) {
             // запускаем функцию проверки дубликатов на измененные номера
             foreach($tutor->getPhones() as $phone) {
                 event(new PhoneChanged($phone, null, static::ENTITY_TYPE));

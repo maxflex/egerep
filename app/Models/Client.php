@@ -59,7 +59,7 @@ class Client extends Model
             }
         });
 
-        static::deleting(function($client) {
+        static::deleted(function($client) {
             // запускаем функцию проверки дубликатов на измененные номера
             foreach($client->getPhones() as $phone) {
                 event(new PhoneChanged($phone));
