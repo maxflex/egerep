@@ -24,10 +24,12 @@
             <span ng-show="attachment.client.name">@{{ attachment.client.name }},</span>
             <span ng-show="attachment.client.grade > 0">@{{ Grades[attachment.client.grade] }},</span>
             <span ng-show="attachment.client.address">@{{ attachment.client.address }},</span>
-            <span ng-repeat="phone_field in ['phone', 'phone2', 'phone3']">
+            <span ng-repeat="phone_field in ['phone', 'phone2', 'phone3', 'phone4']">
                 <span ng-show="attachment.client[phone_field]">
                     <span class="underline-hover inline-block"
-                          ng-click="PhoneService.call(attachment.client[phone_field])">
+                          ng-click="PhoneService.call(attachment.client[phone_field])"
+                          ng-class="{'phone-duplicate-new': attachment.client[phone_field + '_duplicate']}"
+                    >
                           @{{ PhoneService.format(attachment.client[phone_field]) }}</span>
                     <span class="glyphicon glyphicon-envelope sms-in-list"
                           ng-click="PhoneService.sms(attachment.client[phone_field])"

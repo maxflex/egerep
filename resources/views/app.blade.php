@@ -16,7 +16,7 @@
         <script src="{{ asset('/js/' . $script_name . '.js', isProduction()) }}"></script>
     @endforeach
     @yield('scripts_after')
-
+    @include('server_variables')
 
   </head>
   <body class="content" ng-app="Egerep" ng-controller="@yield('controller')"

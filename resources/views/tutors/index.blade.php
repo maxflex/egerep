@@ -58,7 +58,7 @@
 		<td style="width:100px">
             <span class="label tutor-state-@{{ tutor.state }}">@{{ TutorStates[tutor.state] }}</span>
         </td>
-		<td style="width:100px">
+		<td width='75'>
             <span ng-show='tutor.birth_year > 999'>
                 @{{ yearDifference(tutor.birth_year) }} <ng-pluralize count="yearDifference(tutor.birth_year)" when="{
                     'one': 'год',
@@ -67,8 +67,16 @@
                 }"></ng-pluralize>
             </span>
         </td>
-        <td width='50' class="text-gray bold">@{{ tutor.has_clients ? 'K' : '' }}</td>
-        <td width='50' class="text-danger bold">@{{ tutor.is_doubled ? 'Д' : '' }}</td>
+        <td width='100'>
+            <span ng-show='tutor.clients_count'>
+                <plural count='tutor.clients_count' type='client'></plural>
+            </span>
+        </td>
+        <td width='50' class="text-gray">
+            <span ng-repeat='phone_field in PhoneFields'>
+                <span ng-if="tutor[phone_field + '_duplicate']" ng-click='duplicateClick(tutor[phone_field])'>Д</span>
+            </span>
+        </td>
 		<td style="width:50px">@{{ tutor.tb }}</td>
 		<td style="width:50px">@{{ tutor.lk }}</td>
 		<td style="width:50px">@{{ tutor.js }}</td>

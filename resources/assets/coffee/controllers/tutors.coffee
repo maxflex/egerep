@@ -4,7 +4,7 @@ angular
     #
     #   LIST CONTROLLER
     #
-    .controller "TutorsIndex", ($scope, $rootScope, $timeout, $http, Tutor, TutorStates, UserService, PusherService, TutorPublishedStates) ->
+    .controller "TutorsIndex", ($scope, $rootScope, $timeout, $http, Tutor, TutorStates, UserService, PusherService, TutorPublishedStates, PhoneFields) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
@@ -16,6 +16,11 @@ angular
             if tutor = findById($scope.tutors, data.tutor_id)
                 tutor.responsible_user_id = data.responsible_user_id
                 $scope.$apply()
+
+        $scope.duplicateClick = (phone) ->
+            $scope.global_search = phone
+            $timeout ->
+                $('#global-search').submit()
 
         $scope.yearDifference = (year) ->
             moment().format("YYYY") - year

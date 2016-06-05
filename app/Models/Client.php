@@ -5,12 +5,15 @@ namespace App\Models;
 use Log;
 use App\Traits\Markerable;
 use App\Traits\Person;
+use App\Events\PhoneChanged;
 use Illuminate\Database\Eloquent\Model;
 
 class Client extends Model
 {
     use Markerable;
     use Person;
+
+    const ENTITY_TYPE = 'client';
 
     public $timestamps = false;
 
@@ -37,18 +40,6 @@ class Client extends Model
         }
     }
 
-    public function scopeSearchByPhone($query, $searchText)
-    {
-        if ($searchText) {
-            // @todo: цикл по номерам телефона
-            return $query->where("phone", "like", "%{$searchText}%")
-                         ->orWhere("phone2", "like", "%{$searchText}%")
-                         ->orWhere("phone3", "like", "%{$searchText}%")
-                         ->orWhere("phone4", "like", "%{$searchText}%");
-
-        }
-    }
-
     /**
      * Удалить клиентов без заявок
      */
@@ -61,14 +52,17 @@ class Client extends Model
     {
         static::saving(function($client) {
             cleanNumbers($client);
-            if ($client->changed(static::$phone_fields)) {
-                foreach($client->phones as $phone) {
-                    if (Client::searchByPhone($phone)->where('id', '<>', $client->exists ? $client->id : 0)->exists()) {
-                        $client->duplicate = true;
-                        return;
-                    }
-                }
-                $client->duplicate = false;
+
+            // запускаем функцию проверки дубликатов на измененные номера
+            foreach($client->changedPhones() as $phone_field) {
+                event(new PhoneChanged($client->getOriginal($phone_field), $client->{$phone_field}));
+            }
+        });
+
+        static::deleting(function($client) {
+            // запускаем функцию проверки дубликатов на измененные номера
+            foreach($client->getPhones() as $phone) {
+                event(new PhoneChanged($phone));
             }
         });
     }

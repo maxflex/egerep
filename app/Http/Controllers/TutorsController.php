@@ -16,6 +16,7 @@ class TutorsController extends Controller
     {
         $search_text = $request->global_search;
 
+        // поиск по клиентам (временно)
         if ($search_text[0] == 'c') {
             return view('clients.index')->with(
                 ngInit([

@@ -33,7 +33,8 @@ class TutorsController extends Controller
                     ->searchByUser($request->user_id)
                     ->searchByLastNameAndPhone($request->global_search)
                     ->searchByPublishedState($request->published_state)
-                    ->paginate(30)->toJson();
+                    ->paginate(30, ['clients_count'])
+                    ->toJson();
     }
 
     /**

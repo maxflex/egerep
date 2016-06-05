@@ -2,6 +2,8 @@
 
     namespace App\Traits;
 
+    use App\Models\Service\PhoneDuplicate;
+
     /**
      * Человек
      *
@@ -20,6 +22,7 @@
             foreach (static::$phone_fields as $phone_field) {
                 $this->fillable[] = $phone_field;
                 $this->fillable[] = $phone_field . '_comment';
+                $this->appends[]  = $phone_field . '_duplicate';
             }
 
             parent::__construct($options);
@@ -28,6 +31,27 @@
         public function getFullNameAttribute()
         {
             return $this->getName();
+        }
+
+        // @todo: подумать, как избавиться от дублирования здесь, нет времени разбираться сейчас
+        public function getPhoneDuplicateAttribute()
+        {
+            return PhoneDuplicate::exists($this->phone, static::ENTITY_TYPE);
+        }
+
+        public function getPhone2DuplicateAttribute()
+        {
+            return PhoneDuplicate::exists($this->phone2, static::ENTITY_TYPE);
+        }
+
+        public function getPhone3DuplicateAttribute()
+        {
+            return PhoneDuplicate::exists($this->phone3, static::ENTITY_TYPE);
+        }
+
+        public function getPhone4DuplicateAttribute()
+        {
+            return PhoneDuplicate::exists($this->phone4, static::ENTITY_TYPE);
         }
 
         /**
@@ -50,10 +74,11 @@
          */
         public function scopeFindByPhone($query, $phone)
         {
-            return $query->where('phone',    $phone)
-                         ->orWhere('phone2', $phone)
-                         ->orWhere('phone3', $phone)
-                         ->orWhere('phone4', $phone);
+            $sql = [];
+            foreach (static::$phone_fields as $phone_field) {
+                $sql[] = "{$phone_field} = '$phone'";
+            }
+            return $query->whereRaw('(' . implode(' OR ', $sql) . ')');
         }
 
         /**
@@ -120,5 +145,13 @@
         public static function getPhoneFieldsAsString()
         {
             return "'".implode("','",self::$phone_fields)."'";
+        }
+
+        /**
+         * Получить массив измененых номеров
+         */
+        protected function changedPhones()
+        {
+            return array_intersect(static::$phone_fields, array_keys($this->getDirty()));
         }
     }

@@ -11,11 +11,14 @@ use App\Models\Account;
 use App\Traits\Markerable;
 use App\Traits\Person;
 use App\Events\ResponsibleUserChanged;
+use App\Events\PhoneChanged;
 
 class Tutor extends Model
 {
     use Markerable;
     use Person;
+
+    const ENTITY_TYPE = 'tutor';
 
     public $timestamps = false;
 
@@ -352,12 +355,24 @@ class Tutor extends Model
             if ($tutor->changed(['login', 'password', 'banned'])) {
                 $tutor->updateUser();
             }
+
+            // запускаем функцию проверки дубликатов на измененные номера
+            foreach($tutor->changedPhones() as $phone_field) {
+                event(new PhoneChanged($tutor->getOriginal($phone_field), $tutor->{$phone_field}, static::ENTITY_TYPE));
+            }
         });
 
         static::updated(function($tutor) {
             # if responsible user changed
             if ($tutor->changed('responsible_user_id')) {
                 event(new ResponsibleUserChanged($tutor));
+            }
+        });
+
+        static::deleting(function($tutor) {
+            // запускаем функцию проверки дубликатов на измененные номера
+            foreach($tutor->getPhones() as $phone) {
+                event(new PhoneChanged($phone, null, static::ENTITY_TYPE));
             }
         });
     }
