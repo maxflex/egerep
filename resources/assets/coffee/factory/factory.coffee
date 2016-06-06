@@ -92,10 +92,6 @@ angular.module('Egerep')
         impossible: 'невозможно'
         possible: 'возможно'
 
-    .value 'ArchiveCheck',
-        0: 'не проверено'
-        1: 'проверено'
-
     .value 'ReviewStates',
         unpublished: 'не опубликован'
         published:   'опубликован'
