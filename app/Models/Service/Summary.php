@@ -11,4 +11,6 @@ class Summary extends Model
         'debt',
         'date',
     ];
+
+    public $timestamps = false;
 }
