@@ -22,8 +22,11 @@
             </div>
         </div>
         <div class="form-group">
-            <input type="text" class="form-control digits-only" placeholder="всего занятий не проведено"
-                ng-model='selected_attachment.archive.total_lessons_missing'>
+            <div class="input-group custom">
+              <span class="input-group-addon">занятий, требующих проводки –</span>
+              <input type="text" class="form-control digits-only"
+                  ng-model="selected_attachment.archive.total_lessons_missing">
+            </div>
         </div>
     </div>
     <div class="col-sm-3">

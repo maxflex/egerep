@@ -27,7 +27,7 @@
             <textarea style="height: 75px" cols="40" class="form-control"
                 ng-model='selected_attachment.comment'></textarea>
         </div>
-        <div class="form-group">
+        <div class="form-group" id='forecast'>
             <input type="text" class="form-control digits-only" placeholder="прогноз в неделю" ng-model='selected_attachment.forecast'>
         </div>
     </div>

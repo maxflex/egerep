@@ -96,11 +96,21 @@ angular
 
         # Save everything
         $scope.edit = ->
-            $scope.ajaxStart()
             filterMarkers()
+            return if hasErrors()
+            $scope.ajaxStart()
             $scope.client.$update()
                 .then (response) ->
                     $scope.ajaxEnd()
+                    $('#forecast').removeClass('has-error')
+
+        hasErrors = ->
+            if $scope.selected_attachment and $scope.selected_attachment.archive
+                if not $scope.selected_attachment.forecast and ($scope.selected_attachment.account_data_count or $scope.selected_attachment.archive.total_lessons_missing)
+                    $('#forecast').addClass('has-error').find('input').focus()
+                    return true
+            return false
+
 
 
         # get teacher
@@ -499,10 +509,11 @@ angular
         $scope.listMap = ->
             $scope.list_map = not $scope.list_map
             $scope.showListMap()
-            $timeout ->
-                $('html, body').animate
-                    scrollTop: $("#list-map").offset().top
-                , 300
+            if $scope.list_map
+                $timeout ->
+                    $('html, body').animate
+                        scrollTop: $("#list-map").offset().top - 100
+                    , 300
 
         # determine whether tutor had already been added
         $scope.added = (tutor_id) ->
