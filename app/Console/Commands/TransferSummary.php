@@ -42,13 +42,19 @@ class TransferSummary extends Command
 
         $history = DB::connection('egerep')->table('prognoz_history')->get();
 
+        Summary::truncate();
+
         $bar = $this->output->createProgressBar(count($history));
 
         foreach ($history as $h) {
-            // Summary::create([
-            //     'date'      => $h->date,
-            //     'forecast'  => ($h->actual + $h->virtual)
-            // ]);
+            Summary::create([
+                'date'      => $h->date,
+                'forecast'  => ($h->actual + $h->virtual) / 4,
+                'debt'      => $h->debet,
+            ]);
+            $bar->advance();
         }
+
+        $bar->finish();
     }
 }
