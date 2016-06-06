@@ -9,7 +9,7 @@ use DB;
 
 class SummaryController extends Controller
 {
-    private $columns = ['requests', 'attachments', 'received', 'commission'];
+    private $columns = ['requests', 'attachments', 'received', 'commission', 'forecast', 'debt'];
     /**
      * Display a listing of the resource.
      *
@@ -74,6 +74,19 @@ class SummaryController extends Controller
                         ->whereRaw("date <= '{$start_date}'")
                         ->groupBy('time')->get();
 
+        $forecast = DB::table('summaries')
+                        ->select(DB::raw('sum(forecast) as sum, date as time'))
+                        ->whereRaw("date > '{$end_date}'")
+                        ->whereRaw("date <= '{$start_date}'")
+                        ->groupBy('time')->get();
+
+        $debt = DB::table('summaries')
+                        ->select(DB::raw('sum(debt) as sum, date as time'))
+                        ->whereRaw("date > '{$end_date}'")
+                        ->whereRaw("date <= '{$start_date}'")
+                        ->groupBy('time')->get();
+
+
 
         /**
          * @notice (new \DateTime($start_date))->add($interval) :  add($interval) чтобы последняя дата тоже вошла.
@@ -132,6 +145,20 @@ class SummaryController extends Controller
 
         $commission = DB::table('account_datas')
                         ->select(DB::raw('sum(if(commission > 0, commission, 0.25*sum)) as sum, STR_TO_DATE(CONCAT(YEARWEEK(date, 1) + 1, \'Sunday\'), \'%X%V %W\') as time'))
+                        ->whereRaw("date > '{$end_date}'")
+                        ->whereRaw("date <= '{$start_date}'")
+                        ->groupBy(DB::raw('YEARWEEK(date, 1)'))
+                        ->get();
+
+        $forecast = DB::table('summaries')
+                        ->select(DB::raw('sum(forecast) as sum, STR_TO_DATE(CONCAT(YEARWEEK(date, 1) + 1, \'Sunday\'), \'%X%V %W\') as time'))
+                        ->whereRaw("date > '{$end_date}'")
+                        ->whereRaw("date <= '{$start_date}'")
+                        ->groupBy(DB::raw('YEARWEEK(date, 1)'))
+                        ->get();
+
+        $debt = DB::table('summaries')
+                        ->select(DB::raw('sum(debt) as sum, STR_TO_DATE(CONCAT(YEARWEEK(date, 1) + 1, \'Sunday\'), \'%X%V %W\') as time'))
                         ->whereRaw("date > '{$end_date}'")
                         ->whereRaw("date <= '{$start_date}'")
                         ->groupBy(DB::raw('YEARWEEK(date, 1)'))
@@ -209,6 +236,22 @@ class SummaryController extends Controller
                         ->groupBy(DB::raw('MONTH(date)'))
                         ->get();
 
+        $forecast = DB::table('summaries')
+                        ->select(DB::raw('sum(forecast) as sum, LAST_DAY(date) as time'))
+                        ->whereRaw("date > '{$end_date}'")
+                        ->whereRaw("date <= '{$start_date}'")
+                        ->groupBy(DB::raw('YEAR(date)'))
+                        ->groupBy(DB::raw('MONTH(date)'))
+                        ->get();
+
+        $debt = DB::table('summaries')
+                        ->select(DB::raw('sum(debt) as sum, LAST_DAY(date) as time'))
+                        ->whereRaw("date > '{$end_date}'")
+                        ->whereRaw("date <= '{$start_date}'")
+                        ->groupBy(DB::raw('YEAR(date)'))
+                        ->groupBy(DB::raw('MONTH(date)'))
+                        ->get();
+
         $return = [];
 
         $start = new \DateTime($start_date);
@@ -278,6 +321,18 @@ class SummaryController extends Controller
 
             $commission = DB::table('account_datas')
                             ->select(DB::raw('sum(if(commission > 0, commission, 0.25*sum)) as sum'))
+                            ->whereRaw("date > '{$end_date}'")
+                            ->whereRaw("date <= '{$start_date}'")
+                            ->get();
+
+            $forecast = DB::table('summaries')
+                            ->select(DB::raw('sum(forecast) as sum'))
+                            ->whereRaw("date > '{$end_date}'")
+                            ->whereRaw("date <= '{$start_date}'")
+                            ->get();
+
+            $debt = DB::table('summaries')
+                            ->select(DB::raw('sum(debt) as sum'))
                             ->whereRaw("date > '{$end_date}'")
                             ->whereRaw("date <= '{$start_date}'")
                             ->get();

@@ -32,6 +32,12 @@
 				<td ng-show="user.show_summary">
 					проведенные занятия
 				</td>
+				<td ng-show="user.show_summary">
+					общий прогноз
+				</td>
+				<td ng-show="user.show_summary">
+					общий дебет
+				</td>
 			</tr>
 		</thead>
 		<tbody>
@@ -50,6 +56,12 @@
 				</td>
 				<td ng-show="user.show_summary">
 					@{{ summary.commission.sum | hideZero | number }}
+				</td>
+				<td ng-show="user.show_summary">
+					@{{ summary.forecast.sum | hideZero | number }}
+				</td>
+				<td ng-show="user.show_summary">
+					@{{ summary.debt.sum | hideZero | number }}
 				</td>
 			</tr>
 		</tbody>
