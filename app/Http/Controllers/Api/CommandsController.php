@@ -13,9 +13,9 @@ class CommandsController extends Controller
     public function postRecalcDebt(Request $request)
     {
         event(new \App\Events\DebtRecalc);
-        
+
         return [
-            'total_debt'    => Tutor::totalDebt(),
+            'total_debt'    => \App\Models\Tutor::totalDebt(),
             'debt_updated'  => now(),
         ];
     }
