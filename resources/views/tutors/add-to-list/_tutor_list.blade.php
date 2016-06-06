@@ -17,7 +17,7 @@
     @{{ tutor.js }}
 </td>
 <td width='150'>
-    <plural count='tutor.clients_count' type='client' none-text='клиентов нет'></plural>
+    <plural count='tutor.clients_count' type='client' hide-zero></plural>
 </td>
 <td width='150'>
   <plural count='getHours(tutor.minutes)' type='hour' hide-zero></plural>
