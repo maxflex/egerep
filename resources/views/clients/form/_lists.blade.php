@@ -14,45 +14,47 @@
 
 <div class="row">
     <div class="col-sm-12">
-        <div ui-sortable='sortableOptions' ng-model="selected_list.tutor_ids" class="mbs">
+        <div class="mbs">
             <table class="table reverse-borders">
-                <tr ng-repeat="tutor in selected_list.tutors" data-id='@{{tutor.id}}'>
-                    <td width='300'>
-                        <a href="tutors/@{{ tutor.id }}/edit">@{{ tutor.full_name }}</a>
-                    </td>
-                    <td>
-                        @include('modules.subjects-list', ['subjects' => 'tutor.subjects', 'type' => 'three_letters'])
-                    </td>
-                    <td width='100'>
-                        <plural count='tutor.age' type='age'></plural>
-                    </td>
-                    <td width='50'>
-                        @{{ tutor.lk }}
-                    </td>
-                    <td width='50'>
-                        @{{ tutor.tb }}
-                    </td>
-                    <td width='50'>
-                        @{{ tutor.js }}
-                    </td>
-                    <td ng-init='recommendation = getRecommendation(tutor)'>
-                        <span aria-label='@{{ recommendation.text }}' class='hint--bottom-right cursor-default' ng-class="{
-                            'text-success': recommendation.type == 0,
-                            'text-warning': recommendation.type == 1,
-                            'text-danger': recommendation.type == 2,
-                        }">
-                            @{{ RecommendationTypes[recommendation.type] }}
-                        </span>
-                    </td>
-                    <td>
-                        <plural count='tutor.clients_count' type='client' none-text='клиентов нет'></plural>
-                    </td>
-                    <td>
-                        <span ng-hide="attachmentExists(tutor_id)"
-                        class="link-like link-gray" style="margin-left: 10px"
-                        ng-click="newAttachment(tutor_id)">создать стыковку</span>
-                    </td>
-                </tr>
+                <tbody ui-sortable='sortableOptions' ng-model="selected_list.tutor_ids">
+                    <tr ng-repeat="tutor in selected_list.tutors" data-id='@{{tutor.id}}'>
+                        <td width='300'>
+                            <a href="tutors/@{{ tutor.id }}/edit">@{{ tutor.full_name }}</a>
+                        </td>
+                        <td>
+                            @include('modules.subjects-list', ['subjects' => 'tutor.subjects', 'type' => 'three_letters'])
+                        </td>
+                        <td width='100'>
+                            <plural count='tutor.age' type='age'></plural>
+                        </td>
+                        <td width='50'>
+                            @{{ tutor.lk }}
+                        </td>
+                        <td width='50'>
+                            @{{ tutor.tb }}
+                        </td>
+                        <td width='50'>
+                            @{{ tutor.js }}
+                        </td>
+                        <td ng-init='recommendation = getRecommendation(tutor)'>
+                            <span aria-label='@{{ recommendation.text }}' class='hint--bottom-right cursor-default' ng-class="{
+                                'text-success': recommendation.type == 0,
+                                'text-warning': recommendation.type == 1,
+                                'text-danger': recommendation.type == 2,
+                            }">
+                                @{{ RecommendationTypes[recommendation.type] }}
+                            </span>
+                        </td>
+                        <td>
+                            <plural count='tutor.clients_count' type='client' none-text='клиентов нет'></plural>
+                        </td>
+                        <td>
+                            <span ng-hide="attachmentExists(tutor_id)"
+                            class="link-like link-gray" style="margin-left: 10px"
+                            ng-click="newAttachment(tutor_id)">создать стыковку</span>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
             <div class='mbs' >
 
@@ -65,11 +67,5 @@
         </p>
     </div>
 </div>
-
-@section('scripts')
-    <script src="//maps.google.ru/maps/api/js?libraries=places"></script>
-    <script src="{{ asset('/js/maps.js', isProduction()) }}"></script>
-    <script src="{{ asset('/js/markerclusterer.js', isProduction()) }}"></script>
-@stop
 
 @include('clients.form._gmap')

@@ -554,7 +554,7 @@ angular
                 $scope.gmap2.panToBounds bounds
                 $scope.gmap2.setZoom 11
 
-            $scope.gmap2.panBy(200, 100)
+            $scope.gmap2.panBy(150, 0)
 
         showClientOnMap = ->
             $scope.client.markers.forEach (marker) ->
