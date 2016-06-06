@@ -47,7 +47,7 @@ class Client extends Model
     {
         // нужно, чтобы запускалось событие удаления клиента
         Client::doesntHave('requests')->get()->each(function($model) {
-            $model->destroy();
+            $model->delete();
         });
     }
 
@@ -64,7 +64,7 @@ class Client extends Model
 
         static::deleted(function($client) {
             // запускаем функцию проверки дубликатов на измененные номера
-            foreach($client->getPhones() as $phone) {
+            foreach($client->phones as $phone) {
                 event(new PhoneChanged($phone));
             }
         });
