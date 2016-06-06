@@ -33,7 +33,7 @@ angular
     #
     #   ADD/EDIT CONTROLLER
     #
-    .controller "ClientsForm", ($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, AttachmentStates, ReviewScores, Archive, Review, ApiService, UserService, Recommendations, RecommendationTypes) ->
+    .controller "ClientsForm", ($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, AttachmentStates, ReviewScores, Archive, Review, ApiService, UserService, Recommendations, RecommendationTypes, AttachmentService) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
@@ -128,7 +128,17 @@ angular
                     $rootScope.frontendStop()
 
         saveSelectedList = ->
+            # tutor_ids = []
+            # $.each $scope.selected_list.tutors, (index, tutor) ->
+            #     tutor_ids.push tutor.id
+            # $scope.selected_list.tutor_ids = tutor_ids
             RequestList.update $scope.selected_list
+
+        $scope.getTutorList = ->
+            tutors = []
+            $.each $scope.selected_list.tutor_ids, (index, tutor_id) ->
+                tutors.push findById($scope.selected_list.tutors, tutor_id)
+            tutors
 
         # Если в ссылке указан хэш, то это #id_списка#id_стыковки
         $scope.parseHash = ->

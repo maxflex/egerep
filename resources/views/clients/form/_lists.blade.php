@@ -17,7 +17,7 @@
         <div class="mbs">
             <table class="table reverse-borders">
                 <tbody ui-sortable='sortableOptions' ng-model="selected_list.tutor_ids">
-                    <tr ng-repeat="tutor in selected_list.tutors" data-id='@{{tutor.id}}'>
+                    <tr ng-repeat="tutor in getTutorList()" data-id='@{{tutor.id}}'>
                         <td width='300'>
                             <a href="tutors/@{{ tutor.id }}/edit">@{{ tutor.full_name }}</a>
                         </td>
@@ -46,12 +46,12 @@
                             </span>
                         </td>
                         <td>
-                            <plural count='tutor.clients_count' type='client' none-text='клиентов нет'></plural>
+                            <plural count='tutor.clients_count' type='client' none-text='клиентов нет' hide-zero></plural>
                         </td>
                         <td>
-                            <span ng-hide="attachmentExists(tutor_id)"
+                            <span ng-hide="attachmentExists(tutor.id)"
                             class="link-like link-gray" style="margin-left: 10px"
-                            ng-click="newAttachment(tutor_id)">создать стыковку</span>
+                            ng-click="newAttachment(tutor.id)">создать стыковку</span>
                         </td>
                     </tr>
                 </tbody>
