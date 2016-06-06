@@ -40,7 +40,7 @@ class TransferSummary extends Command
     {
         $this->info('Getting history...');
 
-        $history = DB::connection('egerep')->table('prognoz_history')->get();
+        $history = \DB::connection('egerep')->table('prognoz_history')->get();
 
         Summary::truncate();
 
