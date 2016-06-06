@@ -55,4 +55,14 @@ class AccountData extends Model
         return $value;
     }
 
+    protected static function boot()
+    {
+        static::saving(function($model) {
+            if ($model->sum == 0 && $model->commission == 0) {
+                $model->delete();
+                return false;
+            }
+        });
+    }
+
 }
