@@ -106,7 +106,7 @@ angular
 
         hasErrors = ->
             if $scope.selected_attachment and $scope.selected_attachment.archive
-                if not $scope.selected_attachment.forecast and ($scope.selected_attachment.account_data_count or $scope.selected_attachment.archive.total_lessons_missing)
+                if not $scope.selected_attachment.forecast and ($scope.selected_attachment.account_data_count > 0 or $scope.selected_attachment.archive.total_lessons_missing > 0)
                     $('#forecast').addClass('has-error').find('input').focus()
                     return true
             return false

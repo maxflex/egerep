@@ -65,6 +65,7 @@ return array(
     'CreateReviewsTable' => $baseDir . '/database/migrations/2016_02_21_191244_create_reviews_table.php',
     'CreateSettingsTable' => $baseDir . '/database/migrations/2016_05_31_112312_create_settings_table.php',
     'CreateSmsTable' => $baseDir . '/database/migrations/2016_02_15_122855_create_sms_table.php',
+    'CreateSummariesTable' => $baseDir . '/database/migrations/2016_06_06_143359_create_summaries_table.php',
     'CreateTutorStateChangeTable' => $baseDir . '/database/migrations/2016_04_29_103710_create_tutor_state_change_table.php',
     'DatabaseSeeder' => $baseDir . '/database/seeds/DatabaseSeeder.php',
     'DropAttachmentColumns' => $baseDir . '/database/migrations/2016_02_19_133212_drop_attachment_columns.php',

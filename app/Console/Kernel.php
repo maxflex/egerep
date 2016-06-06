@@ -28,6 +28,7 @@ class Kernel extends ConsoleKernel
         Commands\ForecastCalc::class,
         Commands\ClientPhonesTransfer::class,
         Commands\InitDuplicatesTable::class,
+        Commands\TransferSummary::class,
     ];
 
     /**
