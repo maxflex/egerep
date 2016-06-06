@@ -49,7 +49,7 @@
 					@{{ summary.received.sum | hideZero | number }}
 				</td>
 				<td ng-show="user.show_summary">
-					@{{ summary.commission.sum | number | hideZero }}
+					@{{ summary.commission.sum | hideZero | number }}
 				</td>
 			</tr>
 		</tbody>
