@@ -176,6 +176,7 @@ angular
 
         $scope.setList = (list) ->
             $scope.selected_list = list
+            $scope.showListMap() if $scope.list_map
             delete $scope.selected_attachment
 
         $scope.listExists = (subject_id) ->
@@ -291,6 +292,7 @@ angular
         # ПОСЛЕ ЗАГРУЗКИ КАРТЫ
         #
         $scope.marker_id = 1
+        $scope.map_number = 0
 
         filterMarkers = ->
             new_markers = []
@@ -298,20 +300,31 @@ angular
                 new_markers.push _.pick(marker, 'lat', 'lng', 'type', 'metros')
             $scope.client.markers = new_markers
 
+
         $scope.$on 'mapInitialized', (event, map) ->
-            # Запоминаем карту после инициалицации
-            $scope.gmap = map
-            # Добавляем существующие метки
-            $scope.loadMarkers()
-            # generate recommended search bounds
-            INIT_COORDS =
-                lat: 55.7387
-                lng: 37.6032
-            $scope.RECOM_BOUNDS = new (google.maps.LatLngBounds)(new (google.maps.LatLng)(INIT_COORDS.lat - 0.5, INIT_COORDS.lng - 0.5), new (google.maps.LatLng)(INIT_COORDS.lat + 0.5, INIT_COORDS.lng + 0.5))
-            $scope.geocoder = new (google.maps.Geocoder)
-            # События добавления меток
-            google.maps.event.addListener map, 'click', (event) ->
-                $scope.gmapAddMarker event
+            map.number = $scope.map_number
+            if $scope.map_number is 0
+                # Запоминаем карту после инициалицации
+                $scope.gmap = map
+                # Добавляем существующие метки
+                $scope.loadMarkers()
+                # generate recommended search bounds
+                INIT_COORDS =
+                    lat: 55.7387
+                    lng: 37.6032
+                $scope.RECOM_BOUNDS = new (google.maps.LatLngBounds)(new (google.maps.LatLng)(INIT_COORDS.lat - 0.5, INIT_COORDS.lng - 0.5), new (google.maps.LatLng)(INIT_COORDS.lat + 0.5, INIT_COORDS.lng + 0.5))
+                $scope.geocoder = new (google.maps.Geocoder)
+                # События добавления меток
+                google.maps.event.addListener map, 'click', (event) ->
+                    $scope.gmapAddMarker event
+            else
+                # Запоминаем карту после инициалицации
+                $scope.gmap2 = map
+
+                # Зум и центр карты по умолчанию
+                $scope.gmap2.setCenter new (google.maps.LatLng)(55.7387, 37.6032)
+                $scope.gmap2.setZoom 11
+            $scope.map_number++
 
         # Показать карту
         $scope.showMap = ->
@@ -353,7 +366,7 @@ angular
         $scope.gmapAddMarker = (event) ->
             # Создаем маркер
             # var marker = newMarker($scope.marker_id++, $scope.marker_type, event.latLng)
-            marker = newMarker($scope.marker_id++, event.latLng, $scope.map)
+            marker = newMarker($scope.marker_id++, event.latLng, $scope.gmap)
 
             # Добавляем маркер в маркеры
             $scope.client.markers.push(marker)
@@ -413,7 +426,7 @@ angular
                         search_result_bounds.extend result.geometry.location
                         # границы карты в зависимости от поставленных меток
                         search_marker = new (google.maps.Marker)(
-                            map: $scope.map
+                            map: $scope.gmap
                             position: result.geometry.location
                             icon: ICON_SEARCH)
 
@@ -449,11 +462,12 @@ angular
                 $.each $scope.client.markers, (index, marker) ->
                     # Создаем маркер
                     # @todo: сделать так, чтобы type и metros и еще дургие можно было передавать массивом в последнем параметре
-                    new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, marker.type)
+                    new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.gmap, marker.type)
                     new_marker.metros = marker.metros
 
                     # Добавляем маркер на карту
-                    new_marker.setMap($scope.map)
+                    new_marker.setMap($scope.gmap)
+                    console.log 'adding marker', $scope.gmap
 
                     # Добавляем ивент удаления маркера
                     $scope.bindMarkerDelete(new_marker)
@@ -464,3 +478,138 @@ angular
         # Сохранить метки
         $scope.saveMarkers = ->
             $('#gmap-modal').modal 'hide'
+
+
+
+
+
+        #
+        # КАРТА СПИСКА
+        #
+        $scope.listMap = ->
+            $scope.list_map = not $scope.list_map
+            $scope.showListMap()
+            $timeout ->
+                $('html, body').animate
+                    scrollTop: $("#list-map").offset().top
+                , 300
+
+        # determine whether tutor had already been added
+        $scope.added = (tutor_id) ->
+            tutor_id in $scope.tutor_ids
+
+        # rebind draggable
+        rebindDraggable = ->
+            $('.temporary-tutor').draggable
+                containment: 'window'
+                revert: (valid) ->
+                    return true if valid
+                    $scope.tutor_list   = removeById($scope.tutor_list, $scope.dragging_tutor.id)
+                    $scope.tutor_ids    = _.without($scope.tutor_ids, $scope.dragging_tutor.id)
+                    $scope.$apply()
+                    repaintChosen()
+
+        # remember dragging tutor
+        $scope.startDragging = (tutor) ->
+            $scope.dragging_tutor = tutor
+
+        showTutorsOnMap = ->
+            unsetAllMarkers()
+            $scope.marker_id2 = 1
+            # временный список репетиторов
+            $scope.tutor_list = []
+            # отображать только метки с выбранным типом
+            bounds = new (google.maps.LatLngBounds)
+            # есть отображаемые маркеры
+            markers_count = 0
+            $scope.markers2 = []
+
+            # Показываем карту
+            google.maps.event.trigger $scope.gmap2, 'resize'
+
+            # Зум и центр карты по умолчанию
+            $scope.gmap2.setCenter new (google.maps.LatLng)(55.7387, 37.6032)
+            $scope.gmap2.setZoom 11
+
+            $scope.selected_list.tutors.forEach (tutor) ->
+                tutor.markers.forEach (marker) ->
+                    markers_count++
+                    bounds.extend(new google.maps.LatLng(marker.lat, marker.lng))
+
+                    # Создаем маркер
+                    new_marker = newMarker($scope.marker_id2++, new google.maps.LatLng(marker.lat, marker.lng), $scope.gmap2, marker.type)
+                    new_marker.metros = marker.metros
+                    new_marker.tutor = tutor
+
+                    # Добавляем маркер на карту
+                    new_marker.setMap($scope.gmap2)
+
+                    # Добавляем ивент удаления маркера
+                    bindTutorMarkerEvents(new_marker)
+                    $scope.markers2.push new_marker
+
+            # если отображаемые маркеры есть, делаем зум на них
+            if markers_count > 0
+                $scope.gmap2.fitBounds bounds
+                $scope.gmap2.panToBounds bounds
+                $scope.gmap2.setZoom 11
+
+            $scope.gmap2.panBy(200, 100)
+
+        showClientOnMap = ->
+            $scope.client.markers.forEach (marker) ->
+                # Создаем маркер
+                new_marker = newMarker($scope.marker_id2++, new google.maps.LatLng(marker.lat, marker.lng), $scope.gmap2, 'white')
+                new_marker.metros = marker.metros
+                new_marker.setMap($scope.gmap2)
+
+        unsetAllMarkers = ->
+            # unset markers
+            if $scope.markers2 isnt undefined
+                $scope.markers2.forEach (marker) ->
+                    marker.setMap null
+
+        bindTutorMarkerEvents = (marker) ->
+            # double click custom handler with delay
+            google.maps.event.addListener marker, 'click', (event) ->
+                # single click
+                if marker.tutor in $scope.tutor_list
+                    $scope.tutor_list = removeById($scope.tutor_list, marker.tutor.id)
+                else
+                    $scope.hovered_tutor = null
+                    $scope.tutor_list.push marker.tutor
+                $scope.addOrRemove(marker.tutor.id)
+                $scope.$apply()
+                rebindDraggable()
+
+            google.maps.event.addListener marker, 'mouseover', (event) ->
+                return if marker.tutor in $scope.tutor_list
+                $scope.hovered_tutor = marker.tutor
+                $scope.$apply()
+
+            google.maps.event.addListener marker, 'mouseout', (event) ->
+                $scope.hovered_tutor = null
+                $scope.$apply()
+
+        # add or remove tutor from list
+        $scope.addOrRemove = (tutor_id) ->
+            tutor_id = parseInt(tutor_id)
+            if tutor_id in $scope.tutor_ids
+                $scope.tutor_ids = _.without($scope.tutor_ids, tutor_id)
+            else
+                $scope.tutor_ids.push(tutor_id)
+            repaintChosen()
+
+        repaintChosen = ->
+            $scope.markers2.forEach (marker) ->
+                if marker.tutor.id in $scope.tutor_ids and not marker.chosen
+                    marker.chosen = true
+                    marker.setIcon ICON_BLUE
+                if marker.tutor.id not in $scope.tutor_ids and marker.chosen
+                    marker.chosen = false
+                    marker.setIcon getMarkerType(marker.type)
+
+        $scope.showListMap = ->
+            $timeout ->
+                showTutorsOnMap()
+                showClientOnMap()

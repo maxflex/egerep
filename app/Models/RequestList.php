@@ -43,7 +43,7 @@ class RequestList extends Model
 
     public function getTutorsAttribute()
     {
-        return Tutor::whereIn('id', $this->tutor_ids)->get([
+        return Tutor::with(['markers'])->whereIn('id', $this->tutor_ids)->get([
             'id',
             'first_name',
             'last_name',
@@ -53,7 +53,10 @@ class RequestList extends Model
             'tb',
             'lk',
             'js',
-        ])->append(['clients_count', 'meeting_count', 'active_clients_count']);
+            'debt_calc',
+            'debt_comment',
+            'photo_extension',
+        ])->append(['clients_count', 'meeting_count', 'active_clients_count', 'last_account_info']);
     }
 
     // ------------------------------------------------------------------------

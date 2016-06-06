@@ -60,7 +60,16 @@
             </div>
         </div>
         <p ng-show='selected_list'>
-            <a class="link-gray" href='tutors/add/@{{ selected_list.id }}'>добавить репетитора</a>
+            <a class="link-gray" href='tutors/add/@{{ selected_list.id }}' style='margin-right: 15px'>добавить репетитора</a>
+            <span ng-class="{'link-like': !list_map}" ng-click='listMap()'>посмотреть список на карте</a>
         </p>
     </div>
 </div>
+
+@section('scripts')
+    <script src="//maps.google.ru/maps/api/js?libraries=places"></script>
+    <script src="{{ asset('/js/maps.js', isProduction()) }}"></script>
+    <script src="{{ asset('/js/markerclusterer.js', isProduction()) }}"></script>
+@stop
+
+@include('clients.form._gmap')

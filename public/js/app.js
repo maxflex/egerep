@@ -790,6 +790,8 @@
 }).call(this);
 
 (function() {
+  var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
   angular.module('Egerep').controller("ClientsIndex", function($scope, $rootScope, $timeout, $http, Client) {
     var load;
     $rootScope.frontend_loading = true;
@@ -815,7 +817,7 @@
       return $scope.current_page = $scope.page;
     });
   }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, AttachmentStates, ReviewScores, Archive, Review, ApiService, UserService, ArchiveCheck, Recommendations, RecommendationTypes) {
-    var filterMarkers, saveSelectedList, unsetSelected;
+    var bindTutorMarkerEvents, filterMarkers, rebindDraggable, repaintChosen, saveSelectedList, showClientOnMap, showTutorsOnMap, unsetAllMarkers, unsetSelected;
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
     $scope.getRecommendation = function(tutor) {
@@ -989,6 +991,9 @@
     };
     $scope.setList = function(list) {
       $scope.selected_list = list;
+      if ($scope.list_map) {
+        $scope.showListMap();
+      }
       return delete $scope.selected_attachment;
     };
     $scope.listExists = function(subject_id) {
@@ -1148,6 +1153,7 @@
       return rebindMasks();
     });
     $scope.marker_id = 1;
+    $scope.map_number = 0;
     filterMarkers = function() {
       var new_markers;
       new_markers = [];
@@ -1158,17 +1164,25 @@
     };
     $scope.$on('mapInitialized', function(event, map) {
       var INIT_COORDS;
-      $scope.gmap = map;
-      $scope.loadMarkers();
-      INIT_COORDS = {
-        lat: 55.7387,
-        lng: 37.6032
-      };
-      $scope.RECOM_BOUNDS = new google.maps.LatLngBounds(new google.maps.LatLng(INIT_COORDS.lat - 0.5, INIT_COORDS.lng - 0.5), new google.maps.LatLng(INIT_COORDS.lat + 0.5, INIT_COORDS.lng + 0.5));
-      $scope.geocoder = new google.maps.Geocoder;
-      return google.maps.event.addListener(map, 'click', function(event) {
-        return $scope.gmapAddMarker(event);
-      });
+      map.number = $scope.map_number;
+      if ($scope.map_number === 0) {
+        $scope.gmap = map;
+        $scope.loadMarkers();
+        INIT_COORDS = {
+          lat: 55.7387,
+          lng: 37.6032
+        };
+        $scope.RECOM_BOUNDS = new google.maps.LatLngBounds(new google.maps.LatLng(INIT_COORDS.lat - 0.5, INIT_COORDS.lng - 0.5), new google.maps.LatLng(INIT_COORDS.lat + 0.5, INIT_COORDS.lng + 0.5));
+        $scope.geocoder = new google.maps.Geocoder;
+        google.maps.event.addListener(map, 'click', function(event) {
+          return $scope.gmapAddMarker(event);
+        });
+      } else {
+        $scope.gmap2 = map;
+        $scope.gmap2.setCenter(new google.maps.LatLng(55.7387, 37.6032));
+        $scope.gmap2.setZoom(11);
+      }
+      return $scope.map_number++;
     });
     $scope.showMap = function() {
       var bounds, markers_count;
@@ -1199,7 +1213,7 @@
     };
     $scope.gmapAddMarker = function(event) {
       var marker;
-      marker = newMarker($scope.marker_id++, event.latLng, $scope.map);
+      marker = newMarker($scope.marker_id++, event.latLng, $scope.gmap);
       $scope.client.markers.push(marker);
       marker.setMap($scope.gmap);
       ApiService.metro('closest', {
@@ -1254,7 +1268,7 @@
             }
             search_result_bounds.extend(result.geometry.location);
             search_marker = new google.maps.Marker({
-              map: $scope.map,
+              map: $scope.gmap,
               position: result.geometry.location,
               icon: ICON_SEARCH
             });
@@ -1293,9 +1307,10 @@
         markers = [];
         $.each($scope.client.markers, function(index, marker) {
           var new_marker;
-          new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, marker.type);
+          new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.gmap, marker.type);
           new_marker.metros = marker.metros;
-          new_marker.setMap($scope.map);
+          new_marker.setMap($scope.gmap);
+          console.log('adding marker', $scope.gmap);
           $scope.bindMarkerDelete(new_marker);
           $scope.bindMarkerChangeType(new_marker);
           return markers.push(new_marker);
@@ -1303,8 +1318,137 @@
         return $scope.client.markers = markers;
       });
     };
-    return $scope.saveMarkers = function() {
+    $scope.saveMarkers = function() {
       return $('#gmap-modal').modal('hide');
+    };
+    $scope.listMap = function() {
+      $scope.list_map = !$scope.list_map;
+      $scope.showListMap();
+      return $timeout(function() {
+        return $('html, body').animate({
+          scrollTop: $("#list-map").offset().top
+        }, 300);
+      });
+    };
+    $scope.added = function(tutor_id) {
+      return indexOf.call($scope.tutor_ids, tutor_id) >= 0;
+    };
+    rebindDraggable = function() {
+      return $('.temporary-tutor').draggable({
+        containment: 'window',
+        revert: function(valid) {
+          if (valid) {
+            return true;
+          }
+          $scope.tutor_list = removeById($scope.tutor_list, $scope.dragging_tutor.id);
+          $scope.tutor_ids = _.without($scope.tutor_ids, $scope.dragging_tutor.id);
+          $scope.$apply();
+          return repaintChosen();
+        }
+      });
+    };
+    $scope.startDragging = function(tutor) {
+      return $scope.dragging_tutor = tutor;
+    };
+    showTutorsOnMap = function() {
+      var bounds, markers_count;
+      unsetAllMarkers();
+      $scope.marker_id2 = 1;
+      $scope.tutor_list = [];
+      bounds = new google.maps.LatLngBounds;
+      markers_count = 0;
+      $scope.markers2 = [];
+      google.maps.event.trigger($scope.gmap2, 'resize');
+      $scope.gmap2.setCenter(new google.maps.LatLng(55.7387, 37.6032));
+      $scope.gmap2.setZoom(11);
+      $scope.selected_list.tutors.forEach(function(tutor) {
+        return tutor.markers.forEach(function(marker) {
+          var new_marker;
+          markers_count++;
+          bounds.extend(new google.maps.LatLng(marker.lat, marker.lng));
+          new_marker = newMarker($scope.marker_id2++, new google.maps.LatLng(marker.lat, marker.lng), $scope.gmap2, marker.type);
+          new_marker.metros = marker.metros;
+          new_marker.tutor = tutor;
+          new_marker.setMap($scope.gmap2);
+          bindTutorMarkerEvents(new_marker);
+          return $scope.markers2.push(new_marker);
+        });
+      });
+      if (markers_count > 0) {
+        $scope.gmap2.fitBounds(bounds);
+        $scope.gmap2.panToBounds(bounds);
+        $scope.gmap2.setZoom(11);
+      }
+      return $scope.gmap2.panBy(200, 100);
+    };
+    showClientOnMap = function() {
+      return $scope.client.markers.forEach(function(marker) {
+        var new_marker;
+        new_marker = newMarker($scope.marker_id2++, new google.maps.LatLng(marker.lat, marker.lng), $scope.gmap2, 'white');
+        new_marker.metros = marker.metros;
+        return new_marker.setMap($scope.gmap2);
+      });
+    };
+    unsetAllMarkers = function() {
+      if ($scope.markers2 !== void 0) {
+        return $scope.markers2.forEach(function(marker) {
+          return marker.setMap(null);
+        });
+      }
+    };
+    bindTutorMarkerEvents = function(marker) {
+      google.maps.event.addListener(marker, 'click', function(event) {
+        var ref;
+        if (ref = marker.tutor, indexOf.call($scope.tutor_list, ref) >= 0) {
+          $scope.tutor_list = removeById($scope.tutor_list, marker.tutor.id);
+        } else {
+          $scope.hovered_tutor = null;
+          $scope.tutor_list.push(marker.tutor);
+        }
+        $scope.addOrRemove(marker.tutor.id);
+        $scope.$apply();
+        return rebindDraggable();
+      });
+      google.maps.event.addListener(marker, 'mouseover', function(event) {
+        var ref;
+        if (ref = marker.tutor, indexOf.call($scope.tutor_list, ref) >= 0) {
+          return;
+        }
+        $scope.hovered_tutor = marker.tutor;
+        return $scope.$apply();
+      });
+      return google.maps.event.addListener(marker, 'mouseout', function(event) {
+        $scope.hovered_tutor = null;
+        return $scope.$apply();
+      });
+    };
+    $scope.addOrRemove = function(tutor_id) {
+      tutor_id = parseInt(tutor_id);
+      if (indexOf.call($scope.tutor_ids, tutor_id) >= 0) {
+        $scope.tutor_ids = _.without($scope.tutor_ids, tutor_id);
+      } else {
+        $scope.tutor_ids.push(tutor_id);
+      }
+      return repaintChosen();
+    };
+    repaintChosen = function() {
+      return $scope.markers2.forEach(function(marker) {
+        var ref, ref1;
+        if ((ref = marker.tutor.id, indexOf.call($scope.tutor_ids, ref) >= 0) && !marker.chosen) {
+          marker.chosen = true;
+          marker.setIcon(ICON_BLUE);
+        }
+        if ((ref1 = marker.tutor.id, indexOf.call($scope.tutor_ids, ref1) < 0) && marker.chosen) {
+          marker.chosen = false;
+          return marker.setIcon(getMarkerType(marker.type));
+        }
+      });
+    };
+    return $scope.showListMap = function() {
+      return $timeout(function() {
+        showTutorsOnMap();
+        return showClientOnMap();
+      });
     };
   });
 
@@ -2362,6 +2506,330 @@
 }).call(this);
 
 (function() {
+  angular.module('Egerep').value('Recommendations', {
+    1: {
+      text: 'Репетитор рекомендован этому клиенту. Не забудьте четко проговорить условия работы с преподавателями.',
+      type: 0
+    },
+    2: {
+      text: 'Репетитора можно давать этому клиенту, но только если репетиторы с зеленой меткой не подходят клиенту. Не забудьте четко проговорить условия работы с преподавателями.',
+      type: 1
+    },
+    3: {
+      text: 'Репетитор в группе высокого риска невыплат. Сейчас у него уже 2 открытых клиента и ни одного расчета с нами, поэтому пока он не рассчитался, крайне не рекомендуется давать ему больше учеников.',
+      type: 2
+    },
+    4: {
+      text: 'Репетитор в группе высокого риска невыплат. Сейчас у него ни одного расчета с нами, но и клиентов нет. Поэтому ему можно дать этого клиента, но если нет репетиторов с зеленой меткой.',
+      type: 1
+    },
+    5: {
+      text: 'Репетитор в средней группе риска. Но учитывая, что сейчас середина учебного года, риск оправдан и в данном случае репетитор рекомендован этому клиенту.',
+      type: 0
+    },
+    6: {
+      text: 'Репетитор в высокой группе риска невыплат. Если других вариантов нет давать этого репетитора можно.',
+      type: 1
+    },
+    7: {
+      text: 'Репетитор в высокой группе риска невыплат. Однако у него нет клиентов, поэтому его вполне можно давать с целью проверить как он работает.',
+      type: 0
+    },
+    8: {
+      text: 'Этот репетитор проверен, но в данный момент учебного года не рекомендован, так как в это время нужно искать непроверенных репетиторов и проверять их на слабомотивированных клиентах, которые сейчас как раз обращаются.',
+      type: 2
+    },
+    9: {
+      text: 'Этому репетитору мы не доверяем и он крайне рекомендован, так как сейчас отличное время для проверки репетиторов, которых мы будем рекомендовать в следующем году как проверенных. Если он не заплатит нам, то невыплаты будут минимальными и репетитора мы закроем навсегда, в чем великая польза.',
+      type: 0
+    },
+    10: {
+      text: 'Репетитор рекомендован этому клиенту.',
+      type: 0
+    },
+    11: {
+      text: 'С этим репетитором была всего 1 встреча, поэтому давать его ученику 10 класса будет риском. Сделайте все, чтобы избежать этого, но если не получается – давать можно.',
+      type: 1
+    },
+    12: {
+      text: 'С этим репетитором не было встреч и мы ему не доверяем. Нужно сделать все, чтобы 10-классник его не получил, так как 10 классы всегда продолжают заниматься и в 11 классе. Если дать этого репетитора этому клиенту, то будет создан риск больших невыплат.',
+      type: 2
+    },
+    13: {
+      text: 'С этим репетитором не было встреч и мы ему не доверяем. Однако и клиентов у него нет, поэтому давать можно, но только если других вариантов нет.',
+      type: 1
+    }
+  }).value('RecommendationTypes', ['очень рекомендован', 'средне рекомендован', 'не рекомендован']).value('DebtTypes', {
+    0: 'не доплатил',
+    1: 'переплатил'
+  }).value('Weekdays', {
+    0: 'пн',
+    1: 'вт',
+    2: 'ср',
+    3: 'чт',
+    4: 'пт',
+    5: 'сб',
+    6: 'вс'
+  }).value('Destinations', {
+    r_k: 'репетитор едет к клиенту',
+    k_r: 'клиент едет к репетитору'
+  }).value('Workplaces', {
+    0: 'не работает в ЕГЭ-Центре',
+    1: 'работает в ЕГЭ-Центре'
+  }).value('Genders', {
+    male: 'мужской',
+    female: 'женский'
+  }).value('TutorStates', {
+    0: 'не установлено',
+    1: 'на проверку',
+    2: 'к закрытию',
+    3: 'закрыто',
+    4: 'к одобрению',
+    5: 'одобрено'
+  }).value('TutorPublishedStates', {
+    0: 'не опубликован',
+    1: 'опубликован'
+  }).value('PaymentMethods', {
+    0: 'не установлено',
+    1: 'стандартный расчет',
+    2: 'яндекс.деньги',
+    3: 'перевод на сотовый',
+    4: 'перевод на карту'
+  }).value('RequestStates', {
+    "new": 'невыполненные',
+    awaiting: 'в ожидании',
+    finished: 'выполненные',
+    deny: 'отказы',
+    motivated_deny: 'мотивированный отказ'
+  }).value('ArchiveStates', {
+    impossible: 'невозможно',
+    possible: 'возможно'
+  }).value('ArchiveCheck', {
+    0: 'не проверено',
+    1: 'проверено'
+  }).value('ReviewStates', {
+    unpublished: 'не опубликован',
+    published: 'опубликован'
+  }).value('AttachmentVisibility', {
+    0: 'скрыто',
+    1: 'показано'
+  }).value('AttachmentStates', {
+    "new": {
+      label: 'новые',
+      page_size: 30,
+      sort: {
+        field: 'created_at',
+        type: 'asc'
+      },
+      track_comment_load: true
+    },
+    inprogress: {
+      label: 'рабочие',
+      page_size: 200,
+      sort: {
+        field: 'created_at',
+        type: 'desc'
+      }
+    },
+    ended: {
+      label: 'завершенные',
+      page_size: 200,
+      sort: {
+        field: 'created_at',
+        type: 'desc'
+      }
+    },
+    all: {
+      label: 'все',
+      page_size: 50,
+      sort: {
+        field: 'created_at',
+        type: 'desc'
+      }
+    }
+  }).value('ReviewScores', {
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+    6: 6,
+    7: 7,
+    8: 8,
+    9: 9,
+    10: 10,
+    11: 'отзыв не собирать'
+  }).value('Grades', {
+    1: '1 класс',
+    2: '2 класс',
+    3: '3 класс',
+    4: '4 класс',
+    5: '5 класс',
+    6: '6 класс',
+    7: '7 класс',
+    8: '8 класс',
+    9: '9 класс',
+    10: '10 класс',
+    11: '11 класс',
+    12: 'студенты',
+    13: 'остальные'
+  }).value('Subjects', {
+    all: {
+      1: 'математика',
+      2: 'физика',
+      3: 'химия',
+      4: 'биология',
+      5: 'информатика',
+      6: 'русский',
+      7: 'литература',
+      8: 'обществознание',
+      9: 'история',
+      10: 'английский',
+      11: 'неизвестный предмет'
+    },
+    full: {
+      1: 'Математика',
+      2: 'Физика',
+      3: 'Химия',
+      4: 'Биология',
+      5: 'Информатика',
+      6: 'Русский язык',
+      7: 'Литература',
+      8: 'Обществознание',
+      9: 'История',
+      10: 'Английский язык'
+    },
+    dative: {
+      1: 'математике',
+      2: 'физике',
+      3: 'химии',
+      4: 'биологии',
+      5: 'информатике',
+      6: 'русскому языку',
+      7: 'литературе',
+      8: 'обществознанию',
+      9: 'истории',
+      10: 'английскому языку',
+      11: 'неизвестному предмету'
+    },
+    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
+    three_letters: {
+      1: 'МАТ',
+      2: 'ФИЗ',
+      3: 'ХИМ',
+      4: 'БИО',
+      5: 'ИНФ',
+      6: 'РУС',
+      7: 'ЛИТ',
+      8: 'ОБЩ',
+      9: 'ИСТ',
+      10: 'АНГ'
+    },
+    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
+  }).value('Branches', {
+    1: {
+      code: 'TRG',
+      full: 'Тургеневская',
+      short: 'ТУР',
+      address: 'Мясницкая 40с1',
+      color: '#FBAA33'
+    },
+    2: {
+      code: 'PVN',
+      full: 'Проспект Вернадского',
+      short: 'ВЕР',
+      address: '',
+      color: '#EF1E25'
+    },
+    3: {
+      code: 'BGT',
+      full: 'Багратионовская',
+      short: 'БАГ',
+      address: '',
+      color: '#019EE0'
+    },
+    5: {
+      code: 'IZM',
+      full: 'Измайловская',
+      short: 'ИЗМ',
+      address: '',
+      color: '#0252A2'
+    },
+    6: {
+      code: 'OPL',
+      full: 'Октябрьское поле',
+      short: 'ОКТ',
+      address: '',
+      color: '#B61D8E'
+    },
+    7: {
+      code: 'RPT',
+      full: 'Рязанский Проспект',
+      short: 'РЯЗ',
+      address: '',
+      color: '#B61D8E'
+    },
+    8: {
+      code: 'VKS',
+      full: 'Войковская',
+      short: 'ВОЙ',
+      address: '',
+      color: '#029A55'
+    },
+    9: {
+      code: 'ORH',
+      full: 'Орехово',
+      short: 'ОРЕ',
+      address: '',
+      color: '#029A55'
+    },
+    11: {
+      code: 'UJN',
+      full: 'Южная',
+      short: 'ЮЖН',
+      address: '',
+      color: '#ACADAF'
+    },
+    12: {
+      code: 'PER',
+      full: 'Перово',
+      short: 'ПЕР',
+      address: '',
+      color: '#FFD803'
+    },
+    13: {
+      code: 'KLG',
+      full: 'Калужская',
+      short: 'КЛЖ',
+      address: 'Научный проезд 8с1',
+      color: '#C07911'
+    },
+    14: {
+      code: 'BRT',
+      full: 'Братиславская',
+      short: 'БРА',
+      address: '',
+      color: '#B1D332'
+    },
+    15: {
+      code: 'MLD',
+      full: 'Молодежная',
+      short: 'МОЛ',
+      address: '',
+      color: '#0252A2'
+    },
+    16: {
+      code: 'VLD',
+      full: 'Владыкино',
+      short: 'ВЛА',
+      address: '',
+      color: '#ACADAF'
+    }
+  });
+
+}).call(this);
+
+(function() {
   var apiPath, updateMethod;
 
   angular.module('Egerep').factory('Account', function($resource) {
@@ -2834,330 +3302,6 @@
         return $scope.UserService = $scope.$parent.UserService;
       }
     };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').value('Recommendations', {
-    1: {
-      text: 'Репетитор рекомендован этому клиенту. Не забудьте четко проговорить условия работы с преподавателями.',
-      type: 0
-    },
-    2: {
-      text: 'Репетитора можно давать этому клиенту, но только если репетиторы с зеленой меткой не подходят клиенту. Не забудьте четко проговорить условия работы с преподавателями.',
-      type: 1
-    },
-    3: {
-      text: 'Репетитор в группе высокого риска невыплат. Сейчас у него уже 2 открытых клиента и ни одного расчета с нами, поэтому пока он не рассчитался, крайне не рекомендуется давать ему больше учеников.',
-      type: 2
-    },
-    4: {
-      text: 'Репетитор в группе высокого риска невыплат. Сейчас у него ни одного расчета с нами, но и клиентов нет. Поэтому ему можно дать этого клиента, но если нет репетиторов с зеленой меткой.',
-      type: 1
-    },
-    5: {
-      text: 'Репетитор в средней группе риска. Но учитывая, что сейчас середина учебного года, риск оправдан и в данном случае репетитор рекомендован этому клиенту.',
-      type: 0
-    },
-    6: {
-      text: 'Репетитор в высокой группе риска невыплат. Если других вариантов нет давать этого репетитора можно.',
-      type: 1
-    },
-    7: {
-      text: 'Репетитор в высокой группе риска невыплат. Однако у него нет клиентов, поэтому его вполне можно давать с целью проверить как он работает.',
-      type: 0
-    },
-    8: {
-      text: 'Этот репетитор проверен, но в данный момент учебного года не рекомендован, так как в это время нужно искать непроверенных репетиторов и проверять их на слабомотивированных клиентах, которые сейчас как раз обращаются.',
-      type: 2
-    },
-    9: {
-      text: 'Этому репетитору мы не доверяем и он крайне рекомендован, так как сейчас отличное время для проверки репетиторов, которых мы будем рекомендовать в следующем году как проверенных. Если он не заплатит нам, то невыплаты будут минимальными и репетитора мы закроем навсегда, в чем великая польза.',
-      type: 0
-    },
-    10: {
-      text: 'Репетитор рекомендован этому клиенту.',
-      type: 0
-    },
-    11: {
-      text: 'С этим репетитором была всего 1 встреча, поэтому давать его ученику 10 класса будет риском. Сделайте все, чтобы избежать этого, но если не получается – давать можно.',
-      type: 1
-    },
-    12: {
-      text: 'С этим репетитором не было встреч и мы ему не доверяем. Нужно сделать все, чтобы 10-классник его не получил, так как 10 классы всегда продолжают заниматься и в 11 классе. Если дать этого репетитора этому клиенту, то будет создан риск больших невыплат.',
-      type: 2
-    },
-    13: {
-      text: 'С этим репетитором не было встреч и мы ему не доверяем. Однако и клиентов у него нет, поэтому давать можно, но только если других вариантов нет.',
-      type: 1
-    }
-  }).value('RecommendationTypes', ['очень рекомендован', 'средне рекомендован', 'не рекомендован']).value('DebtTypes', {
-    0: 'не доплатил',
-    1: 'переплатил'
-  }).value('Weekdays', {
-    0: 'пн',
-    1: 'вт',
-    2: 'ср',
-    3: 'чт',
-    4: 'пт',
-    5: 'сб',
-    6: 'вс'
-  }).value('Destinations', {
-    r_k: 'репетитор едет к клиенту',
-    k_r: 'клиент едет к репетитору'
-  }).value('Workplaces', {
-    0: 'не работает в ЕГЭ-Центре',
-    1: 'работает в ЕГЭ-Центре'
-  }).value('Genders', {
-    male: 'мужской',
-    female: 'женский'
-  }).value('TutorStates', {
-    0: 'не установлено',
-    1: 'на проверку',
-    2: 'к закрытию',
-    3: 'закрыто',
-    4: 'к одобрению',
-    5: 'одобрено'
-  }).value('TutorPublishedStates', {
-    0: 'не опубликован',
-    1: 'опубликован'
-  }).value('PaymentMethods', {
-    0: 'не установлено',
-    1: 'стандартный расчет',
-    2: 'яндекс.деньги',
-    3: 'перевод на сотовый',
-    4: 'перевод на карту'
-  }).value('RequestStates', {
-    "new": 'невыполненные',
-    awaiting: 'в ожидании',
-    finished: 'выполненные',
-    deny: 'отказы',
-    motivated_deny: 'мотивированный отказ'
-  }).value('ArchiveStates', {
-    impossible: 'невозможно',
-    possible: 'возможно'
-  }).value('ArchiveCheck', {
-    0: 'не проверено',
-    1: 'проверено'
-  }).value('ReviewStates', {
-    unpublished: 'не опубликован',
-    published: 'опубликован'
-  }).value('AttachmentVisibility', {
-    0: 'скрыто',
-    1: 'показано'
-  }).value('AttachmentStates', {
-    "new": {
-      label: 'новые',
-      page_size: 30,
-      sort: {
-        field: 'created_at',
-        type: 'asc'
-      },
-      track_comment_load: true
-    },
-    inprogress: {
-      label: 'рабочие',
-      page_size: 200,
-      sort: {
-        field: 'created_at',
-        type: 'desc'
-      }
-    },
-    ended: {
-      label: 'завершенные',
-      page_size: 200,
-      sort: {
-        field: 'created_at',
-        type: 'desc'
-      }
-    },
-    all: {
-      label: 'все',
-      page_size: 50,
-      sort: {
-        field: 'created_at',
-        type: 'desc'
-      }
-    }
-  }).value('ReviewScores', {
-    1: 1,
-    2: 2,
-    3: 3,
-    4: 4,
-    5: 5,
-    6: 6,
-    7: 7,
-    8: 8,
-    9: 9,
-    10: 10,
-    11: 'отзыв не собирать'
-  }).value('Grades', {
-    1: '1 класс',
-    2: '2 класс',
-    3: '3 класс',
-    4: '4 класс',
-    5: '5 класс',
-    6: '6 класс',
-    7: '7 класс',
-    8: '8 класс',
-    9: '9 класс',
-    10: '10 класс',
-    11: '11 класс',
-    12: 'студенты',
-    13: 'остальные'
-  }).value('Subjects', {
-    all: {
-      1: 'математика',
-      2: 'физика',
-      3: 'химия',
-      4: 'биология',
-      5: 'информатика',
-      6: 'русский',
-      7: 'литература',
-      8: 'обществознание',
-      9: 'история',
-      10: 'английский',
-      11: 'неизвестный предмет'
-    },
-    full: {
-      1: 'Математика',
-      2: 'Физика',
-      3: 'Химия',
-      4: 'Биология',
-      5: 'Информатика',
-      6: 'Русский язык',
-      7: 'Литература',
-      8: 'Обществознание',
-      9: 'История',
-      10: 'Английский язык'
-    },
-    dative: {
-      1: 'математике',
-      2: 'физике',
-      3: 'химии',
-      4: 'биологии',
-      5: 'информатике',
-      6: 'русскому языку',
-      7: 'литературе',
-      8: 'обществознанию',
-      9: 'истории',
-      10: 'английскому языку',
-      11: 'неизвестному предмету'
-    },
-    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
-    three_letters: {
-      1: 'МАТ',
-      2: 'ФИЗ',
-      3: 'ХИМ',
-      4: 'БИО',
-      5: 'ИНФ',
-      6: 'РУС',
-      7: 'ЛИТ',
-      8: 'ОБЩ',
-      9: 'ИСТ',
-      10: 'АНГ'
-    },
-    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
-  }).value('Branches', {
-    1: {
-      code: 'TRG',
-      full: 'Тургеневская',
-      short: 'ТУР',
-      address: 'Мясницкая 40с1',
-      color: '#FBAA33'
-    },
-    2: {
-      code: 'PVN',
-      full: 'Проспект Вернадского',
-      short: 'ВЕР',
-      address: '',
-      color: '#EF1E25'
-    },
-    3: {
-      code: 'BGT',
-      full: 'Багратионовская',
-      short: 'БАГ',
-      address: '',
-      color: '#019EE0'
-    },
-    5: {
-      code: 'IZM',
-      full: 'Измайловская',
-      short: 'ИЗМ',
-      address: '',
-      color: '#0252A2'
-    },
-    6: {
-      code: 'OPL',
-      full: 'Октябрьское поле',
-      short: 'ОКТ',
-      address: '',
-      color: '#B61D8E'
-    },
-    7: {
-      code: 'RPT',
-      full: 'Рязанский Проспект',
-      short: 'РЯЗ',
-      address: '',
-      color: '#B61D8E'
-    },
-    8: {
-      code: 'VKS',
-      full: 'Войковская',
-      short: 'ВОЙ',
-      address: '',
-      color: '#029A55'
-    },
-    9: {
-      code: 'ORH',
-      full: 'Орехово',
-      short: 'ОРЕ',
-      address: '',
-      color: '#029A55'
-    },
-    11: {
-      code: 'UJN',
-      full: 'Южная',
-      short: 'ЮЖН',
-      address: '',
-      color: '#ACADAF'
-    },
-    12: {
-      code: 'PER',
-      full: 'Перово',
-      short: 'ПЕР',
-      address: '',
-      color: '#FFD803'
-    },
-    13: {
-      code: 'KLG',
-      full: 'Калужская',
-      short: 'КЛЖ',
-      address: 'Научный проезд 8с1',
-      color: '#C07911'
-    },
-    14: {
-      code: 'BRT',
-      full: 'Братиславская',
-      short: 'БРА',
-      address: '',
-      color: '#B1D332'
-    },
-    15: {
-      code: 'MLD',
-      full: 'Молодежная',
-      short: 'МОЛ',
-      address: '',
-      color: '#0252A2'
-    },
-    16: {
-      code: 'VLD',
-      full: 'Владыкино',
-      short: 'ВЛА',
-      address: '',
-      color: '#ACADAF'
-    }
   });
 
 }).call(this);
