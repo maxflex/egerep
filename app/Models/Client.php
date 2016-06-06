@@ -45,7 +45,10 @@ class Client extends Model
      */
     public static function removeWithoutRequests()
     {
-        Client::doesntHave('requests')->delete();
+        // нужно, чтобы запускалось событие удаления клиента
+        Client::doesntHave('requests')->get()->each(function($model) {
+            $model->destroy();
+        });
     }
 
     protected static function boot()

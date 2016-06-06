@@ -43,6 +43,7 @@ class InitDuplicatesTable extends Command
     public function handle()
     {
         $this->info('Getting clients...');
+        PhoneDuplicate::truncate();
         $clients = DB::table('clients')->where('phone', '<>', '')->get();
 
         $bar = $this->output->createProgressBar(count($clients));
