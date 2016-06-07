@@ -33,6 +33,7 @@ return array(
     'AddPhone4ToClients' => $baseDir . '/database/migrations/2016_03_10_160148_add_phone4_to_clients.php',
     'AddPhotoToTutors' => $baseDir . '/database/migrations/2016_02_29_140442_add_photo_to_tutors.php',
     'AddReadyToWorkToTeachers' => $baseDir . '/database/migrations/2016_03_16_171801_add_ready_to_work_to_teachers.php',
+    'AddRemoveRequestsToUsers' => $baseDir . '/database/migrations/2016_06_07_135003_add_remove_requests_to_users.php',
     'AddSvgMapToTeachers' => $baseDir . '/database/migrations/2016_01_19_131426_add_svg_map_to_teachers.php',
     'AddSwitchesToAttachments' => $baseDir . '/database/migrations/2016_02_20_135309_add_switches_to_attachments.php',
     'AddTimestampsToLists' => $baseDir . '/database/migrations/2016_05_17_112210_add_timestamps_to_lists.php',
