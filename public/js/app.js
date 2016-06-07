@@ -462,18 +462,19 @@
       }
     };
     $scope.caret = 0;
-    $scope.periodsCursor = function(y, x, event) {
-      var date, new_element, original_element;
+    $scope.periodsCursor = function(y, x, event, account_data, date) {
+      var d, new_element, original_element;
       original_element = $("#i-" + y + "-" + x);
       if (original_element.val() === "0" && original_element.val().length) {
         while (true) {
-          date = moment(date ? date : y).subtract('days', 1).format('YYYY-MM-DD');
-          new_element = $('#i-' + date + '-' + x);
+          d = moment(d || y).subtract('days', 1).format('YYYY-MM-DD');
+          new_element = $('#i-' + d + '-' + x);
           if (!new_element.length) {
             break;
           }
           if (new_element.val()) {
-            original_element.val(new_element.val());
+            event.preventDefault();
+            account_data[date] = new_element.val();
             break;
           }
         }
@@ -3272,6 +3273,94 @@
 }).call(this);
 
 (function() {
+  var apiPath, updateMethod;
+
+  angular.module('Egerep').factory('Account', function($resource) {
+    return $resource(apiPath('accounts'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Review', function($resource) {
+    return $resource(apiPath('reviews'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Archive', function($resource) {
+    return $resource(apiPath('archives'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Attachment', function($resource) {
+    return $resource(apiPath('attachments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('RequestList', function($resource) {
+    return $resource(apiPath('lists'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Request', function($resource) {
+    return $resource(apiPath('requests'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      transfer: {
+        method: 'POST',
+        url: apiPath('requests', 'transfer')
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  }).factory('Sms', function($resource) {
+    return $resource(apiPath('sms'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Comment', function($resource) {
+    return $resource(apiPath('comments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Client', function($resource) {
+    return $resource(apiPath('clients'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('User', function($resource) {
+    return $resource(apiPath('users'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Tutor', function($resource) {
+    return $resource(apiPath('tutors'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      deletePhoto: {
+        url: apiPath('tutors', 'photo'),
+        method: 'DELETE'
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  });
+
+  apiPath = function(entity, additional) {
+    if (additional == null) {
+      additional = '';
+    }
+    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
+  };
+
+  updateMethod = function() {
+    return {
+      update: {
+        method: 'PUT'
+      }
+    };
+  };
+
+}).call(this);
+
+(function() {
   angular.module('Egerep').service('ApiService', function($http) {
     this.metro = function(fun, data) {
       return $http.post("api/metro/" + fun, data);
@@ -3634,94 +3723,6 @@
     };
     return this;
   });
-
-}).call(this);
-
-(function() {
-  var apiPath, updateMethod;
-
-  angular.module('Egerep').factory('Account', function($resource) {
-    return $resource(apiPath('accounts'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Review', function($resource) {
-    return $resource(apiPath('reviews'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Archive', function($resource) {
-    return $resource(apiPath('archives'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Attachment', function($resource) {
-    return $resource(apiPath('attachments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('RequestList', function($resource) {
-    return $resource(apiPath('lists'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Request', function($resource) {
-    return $resource(apiPath('requests'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      transfer: {
-        method: 'POST',
-        url: apiPath('requests', 'transfer')
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  }).factory('Sms', function($resource) {
-    return $resource(apiPath('sms'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Comment', function($resource) {
-    return $resource(apiPath('comments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Client', function($resource) {
-    return $resource(apiPath('clients'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('User', function($resource) {
-    return $resource(apiPath('users'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Tutor', function($resource) {
-    return $resource(apiPath('tutors'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      deletePhoto: {
-        url: apiPath('tutors', 'photo'),
-        method: 'DELETE'
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  });
-
-  apiPath = function(entity, additional) {
-    if (additional == null) {
-      additional = '';
-    }
-    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
-  };
-
-  updateMethod = function() {
-    return {
-      update: {
-        method: 'PUT'
-      }
-    };
-  };
 
 }).call(this);
 

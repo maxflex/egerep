@@ -254,7 +254,7 @@ angular.module('Egerep')
             return
 
         $scope.caret = 0 # Позиция каретки
-        $scope.periodsCursor = (y, x, event) ->
+        $scope.periodsCursor = (y, x, event, account_data, date) ->
             # console.log y, x, event, $("#" + y + "-" + x)
             # Получаем начальный элемент (с которого возможно сдвинемся)
             original_element = $("#i-#{y}-#{x}")
@@ -262,13 +262,14 @@ angular.module('Egerep')
             # Если был нажат 0, то подхватываем значение поля сверху
             if original_element.val() is "0" and original_element.val().length
                 while true
-                    date = moment(if date then date else y).subtract('days', 1).format 'YYYY-MM-DD'
-                    new_element = $('#i-' + date + '-' + x)
+                    d = moment(d or y).subtract('days', 1).format 'YYYY-MM-DD'
+                    new_element = $('#i-' + d + '-' + x)
                     break if not new_element.length
                     # Поверяем существует ли поле сверху
                     if new_element.val()
                         # Присваеваем текущему элементу значение сверху
-                        original_element.val new_element.val()
+                        event.preventDefault()
+                        account_data[date] = new_element.val()
                         break
 
             # Если внутри цифр, то не прыгаем к следующему элементу

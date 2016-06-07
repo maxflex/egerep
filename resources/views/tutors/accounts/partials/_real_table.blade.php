@@ -58,7 +58,7 @@
                         <input type="text" class='account-column no-border-outline' id='i-@{{ date }}-@{{ $index }}'
                             ng-focus='selectRow(date)'
                             ng-blur='deselectRow(date)'
-                            ng-keyup='periodsCursor(date, $index, $event)'
+                            ng-keyup='periodsCursor(date, $index, $event, account.data[client.id], date)'
                             ng-class="{
                                 'attachment-start': date == client.attachment_date,
                                 'archive-date': date == client.archive_date,

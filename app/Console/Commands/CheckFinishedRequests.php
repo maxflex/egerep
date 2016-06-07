@@ -44,17 +44,24 @@ class CheckFinishedRequests extends Command
 
         $bar = $this->output->createProgressBar($requests->count());
 
+		$request_ids = [];
+
         foreach ($requests as $request) {
             $bar->advance();
             if ($request->lists) {
                 foreach ($request->lists as $list) {
-                    if ($list->attachments()->exists()) {
-                        break 2;
+                    if ($list->attachments()->count()) {
+                        continue 2;
                     }
                 }
             }
-            $this->info($request->id);
+            $request_ids[] = $request->id;
+//             $this->info($request->id);
         }
         $bar->finish();
+
+        foreach ($request_ids as $id) {
+	        $this->info($id);
+        }
     }
 }
