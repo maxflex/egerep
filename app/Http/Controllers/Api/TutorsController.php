@@ -43,9 +43,11 @@ class TutorsController extends Controller
         $request_lists = RequestList::whereRaw("FIND_IN_SET({$request->tutor_id}, tutor_ids)")->get();
 
         foreach ($request_lists as $rl) {
-            $rl->tutor_ids   = array_diff($rl->tutor_ids, [$request->tutor_id]);
-            $rl->tutor_ids[] = $request->new_tutor_id;
-            $rl->save();
+            $new_tutor_ids = array_diff($rl->tutor_ids, [$request->tutor_id]);
+            $new_tutor_ids[] = $request->new_tutor_id;
+            RequestList::where('id', $rl->id)->update([
+                'tutor_ids' => implode(',', $new_tutor_ids)
+            ]);
         }
 
         // Attachments
