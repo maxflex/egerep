@@ -59,7 +59,7 @@ class User extends Model
 
         if ($User->exists()) {
             $user = $User->first();
-            if ($user->any_device_access || strpos($_SERVER['HTTP_X_REAL_IP'], '213.184.130.') === 0) {
+            if ($user->worldwide_access || strpos($_SERVER['HTTP_X_REAL_IP'], '213.184.130.') === 0) {
                 $_SESSION['user'] = $user;
                 return true;
             }
