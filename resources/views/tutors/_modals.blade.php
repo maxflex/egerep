@@ -1,3 +1,22 @@
+{{-- ПЕРЕМЕЩЕНИЕ ЗАЯВКИ --}}
+<div id="merge-tutor" class="modal" role="dialog" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Склеить преподавателя</h4>
+      </div>
+      <div class="modal-body">
+          <input placeholder='номер преподавателя' type="text" ng-model='new_tutor_id' class="form-control digits-only">
+      </div>
+      <div class="modal-footer center">
+        <button type="button" class="btn btn-primary" ng-click="mergeTutorGo()"
+            ng-disabled="!new_tutor_id">Склеить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <div class="modal modal-fullscreen" tabindex="-1" id='change-photo'>
     <div class="modal-dialog" style="width: 80%; height: 90%; margin: 3% auto">
         <div class="modal-content" style="height: 100%">

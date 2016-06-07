@@ -50,6 +50,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('tutors/list', 'TutorsController@lists');
         Route::post('tutors/filtered', 'TutorsController@filtered');
         Route::post('tutors/counts', 'TutorsController@counts');
+        Route::post('tutors/merge', 'TutorsController@merge');
         Route::delete('tutors/photo/{id}', 'TutorsController@deletePhoto');
         Route::resource('tutors', 'TutorsController');
 

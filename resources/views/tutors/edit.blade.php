@@ -10,6 +10,7 @@
 @section('content')
 @section('controller', 'TutorsForm')
 @section('title-right')
+    <span class="header-link" ng-click='mergeTutor()'>склеить</span>
     <a href="http://www.a-perspektiva.ru/tutors/?id=@{{ tutor.id_a_pers }}" target="_blank">анкета на a-perspektiva.ru</a>
     <a href="tutors/{{ $id }}/accounts">отчетность</a>
     <span class="header-link" ng-click='deleteTutor()'>удалить</span>
