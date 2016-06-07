@@ -1415,7 +1415,7 @@
       if (markers_count > 0) {
         $scope.gmap2.fitBounds(bounds);
         $scope.gmap2.panToBounds(bounds);
-        $scope.gmap2.setZoom(11);
+        $scope.gmap2.setZoom(10);
       }
       return $scope.gmap2.panBy(150, 0);
     };

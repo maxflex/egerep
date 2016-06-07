@@ -554,7 +554,7 @@ angular
             $scope.client.markers.forEach (marker) ->
                 markers_count++
                 bounds.extend(new google.maps.LatLng(marker.lat, marker.lng))
-                
+
             $scope.selected_list.tutors.forEach (tutor) ->
                 tutor.markers.forEach (marker) ->
                     markers_count++
@@ -576,7 +576,7 @@ angular
             if markers_count > 0
                 $scope.gmap2.fitBounds bounds
                 $scope.gmap2.panToBounds bounds
-                $scope.gmap2.setZoom 11
+                $scope.gmap2.setZoom 10
 
             $scope.gmap2.panBy(150, 0)
 
