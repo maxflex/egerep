@@ -1362,14 +1362,7 @@
     };
     $scope.listMap = function() {
       $scope.list_map = !$scope.list_map;
-      $scope.showListMap();
-      if ($scope.list_map) {
-        return $timeout(function() {
-          return $('html, body').animate({
-            scrollTop: $("#list-map").offset().top - 100
-          }, 300);
-        });
-      }
+      return $scope.showListMap();
     };
     $scope.added = function(tutor_id) {
       return indexOf.call($scope.tutor_ids, tutor_id) >= 0;
@@ -1402,6 +1395,10 @@
       google.maps.event.trigger($scope.gmap2, 'resize');
       $scope.gmap2.setCenter(new google.maps.LatLng(55.7387, 37.6032));
       $scope.gmap2.setZoom(11);
+      $scope.client.markers.forEach(function(marker) {
+        markers_count++;
+        return bounds.extend(new google.maps.LatLng(marker.lat, marker.lng));
+      });
       $scope.selected_list.tutors.forEach(function(tutor) {
         return tutor.markers.forEach(function(marker) {
           var new_marker;
