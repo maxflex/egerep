@@ -29,6 +29,7 @@ class Kernel extends ConsoleKernel
         Commands\ClientPhonesTransfer::class,
         Commands\InitDuplicatesTable::class,
         Commands\TransferSummary::class,
+        Commands\CalcSummary::class,
     ];
 
     /**
@@ -39,5 +40,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('summary:calc')->dailyAt('02:30');
     }
 }
