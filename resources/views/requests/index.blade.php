@@ -62,9 +62,12 @@
                         <a class="link-reverse" style="margin-left: 5px" href="requests/@{{request.id}}/edit">редактировать</a>
                     </div>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-4">
                     ответственный:
                     <user-switch entity='request' user-id='user_id' resource='Request'>
+                </div>
+                <div class="col-sm-2">
+                    <span class="link-like" ng-click="toggleState(Request, request)">@{{ RequestStates[request.state] }}</span>
                 </div>
             </div>
             <hr class='list-separate' ng-hide="$last">
