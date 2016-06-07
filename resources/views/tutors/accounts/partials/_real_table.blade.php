@@ -53,10 +53,10 @@
                         'archive-date': date == client.archive_date,
                         'double-border-bottom': getDay(date) == 6
                     }">
-                        <input type="text" class='account-column no-border-outline' id='i-@{{ $parent.$index }}-@{{ $index }}'
+                        <input type="text" class='account-column no-border-outline' id='i-@{{ date }}-@{{ $index }}'
                             ng-focus='selectRow(date)'
                             ng-blur='deselectRow(date)'
-                            ng-keyup='periodsCursor($parent.$index, $index, $event, date)'
+                            ng-keyup='periodsCursor(date, $index, $event)'
                             ng-class="{
                                 'attachment-start': date == client.attachment_date,
                                 'archive-date': date == client.archive_date,

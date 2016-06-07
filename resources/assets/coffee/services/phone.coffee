@@ -11,6 +11,7 @@ angular.module 'Egerep'
             number.replace /[^0-9]/gim, "";
 
         this.format = (number) ->
+            return if not number
             number = this.clean number
             '+'+number.substr(0,1)+' ('+number.substr(1,3)+') '+number.substr(4,3)+'-'+number.substr(7,2)+'-'+number.substr(9,2)
 
