@@ -1,18 +1,19 @@
 @extends('app')
 @section('title', 'Итоги')
+@section('title-right')
+    общий дебет на сегодня: @{{ total_debt | number}}, обновлено @{{ formatDateTime(debt_updated) }}
+    <span class="glyphicon glyphicon-refresh opacity-pointer" ng-click='updateDebt()' ng-class="{
+        'spinning': debt_updating
+    }"></span>
+@stop
 @section('controller', 'SummaryIndex')
+
 
 @section('content')
     <div class="top-links">
         <a href="summary/@{{ period_id }}"
            ng-repeat="(period_id, period) in {day:'дни', week:'недели', month:'месяцы', year:'годы'}"
            ng-class="{active : filter == period_id}">@{{ period }}</a>
-        <span class='pull-right'>
-            общий дебет на сегодня: @{{ total_debt | number}}, обновлено @{{ formatDateTime(debt_updated) }}
-            <span class="glyphicon glyphicon-refresh opacity-pointer" ng-click='updateDebt()' ng-class="{
-                'spinning': debt_updating
-            }"></span>
-        </span>
     </div>
 
     <table class="table table-hover summary-table">
