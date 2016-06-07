@@ -58,11 +58,13 @@ class User extends Model
         ]);
 
         if ($User->exists()) {
-            $_SESSION['user'] = $User->first();
-            return true;
-        } else {
-            return false;
+            $user = $User->first();
+            if ($user->worldwide_access || strpos($_SERVER['HTTP_X_REAL_IP'], '213.184.130.') === 0) {
+                $_SESSION['user'] = $user;
+                return true;
+            }
         }
+        return false;
     }
 
     public static function logout()
