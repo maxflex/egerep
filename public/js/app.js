@@ -180,6 +180,7 @@
     angular.element(document).ready(function() {
       return bindDraggable();
     });
+    $scope.getIndex = function(a, b) {};
     return bindDraggable = function() {
       $(".client-draggable").draggable({
         helper: 'clone',

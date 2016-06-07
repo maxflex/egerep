@@ -4,6 +4,14 @@ angular.module('Egerep')
         angular.element(document).ready ->
             bindDraggable()
 
+        # get index
+        $scope.getIndex = (a, b) ->
+            # return b if a is 0
+            # index = 1
+            # $.each $scope.tutor.last_accounts, (i, account) ->
+            #     break if i > a
+            #     index += account.
+
         # draggable
         bindDraggable = ->
             $(".client-draggable").draggable
