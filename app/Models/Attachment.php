@@ -153,6 +153,7 @@ class Attachment extends Model
             event(new DebtRecalc($model->tutor_id));
         });
         static::deleted(function ($model) {
+            \App\Models\AccountData::where('tutor_id', $model->tutor_id)->where('client_id', $model->client_id)->delete();
             event(new DebtRecalc($model->tutor_id));
         });
     }
