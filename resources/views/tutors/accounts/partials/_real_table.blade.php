@@ -42,6 +42,8 @@
                             <span ng-hide='client.grade'>класс не указан</span>
                         </span>
                         <div ng-click='accountInfo(client)' class='attachment-status @{{ client.state }}'></div>
+                        <div class="text-success" style="margin-top: 3px">@{{ formatDate(client.attachment_date) }}</div>
+                        <div class="text-danger">@{{ formatDate(client.archive_date) }}</div>
                     </td>
                 </tr>
             </thead>
