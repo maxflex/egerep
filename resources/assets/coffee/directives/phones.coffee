@@ -3,9 +3,12 @@ angular.module('Egerep').directive 'phones', ->
     templateUrl: 'directives/phones'
     scope:
         entity: '='
+        entityType: '@'
     controller: ($scope, $timeout, $rootScope, PhoneService, UserService) ->
         $scope.PhoneService = PhoneService
         $scope.UserService  = UserService
+
+        console.log $scope.entityType
 
         # level depth
         $rootScope.dataLoaded.promise.then (data) ->
@@ -32,7 +35,7 @@ angular.module('Egerep').directive 'phones', ->
 
         # информация по api
         $scope.info = (number) ->
-            # $scope.api_number = number
+            $scope.api_number = number
             $scope.mango_info = null
             $('#api-phone-info').modal 'show'
             PhoneService.info(number).then (response) ->
@@ -44,3 +47,8 @@ angular.module('Egerep').directive 'phones', ->
 
         $scope.time = (seconds) ->
             moment({}).seconds(seconds).format("mm:ss")
+
+        $scope.getNumberTitle = (number) ->
+            return $scope.entityType if number is $scope.api_number
+            return 'егэ-репетитор' if number is '74956461080'
+            number

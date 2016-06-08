@@ -39,11 +39,11 @@
                     <tr ng-repeat='data in mango_info'>
                         <td>
                             <span ng-show='data.from_extension' style='color: @{{ UserService.getColor(data.from_extension) }}'>@{{ UserService.getLogin(data.from_extension) }}</span>
-                            <span ng-hide='data.from_extension'>@{{ data.from_number }}</span>
+                            <span ng-hide='data.from_extension'>@{{ getNumberTitle(data.from_number) }}</span>
                             @{{ formatDateTime(data.date_start) }}
                             <span class="glyphicon glyphicon-arrow-right"></span>
                             <span ng-show='data.to_extension' style='color: @{{ UserService.getColor(data.to_extension) }}'>@{{ UserService.getLogin(data.to_extension) }}</span>
-                            <span ng-hide='data.to_extension'>@{{ data.to_number }}</span>
+                            <span ng-hide='data.to_extension'>@{{ getNumberTitle(data.to_number) }}</span>
                         </td>
                         <td>
                             @{{ time(data.seconds) }}

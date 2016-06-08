@@ -2814,11 +2814,13 @@
       restrict: 'E',
       templateUrl: 'directives/phones',
       scope: {
-        entity: '='
+        entity: '=',
+        entityType: '@'
       },
       controller: function($scope, $timeout, $rootScope, PhoneService, UserService) {
         $scope.PhoneService = PhoneService;
         $scope.UserService = UserService;
+        console.log($scope.entityType);
         $rootScope.dataLoaded.promise.then(function(data) {
           return $scope.level = $scope.entity.phones.length || 1;
         });
@@ -2842,6 +2844,7 @@
           return $scope.$parent.sms_number = number;
         };
         $scope.info = function(number) {
+          $scope.api_number = number;
           $scope.mango_info = null;
           $('#api-phone-info').modal('show');
           return PhoneService.info(number).then(function(response) {
@@ -2852,8 +2855,17 @@
         $scope.formatDateTime = function(date) {
           return moment(date).format("DD.MM.YY в HH:mm");
         };
-        return $scope.time = function(seconds) {
+        $scope.time = function(seconds) {
           return moment({}).seconds(seconds).format("mm:ss");
+        };
+        return $scope.getNumberTitle = function(number) {
+          if (number === $scope.api_number) {
+            return $scope.entityType;
+          }
+          if (number === '74956461080') {
+            return 'егэ-репетитор';
+          }
+          return number;
         };
       }
     };
