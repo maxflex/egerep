@@ -84,9 +84,9 @@ class Mango {
                         ];
                     }
                 }
-				
+
 				usort($return, function($a, $b) {
-					return $a['start'] > $b['start'];
+					return $b['start'] > $a['start'];
 				});
 
                 return $return;
