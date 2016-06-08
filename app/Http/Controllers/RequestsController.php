@@ -31,7 +31,8 @@ class RequestsController extends Controller
      */
     public function create()
     {
-        //
+        $request = new \App\Models\Request;
+        return view('clients.create');
     }
 
     /**
@@ -53,7 +54,6 @@ class RequestsController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**

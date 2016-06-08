@@ -955,6 +955,8 @@
           $scope.parseHash();
           return $rootScope.frontendStop();
         });
+      } else {
+        return $rootScope.frontendStop();
       }
     });
     saveSelectedList = function() {
@@ -1928,10 +1930,7 @@
       }
     });
   }).controller('RequestsIndex', function($rootScope, $scope, $timeout, $http, Request, RequestStates, Comment, PhoneService, UserService, Grades) {
-    var loadRequests;
-    _.extend(RequestStates, {
-      all: 'все'
-    });
+    var extendRequestStates, loadRequests;
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
     $rootScope.loaded_comments = 0;
@@ -1954,7 +1953,14 @@
       ajaxEnd();
       return window.history.pushState('requests/' + state_id.toLowerCase(), '', 'requests/' + state_id.toLowerCase());
     };
+    extendRequestStates = function() {
+      $scope.RequestStatesForTabLabel = angular.copy($scope.RequestStates);
+      return _.extend($scope.RequestStatesForTabLabel, {
+        all: 'все'
+      });
+    };
     $timeout(function() {
+      extendRequestStates();
       loadRequests($scope.page);
       $scope.current_page = $scope.page;
       if (!$scope.state_counts) {

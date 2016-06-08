@@ -136,6 +136,8 @@ angular
                     sp 'list-subjects', 'выберите предмет'
                     $scope.parseHash()
                     $rootScope.frontendStop()
+            else
+                $rootScope.frontendStop()
 
         saveSelectedList = ->
             # tutor_ids = []
