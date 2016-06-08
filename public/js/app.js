@@ -3714,14 +3714,14 @@
     };
     this.getUser = function(user_id) {
       return _.findWhere(this.users, {
-        id: user_id
+        id: parseInt(user_id)
       }) || system_user;
     };
     this.getLogin = function(user_id) {
-      return this.getUser(user_id).login;
+      return this.getUser(parseInt(user_id)).login;
     };
     this.getColor = function(user_id) {
-      return this.getUser(user_id).color;
+      return this.getUser(parseInt(user_id)).color;
     };
     this.getWithSystem = function(only_active) {
       var users;

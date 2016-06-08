@@ -14,13 +14,13 @@ angular.module 'Egerep'
             id: 0
 
         this.getUser = (user_id) ->
-            _.findWhere(this.users, {id: user_id}) or system_user
+            _.findWhere(this.users, {id: parseInt(user_id)}) or system_user
 
         this.getLogin = (user_id) ->
-            this.getUser(user_id).login
+            this.getUser(parseInt(user_id)).login
 
         this.getColor = (user_id) ->
-            this.getUser(user_id).color
+            this.getUser(parseInt(user_id)).color
 
         this.getWithSystem = (only_active = true) ->
             users = _.clone this.users
