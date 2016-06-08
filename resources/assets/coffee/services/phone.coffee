@@ -1,5 +1,8 @@
 angular.module 'Egerep'
     .service 'PhoneService', ($rootScope, $http) ->
+        this.info = (number) ->
+            # $http.post ''
+
         # позвонить
         this.call = (number) ->
             location.href = "sip:" + number.replace(/[^0-9]/g, '')

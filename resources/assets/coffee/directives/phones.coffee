@@ -28,3 +28,8 @@ angular.module('Egerep').directive 'phones', ->
         $scope.sms = (number) ->
             $('#sms-modal').modal 'show'
             $scope.$parent.sms_number = number
+
+        # информация по api
+        $scope.info = (number) ->
+            $scope.api_number = number
+            $('#api-phone-info').modal 'show'

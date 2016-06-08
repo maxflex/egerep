@@ -8,6 +8,9 @@
             <input-comment entity='entity' comment-field='{{ $phone_field }}_comment'></input-comment>
 
             <div class="input-group-btn">
+                <button class="btn btn-default" ng-if="isFull(entity.{{ $phone_field }})" ng-click='info(entity.{{ $phone_field }})'>
+                    <span class="glyphicon glyphicon-transfer small no-margin-right"></span>
+                </button>
                 <button class="btn btn-default" ng-if="isFull(entity.{{ $phone_field }})" ng-click='PhoneService.call(entity.{{ $phone_field }})'>
                     <span class="glyphicon glyphicon-earphone small no-margin-right"></span>
                 </button>
@@ -23,3 +26,14 @@
         </div>
     </div>
 @endforeach
+
+{{-- API --}}
+<div id="api-phone-info" class="modal" role="dialog" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+         <h1>info: @{{ api_number }}</h1>
+      </div>
+    </div>
+  </div>
+</div>
