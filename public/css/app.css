@@ -29962,9 +29962,6 @@ md-input-container textarea {
   border: none !important;
   padding-bottom: 0 !important; }
 
-.modal-body {
-  padding-bottom: 0 !important; }
-
 .modal-password .modal-footer, .modal-password-bigger .modal-footer {
   text-align: center !important; }
 
@@ -30786,5 +30783,18 @@ table.summary-table.left-align tr td {
 
 .list-group, .panel-heading, .controls-line a, .controls-line span.link-like {
   -webkit-font-smoothing: auto !important; }
+
+.vertical-center {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  height: 100%;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  color: #999999; }
 
 /*# sourceMappingURL=app.css.map */

@@ -53,6 +53,7 @@ class Mango {
      */
     public static function getStats($number)
     {
+		$number = cleanNumber($number);
         $key = static::_generateStats($number);
 
         $trial = 1; // первая попытка

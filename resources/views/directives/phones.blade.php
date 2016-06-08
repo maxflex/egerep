@@ -35,6 +35,7 @@
                 <span>загрузка...</span>
             </div>
             <div class="modal-body" style="height: 300px; overflow: scroll; max-height: 100%" >
+                <div class="vertical-center" ng-show='!mango_info.length'>нет данных</div>
                 <table class='table table-divlike'>
                     <tr ng-repeat='data in mango_info'>
                         <td>
