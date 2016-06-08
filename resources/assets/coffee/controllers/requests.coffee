@@ -58,6 +58,16 @@ angular
             .then (response) ->
                 $scope.data = response.data
                 $scope.requests = $scope.data.data
+                
+        $scope.toggleState = (request) ->
+            request_cpy = angular.copy request
+            $rootScope.toggleEnum request_cpy, 'state', RequestStates;
+
+            $scope.Request.update
+                id: request_cpy.id
+                state: request_cpy.state
+            , (response) ->
+                $rootScope.toggleEnum request, 'state', RequestStates;
 
     .controller 'RequestsForm', ($scope) ->
         console.log 'here'
