@@ -3,8 +3,9 @@ angular.module('Egerep').directive 'phones', ->
     templateUrl: 'directives/phones'
     scope:
         entity: '='
-    controller: ($scope, $timeout, $rootScope, PhoneService) ->
+    controller: ($scope, $timeout, $rootScope, PhoneService, UserService) ->
         $scope.PhoneService = PhoneService
+        $scope.UserService  = UserService
 
         # level depth
         $rootScope.dataLoaded.promise.then (data) ->
@@ -31,5 +32,15 @@ angular.module('Egerep').directive 'phones', ->
 
         # информация по api
         $scope.info = (number) ->
-            $scope.api_number = number
+            # $scope.api_number = number
+            $scope.mango_info = null
             $('#api-phone-info').modal 'show'
+            PhoneService.info(number).then (response) ->
+                console.log response.data
+                $scope.mango_info = response.data
+
+        $scope.formatDateTime = (date) ->
+            moment(date).format "DD.MM.YY в HH:mm"
+
+        $scope.time = (seconds) ->
+            moment({}).seconds(seconds).format("mm:ss")

@@ -2,6 +2,7 @@
 
 namespace App\Models\Api;
 use Carbon\Carbon;
+use App\Models\User;
 
 class Mango {
 	const API_URL		= 'https://app.mango-office.ru/vpbx/';
@@ -12,6 +13,10 @@ class Mango {
 	const COMMAND_HANGUP        = 'call/hangup';
     const COMMAND_REQUEST_STATS = 'stats/request';
     const COMMAND_GET_STATS     = 'stats/result';
+
+    # константы
+    const TRIALS = 5; // попыток запроса статистики
+    const SLEEP  = 2; // секунд между попытками
 
     public static function run($command, $data)
     {
@@ -31,24 +36,58 @@ class Mango {
     /**
      * Запрос на генерацию статистики по номеру
      */
-    public static function generateStats($number, $request_id)
+    private static function _generateStats($number)
     {
         return static::_run(static::COMMAND_REQUEST_STATS, [
             'date_from'  => Carbon::now()->subMonth()->timestamp,
             'date_to'    => Carbon::now()->timestamp,
-            'from'       => [
+            'fields'     => 'records, start, finish, from_extension, from_number, to_extension, to_number, disconnect_reason',
+            'call_party' => [
                 'number' => $number,
             ],
-            'request_id' => $request_id,
-        ]);
+        ])->key;
     }
 
     /**
      * Запрос на генерацию статистики по номеру
      */
-    public static function getStats($key)
+    public static function getStats($number)
     {
-        return static::_run(static::COMMAND_GET_STATS, compact('key'), false);
+        $key = static::_generateStats($number);
+
+        $trial = 1; // первая попытка
+        while ($trial <= static::TRIALS) {
+            $data = static::_run(static::COMMAND_GET_STATS, compact('key'), false, true);
+            if ($data['code'] == 200) {
+                // return $data['response'];
+                $response_lines = explode(PHP_EOL, $data['response']);
+                // return $response_lines;
+                $return = [];
+                foreach ($response_lines as $index => $response_line) {
+                    // echo $index;
+                    $info = explode(';', $response_line);
+                    if (count($info) > 1) {
+                        $return[] = [
+                            'records'           => $info[0],
+                            'start'             => $info[1],
+                            'finish'            => $info[2],
+                            'from_extension'    => $info[3],
+                            'from_number'       => $info[4],
+                            'to_extension'      => $info[5],
+                            'to_number'         => $info[6],
+                            'disconnect_reason' => filter_var($info[7], FILTER_SANITIZE_NUMBER_INT),
+                            'seconds'           => $info[2] - $info[1],
+                            'from_user'         => $info[3] ? User::find($info[3]) : null,
+                            'from_user'         => $info[5] ? User::find($info[5]) : null,
+                            'date_start'        => date('Y-m-d H:i:s', $info[1]),
+                        ];
+                    }
+                }
+                return $return;
+            }
+            $trial++;
+            sleep(static::SLEEP);
+        }
     }
 
 
@@ -61,7 +100,7 @@ class Mango {
 	 * Запустить команду
 	 * @return результат $ch
 	 */
-	private static function _run($command, $data = [], $json_decode = true)
+	private static function _run($command, $data = [], $json_decode = true, $http_code = false)
 	{
 		# command id неважно какой
 		$data['command_id'] = 1;
@@ -85,8 +124,20 @@ class Mango {
 		]);
 
 		$response = curl_exec($ch);
-		curl_close($ch);
-		return $json_decode ? json_decode($response) : $response;
+        $code     = curl_getinfo($ch)['http_code'];
+
+        curl_close($ch);
+
+        $return = $json_decode ? json_decode($response) : $response;
+
+        if ($http_code) {
+            return [
+                'code'      => $code,
+                'response'  => $return,
+            ];
+        } else {
+            return $return;
+        }
 	}
 
 	/**

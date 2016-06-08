@@ -19,4 +19,12 @@ class CommandsController extends Controller
             'debt_updated'  => now(),
         ];
     }
+
+    /**
+     * Получить информацию по номеру телефона
+     */
+    public function postMangoStats(Request $request)
+    {
+        return \App\Models\Api\Mango::getStats($request->number);
+    }
 }

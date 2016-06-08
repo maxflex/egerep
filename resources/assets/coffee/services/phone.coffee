@@ -1,7 +1,8 @@
 angular.module 'Egerep'
     .service 'PhoneService', ($rootScope, $http) ->
         this.info = (number) ->
-            # $http.post ''
+            $http.post 'api/command/mango-stats',
+                number: number
 
         # позвонить
         this.call = (number) ->

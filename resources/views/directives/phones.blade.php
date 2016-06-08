@@ -28,12 +28,29 @@
 @endforeach
 
 {{-- API --}}
-<div id="api-phone-info" class="modal" role="dialog" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-body">
-         <h1>info: @{{ api_number }}</h1>
-      </div>
+<div class="modal" id='api-phone-info' tabindex="-1">
+    <div class="modal-dialog" style="width: 50%">
+        <div class="modal-content" style="height: 50%">
+            <div class="div-loading" ng-show='mango_info === null'>
+                <span>загрузка...</span>
+            </div>
+            <div class="modal-body" style="height: 300px; overflow: scroll; max-height: 100%" >
+                <table class='table table-divlike'>
+                    <tr ng-repeat='data in mango_info'>
+                        <td>
+                            <span ng-show='data.from_extension' style='color: @{{ UserService.getColor(data.from_extension) }}'>@{{ UserService.getLogin(data.from_extension) }}</span>
+                            <span ng-hide='data.from_extension'>@{{ data.from_number }}</span>
+                            @{{ formatDateTime(data.date_start) }}
+                            <span class="glyphicon glyphicon-arrow-right"></span>
+                            <span ng-show='data.to_extension' style='color: @{{ UserService.getColor(data.to_extension) }}'>@{{ UserService.getLogin(data.to_extension) }}</span>
+                            <span ng-hide='data.to_extension'>@{{ data.to_number }}</span>
+                        </td>
+                        <td>
+                            @{{ time(data.seconds) }}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
