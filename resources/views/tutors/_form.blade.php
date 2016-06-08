@@ -104,7 +104,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <phones entity='tutor' sms-number='sms_number'></phones>
+                        <phones entity='tutor' sms-number='sms_number' entity-types='репетитор'></phones>
                     </div>
                     <div class="form-group">
                         <email entity='tutor'></email>
