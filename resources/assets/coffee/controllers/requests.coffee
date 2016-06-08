@@ -61,6 +61,7 @@ angular
             .then (response) ->
                 $scope.data = response.data
                 $scope.requests = $scope.data.data
+                $rootScope.frontend_loading = false if not $scope.requests.length
                 
         $scope.toggleState = (request) ->
             request_cpy = angular.copy request
