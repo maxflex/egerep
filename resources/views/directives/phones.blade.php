@@ -38,7 +38,7 @@
                 <div class="vertical-center" ng-show='!mango_info.length'>нет данных</div>
                 <table class='table table-divlike'>
                     <tr ng-repeat='data in mango_info'>
-                        <td>
+                        <td width='300'>
                             <span ng-show='data.from_extension' style='color: @{{ UserService.getColor(data.from_extension) }}'>@{{ UserService.getLogin(data.from_extension) }}</span>
                             <span ng-hide='data.from_extension'>@{{ getNumberTitle(data.from_number) }}</span>
                             @{{ formatDateTime(data.date_start) }}
@@ -46,8 +46,14 @@
                             <span ng-show='data.to_extension' style='color: @{{ UserService.getColor(data.to_extension) }}'>@{{ UserService.getLogin(data.to_extension) }}</span>
                             <span ng-hide='data.to_extension'>@{{ getNumberTitle(data.to_number) }}</span>
                         </td>
-                        <td>
+                        <td width='100'>
                             @{{ time(data.seconds) }}
+                        </td>
+                        <td width='100'>
+                            <span class="link-like" ng-show='data.recording_id'>
+                                <span class='link-like text-danger' ng-show='isPlaying(data.recording_id)' ng-click='stop(data.recording_id)'>остановить</span>
+                                <span ng-hide='isPlaying(data.recording_id)' ng-click='play(data.recording_id)'>прослушать</span>
+                            </span>
                         </td>
                     </tr>
                 </table>

@@ -52,3 +52,27 @@ angular.module('Egerep').directive 'phones', ->
             return $scope.entityType if number is $scope.api_number
             return 'егэ-репетитор' if number is '74956461080'
             number
+
+        recodringLink = (recording_id) ->
+            api_key   = 'goea67jyo7i63nf4xdtjn59npnfcee5l'
+            api_salt  = 't9mp7vdltmhn0nhnq0x4vwha9ncdr8pa'
+            timestamp = moment().add(5, 'minute').unix()
+
+            sha256 = new jsSHA('SHA-256', 'TEXT')
+            sha256.update(api_key + timestamp + recording_id + api_salt)
+            sign = sha256.getHash('HEX')
+
+            return "https://app.mango-office.ru/vpbx/queries/recording/link/#{recording_id}/play/#{api_key}/#{timestamp}/#{sign}"
+
+        $scope.play = (recording_id) ->
+            $scope.audio.pause() if $scope.audio
+            $scope.audio = new Audio recodringLink(recording_id)
+            $scope.audio.play()
+            $scope.is_playing = recording_id
+            
+        $scope.isPlaying = (recording_id) ->
+            $scope.is_playing is recording_id
+
+        $scope.stop = (recording_id) ->
+            $scope.is_playing = null
+            $scope.audio.pause()

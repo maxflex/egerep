@@ -53,5 +53,6 @@ elixir(function(mix) {
             '../bower/remarkable-bootstrap-notify/dist/bootstrap-notify.min.js',
             '../bower/StickyTableHeaders/js/jquery.stickytableheaders.js',
             '../bower/jquery.floatThead/dist/jquery.floatThead.min.js',
+            '../bower/jsSHA/src/sha256.js',
         ], 'public/js/vendor.js');
 });

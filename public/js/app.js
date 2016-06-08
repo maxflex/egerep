@@ -2818,6 +2818,7 @@
         entityType: '@'
       },
       controller: function($scope, $timeout, $rootScope, PhoneService, UserService) {
+        var recodringLink;
         $scope.PhoneService = PhoneService;
         $scope.UserService = UserService;
         console.log($scope.entityType);
@@ -2858,7 +2859,7 @@
         $scope.time = function(seconds) {
           return moment({}).seconds(seconds).format("mm:ss");
         };
-        return $scope.getNumberTitle = function(number) {
+        $scope.getNumberTitle = function(number) {
           if (number === $scope.api_number) {
             return $scope.entityType;
           }
@@ -2866,6 +2867,31 @@
             return 'егэ-репетитор';
           }
           return number;
+        };
+        recodringLink = function(recording_id) {
+          var api_key, api_salt, sha256, sign, timestamp;
+          api_key = 'goea67jyo7i63nf4xdtjn59npnfcee5l';
+          api_salt = 't9mp7vdltmhn0nhnq0x4vwha9ncdr8pa';
+          timestamp = moment().add(5, 'minute').unix();
+          sha256 = new jsSHA('SHA-256', 'TEXT');
+          sha256.update(api_key + timestamp + recording_id + api_salt);
+          sign = sha256.getHash('HEX');
+          return "https://app.mango-office.ru/vpbx/queries/recording/link/" + recording_id + "/play/" + api_key + "/" + timestamp + "/" + sign;
+        };
+        $scope.play = function(recording_id) {
+          if ($scope.audio) {
+            $scope.audio.pause();
+          }
+          $scope.audio = new Audio(recodringLink(recording_id));
+          $scope.audio.play();
+          return $scope.is_playing = recording_id;
+        };
+        $scope.isPlaying = function(recording_id) {
+          return $scope.is_playing === recording_id;
+        };
+        return $scope.stop = function(recording_id) {
+          $scope.is_playing = null;
+          return $scope.audio.pause();
         };
       }
     };

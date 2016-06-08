@@ -69,7 +69,8 @@ class Mango {
                     $info = explode(';', $response_line);
                     if (count($info) > 1) {
                         $return[] = [
-                            'records'           => $info[0],
+                            'recording_id'		=> trim($info[0], '[]'),
+                            // 'recording_id'		=> $info[0],
                             'start'             => $info[1],
                             'finish'            => $info[2],
                             'from_extension'    => $info[3],
