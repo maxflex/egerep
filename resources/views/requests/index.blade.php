@@ -11,7 +11,7 @@
 <div class="row">
     <div class="col-sm-12">
         <ul class="nav nav-tabs nav-tabs-links" style="margin-bottom: 20px">
-             <li ng-repeat="(state_id, state) in RequestStates" data-id="@{{state_id }}"
+             <li ng-repeat="(state_id, state) in RequestStatesForTabLabel" data-id="@{{state_id }}"
                 ng-class="{'active' : chosen_state_id == state_id || !chosen_state_id && state_id == 'new', 'request-status-li': status_id != 'all' && (chosen_state_id != status_id)}"
                 >
                 <a class="list-link" href="#@{{status_id}}" ng-click="changeList(state_id)" data-toggle="tab" aria-expanded="@{{$index == 0}}">

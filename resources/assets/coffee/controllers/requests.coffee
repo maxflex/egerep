@@ -5,7 +5,6 @@ angular
             update:
                 method: 'PUT'
     .controller 'RequestsIndex', ($rootScope, $scope, $timeout, $http, Request, RequestStates, Comment, PhoneService, UserService, Grades) ->
-        _.extend RequestStates, { all : 'все' }
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
@@ -31,8 +30,12 @@ angular
 
             window.history.pushState('requests/' + state_id.toLowerCase(), '', 'requests/' + state_id.toLowerCase());
 
+        extendRequestStates = ->
+            $scope.RequestStatesForTabLabel = angular.copy $scope.RequestStates
+            _.extend $scope.RequestStatesForTabLabel, { all : 'все' }
 
         $timeout ->
+            extendRequestStates()
             loadRequests $scope.page
             $scope.current_page = $scope.page
             if not $scope.state_counts
@@ -61,13 +64,13 @@ angular
                 
         $scope.toggleState = (request) ->
             request_cpy = angular.copy request
-            $rootScope.toggleEnum request_cpy, 'state', RequestStates;
+            $rootScope.toggleEnum request_cpy, 'state', RequestStates
 
             $scope.Request.update
                 id: request_cpy.id
                 state: request_cpy.state
             , (response) ->
-                $rootScope.toggleEnum request, 'state', RequestStates;
+                $rootScope.toggleEnum request, 'state', RequestStates
 
     .controller 'RequestsForm', ($scope) ->
         console.log 'here'
