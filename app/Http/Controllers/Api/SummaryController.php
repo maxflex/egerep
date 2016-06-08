@@ -75,18 +75,20 @@ class SummaryController extends Controller
                         ->groupBy('time')->get();
 
         $forecast = DB::table('summaries')
-                        ->select(DB::raw('sum(forecast) as sum, date as time'))
+                        ->select(DB::raw('forecast as sum, date as time'))
                         ->whereRaw("date > '{$end_date}'")
                         ->whereRaw("date <= '{$start_date}'")
-                        ->groupBy('time')->get();
+                        ->groupBy('time')
+                        ->groupBy('forecast')
+                        ->get();
 
         $debt = DB::table('summaries')
-                        ->select(DB::raw('sum(debt) as sum, date as time'))
+                        ->select(DB::raw('debt as sum, date as time'))
                         ->whereRaw("date > '{$end_date}'")
                         ->whereRaw("date <= '{$start_date}'")
-                        ->groupBy('time')->get();
-
-
+                        ->groupBy('time')
+                        ->groupBy('debt')
+                        ->get();
 
         /**
          * @notice (new \DateTime($start_date))->add($interval) :  add($interval) чтобы последняя дата тоже вошла.
@@ -117,76 +119,58 @@ class SummaryController extends Controller
     {
         $page = intval($request->page) ? $request->page-1 : 0;
         $date = new \DateTime('sunday');
-        $skip_days = $page*30*7;
+        $skip_days = $page*7*($page?31:30);
 
-        $start_date = $date->sub(new \DateInterval("P{$skip_days}D"))->format('Y-m-d');
-        $end_date   = $date->sub(new \DateInterval('P210D'))->format('Y-m-d'); // 210 = 7 days * 30 weeks
-
-        $requests = DB::table('requests')
-                        ->select(DB::raw('COUNT(*) as cnt, STR_TO_DATE(CONCAT(YEARWEEK(created_at, 1) + 1, \'Sunday\'), \'%X%V %W\') as time'))
-                        ->whereRaw("DATE(created_at) >= '{$end_date}'")
-                        ->whereRaw("DATE(created_at) <= '{$start_date}'")
-                        ->groupBy(DB::raw('YEARWEEK(created_at, 1)'))
-                        ->get();
-
-        $attachments = DB::table('attachments')
-                        ->select(DB::raw('COUNT(*) as cnt, STR_TO_DATE(CONCAT(YEARWEEK(date, 1) + 1, \'Sunday\'), \'%X%V %W\') as time'))
-                        ->whereRaw("date >= '{$end_date}'")
-                        ->whereRaw("date <= '{$start_date}'")
-                        ->groupBy(DB::raw('YEARWEEK(date, 1)'))
-                        ->get();
-
-        $received = DB::table('accounts')
-                        ->select(DB::raw('sum(received) as sum, STR_TO_DATE(CONCAT(YEARWEEK(created_at, 1) + 1, \'Sunday\'), \'%X%V %W\') as time'))
-                        ->whereRaw("DATE(created_at) > '{$end_date}'")
-                        ->whereRaw("DATE(created_at) <= '{$start_date}'")
-                        ->groupBy(DB::raw('YEARWEEK(created_at, 1)'))
-                        ->get();
-
-        $commission = DB::table('account_datas')
-                        ->select(DB::raw('sum(if(commission > 0, commission, 0.25*sum)) as sum, STR_TO_DATE(CONCAT(YEARWEEK(date, 1) + 1, \'Sunday\'), \'%X%V %W\') as time'))
-                        ->whereRaw("date > '{$end_date}'")
-                        ->whereRaw("date <= '{$start_date}'")
-                        ->groupBy(DB::raw('YEARWEEK(date, 1)'))
-                        ->get();
-
-        $forecast = DB::table('summaries')
-                        ->select(DB::raw('sum(forecast) as sum, STR_TO_DATE(CONCAT(YEARWEEK(date, 1) + 1, \'Sunday\'), \'%X%V %W\') as time'))
-                        ->whereRaw("date > '{$end_date}'")
-                        ->whereRaw("date <= '{$start_date}'")
-                        ->groupBy(DB::raw('YEARWEEK(date, 1)'))
-                        ->get();
-
-        $debt = DB::table('summaries')
-                        ->select(DB::raw('sum(debt) as sum, STR_TO_DATE(CONCAT(YEARWEEK(date, 1) + 1, \'Sunday\'), \'%X%V %W\') as time'))
-                        ->whereRaw("date > '{$end_date}'")
-                        ->whereRaw("date <= '{$start_date}'")
-                        ->groupBy(DB::raw('YEARWEEK(date, 1)'))
-                        ->get();
+        $end_date   = clone $date->sub(new \DateInterval("P{$skip_days}D"));
+        $start_date = clone $date->sub(new \DateInterval('P210D'));
 
         $return = [];
-        $start = new \DateTime($start_date);
-        $end   = new \DateTime($end_date);
+        while ($start_date <= $end_date) {
+            $week_end = clone $start_date;
+            $week_end->modify('+1 week');
 
-        while ($end <= $start) {
-            $today = false;
+            $start = $start_date->format('Y-m-d');
+            $end = $week_end->format('Y-m-d');
 
-            if ($end > new \DateTime()) {
-                $today = (new \DateTime())->format('Y-m-d');
-            }
+            $requests = DB::table('requests')
+                        ->whereRaw("DATE(created_at) >  '{$start}'")
+                        ->whereRaw("DATE(created_at) <= '{$end}'")
+                        ->count();
 
-            $return[$today ? $today : $end->format("Y-m-d")] = [];
+            $attachments = DB::table('attachments')
+                           ->where('date', '>',$start)
+                           ->where('date', '<=', $end)
+                           ->count();
 
-            foreach ($this->columns as $elems) {
-                foreach ($$elems as $elem) {
-                    if ($elem->time == $end->format("Y-m-d")) {
-                        $return[$today ? $today : $end->format("Y-m-d")][$elems] = $elem;
-                        break;
-                    }
-                }
-            }
+            $received = DB::table('accounts')
+                        ->whereRaw("DATE(created_at) > '{$start}'")
+                        ->whereRaw("DATE(created_at) <= '{$end}'")
+                        ->sum('received');
 
-            $end->modify("+1 week");
+            $commission = DB::table('account_datas')
+                          ->where('date', '>', $start)
+                          ->where('date', '<=', $end)
+                          ->select(DB::raw('sum(if(commission > 0, commission, 0.25*sum)) as sum'))->first()->sum;
+
+            $summary = DB::table('summaries')->where('date', $week_end)->first();
+
+            $forecast = $summary ? $summary->forecast : 0;
+            $debt     = $summary ? $summary->debt : 0;
+
+            $today = new \DateTime();
+            $return_date = $week_end > $today ? $today->format('Y-m-d') : $end;
+            $return[$return_date] = [];
+/**
+ * @todo refactor return array fields
+ * */
+            $return[$return_date]['requests'] = ['cnt' => $requests];
+            $return[$return_date]['attachments'] = ['cnt' => $attachments];
+            $return[$return_date]['received'] = ['sum' => $received];
+            $return[$return_date]['commission'] = ['sum' => $commission];
+            $return[$return_date]['forecast'] = ['sum' => $forecast];
+            $return[$return_date]['debt'] = ['sum' => $debt];
+
+            $start_date->modify('+1 week');
         }
 
         /**
@@ -201,7 +185,7 @@ class SummaryController extends Controller
         $date = new \DateTime('last day of this month');
         $skip_month = $page*30;
 
-        $start_date = $date->sub(new \DateInterval("P{$skip_month}M"))->format('Y-m-d');
+        $start_date = $date->sub(new \DateInterval("P{$skip_month}M"))->format('Y-m-t');
         $end_date   = $date->sub(new \DateInterval('P30M'))->format('Y-m-d');
 
         $requests = DB::table('requests')
@@ -236,20 +220,22 @@ class SummaryController extends Controller
                         ->groupBy(DB::raw('MONTH(date)'))
                         ->get();
 
-        $forecast = DB::table('summaries')
-                        ->select(DB::raw('sum(forecast) as sum, LAST_DAY(date) as time'))
+        $forecast = DB::table(DB::raw('(select * from summaries order by date desc) as s'))
+                        ->select(DB::raw('forecast as sum, date as time'))
                         ->whereRaw("date > '{$end_date}'")
                         ->whereRaw("date <= '{$start_date}'")
                         ->groupBy(DB::raw('YEAR(date)'))
                         ->groupBy(DB::raw('MONTH(date)'))
+                        ->orderBy('date', 'desc')
                         ->get();
 
-        $debt = DB::table('summaries')
-                        ->select(DB::raw('sum(debt) as sum, LAST_DAY(date) as time'))
+        $debt = DB::table(DB::raw('(select * from summaries order by date desc) as s'))
+                        ->select(DB::raw('debt as sum, date as time'))
                         ->whereRaw("date > '{$end_date}'")
                         ->whereRaw("date <= '{$start_date}'")
                         ->groupBy(DB::raw('YEAR(date)'))
                         ->groupBy(DB::raw('MONTH(date)'))
+                        ->orderBy('date', 'desc')
                         ->get();
 
         $return = [];
@@ -326,15 +312,15 @@ class SummaryController extends Controller
                             ->get();
 
             $forecast = DB::table('summaries')
-                            ->select(DB::raw('sum(forecast) as sum'))
-                            ->whereRaw("date > '{$end_date}'")
-                            ->whereRaw("date <= '{$start_date}'")
+                            ->select('forecast as sum')
+                            ->where('date', $start_date)
+                            ->orderBy('date', 'desc')
                             ->get();
 
             $debt = DB::table('summaries')
-                            ->select(DB::raw('sum(debt) as sum'))
-                            ->whereRaw("date > '{$end_date}'")
-                            ->whereRaw("date <= '{$start_date}'")
+                            ->select('debt as sum')
+                            ->where('date', $start_date)
+                            ->orderBy('date', 'desc')
                             ->get();
 
             if ($period_start_date > new \DateTime()) {

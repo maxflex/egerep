@@ -20,7 +20,6 @@ angular
         $scope.pageChanged = ->
             ajaxStart()
             loadSummary $scope.current_page
-            ajaxEnd()
 
             paginate 'summary/' + $scope.filter, $scope.current_page
 
@@ -30,5 +29,6 @@ angular
 
             $http.post "api/summary#{ params }"
             .then (response) ->
+                ajaxEnd()
                 $rootScope.frontendStop()
                 $scope.summaries = response.data
