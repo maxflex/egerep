@@ -1971,7 +1971,7 @@
       loadRequests($scope.current_page);
       return paginate('requests/' + $scope.chosen_state_id, $scope.current_page);
     };
-    return loadRequests = function(page) {
+    loadRequests = function(page) {
       var params;
       if (!$scope.chosen_state_id) {
         $scope.chosen_state_id = 'new';
@@ -1981,6 +1981,17 @@
       return $http.get("api/requests" + params).then(function(response) {
         $scope.data = response.data;
         return $scope.requests = $scope.data.data;
+      });
+    };
+    return $scope.toggleState = function(request) {
+      var request_cpy;
+      request_cpy = angular.copy(request);
+      $rootScope.toggleEnum(request_cpy, 'state', RequestStates);
+      return $scope.Request.update({
+        id: request_cpy.id,
+        state: request_cpy.state
+      }, function(response) {
+        return $rootScope.toggleEnum(request, 'state', RequestStates);
       });
     };
   }).controller('RequestsForm', function($scope) {
