@@ -59,11 +59,11 @@ angular
                 $scope.data = response.data
                 $scope.requests = $scope.data.data
                 
-        $scope.toggleState = (Request, request) ->
+        $scope.toggleState = (request) ->
             request_cpy = angular.copy request
             $rootScope.toggleEnum request_cpy, 'state', RequestStates;
-            
-            Request.update
+
+            $scope.Request.update
                 id: request_cpy.id
                 state: request_cpy.state
             , (response) ->

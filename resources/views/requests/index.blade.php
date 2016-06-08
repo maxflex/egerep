@@ -67,7 +67,7 @@
                     <user-switch entity='request' user-id='user_id' resource='Request'>
                 </div>
                 <div class="col-sm-2">
-                    <span class="link-like" ng-click="toggleState(Request, request)">@{{ RequestStates[request.state] }}</span>
+                    <span class="link-like" ng-click="toggleState(request)">@{{ RequestStates[request.state] }}</span>
                 </div>
             </div>
             <hr class='list-separate' ng-hide="$last">
