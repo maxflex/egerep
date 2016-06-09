@@ -106,16 +106,13 @@ angular
 
         # Save everything
         $scope.save = ->
+            filterMarkers()
+            return if hasErrors()
             $scope.ajaxStart()
-            request = $scope.client.requests[0]
-            delete $scope.client.requests
             $scope.Client.save $scope.client
             .$promise.then (response) ->
-                request.client_id = $scope.client.id = response.id
-                $scope.Request.save request
-                .$promise.then (response) ->
-                    $scope.ajaxEnd()
-                    window.location = "requests/#{response.id}/edit"
+                $scope.ajaxEnd()
+                window.location = "requests/#{response.id}/edit"
 
         hasErrors = ->
             if $scope.selected_attachment and $scope.selected_attachment.archive
