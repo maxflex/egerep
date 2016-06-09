@@ -43,8 +43,8 @@ class CalcSummary extends Command
         $this->line('Starting...');
 
         $date = date('Y-m-d', strtotime('yesterday'));
-        $forecast = Attachment::doesntHave('archive')->where('date', $date)->sum('forecast');
-        $debt = Tutor::sum('debt_calc');
+        $forecast = Attachment::doesntHave('archive')->sum('forecast');
+        $debt     = Tutor::sum('debt_calc');
 
         DB::table('summaries')->insert([
             ['date' => $date, 'forecast' => $forecast, 'debt' => $debt],
