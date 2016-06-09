@@ -42,6 +42,7 @@ class AttachmentsController extends Controller
 
 
         $query->orderBy($request->sort_field, $request->sort_type);
+//        dd($query->toSql());
         return $query->paginate($request->page_size)->toJson();
 
     }
@@ -64,7 +65,9 @@ class AttachmentsController extends Controller
      */
     public function store(Request $request)
     {
-        return Attachment::create($request->input())->fresh();
+        if (!Attachment::doesntHave('archive')->where('client_id', $request->client_id)->where('tutor_id', $request->tutor_id)->count()) {
+            return Attachment::create($request->input())->fresh();
+        }
     }
 
     /**
