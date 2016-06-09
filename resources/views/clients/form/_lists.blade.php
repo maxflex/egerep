@@ -16,7 +16,7 @@
     <div class="col-sm-12">
         <div class="mbs">
             <table class="table reverse-borders">
-                <tbody ui-sortable='sortableOptions' ng-model="selected_list.tutor_ids">
+                <tbody ui-sortable='sortableOptions' ng-model="selected_list.tutor_ids" ng-if="selected_list">
                     <tr ng-repeat="tutor in getTutorList()" data-id='@{{tutor.id}}'>
                         <td width='300'>
                             <a href="tutors/@{{ tutor.id }}/edit">@{{ tutor.full_name }}</a>
