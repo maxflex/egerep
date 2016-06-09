@@ -1,4 +1,4 @@
-<div class="row controls-line">
+<div class="row controls-line" ng-if="selected_request.id">
     <div class="col-sm-12">
         <span
             ng-repeat="list in selected_request.lists"

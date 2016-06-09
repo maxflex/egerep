@@ -3,9 +3,9 @@
         <span ng-repeat="request in client.requests"
             ng-click="selectRequest(request)"
             ng-class="{'link-like': request !== selected_request}"><span ng-if='request.id'>заявка @{{ request.id }}</span><span ng-if='!request.id'>новая заявка</span></span>
-        <a class='link-like link-gray' ng-click='addRequest()'>добавить</a>
-        <a class='link-like show-on-hover' ng-show='selected_request' ng-click='transferRequest()'>переместить</a>
-        <a class='link-like text-danger show-on-hover' ng-show='selected_request' ng-click='removeRequest()'>удалить заявку</a>
+        <a class='link-like link-gray' ng-show="selected_request.id" ng-click='addRequest()'>добавить</a>
+        <a class='link-like show-on-hover' ng-show='selected_request && selected_request.id' ng-click='transferRequest()'>переместить</a>
+        <a class='link-like text-danger show-on-hover' ng-show='selected_request && selected_request.id' ng-click='removeRequest()'>удалить заявку</a>
     </div>
 </div>
 
@@ -19,7 +19,7 @@
                 @{{ UserService.getLogin(selected_request.user_id_created) }}
                 @{{ formatDateTime(selected_request.created_at) }}
         </div>
-        <div class='mbs'>
+        <div class='mbs' ng-show='selected_request.id'>
             <b>Ответственный:</b>
             <user-switch entity='selected_request' user-id='user_id' resource='Request'>
         </div>

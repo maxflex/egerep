@@ -130,4 +130,8 @@ class Request extends Model
                 return $cnt;
         }
     }
+
+    public static function getRouteFilter () {
+        return ['state_id' => implode('|', self::$states)];
+    }
 }

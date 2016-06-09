@@ -104,6 +104,19 @@ angular
                     $scope.ajaxEnd()
                     $('#forecast').removeClass('has-error')
 
+        # Save everything
+        $scope.save = ->
+            $scope.ajaxStart()
+            request = $scope.client.requests[0]
+            delete $scope.client.requests
+            $scope.Client.save $scope.client
+            .$promise.then (response) ->
+                request.client_id = $scope.client.id = response.id
+                $scope.Request.save request
+                .$promise.then (response) ->
+                    $scope.ajaxEnd()
+                    window.location = "requests/#{response.id}/edit"
+
         hasErrors = ->
             if $scope.selected_attachment and $scope.selected_attachment.archive
                 if not $scope.selected_attachment.forecast and ($scope.selected_attachment.account_data_count > 0 or $scope.selected_attachment.archive.total_lessons_missing > 0)
@@ -133,9 +146,15 @@ angular
             if $scope.id > 0
                 $scope.client = Client.get {id: $scope.id}, (client) ->
                     $scope.selected_request = if $scope.request_id then _.findWhere(client.requests, {id: $scope.request_id}) else client.requests[0]
-                    sp 'list-subjects', 'выберите предмет'
                     $scope.parseHash()
-                    $rootScope.frontendStop()
+            else
+                $scope.client = $scope.new_client
+                $scope.client.requests = [$scope.new_request]
+                $scope.selected_request = $scope.client.requests[0]
+
+            sp 'list-subjects', 'выберите предмет'
+            $rootScope.frontendStop()
+            $rootScope.frontendStop()
 
         saveSelectedList = ->
             # tutor_ids = []
@@ -146,9 +165,10 @@ angular
 
         $scope.getTutorList = ->
             tutors = []
-            $.each $scope.selected_list.tutor_ids, (index, tutor_id) ->
-                tutors.push findById($scope.selected_list.tutors, tutor_id)
-            tutors
+            if $scope.selected_list
+                $.each $scope.selected_list.tutor_ids, (index, tutor_id) ->
+                    tutors.push findById($scope.selected_list.tutors, tutor_id)
+                tutors
 
         # Если в ссылке указан хэш, то это #id_списка#id_стыковки
         $scope.parseHash = ->

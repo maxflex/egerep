@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Client;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -31,7 +33,15 @@ class RequestsController extends Controller
      */
     public function create()
     {
-        //
+        $client = new Client;
+        $request = new \App\Models\Request;
+        $request->user_id_created = User::fromSession()->id;
+        return view('clients.create')->with(
+            ngInit([
+                'new_client' => $client,
+                'new_request' => $request,
+            ])
+        );
     }
 
     /**
