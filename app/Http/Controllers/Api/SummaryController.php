@@ -274,7 +274,7 @@ class SummaryController extends Controller
 
         $year_cnt = \App\Models\Request::summaryItemsCount('year');
 
-        $start_of_year = 'first day of july';
+        $start_of_year = '15 july';
         if (date('m') >= 7) {
             $start_of_year = '+1 year '.$start_of_year;
             $year_cnt++;
