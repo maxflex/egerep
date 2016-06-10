@@ -64,8 +64,8 @@ class SummaryController extends Controller
 
         $received = DB::table('accounts')
                         ->select(DB::raw('sum(received) as sum, DATE(created_at) as time'))
-                        ->whereRaw("DATE(created_at) > '{$end_date}'")
-                        ->whereRaw("DATE(created_at) <= '{$start_date}'")
+                        ->whereRaw("date_end > '{$end_date}'")
+                        ->whereRaw("date_end <= '{$start_date}'")
                         ->groupBy('time')->get();
 
         $commission = DB::table('account_datas')
@@ -143,8 +143,8 @@ class SummaryController extends Controller
                            ->count();
 
             $received = DB::table('accounts')
-                        ->whereRaw("DATE(created_at) > '{$start}'")
-                        ->whereRaw("DATE(created_at) <= '{$end}'")
+                        ->whereRaw("date_end > '{$start}'")
+                        ->whereRaw("date_end <= '{$end}'")
                         ->sum('received');
 
             $commission = DB::table('account_datas')
@@ -206,8 +206,8 @@ class SummaryController extends Controller
 
         $received = DB::table('accounts')
                         ->select(DB::raw('sum(received) as sum, LAST_DAY(created_at) as time'))
-                        ->whereRaw("DATE(created_at) > '{$end_date}'")
-                        ->whereRaw("DATE(created_at) <= '{$start_date}'")
+                        ->whereRaw("date_end > '{$end_date}'")
+                        ->whereRaw("date_end <= '{$start_date}'")
                         ->groupBy(DB::raw('YEAR(created_at)'))
                         ->groupBy(DB::raw('MONTH(created_at)'))
                         ->get();
@@ -301,8 +301,8 @@ class SummaryController extends Controller
 
             $received = DB::table('accounts')
                             ->select(DB::raw('sum(received) as sum'))
-                            ->whereRaw("DATE(created_at) > '{$end_date}'")
-                            ->whereRaw("DATE(created_at) <= '{$start_date}'")
+                            ->whereRaw("date_end > '{$end_date}'")
+                            ->whereRaw("date_end <= '{$start_date}'")
                             ->get();
 
             $commission = DB::table('account_datas')
