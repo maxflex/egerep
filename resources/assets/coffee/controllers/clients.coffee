@@ -110,7 +110,7 @@ angular
             return if hasErrors()
             $scope.ajaxStart()
             $scope.Client.save $scope.client
-            .$promise.then (response) ->
+            .then (response) ->
                 $scope.ajaxEnd()
                 window.location = "requests/#{response.id}/edit"
 
@@ -150,7 +150,6 @@ angular
                 $scope.selected_request = $scope.client.requests[0]
 
             sp 'list-subjects', 'выберите предмет'
-            $rootScope.frontendStop()
             $rootScope.frontendStop()
 
         saveSelectedList = ->
@@ -254,8 +253,9 @@ angular
                 request_list_id: $scope.selected_list.id
                 client_id: $scope.client.id
             , (new_attachment) ->
-                $scope.selected_attachment = new_attachment
-                $scope.selected_list.attachments.push new_attachment
+                if new_attachment.id
+                    $scope.selected_attachment = new_attachment
+                    $scope.selected_list.attachments.push new_attachment
 
         $scope.addRequest = ->
             new_request = new Request

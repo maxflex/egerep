@@ -55,7 +55,7 @@ class User extends Model
             'login'         => $data['login'],
             'password'      => static::_password($data['password']),
             'banned_egerep' => 0,
-            'type'          => self::USER_TYPE
+            'type'          => static::USER_TYPE
         ]);
 
         if ($User->exists()) {

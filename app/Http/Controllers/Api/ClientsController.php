@@ -43,16 +43,17 @@ class ClientsController extends Controller
     {
         $client = $request->input();
 
+        /**
+         * запонимаем и убираем relations, т. к. при их сохранении нужен client_id
+         */
         $client_request = $client['requests'][0];
         $client_markers = $client['markers'];
-
         unset($client['requests']);
         unset($client['markers']);
 
         $client = Client::create($client);
         $client->markers = $client_markers;
         $client->update();
-
 
         $client_request['client_id'] = $client->id;
         return \App\Models\Request::create($client_request)->toJson();

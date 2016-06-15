@@ -65,8 +65,8 @@ class AttachmentsController extends Controller
      */
     public function store(Request $request)
     {
-        if (!Attachment::doesntHave('archive')->where('client_id', $request->client_id)->where('tutor_id', $request->tutor_id)->count()) {
-            return Attachment::create($request->input())->fresh();
+        if (!Attachment::doesntHave('archive')->where('client_id', $request->client_id)->where('tutor_id', $request->tutor_id)->exists()) {
+            return Attachment::create ($request->input())->fresh();
         }
     }
 

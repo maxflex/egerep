@@ -21,8 +21,8 @@ Route::group(['middleware' => ['web']], function () {
     });
     Route::get('/', 'TutorsController@index');
     Route::resource('tutors', 'TutorsController');
-    Route::get('requests/{state_id?}', 'RequestsController@index')->where(App\Models\Request::getRouteFilter());
-    Route::resource('requests', 'RequestsController');
+    Route::resource('requests', 'RequestsController',['except' => ['index', 'show']]);
+    Route::get('requests/{state_id?}', 'RequestsController@index');
     Route::resource('clients', 'ClientsController');
     Route::resource('periods', 'PeriodsController');
     Route::get('attachments/{state?}', 'AttachmentsController@index');
