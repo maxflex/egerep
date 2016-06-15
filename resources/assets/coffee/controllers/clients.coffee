@@ -110,8 +110,7 @@ angular
             return if hasErrors()
             $scope.ajaxStart()
             $scope.Client.save $scope.client
-            .then (response) ->
-                $scope.ajaxEnd()
+            .$promise.then (response) ->
                 window.location = "requests/#{response.id}/edit"
 
         hasErrors = ->
