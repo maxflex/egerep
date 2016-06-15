@@ -24,7 +24,7 @@
             <div class="col-sm-10">
                 <div class="form-group">
                     <div ng-if='client !== undefined'>
-                        <phones entity="client"></phones>
+                        <phones entity="client" entity-type='клиент'></phones>
                     </div>
                 </div>
             </div>

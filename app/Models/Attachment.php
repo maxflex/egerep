@@ -153,13 +153,14 @@ class Attachment extends Model
             event(new DebtRecalc($model->tutor_id));
         });
         static::deleted(function ($model) {
+            \App\Models\AccountData::where('tutor_id', $model->tutor_id)->where('client_id', $model->client_id)->delete();
             event(new DebtRecalc($model->tutor_id));
         });
     }
 
     public function save(array $options = [])
     {
-        $fire_event = $this->exists && $this->changed(['date', 'forecast', 'client_id']);
+        $fire_event = $this->exists && $this->changed(['date', 'forecast']);
 
         parent::save($options);
 

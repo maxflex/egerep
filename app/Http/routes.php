@@ -13,7 +13,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('client/{id}', function($id) {
         $request_id = \App\Models\Request::where('client_id', $id)->value('id');
         if ($request_id) {
-            return redirect()->to("https://lk.a-perspektiva.ru/requests/{$request_id}/edit");
+            return redirect()->to("https://lk.ege-repetitor.ru/requests/{$request_id}/edit");
             // return redirect()->route('requests.edit', $request_id);
         } else {
             return redirect()->to('/');
@@ -21,7 +21,7 @@ Route::group(['middleware' => ['web']], function () {
     });
     Route::get('/', 'TutorsController@index');
     Route::resource('tutors', 'TutorsController');
-    Route::resource('requests', 'RequestsController',['except' => ['index', 'show']]);
+    Route::resource('requests', 'RequestsController', ['except' => ['index', 'show']]);
     Route::get('requests/{state_id?}', 'RequestsController@index');
     Route::resource('clients', 'ClientsController');
     Route::resource('periods', 'PeriodsController');
@@ -50,6 +50,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('tutors/list', 'TutorsController@lists');
         Route::post('tutors/filtered', 'TutorsController@filtered');
         Route::post('tutors/counts', 'TutorsController@counts');
+        Route::post('tutors/merge', 'TutorsController@merge');
         Route::delete('tutors/photo/{id}', 'TutorsController@deletePhoto');
         Route::resource('tutors', 'TutorsController');
 

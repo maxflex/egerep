@@ -30,6 +30,7 @@ class Kernel extends ConsoleKernel
         Commands\InitDuplicatesTable::class,
         Commands\TransferSummary::class,
         Commands\CalcSummary::class,
+        Commands\CheckFinishedRequests::class,
     ];
 
     /**

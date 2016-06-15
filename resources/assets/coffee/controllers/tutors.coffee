@@ -107,7 +107,7 @@ angular
     #
     #   ADD/EDIT CONTROLLER
     #
-    .controller "TutorsForm", ($scope, $rootScope, $timeout, Tutor, SvgMap, Subjects, Grades, ApiService, TutorStates, Genders, Workplaces, Branches, BranchService, TutorService) ->
+    .controller "TutorsForm", ($scope, $rootScope, $timeout, Tutor, SvgMap, Subjects, Grades, ApiService, TutorStates, Genders, Workplaces, Branches, BranchService, TutorService, $http) ->
         bindArguments($scope, arguments)
 
         $rootScope.frontend_loading = true
@@ -115,6 +115,20 @@ angular
 
         # страница полностью загружена (включая все изменения маркеров)
         $scope.fully_loaded = false
+
+        $scope.mergeTutor = ->
+            $('#merge-tutor').modal 'show'
+
+        $scope.mergeTutorGo = ->
+            $('#merge-tutor').modal 'hide'
+            $http.post "api/tutors/merge",
+                tutor_id: $scope.tutor.id
+                new_tutor_id: $scope.new_tutor_id
+            .then (response) ->
+                if response.data is 'false'
+                    bootbox.alert 'Существуют задублированные клиенты'
+                else
+                    bootbox.alert 'Информация перенесена'
 
         $scope.deleteTutor = ->
             bootbox.confirm 'Вы уверены, что хотите удалить преподавателя?', (result) ->

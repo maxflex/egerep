@@ -40,6 +40,15 @@ angular.module('Egerep')
         angular.element(document).ready ->
             $scope.loadPage()
 
+        # get index
+        $scope.getIndex = (a, b) ->
+            return b if a is 0
+            index = 0
+            $.each $scope.tutor.last_accounts, (i, account) ->
+                return if i >= a
+                index += $scope.getDates(i).length
+            index + b
+
         $scope.loadPage = (type) ->
             $rootScope.frontend_loading = true
             $http.get "api/accounts/#{$scope.tutor_id}" + (if $scope.current_period then "?date_limit=#{$scope.date_limit}" else "")
@@ -226,11 +235,11 @@ angular.module('Egerep')
             switch direction
                 when "left"     then x--
                 when "right"    then x++
-                when "up"       then y--
-                when "down"     then y++
+                when "up"       then y = moment(y).subtract('days', 1).format 'YYYY-MM-DD'
+                when "down"     then y = moment(y).add('days', 1).format 'YYYY-MM-DD'
 
             # Если двигаемся в несуществующие поля
-            return if x < 0 or y < 0
+            return if x < 0 or not $('#i-' + y + '-' + x).length
 
             # Получаем новый элемент
             el = $('#i-' + y + '-' + x)
@@ -245,21 +254,23 @@ angular.module('Egerep')
             return
 
         $scope.caret = 0 # Позиция каретки
-        $scope.periodsCursor = (y, x, event) ->
+        $scope.periodsCursor = (y, x, event, account_data, date) ->
             # console.log y, x, event, $("#" + y + "-" + x)
             # Получаем начальный элемент (с которого возможно сдвинемся)
             original_element = $("#i-#{y}-#{x}")
 
             # Если был нажат 0, то подхватываем значение поля сверху
             if original_element.val() is "0" and original_element.val().length
-                i = y - 1
-                while i > 0
+                while true
+                    d = moment(d or y).subtract('days', 1).format 'YYYY-MM-DD'
+                    new_element = $('#i-' + d + '-' + x)
+                    break if not new_element.length
                     # Поверяем существует ли поле сверху
-                    if $('#i-' + i + '-' + x).length and $('#i-' + i + '-' + x).val()
+                    if new_element.val()
                         # Присваеваем текущему элементу значение сверху
-                        original_element.val $('#i-' + i + '-' + x).val()
+                        event.preventDefault()
+                        account_data[date] = new_element.val()
                         break
-                    i--
 
             # Если внутри цифр, то не прыгаем к следующему элементу
             if original_element.caret() != $scope.caret

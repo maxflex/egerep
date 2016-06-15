@@ -527,11 +527,6 @@ angular
         $scope.listMap = ->
             $scope.list_map = not $scope.list_map
             $scope.showListMap()
-            if $scope.list_map
-                $timeout ->
-                    $('html, body').animate
-                        scrollTop: $("#list-map").offset().top - 100
-                    , 300
 
         # determine whether tutor had already been added
         $scope.added = (tutor_id) ->
@@ -570,6 +565,14 @@ angular
             $scope.gmap2.setCenter new (google.maps.LatLng)(55.7387, 37.6032)
             $scope.gmap2.setZoom 11
 
+            # $.each $scope.client.markers, (marker) ->
+            #     markers_count++
+            #     bounds.extend(new google.maps.LatLng(marker.lat, marker.lng))
+
+            $scope.client.markers.forEach (marker) ->
+                markers_count++
+                bounds.extend(new google.maps.LatLng(marker.lat, marker.lng))
+
             $scope.selected_list.tutors.forEach (tutor) ->
                 tutor.markers.forEach (marker) ->
                     markers_count++
@@ -591,7 +594,7 @@ angular
             if markers_count > 0
                 $scope.gmap2.fitBounds bounds
                 $scope.gmap2.panToBounds bounds
-                $scope.gmap2.setZoom 11
+                $scope.gmap2.setZoom 10
 
             $scope.gmap2.panBy(150, 0)
 

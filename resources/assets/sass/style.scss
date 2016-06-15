@@ -1,5 +1,6 @@
 	// Цвета
 	$placeholder_gray 	: #999999;
+	$gray 				: #999999;
 	$blue				: #337AB7;
 	$green_main			: #158E51; // new bootstrap
 	$hover_blue			: #23527c;
@@ -492,7 +493,7 @@
 				& td {
 					border-top: none;
 					// padding-bottom: 50px;
-				    height: 70px;
+				    height: 87px;
 					text-align: center;
 					background: white;
 				}
@@ -2536,7 +2537,7 @@ white-space: nowrap;
 }
 
 .modal-body {
-	padding-bottom: 0 !important;
+	// padding-bottom: 0 !important;
 }
 
 .modal-password .modal-footer, .modal-password-bigger .modal-footer {
@@ -3630,4 +3631,16 @@ table.summary-table.left-align tr td {
 
 .cursor-default {
 	cursor: default !important;
+}
+
+.list-group, .panel-heading, .controls-line a, .controls-line span.link-like, {
+	-webkit-font-smoothing: auto !important;
+}
+
+.vertical-center {
+	display: flex;
+	height: 100%;
+	align-items: center;
+	justify-content: center;
+	color: $gray;
 }
