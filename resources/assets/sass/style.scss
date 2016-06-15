@@ -422,6 +422,9 @@
 	}
 
 	.accounts-data {
+	  	& .mutual-debt {
+		  color: $blue;
+		}
 		// margin-bottom: 40px;
 		& .mbs {
 			margin-bottom: 5px;

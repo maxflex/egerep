@@ -145,7 +145,7 @@ class Tutor extends Model
         return $query
             ->where('date_end', '>=', $this->getDateLimit())
             ->orderBy('date_end', 'asc')
-            ->get();
+            ->get()->append('mutual_debts');
     }
 
     public function getBannedAttribute()
@@ -529,9 +529,15 @@ class Tutor extends Model
     {
         $query = Account::where('date_end', '<', $date_limit)
                         ->where('tutor_id', $id);
+
+        $account = $query->orderBy('date_end', 'desc')->first();
+        if ($account) {
+            $account->append('mutual_debts');
+        }
+
         return [
             'left'      => $query->count(),
-            'account'   => $query->orderBy('date_end', 'desc')->first(),
+            'account'   => $account,
         ];
     }
 

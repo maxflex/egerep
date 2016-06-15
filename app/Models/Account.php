@@ -14,6 +14,8 @@ class Account extends Model
 {
     // комиссия по умолчанию в процентах
     const DEFAULT_COMMISSION = 0.25;
+    // id status a взаимозачетов в таблице teacher_payments в NEC
+    const MUTUAL_DEBT_STATUS = 6;
 
     protected $fillable = [
         'date_end',
@@ -120,6 +122,15 @@ class Account extends Model
         return $total_commission;
     }
 
+    public function getMutualDebtsAttribute()
+    {
+        return DB::connection('egecrm')
+                 ->table('teacher_payments')
+                 ->select('sum')
+                 ->whereRaw("STR_TO_DATE(date, '%d.%c.%Y') = '{$this->date_end}'")
+                 ->whereRaw("id_teacher = {$this->tutor_id}")
+                 ->where('id_status', static::MUTUAL_DEBT_STATUS)->first();
+    }
     // ------------------------------------------------------------------------
 
     protected static function boot()

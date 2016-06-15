@@ -90,6 +90,9 @@
                                         @{{ PaymentMethods[account.payment_method] }}
                                     </span>
                                 </span>
+                                <span class='mutual-debt' ng-if="account.mutual_debts">
+                                    + @{{ account.mutual_debts.sum | number }}
+                                </span>
                             </div>
                             <div class="mbs">
                                 <span>Итого комиссия за период (руб.):</span>
