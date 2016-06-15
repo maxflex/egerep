@@ -109,8 +109,7 @@ angular
             filterMarkers()
             return if hasErrors()
             $scope.ajaxStart()
-            $scope.Client.save $scope.client
-            .$promise.then (response) ->
+            $scope.Client.save $scope.client, (response) ->
                 window.location = "requests/#{response.id}/edit"
 
         hasErrors = ->
@@ -139,17 +138,20 @@ angular
                 .success (tutors) ->
                     $scope.tutors = tutors
 
+            # $rootScope.frontendStop() - 2 раза потому что Client.get загружает клиента асинхронно. если сделать общим
+            # рендер телефонных номеров может сломаться, т. к. она сработает как только frontendStopped.
             if $scope.id > 0
                 $scope.client = Client.get {id: $scope.id}, (client) ->
                     $scope.selected_request = if $scope.request_id then _.findWhere(client.requests, {id: $scope.request_id}) else client.requests[0]
                     $scope.parseHash()
+                    $rootScope.frontendStop()
             else
                 $scope.client = $scope.new_client
                 $scope.client.requests = [$scope.new_request]
                 $scope.selected_request = $scope.client.requests[0]
+                $rootScope.frontendStop()
 
             sp 'list-subjects', 'выберите предмет'
-            $rootScope.frontendStop()
 
         saveSelectedList = ->
             # tutor_ids = []
