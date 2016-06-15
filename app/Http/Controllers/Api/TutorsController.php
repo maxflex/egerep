@@ -32,7 +32,7 @@ class TutorsController extends Controller
     public function merge(Request $request)
     {
         // Check client ids
-        $client_ids = Attachment::whereIn('client_id', [$request->tutor_id, $request->new_tutor_id])
+        $client_ids = Attachment::whereIn('tutor_id', [$request->tutor_id, $request->new_tutor_id])
                                     ->pluck('client_id');
 
         if (count($client_ids->all()) != count(array_unique($client_ids->all()))) {
