@@ -65,8 +65,9 @@ class AttachmentsController extends Controller
      */
     public function store(Request $request)
     {
-        if (!Attachment::doesntHave('archive')->where('client_id', $request->client_id)->where('tutor_id', $request->tutor_id)->exists()) {
+        try {
             return Attachment::create ($request->input())->fresh();
+        } catch (\Illuminate\Database\QueryException $e) {
         }
     }
 
