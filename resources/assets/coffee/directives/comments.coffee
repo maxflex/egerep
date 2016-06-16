@@ -15,7 +15,6 @@ angular.module('Egerep').directive 'comments', ->
                 entity_id: newVal
             , ->
                 $rootScope.loaded_comments++ if $scope.trackLoading
-                console.log $rootScope.loaded_comments if $scope.trackLoading
 
         $scope.formatDateTime = (date) ->
             moment(date).format "DD.MM.YY в HH:mm"

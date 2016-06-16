@@ -9,7 +9,7 @@ angular.module 'Egerep'
             location.href = "sip:" + number.replace(/[^0-9]/g, '')
 
         this.isMobile = (number) ->
-            parseInt(number[4]) is 9 or parseInt(number[1]) is 9
+            number and (parseInt(number[4]) is 9 or parseInt(number[1]) is 9)
 
         this.clean = (number) ->
             number.replace /[^0-9]/gim, "";
