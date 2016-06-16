@@ -28213,6 +28213,9 @@ a {
   -ms-flex-item-align: end;
   align-self: flex-end; }
 
+.accounts-data .mutual-debt {
+  color: #337AB7; }
+
 .accounts-data .mbs {
   margin-bottom: 5px; }
   .accounts-data .mbs > span:first-of-type {
@@ -28260,7 +28263,7 @@ a {
       text-align: left; }
   .accounts-table thead tr td {
     border-top: none;
-    height: 70px;
+    height: 87px;
     text-align: center;
     background: white; }
 
@@ -29962,9 +29965,6 @@ md-input-container textarea {
   border: none !important;
   padding-bottom: 0 !important; }
 
-.modal-body {
-  padding-bottom: 0 !important; }
-
 .modal-password .modal-footer, .modal-password-bigger .modal-footer {
   text-align: center !important; }
 
@@ -30783,5 +30783,21 @@ table.summary-table.left-align tr td {
 
 .cursor-default {
   cursor: default !important; }
+
+.list-group, .panel-heading, .controls-line a, .controls-line span.link-like {
+  -webkit-font-smoothing: auto !important; }
+
+.vertical-center {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  height: 100%;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  color: #999999; }
 
 /*# sourceMappingURL=app.css.map */
