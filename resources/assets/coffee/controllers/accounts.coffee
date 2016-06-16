@@ -126,7 +126,7 @@ angular.module('Egerep')
             bootbox.confirm 'Удалить встречу?', (result) ->
                 if result is true
                     Account.delete {id: account.id}, ->
-                        $scope.tutor.accounts = removeById($scope.tutor.accounts, account.id)
+                        $scope.tutor.last_accounts = removeById($scope.tutor.last_accounts, account.id)
 
 
         $scope.save = ->
