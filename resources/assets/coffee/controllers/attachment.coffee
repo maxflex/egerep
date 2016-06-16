@@ -23,10 +23,8 @@ angular
         # track comment loading.
         $rootScope.loaded_comments = 0
         $scope.$watch () ->
-            console.log $rootScope.loaded_comments
             $rootScope.loaded_comments
         , (val) ->
-            console.log val
             $rootScope.frontend_loading = false if $scope.attachments and $scope.attachments.length == val
         # /track comment loading.
 

@@ -9,7 +9,7 @@
                 <input type="text" id='date-end' class="form-control" placeholder="дата конца периода" ng-model='new_account_date_end'>
             </div>
             <div class="modal-footer center">
-                <button type="button" class="btn btn-primary" ng-click="addAccount()">Добавить</button>
+                <button type="button" class="btn btn-primary" ng-disabled="!new_account_date_end" ng-click="addAccount()">Добавить</button>
             </div>
         </div>
     </div>
