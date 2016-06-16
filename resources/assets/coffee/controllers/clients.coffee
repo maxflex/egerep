@@ -144,14 +144,13 @@ angular
                 $scope.client = Client.get {id: $scope.id}, (client) ->
                     $scope.selected_request = if $scope.request_id then _.findWhere(client.requests, {id: $scope.request_id}) else client.requests[0]
                     $scope.parseHash()
+                    sp 'list-subjects', 'выберите предмет'
                     $rootScope.frontendStop()
             else
                 $scope.client = $scope.new_client
                 $scope.client.requests = [$scope.new_request]
                 $scope.selected_request = $scope.client.requests[0]
                 $rootScope.frontendStop()
-
-            sp 'list-subjects', 'выберите предмет'
 
         saveSelectedList = ->
             # tutor_ids = []

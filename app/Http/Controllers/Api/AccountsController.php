@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Tutor;
+use Mockery\CountValidator\Exception;
 
 class AccountsController extends Controller
 {
@@ -39,7 +40,10 @@ class AccountsController extends Controller
      */
     public function store(Request $request)
     {
-        return Account::create($request->input())->fresh();
+        try {
+            return Account::create($request->input())->fresh();
+        } catch (\Illuminate\Database\QueryException $e) {
+        }
     }
 
     /**
