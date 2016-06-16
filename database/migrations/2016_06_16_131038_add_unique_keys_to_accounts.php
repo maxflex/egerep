@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddUniqueKeys extends Migration
+class AddUniqueKeysToAccounts extends Migration
 {
     /**
      * Run the migrations.
