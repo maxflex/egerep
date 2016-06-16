@@ -379,13 +379,13 @@ class Tutor extends Model
     public function scopeSearchByLastNameAndPhone($query, $searchText)
     {
         if ($searchText) {
-            // @todo: цикл по номерам телефона
-            return $query->whereRaw("lower(last_name) like lower('%{$searchText}%')")
-                         ->orWhere("phone", "like", "%{$searchText}%")
-                         ->orWhere("phone2", "like", "%{$searchText}%")
-                         ->orWhere("phone3", "like", "%{$searchText}%")
-                         ->orWhere("phone4", "like", "%{$searchText}%");
+            $query->whereRaw("lower(last_name) like lower('%{$searchText}%')");
 
+            foreach (Tutor::$phone_fields as $field) {
+                $query->orWhere($field, "like", "%{$searchText}%");
+            }
+
+            return $query;
         }
     }
 

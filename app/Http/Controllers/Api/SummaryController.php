@@ -63,7 +63,7 @@ class SummaryController extends Controller
 
 
         $received = DB::table('accounts')
-                        ->select(DB::raw('sum(received) as sum, DATE(created_at) as time'))
+                        ->select(DB::raw('sum(received) as sum, date_end as time'))
                         ->whereRaw("date_end > '{$end_date}'")
                         ->whereRaw("date_end <= '{$start_date}'")
                         ->groupBy('time')->get();
@@ -160,16 +160,10 @@ class SummaryController extends Controller
             $today = new \DateTime();
             $return_date = $week_end > $today ? $today->format('Y-m-d') : $end;
             $return[$return_date] = [];
-/**
- * @todo refactor return array fields
- * */
-            $return[$return_date]['requests'] = ['cnt' => $requests];
-            $return[$return_date]['attachments'] = ['cnt' => $attachments];
-            $return[$return_date]['received'] = ['sum' => $received];
-            $return[$return_date]['commission'] = ['sum' => $commission];
-            $return[$return_date]['forecast'] = ['sum' => $forecast];
-            $return[$return_date]['debt'] = ['sum' => $debt];
 
+            foreach ($this->columns as $elem) {
+                $return[$return_date][$elem] = ['cnt' => $$elem, 'sum' => $$elem];
+            }
             $start_date->modify('+1 week');
         }
 
@@ -205,7 +199,7 @@ class SummaryController extends Controller
                             ->get();
 
         $received = DB::table('accounts')
-                        ->select(DB::raw('sum(received) as sum, LAST_DAY(created_at) as time'))
+                        ->select(DB::raw('sum(received) as sum, LAST_DAY(date_end) as time'))
                         ->whereRaw("date_end > '{$end_date}'")
                         ->whereRaw("date_end <= '{$start_date}'")
                         ->groupBy(DB::raw('YEAR(created_at)'))
@@ -270,8 +264,6 @@ class SummaryController extends Controller
 
     private function getByYear($request)
     {
-        //$page = intval($request->page) ? $request->page-1 : 0;     @todo исправить пагинацию для года, иначе через в 2035 году сломается
-
         $year_cnt = \App\Models\Request::summaryItemsCount('year');
 
         $start_of_year = '15 july';
