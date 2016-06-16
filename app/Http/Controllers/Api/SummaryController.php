@@ -202,8 +202,8 @@ class SummaryController extends Controller
                         ->select(DB::raw('sum(received) as sum, LAST_DAY(date_end) as time'))
                         ->whereRaw("date_end > '{$end_date}'")
                         ->whereRaw("date_end <= '{$start_date}'")
-                        ->groupBy(DB::raw('YEAR(created_at)'))
-                        ->groupBy(DB::raw('MONTH(created_at)'))
+                        ->groupBy(DB::raw('YEAR(date_end)'))
+                        ->groupBy(DB::raw('MONTH(date_end)'))
                         ->get();
 
         $commission = DB::table('account_datas')
