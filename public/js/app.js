@@ -317,7 +317,7 @@
           return Account["delete"]({
             id: account.id
           }, function() {
-            return $scope.tutor.accounts = removeById($scope.tutor.accounts, account.id);
+            return $scope.tutor.last_accounts = removeById($scope.tutor.last_accounts, account.id);
           });
         }
       });
@@ -756,10 +756,8 @@
     };
     $rootScope.loaded_comments = 0;
     $scope.$watch(function() {
-      console.log($rootScope.loaded_comments);
       return $rootScope.loaded_comments;
     }, function(val) {
-      console.log(val);
       if ($scope.attachments && $scope.attachments.length === val) {
         return $rootScope.frontend_loading = false;
       }
@@ -955,22 +953,22 @@
         return $scope.tutors = tutors;
       });
       if ($scope.id > 0) {
-        $scope.client = Client.get({
+        return $scope.client = Client.get({
           id: $scope.id
         }, function(client) {
           $scope.selected_request = $scope.request_id ? _.findWhere(client.requests, {
             id: $scope.request_id
           }) : client.requests[0];
           $scope.parseHash();
+          sp('list-subjects', 'выберите предмет');
           return $rootScope.frontendStop();
         });
       } else {
         $scope.client = $scope.new_client;
         $scope.client.requests = [$scope.new_request];
         $scope.selected_request = $scope.client.requests[0];
-        $rootScope.frontendStop();
+        return $rootScope.frontendStop();
       }
-      return sp('list-subjects', 'выберите предмет');
     });
     saveSelectedList = function() {
       return RequestList.update($scope.selected_list);
@@ -2614,10 +2612,7 @@
             entity_id: newVal
           }, function() {
             if ($scope.trackLoading) {
-              $rootScope.loaded_comments++;
-            }
-            if ($scope.trackLoading) {
-              return console.log($rootScope.loaded_comments);
+              return $rootScope.loaded_comments++;
             }
           });
         });
@@ -3039,465 +3034,6 @@
 }).call(this);
 
 (function() {
-  var apiPath, updateMethod;
-
-  angular.module('Egerep').factory('Account', function($resource) {
-    return $resource(apiPath('accounts'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Review', function($resource) {
-    return $resource(apiPath('reviews'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Archive', function($resource) {
-    return $resource(apiPath('archives'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Attachment', function($resource) {
-    return $resource(apiPath('attachments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('RequestList', function($resource) {
-    return $resource(apiPath('lists'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Request', function($resource) {
-    return $resource(apiPath('requests'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      transfer: {
-        method: 'POST',
-        url: apiPath('requests', 'transfer')
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  }).factory('Sms', function($resource) {
-    return $resource(apiPath('sms'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Comment', function($resource) {
-    return $resource(apiPath('comments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Client', function($resource) {
-    return $resource(apiPath('clients'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('User', function($resource) {
-    return $resource(apiPath('users'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Tutor', function($resource) {
-    return $resource(apiPath('tutors'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      deletePhoto: {
-        url: apiPath('tutors', 'photo'),
-        method: 'DELETE'
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  });
-
-  apiPath = function(entity, additional) {
-    if (additional == null) {
-      additional = '';
-    }
-    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
-  };
-
-  updateMethod = function() {
-    return {
-      update: {
-        method: 'PUT'
-      }
-    };
-  };
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('ApiService', function($http) {
-    this.metro = function(fun, data) {
-      return $http.post("api/metro/" + fun, data);
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('AttachmentService', function(AttachmentStates) {
-    this.AttachmentStates = AttachmentStates;
-    this.getStatus = function(attachment) {
-      if (attachment.archive) {
-        return this.AttachmentStates['ended'].label;
-      } else {
-        if (attachment.forecast) {
-          return this.AttachmentStates['inprogress'].label;
-        } else {
-          return this.AttachmentStates['new'].label;
-        }
-      }
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('BranchService', function(Branches) {
-    this.branches = Branches;
-    this.getNameWithColor = function(branch_id) {
-      var curBranch;
-      curBranch = this.branches[branch_id];
-      return '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="svg-metro"><circle fill="' + curBranch.color + '" r="6" cx="7" cy="7"></circle></svg>' + curBranch.full;
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('PhoneService', function($rootScope, $http) {
-    this.info = function(number) {
-      return $http.post('api/command/mango-stats', {
-        number: number
-      });
-    };
-    this.call = function(number) {
-      return location.href = "sip:" + number.replace(/[^0-9]/g, '');
-    };
-    this.isMobile = function(number) {
-      return parseInt(number[4]) === 9 || parseInt(number[1]) === 9;
-    };
-    this.clean = function(number) {
-      return number.replace(/[^0-9]/gim, "");
-    };
-    this.format = function(number) {
-      if (!number) {
-        return;
-      }
-      number = this.clean(number);
-      return '+' + number.substr(0, 1) + ' (' + number.substr(1, 3) + ') ' + number.substr(4, 3) + '-' + number.substr(7, 2) + '-' + number.substr(9, 2);
-    };
-    this.sms = function(number) {
-      $rootScope.sms_number = number;
-      return $('#sms-modal').modal('show');
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('PusherService', function($http) {
-    this.init = function(channel, callback) {
-      this.pusher = new Pusher('2d212b249c84f8c7ba5c', {
-        encrypted: true,
-        cluster: 'eu'
-      });
-      this.channel = this.pusher.subscribe('egerep');
-      return this.channel.bind("App\\Events\\" + channel, callback);
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('SvgMap', function() {
-    this.map = new SVGMap({
-      iframeId: 'map',
-      clicable: true,
-      places: [],
-      placesHash: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 180, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211],
-      groups: [
-        {
-          "id": "1",
-          "title": "внутри кольца",
-          "points": [4, 8, 12, 15, 18, 19, 38, 47, 48, 51, 54, 56, 58, 60, 63, 66, 68, 71, 74, 82, 83, 86, 90, 91, 92, 102, 104, 109, 111, 120, 122, 126, 129, 131, 132, 133, 137, 138, 140, 153, 156, 157, 158, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 198, 199]
-        }, {
-          "id": "2",
-          "title": "красная север",
-          "points": [55, 106, 124, 145, 154]
-        }, {
-          "id": "3",
-          "title": "красная юг",
-          "points": [33, 108, 125, 148, 151, 164, 209, 210]
-        }, {
-          "id": "4",
-          "title": "зеленая север",
-          "points": [9, 28, 29, 36, 112, 123]
-        }, {
-          "id": "5",
-          "title": "зеленая юг",
-          "points": [2, 39, 44, 46, 50, 53, 88, 152, 197, 202, 204]
-        }, {
-          "id": "6",
-          "title": "синяя запад",
-          "points": [32, 59, 62, 75, 76, 77, 93, 121, 127, 186, 203]
-        }, {
-          "id": "7",
-          "title": "синяя восток",
-          "points": [13, 42, 94, 95, 119, 161, 163]
-        }, {
-          "id": "8",
-          "title": "голубая",
-          "points": [11, 62, 64, 99, 128, 149, 150, 186]
-        }, {
-          "id": "9",
-          "title": "оранжевая север",
-          "points": [5, 10, 20, 26, 72, 113, 117]
-        }, {
-          "id": "10",
-          "title": "оранжевая юг",
-          "points": [3, 16, 43, 52, 65, 84, 85, 110, 135, 159, 166]
-        }, {
-          "id": "11",
-          "title": "фиолетовая север",
-          "points": [14, 87, 100, 103, 130, 141, 142, 162]
-        }, {
-          "id": "12",
-          "title": "фиолетовая юг",
-          "points": [30, 35, 57, 61, 107, 115, 134, 205, 206, 211]
-        }, {
-          "id": "13",
-          "title": "желтая",
-          "points": [1, 81, 96, 101, 114, 160, 180]
-        }, {
-          "id": "14",
-          "title": "серая север",
-          "points": [6, 17, 27, 37, 89, 97, 116, 136]
-        }, {
-          "id": "15",
-          "title": "серая юг",
-          "points": [7, 23, 45, 78, 79, 80, 105, 118, 139, 143, 147, 155, 165]
-        }, {
-          "id": "16",
-          "title": "светло-зеленая",
-          "points": [21, 31, 41, 49, 53, 57, 67, 70, 98, 101, 107, 114, 200, 201, 202]
-        }, {
-          "id": "17",
-          "title": "бутовская",
-          "points": [22, 23, 24, 84, 144, 146, 147, 207, 208]
-        }, {
-          "id": "18",
-          "title": "каховская",
-          "points": [25, 45, 46, 118, 197]
-        }
-      ]
-    });
-    this.show = function(points) {
-      var map;
-      $('#svg-modal').modal('show');
-      map = this.map;
-      map.init();
-      map.selected = {};
-      map.deselectAll();
-      map.select(points);
-      $(".legend a").unbind('click');
-      return $(".legend a").on('click', function() {
-        var id;
-        id = $(this).attr("data-rel");
-        return map.toggleGroup(id);
-      });
-    };
-    this.el = function() {
-      return $('#map').contents();
-    };
-    this.save = function() {
-      $('#svg-modal').modal('hide');
-      return this.map.save();
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('TutorService', function($http) {
-    this.translit = {
-      'А': 'A',
-      'Б': 'B',
-      'В': 'V',
-      'Г': 'G',
-      'Д': 'D',
-      'Е': 'E',
-      'Ё': 'E',
-      'Ж': 'Gh',
-      'З': 'Z',
-      'И': 'I',
-      'Й': 'Y',
-      'К': 'K',
-      'Л': 'L',
-      'М': 'M',
-      'Н': 'N',
-      'О': 'O',
-      'П': 'P',
-      'Р': 'R',
-      'С': 'S',
-      'Т': 'T',
-      'У': 'U',
-      'Ф': 'F',
-      'Х': 'H',
-      'Ц': 'C',
-      'Ч': 'Ch',
-      'Ш': 'Sh',
-      'Щ': 'Sch',
-      'Ъ': 'Y',
-      'Ы': 'Y',
-      'Ь': 'Y',
-      'Э': 'E',
-      'Ю': 'Yu',
-      'Я': 'Ya',
-      'а': 'a',
-      'б': 'b',
-      'в': 'v',
-      'г': 'g',
-      'д': 'd',
-      'е': 'e',
-      'ё': 'e',
-      'ж': 'gh',
-      'з': 'z',
-      'и': 'i',
-      'й': 'y',
-      'к': 'k',
-      'л': 'l',
-      'м': 'm',
-      'н': 'n',
-      'о': 'o',
-      'п': 'p',
-      'р': 'r',
-      'с': 's',
-      'т': 't',
-      'у': 'u',
-      'ф': 'f',
-      'х': 'h',
-      'ц': 'c',
-      'ч': 'ch',
-      'ш': 'sh',
-      'щ': 'sch',
-      'ъ': 'y',
-      'ы': 'y',
-      'ь': 'y',
-      'э': 'e',
-      'ю': 'yu',
-      'я': 'ya'
-    };
-    this.default_tutor = {
-      gender: "male",
-      branches: [],
-      phones: [],
-      subjects: [],
-      grades: [],
-      svg_map: [],
-      markers: [],
-      state: 0,
-      in_egecentr: 0
-    };
-    this.getFiltered = function(search_data) {
-      return $http.post('api/tutors/filtered', search_data);
-    };
-    this.getDebtMap = function(search_data) {
-      return $http.post('api/debt/map', search_data);
-    };
-    this.generateLogin = function(tutor) {
-      var i, len, letter, login, ref;
-      login = '';
-      ref = tutor.last_name.toLowerCase();
-      for (i = 0, len = ref.length; i < len; i++) {
-        letter = ref[i];
-        login += this.translit[letter];
-      }
-      login = login.slice(0, 3);
-      login += '_' + this.translit[tutor.first_name.toLowerCase()[0]] + this.translit[tutor.middle_name.toLowerCase()[0]];
-      return login;
-    };
-    this.generatePassword = function() {
-      return Math.floor(10000000 + Math.random() * 89999999);
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('UserService', function(User, $rootScope, $timeout) {
-    var system_user;
-    this.users = User.query();
-    $timeout((function(_this) {
-      return function() {
-        return _this.current_user = $rootScope.$$childTail.user;
-      };
-    })(this));
-    system_user = {
-      color: '#999999',
-      login: 'system',
-      id: 0
-    };
-    this.getUser = function(user_id) {
-      return _.findWhere(this.users, {
-        id: parseInt(user_id)
-      }) || system_user;
-    };
-    this.getLogin = function(user_id) {
-      return this.getUser(parseInt(user_id)).login;
-    };
-    this.getColor = function(user_id) {
-      return this.getUser(parseInt(user_id)).color;
-    };
-    this.getWithSystem = function(only_active) {
-      var users;
-      if (only_active == null) {
-        only_active = true;
-      }
-      users = _.clone(this.users);
-      users.unshift(system_user);
-      if (only_active) {
-        return _.where(users, {
-          banned: 0
-        });
-      } else {
-        return users;
-      }
-    };
-    this.toggle = function(entity, user_id, Resource) {
-      var new_user_id, obj;
-      if (Resource == null) {
-        Resource = false;
-      }
-      new_user_id = entity[user_id] ? 0 : this.current_user.id;
-      if (Resource) {
-        return Resource.update((
-          obj = {
-            id: entity.id
-          },
-          obj["" + user_id] = new_user_id,
-          obj
-        ), function() {
-          return entity[user_id] = new_user_id;
-        });
-      } else {
-        return entity[user_id] = new_user_id;
-      }
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
   angular.module('Egerep').value('Recommendations', {
     1: {
       text: 'Репетитор рекомендован этому клиенту. Не забудьте четко проговорить условия работы с преподавателями.',
@@ -3814,6 +3350,465 @@
       address: '',
       color: '#ACADAF'
     }
+  });
+
+}).call(this);
+
+(function() {
+  var apiPath, updateMethod;
+
+  angular.module('Egerep').factory('Account', function($resource) {
+    return $resource(apiPath('accounts'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Review', function($resource) {
+    return $resource(apiPath('reviews'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Archive', function($resource) {
+    return $resource(apiPath('archives'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Attachment', function($resource) {
+    return $resource(apiPath('attachments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('RequestList', function($resource) {
+    return $resource(apiPath('lists'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Request', function($resource) {
+    return $resource(apiPath('requests'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      transfer: {
+        method: 'POST',
+        url: apiPath('requests', 'transfer')
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  }).factory('Sms', function($resource) {
+    return $resource(apiPath('sms'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Comment', function($resource) {
+    return $resource(apiPath('comments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Client', function($resource) {
+    return $resource(apiPath('clients'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('User', function($resource) {
+    return $resource(apiPath('users'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Tutor', function($resource) {
+    return $resource(apiPath('tutors'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      deletePhoto: {
+        url: apiPath('tutors', 'photo'),
+        method: 'DELETE'
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  });
+
+  apiPath = function(entity, additional) {
+    if (additional == null) {
+      additional = '';
+    }
+    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
+  };
+
+  updateMethod = function() {
+    return {
+      update: {
+        method: 'PUT'
+      }
+    };
+  };
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('ApiService', function($http) {
+    this.metro = function(fun, data) {
+      return $http.post("api/metro/" + fun, data);
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('AttachmentService', function(AttachmentStates) {
+    this.AttachmentStates = AttachmentStates;
+    this.getStatus = function(attachment) {
+      if (attachment.archive) {
+        return this.AttachmentStates['ended'].label;
+      } else {
+        if (attachment.forecast) {
+          return this.AttachmentStates['inprogress'].label;
+        } else {
+          return this.AttachmentStates['new'].label;
+        }
+      }
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('BranchService', function(Branches) {
+    this.branches = Branches;
+    this.getNameWithColor = function(branch_id) {
+      var curBranch;
+      curBranch = this.branches[branch_id];
+      return '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="svg-metro"><circle fill="' + curBranch.color + '" r="6" cx="7" cy="7"></circle></svg>' + curBranch.full;
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('PhoneService', function($rootScope, $http) {
+    this.info = function(number) {
+      return $http.post('api/command/mango-stats', {
+        number: number
+      });
+    };
+    this.call = function(number) {
+      return location.href = "sip:" + number.replace(/[^0-9]/g, '');
+    };
+    this.isMobile = function(number) {
+      return number && (parseInt(number[4]) === 9 || parseInt(number[1]) === 9);
+    };
+    this.clean = function(number) {
+      return number.replace(/[^0-9]/gim, "");
+    };
+    this.format = function(number) {
+      if (!number) {
+        return;
+      }
+      number = this.clean(number);
+      return '+' + number.substr(0, 1) + ' (' + number.substr(1, 3) + ') ' + number.substr(4, 3) + '-' + number.substr(7, 2) + '-' + number.substr(9, 2);
+    };
+    this.sms = function(number) {
+      $rootScope.sms_number = number;
+      return $('#sms-modal').modal('show');
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('PusherService', function($http) {
+    this.init = function(channel, callback) {
+      this.pusher = new Pusher('2d212b249c84f8c7ba5c', {
+        encrypted: true,
+        cluster: 'eu'
+      });
+      this.channel = this.pusher.subscribe('egerep');
+      return this.channel.bind("App\\Events\\" + channel, callback);
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('SvgMap', function() {
+    this.map = new SVGMap({
+      iframeId: 'map',
+      clicable: true,
+      places: [],
+      placesHash: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 180, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211],
+      groups: [
+        {
+          "id": "1",
+          "title": "внутри кольца",
+          "points": [4, 8, 12, 15, 18, 19, 38, 47, 48, 51, 54, 56, 58, 60, 63, 66, 68, 71, 74, 82, 83, 86, 90, 91, 92, 102, 104, 109, 111, 120, 122, 126, 129, 131, 132, 133, 137, 138, 140, 153, 156, 157, 158, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 198, 199]
+        }, {
+          "id": "2",
+          "title": "красная север",
+          "points": [55, 106, 124, 145, 154]
+        }, {
+          "id": "3",
+          "title": "красная юг",
+          "points": [33, 108, 125, 148, 151, 164, 209, 210]
+        }, {
+          "id": "4",
+          "title": "зеленая север",
+          "points": [9, 28, 29, 36, 112, 123]
+        }, {
+          "id": "5",
+          "title": "зеленая юг",
+          "points": [2, 39, 44, 46, 50, 53, 88, 152, 197, 202, 204]
+        }, {
+          "id": "6",
+          "title": "синяя запад",
+          "points": [32, 59, 62, 75, 76, 77, 93, 121, 127, 186, 203]
+        }, {
+          "id": "7",
+          "title": "синяя восток",
+          "points": [13, 42, 94, 95, 119, 161, 163]
+        }, {
+          "id": "8",
+          "title": "голубая",
+          "points": [11, 62, 64, 99, 128, 149, 150, 186]
+        }, {
+          "id": "9",
+          "title": "оранжевая север",
+          "points": [5, 10, 20, 26, 72, 113, 117]
+        }, {
+          "id": "10",
+          "title": "оранжевая юг",
+          "points": [3, 16, 43, 52, 65, 84, 85, 110, 135, 159, 166]
+        }, {
+          "id": "11",
+          "title": "фиолетовая север",
+          "points": [14, 87, 100, 103, 130, 141, 142, 162]
+        }, {
+          "id": "12",
+          "title": "фиолетовая юг",
+          "points": [30, 35, 57, 61, 107, 115, 134, 205, 206, 211]
+        }, {
+          "id": "13",
+          "title": "желтая",
+          "points": [1, 81, 96, 101, 114, 160, 180]
+        }, {
+          "id": "14",
+          "title": "серая север",
+          "points": [6, 17, 27, 37, 89, 97, 116, 136]
+        }, {
+          "id": "15",
+          "title": "серая юг",
+          "points": [7, 23, 45, 78, 79, 80, 105, 118, 139, 143, 147, 155, 165]
+        }, {
+          "id": "16",
+          "title": "светло-зеленая",
+          "points": [21, 31, 41, 49, 53, 57, 67, 70, 98, 101, 107, 114, 200, 201, 202]
+        }, {
+          "id": "17",
+          "title": "бутовская",
+          "points": [22, 23, 24, 84, 144, 146, 147, 207, 208]
+        }, {
+          "id": "18",
+          "title": "каховская",
+          "points": [25, 45, 46, 118, 197]
+        }
+      ]
+    });
+    this.show = function(points) {
+      var map;
+      $('#svg-modal').modal('show');
+      map = this.map;
+      map.init();
+      map.selected = {};
+      map.deselectAll();
+      map.select(points);
+      $(".legend a").unbind('click');
+      return $(".legend a").on('click', function() {
+        var id;
+        id = $(this).attr("data-rel");
+        return map.toggleGroup(id);
+      });
+    };
+    this.el = function() {
+      return $('#map').contents();
+    };
+    this.save = function() {
+      $('#svg-modal').modal('hide');
+      return this.map.save();
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('TutorService', function($http) {
+    this.translit = {
+      'А': 'A',
+      'Б': 'B',
+      'В': 'V',
+      'Г': 'G',
+      'Д': 'D',
+      'Е': 'E',
+      'Ё': 'E',
+      'Ж': 'Gh',
+      'З': 'Z',
+      'И': 'I',
+      'Й': 'Y',
+      'К': 'K',
+      'Л': 'L',
+      'М': 'M',
+      'Н': 'N',
+      'О': 'O',
+      'П': 'P',
+      'Р': 'R',
+      'С': 'S',
+      'Т': 'T',
+      'У': 'U',
+      'Ф': 'F',
+      'Х': 'H',
+      'Ц': 'C',
+      'Ч': 'Ch',
+      'Ш': 'Sh',
+      'Щ': 'Sch',
+      'Ъ': 'Y',
+      'Ы': 'Y',
+      'Ь': 'Y',
+      'Э': 'E',
+      'Ю': 'Yu',
+      'Я': 'Ya',
+      'а': 'a',
+      'б': 'b',
+      'в': 'v',
+      'г': 'g',
+      'д': 'd',
+      'е': 'e',
+      'ё': 'e',
+      'ж': 'gh',
+      'з': 'z',
+      'и': 'i',
+      'й': 'y',
+      'к': 'k',
+      'л': 'l',
+      'м': 'm',
+      'н': 'n',
+      'о': 'o',
+      'п': 'p',
+      'р': 'r',
+      'с': 's',
+      'т': 't',
+      'у': 'u',
+      'ф': 'f',
+      'х': 'h',
+      'ц': 'c',
+      'ч': 'ch',
+      'ш': 'sh',
+      'щ': 'sch',
+      'ъ': 'y',
+      'ы': 'y',
+      'ь': 'y',
+      'э': 'e',
+      'ю': 'yu',
+      'я': 'ya'
+    };
+    this.default_tutor = {
+      gender: "male",
+      branches: [],
+      phones: [],
+      subjects: [],
+      grades: [],
+      svg_map: [],
+      markers: [],
+      state: 0,
+      in_egecentr: 0
+    };
+    this.getFiltered = function(search_data) {
+      return $http.post('api/tutors/filtered', search_data);
+    };
+    this.getDebtMap = function(search_data) {
+      return $http.post('api/debt/map', search_data);
+    };
+    this.generateLogin = function(tutor) {
+      var i, len, letter, login, ref;
+      login = '';
+      ref = tutor.last_name.toLowerCase();
+      for (i = 0, len = ref.length; i < len; i++) {
+        letter = ref[i];
+        login += this.translit[letter];
+      }
+      login = login.slice(0, 3);
+      login += '_' + this.translit[tutor.first_name.toLowerCase()[0]] + this.translit[tutor.middle_name.toLowerCase()[0]];
+      return login;
+    };
+    this.generatePassword = function() {
+      return Math.floor(10000000 + Math.random() * 89999999);
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('UserService', function(User, $rootScope, $timeout) {
+    var system_user;
+    this.users = User.query();
+    $timeout((function(_this) {
+      return function() {
+        return _this.current_user = $rootScope.$$childTail.user;
+      };
+    })(this));
+    system_user = {
+      color: '#999999',
+      login: 'system',
+      id: 0
+    };
+    this.getUser = function(user_id) {
+      return _.findWhere(this.users, {
+        id: parseInt(user_id)
+      }) || system_user;
+    };
+    this.getLogin = function(user_id) {
+      return this.getUser(parseInt(user_id)).login;
+    };
+    this.getColor = function(user_id) {
+      return this.getUser(parseInt(user_id)).color;
+    };
+    this.getWithSystem = function(only_active) {
+      var users;
+      if (only_active == null) {
+        only_active = true;
+      }
+      users = _.clone(this.users);
+      users.unshift(system_user);
+      if (only_active) {
+        return _.where(users, {
+          banned: 0
+        });
+      } else {
+        return users;
+      }
+    };
+    this.toggle = function(entity, user_id, Resource) {
+      var new_user_id, obj;
+      if (Resource == null) {
+        Resource = false;
+      }
+      new_user_id = entity[user_id] ? 0 : this.current_user.id;
+      if (Resource) {
+        return Resource.update((
+          obj = {
+            id: entity.id
+          },
+          obj["" + user_id] = new_user_id,
+          obj
+        ), function() {
+          return entity[user_id] = new_user_id;
+        });
+      } else {
+        return entity[user_id] = new_user_id;
+      }
+    };
+    return this;
   });
 
 }).call(this);
