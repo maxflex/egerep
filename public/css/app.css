@@ -30695,6 +30695,9 @@ table {
 .attachment-table {
   text-align: center; }
 
+table.summary-table {
+  font-size: 0.8em; }
+
 table.summary-table tr td:not(:first-child) {
   text-align: center; }
 
