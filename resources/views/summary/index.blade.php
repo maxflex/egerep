@@ -28,7 +28,7 @@
 					стыковок
 				</td>
 				<td ng-show="user.show_summary">
-					полученные наличные
+					получено
 				</td>
 				<td ng-show="user.show_summary">
 					проведенные занятия
