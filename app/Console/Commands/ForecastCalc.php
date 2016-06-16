@@ -52,15 +52,13 @@ class ForecastCalc extends Command
 
             // если занятия есть
             if ($lessons->exists()) {
-	            $comm1 = DB::table('account_datas')
+	            $query = DB::table('account_datas')
                             ->where('tutor_id', $attachment->tutor_id)
-                            ->where('client_id', $attachment->client_id)
-                            ->where('commission', 0)->sum('sum');
+                            ->where('client_id', $attachment->client_id);
 
-                $comm2 = DB::table('account_datas')
-                            ->where('tutor_id', $attachment->tutor_id)
-                            ->where('client_id', $attachment->client_id)
-                            ->where('commission', '>', 0)->sum('commission');
+                $comm1 = $query->newQuery()->where('commission', 0)->sum('sum');
+
+                $comm2 = $query->newQuery()->where('commission', '>', 0)->sum('commission');
 
                 // сумма комиссий
                 $sum = ($comm1 * 0.25) + ($comm2);
