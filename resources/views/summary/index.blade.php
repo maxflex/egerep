@@ -16,7 +16,7 @@
            ng-class="{active : filter == period_id}">@{{ period }}</a>
     </div>
 
-    <table class="table table-hover summary-table">
+    <table class="table table-hover">
 		<thead>
 			<tr>
 				<td width="150">
