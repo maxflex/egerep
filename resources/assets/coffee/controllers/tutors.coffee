@@ -218,6 +218,9 @@ angular
                     quality = Math.round(width / 240 * 100)
                     $scope.quality = if quality > 100 then 100 else quality
                     $scope.$apply()
+                built: ->
+                    $scope.cropper_built = true
+                    $scope.$apply()
 
 
         $scope.picture_version = 1;
@@ -254,10 +257,8 @@ angular
         # show photo editor
         $scope.showPhotoEditor = ->
             $scope.dialog('change-photo')
-            # rare bug fix
+            $scope.cropper_built = false
             bindCropper()
-            console.log 'here'
-                # $('#photo-edit').cropper 'resize'
 
         $scope.toggleBanned = ->
             $scope.tutor.banned = +(!$scope.tutor.banned)
