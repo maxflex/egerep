@@ -22,7 +22,7 @@
         <div class="modal-content" style="height: 100%">
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-sm-10 image-col-left" ng-show='quality'>
+                    <div class="col-sm-10 image-col-left">
                         <div ng-show='tutor.has_photo_original' style="height: 100%">
                             <img src="img/tutors/@{{ tutor.id + '_original.' + tutor.photo_extension }}?ver=@{{ picture_version }}" id='photo-edit'>
                         </div>
