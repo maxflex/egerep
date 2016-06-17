@@ -255,11 +255,9 @@ angular
         $scope.showPhotoEditor = ->
             $scope.dialog('change-photo')
             # rare bug fix
-            $timeout ->
-                bindCropper()
-                console.log 'here'
+            bindCropper()
+            console.log 'here'
                 # $('#photo-edit').cropper 'resize'
-            , 100
 
         $scope.toggleBanned = ->
             $scope.tutor.banned = +(!$scope.tutor.banned)
