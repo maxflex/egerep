@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'AddClientIdToAttachments' => $baseDir . '/database/migrations/2016_05_30_141049_add_client_id_to_attachments.php',
+    'AddCommentExtendedToTutors' => $baseDir . '/database/migrations/2016_06_17_180812_add_comment_extended_to_tutors.php',
     'AddContinueToArchives' => $baseDir . '/database/migrations/2016_06_03_122653_add_continue_to_archives.php',
     'AddDebtCalcToAccounts' => $baseDir . '/database/migrations/2016_05_30_135837_add_debt_calc_to_accounts.php',
     'AddDebtCalcToTutors' => $baseDir . '/database/migrations/2016_05_31_104820_add_debt_calc_to_tutors.php',

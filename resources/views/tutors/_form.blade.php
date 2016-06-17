@@ -280,8 +280,12 @@
         <div ng-show="tutor.in_egecentr == 1" class="egecentrInformation">
             <h4>ИНФОРМАЦИЯ ПО ЕГЭ-ЦЕНТРУ</h4>
             <md-input-container class="md-block" style="margin-top: 20px">
-                <label>Описание эксперта</label>
+                <label>Описание</label>
                 <textarea class="md-input" ng-model="tutor.comment"></textarea>
+            </md-input-container>
+            <md-input-container class="md-block" style="margin-top: 20px">
+                <label>Расширенное описание</label>
+                <textarea class="md-input" ng-model="tutor.comment_extended"></textarea>
             </md-input-container>
             <md-input-container class="md-block" style="margin-top: 20px">
                 <div class="row">
