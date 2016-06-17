@@ -9,7 +9,7 @@ use DB;
 
 class SummaryController extends Controller
 {
-    private $columns = ['requests', 'attachments', 'received', 'commission', 'forecast', 'debt'];
+    private $columns = ['requests', 'attachments', 'received', 'commission', 'forecast', 'debt', 'active_attachments', 'new_clients'];
     /**
      * Display a listing of the resource.
      *
