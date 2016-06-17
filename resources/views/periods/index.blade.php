@@ -31,6 +31,7 @@
                 <td>@{{ period.debt_calc | hideZero | number}}</td>
                 <td>
                     <span ng-show='period.received > 0'>@{{ period.received | number }}</span>
+                    <span class='mutual-debt' ng-if="period.mutual_debts">+ @{{ period.mutual_debts.sum }}</span>
                 </td>
                 <td>
                     @{{ totalCommission(period) | number }}

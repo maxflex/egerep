@@ -28,13 +28,18 @@ class Account extends Model
         'payment_method',
         'data',
     ];
-    protected $appends = ['data', 'user_login'];
+    protected $appends = ['data', 'user_login', 'mutual_debts'];
 
     // ------------------------------------------------------------------------
 
     public function tutor()
     {
         return $this->belongsTo('App\Models\Tutor');
+    }
+
+    public function test()
+    {
+        return DB::connection();
     }
 
     /**
