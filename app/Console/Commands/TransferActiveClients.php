@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Models\Service\Summary;
 
 class TransferActiveClients extends Command
 {
