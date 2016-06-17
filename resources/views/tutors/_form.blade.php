@@ -138,7 +138,7 @@
                     ng-model="tutor.in_egecentr"
                     ng-options="+(workplace) as label for (workplace, label) in Workplaces" placeholder="место работы"></select>
             </div>
-            <div ng-show="tutor.in_egecentr == 1">
+            <div ng-show="tutor.in_egecentr">
                 <div class="form-group">
                     <div class="input-group">
                         <input class="form-control" ng-disabled="tutor.banned" ng-model="tutor.login" placeholder="Логин">
