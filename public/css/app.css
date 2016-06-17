@@ -28213,9 +28213,6 @@ a {
   -ms-flex-item-align: end;
   align-self: flex-end; }
 
-.accounts-data .mutual-debt {
-  color: #337AB7; }
-
 .accounts-data .mbs {
   margin-bottom: 5px; }
   .accounts-data .mbs > span:first-of-type {
@@ -30802,6 +30799,12 @@ table.summary-table.left-align tr td {
   -ms-flex-pack: center;
   justify-content: center;
   color: #999999; }
+
+.mutual-debt {
+  color: #337AB7; }
+
+.left-border {
+  border-left: 1px solid #eee; }
 
 .cropper-line, .cropper-point {
   background-color: #158E51 !important; }

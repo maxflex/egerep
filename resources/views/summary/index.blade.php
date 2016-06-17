@@ -11,70 +11,18 @@
 
 @section('content')
     <div class="top-links">
-        <a href="summary/@{{ period_id }}"
+        <a href="summary/@{{ type == 'payments' ? type + '/' : '' }}@{{ period_id }}"
            ng-repeat="(period_id, period) in {day:'дни', week:'недели', month:'месяцы', year:'годы'}"
            ng-class="{active : filter == period_id}">@{{ period }}</a>
+
+		<div class="pull-right" ng-show="user.show_summary">
+			<a href="summary" ng-class="{active: type == 'total'}">итоговые данные</a>
+			<a href="summary/payments" ng-class="{active: type == 'payments'}">детализация по платежам</a>
+		</div>
     </div>
 
-    <table class="table table-hover">
-		<thead>
-			<tr>
-				<td width="150">
-				</td>
-				<td>
-					заявок
-				</td>
-				<td>
-					стыковок
-				</td>
-				<td ng-show="user.show_summary">
-					получено
-				</td>
-				<td ng-show="user.show_summary">
-					проведенные занятия
-				</td>
-				<td ng-show="user.show_summary">
-					общий прогноз
-				</td>
-				<td ng-show="user.show_summary">
-					общий дебет
-				</td>
-                <td>
-					рабочих процессов
-				</td>
-                <td>
-					новых клиентов
-				</td>
-			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="(date, summary) in summaries">
-				<td>
-					@{{ date | date:'dd MMMM yyyy' }}
-				</td>
-				<td>
-					@{{ summary.requests.cnt | hideZero }}
-				</td>
-				<td>
-					@{{ summary.attachments.cnt | hideZero }}
-				</td>
-				<td ng-show="user.show_summary">
-					@{{ summary.received.sum | hideZero | number }}
-				</td>
-				<td ng-show="user.show_summary">
-					@{{ summary.commission.sum | hideZero | number }}
-				</td>
-				<td ng-show="user.show_summary">
-					@{{ summary.forecast.sum | hideZero | number }}
-				</td>
-				<td ng-show="user.show_summary">
-					@{{ summary.debt.sum | hideZero | number }}
-				</td>
-                <td>@{{ summary.active_attachments.sum }}</td>
-                <td>@{{ summary.new_clients.sum }}</td>
-			</tr>
-		</tbody>
-	</table>
+	@include('summary.total')
+	@include('summary.payments')
 
     <pagination
     	  ng-model="current_page"

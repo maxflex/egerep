@@ -91,7 +91,7 @@
                                     </span>
                                 </span>
                                 <span class='mutual-debt' ng-if="account.mutual_debts">
-                                    + @{{ account.mutual_debts.sum | number }}
+                                    + @{{ account.mutual_debts.sum }}
                                 </span>
                             </div>
                             <div class="mbs">

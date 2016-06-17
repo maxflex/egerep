@@ -111,7 +111,7 @@ class Request extends Model
      */
     public static function summaryItemsCount($filter = 'day')
     {
-        $first_date = new \DateTime(\App\Models\Request::orderBy('created_at')->pluck('created_at')->first());
+        $first_date = new \DateTime(static::orderBy('created_at')->pluck('created_at')->first());
 
         switch ($filter) {
             case 'day':

@@ -28,7 +28,7 @@ class Account extends Model
         'payment_method',
         'data',
     ];
-    protected $appends = ['data', 'user_login'];
+    protected $appends = ['data', 'user_login', 'mutual_debts'];
 
     // ------------------------------------------------------------------------
 
@@ -163,6 +163,33 @@ class Account extends Model
 
         if ($fire_event) {
             event(new DebtRecalc($this->tutor_id));
+        }
+    }
+
+    /**
+     * количество элементов пагинации в странице детализации итогов.
+     */
+    public static function summaryItemsCount($filter = 'day')
+    {
+        $first_date = new \DateTime(static::orderBy('date_end')->pluck('date_end')->first());
+
+        switch ($filter) {
+            case 'day':
+                return $first_date->diff(new \DateTime)->format('%a');
+            case 'week':
+                return intval($first_date->diff(new \DateTime)->format('%a') / 7);
+            case 'month':
+                return ((new \DateTime)->format('Y') -  $first_date->format('Y'))*12 + $first_date->diff(new \DateTime)->format('%m') + 1;
+            case 'year':
+                $cnt = (new \DateTime)->format('Y') - $first_date->format('Y');
+                $cnt += (new \DateTime)->format('m') < 7
+                    ? $first_date->format('m') < 7
+                        ? 1
+                        : 0
+                    : $first_date->format('m') < 7
+                        ? 2
+                        : 1;
+                return $cnt;
         }
     }
 }

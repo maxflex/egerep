@@ -422,10 +422,7 @@
 	}
 
 	.accounts-data {
-	  	& .mutual-debt {
-		  color: $blue;
-		}
-		// margin-bottom: 40px;
+	  	// margin-bottom: 40px;
 		& .mbs {
 			margin-bottom: 5px;
 			& > span:first-of-type {
@@ -3649,6 +3646,12 @@ table.summary-table.left-align tr td {
 	align-items: center;
 	justify-content: center;
 	color: $gray;
+}
+.mutual-debt {
+	color: $blue;
+}
+.left-border {
+  	border-left: 1px solid $hr_gray;
 }
 
 .cropper-line, .cropper-point {

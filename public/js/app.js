@@ -2035,7 +2035,7 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').controller('SummaryIndex', function($rootScope, $scope, $http, $timeout) {
+  angular.module('Egerep').controller('SummaryIndex', function($rootScope, $scope, $http, $timeout, PaymentMethods) {
     var loadSummary;
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
@@ -2053,13 +2053,17 @@
       return $scope.current_page = $scope.page;
     });
     $scope.pageChanged = function() {
+      var ref;
       ajaxStart();
       loadSummary($scope.current_page);
-      return paginate('summary/' + $scope.filter, $scope.current_page);
+      return paginate('summary/' + ((ref = $scope.type) != null ? ref : $scope.type + {
+        '/': ''
+      }) + $scope.filter, $scope.current_page);
     };
     return loadSummary = function(page) {
       var params;
-      params = '?page=' + page;
+      params = $scope.type === 'payments' ? '/' + $scope.type : '';
+      params += '?page=' + page;
       params += '&filter=' + $scope.filter;
       return $http.post("api/summary" + params).then(function(response) {
         ajaxEnd();
