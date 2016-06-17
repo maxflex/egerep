@@ -1,5 +1,5 @@
 <div ng-if="type == 'total'">
-    <table class="table table-hover summary-table">
+    <table class="table table-hover">
         <thead>
             <tr>
                 <td width="150">
@@ -21,6 +21,12 @@
                 </td>
                 <td ng-show="user.show_summary">
                     общий дебет
+                </td>
+                <td>
+                    рабочих процессов
+                </td>
+                <td>
+                    новых клиентов
                 </td>
             </tr>
         </thead>
@@ -49,6 +55,8 @@
                 <td ng-show="user.show_summary">
                     @{{ summary.debt.sum | hideZero | number }}
                 </td>
+                <td>@{{ summary.active_attachments.sum }}</td>
+                <td>@{{ summary.new_clients.sum }}</td>
             </tr>
         </tbody>
     </table>
