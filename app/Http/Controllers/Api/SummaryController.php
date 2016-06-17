@@ -197,6 +197,8 @@ class SummaryController extends Controller
 
             $forecast = $summary ? $summary->forecast : 0;
             $debt     = $summary ? $summary->debt : 0;
+            $active_attachments = $summary ? $summary->active_attachments : 0;
+            $new_clients  = $summary ? $summary->new_clients : 0;
 
             $today = new \DateTime();
             $return_date = $week_end > $today ? $today->format('Y-m-d') : $end;
@@ -281,6 +283,24 @@ class SummaryController extends Controller
                         ->groupBy(DB::raw('MONTH(date)'))
                         ->orderBy('date', 'desc')
                         ->get();
+
+        $active_attachments = DB::table(DB::raw('(select * from summaries order by date desc) as s'))
+                                ->select(DB::raw('active_attachments as sum, date as time'))
+                                ->whereRaw("date > '{$end_date}'")
+                                ->whereRaw("date <= '{$start_date}'")
+                                ->groupBy(DB::raw('YEAR(date)'))
+                                ->groupBy(DB::raw('MONTH(date)'))
+                                ->orderBy('date', 'desc')
+                                ->get();
+
+        $new_clients = DB::table(DB::raw('(select * from summaries order by date desc) as s'))
+                                ->select(DB::raw('new_clients as sum, date as time'))
+                                ->whereRaw("date > '{$end_date}'")
+                                ->whereRaw("date <= '{$start_date}'")
+                                ->groupBy(DB::raw('YEAR(date)'))
+                                ->groupBy(DB::raw('MONTH(date)'))
+                                ->orderBy('date', 'desc')
+                                ->get();
 
         $return = [];
 
@@ -367,6 +387,18 @@ class SummaryController extends Controller
                             ->where('date', $start_date)
                             ->orderBy('date', 'desc')
                             ->get();
+
+            $active_attachments = DB::table('summaries')
+                                    ->select('active_attachments as sum')
+                                    ->where('date', $start_date)
+                                    ->orderBy('date', 'desc')
+                                    ->get();
+
+            $new_clients = DB::table('summaries')
+                                    ->select('new_clients as sum')
+                                    ->where('date', $start_date)
+                                    ->orderBy('date', 'desc')
+                                    ->get();
 
             if ($period_start_date > new \DateTime()) {
                 $start_date = (new \DateTime())->format('Y-m-d');
