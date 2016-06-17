@@ -3,23 +3,22 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\Service\Summary;
 
-class TransferSummary extends Command
+class TransferActiveClients extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'transfer:summary';
+    protected $signature = 'transfer:active_clients';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Transfer forecast history from old CRM';
+    protected $description = 'Transfer active clients & attachments';
 
     /**
      * Create a new command instance.
@@ -42,16 +41,21 @@ class TransferSummary extends Command
 
         $history = \DB::connection('egerep')->table('prognoz_history')->get();
 
-        // Summary::truncate();
-
         $bar = $this->output->createProgressBar(count($history));
 
         foreach ($history as $h) {
-            Summary::create([
-                'date'      => $h->date,
-                'forecast'  => ($h->actual + $h->virtual) / 4,
-                'debt'      => $h->debet,
+            $clients_count = explode(',' $h->clients_count);
+            $statuses = [];
+            foreach ($clients_count as $clients_count_string) {
+                list($status, $count)= explode(":", $clients_count_string);
+                $statuses[$status] = $count;
+            }
+
+            Summary::where('date', $h->date)->update([
+                'new_clients'        => $statuses[1],
+                'active_attachments' => ($statuses[2] + $statuses[3]),
             ]);
+
             $bar->advance();
         }
 
