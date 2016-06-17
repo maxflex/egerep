@@ -39,6 +39,12 @@
 				<td ng-show="user.show_summary">
 					общий дебет
 				</td>
+                <td>
+					рабочих процессов
+				</td>
+                <td>
+					новых клиентов
+				</td>
 			</tr>
 		</thead>
 		<tbody>
@@ -64,6 +70,8 @@
 				<td ng-show="user.show_summary">
 					@{{ summary.debt.sum | hideZero | number }}
 				</td>
+                <td>@{{ summary.active_attachments }}</td>
+                <td>@{{ summary.new_clients }}</td>
 			</tr>
 		</tbody>
 	</table>
