@@ -44,7 +44,7 @@ class TransferActiveClients extends Command
         $bar = $this->output->createProgressBar(count($history));
 
         foreach ($history as $h) {
-            $clients_count = explode(',' $h->clients_count);
+            $clients_count = explode(',', $h->clients_count);
             $statuses = [];
             foreach ($clients_count as $clients_count_string) {
                 list($status, $count)= explode(":", $clients_count_string);
