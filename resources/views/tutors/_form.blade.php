@@ -229,7 +229,7 @@
                     </div>
                 </div>
             </div>
-            <md-input-container class="md-block" style="margin: 20px 0 5px">
+            <md-input-container class="md-block" style="margin: 20px 0 0">
                 <label>Опубликованное описание</label>
                 <textarea class="md-input" ng-model="tutor.public_desc"></textarea>
             </md-input-container>
@@ -306,7 +306,7 @@
             <section class='blue-section'>
                 <div class="row">
                     <div class="col-sm-12">
-                        <md-input-container class="md-block" style="margin-top: 20px">
+                        <md-input-container class="md-block" style="margin-top: 20px; margin-bottom: 0">
                             <label>Опубликованное описание на сайте ЕГЭ-Центра</label>
                             <textarea class="md-input" ng-model="tutor.description"></textarea>
                         </md-input-container>
