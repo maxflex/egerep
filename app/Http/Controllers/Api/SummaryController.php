@@ -90,6 +90,27 @@ class SummaryController extends Controller
                         ->groupBy('debt')
                         ->get();
 
+        
+        $data               = DB::table('summaries')->where('date', $start_date)->first();
+        $active_attachments = $data->active_attachments;
+        $new_clients        = $data->new_clients;
+
+        $active_attachments = DB::table('summaries')
+                        ->select(DB::raw('debt as sum, date as time'))
+                        ->whereRaw("date > '{$end_date}'")
+                        ->whereRaw("date <= '{$start_date}'")
+                        ->groupBy('time')
+                        ->groupBy('debt')
+                        ->get();
+
+        $new_clients = DB::table('summaries')
+                        ->select(DB::raw('debt as sum, date as time'))
+                        ->whereRaw("date > '{$end_date}'")
+                        ->whereRaw("date <= '{$start_date}'")
+                        ->groupBy('time')
+                        ->groupBy('debt')
+                        ->get();
+
         /**
          * @notice (new \DateTime($start_date))->add($interval) :  add($interval) чтобы последняя дата тоже вошла.
          **/
