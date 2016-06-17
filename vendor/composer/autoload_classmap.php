@@ -80,6 +80,7 @@ return array(
     'DropDuplicateFormClients' => $baseDir . '/database/migrations/2016_06_05_103258_drop_duplicate_form_clients.php',
     'DropMoscowmapIdFromStations' => $baseDir . '/database/migrations/2016_03_17_110405_drop_moscowmap_id_from_stations.php',
     'DropObsoleteFieldsFromTutors' => $baseDir . '/database/migrations/2016_06_05_135150_drop_obsolete_fields_from_tutors.php',
+    'DropPublicFromTutors' => $baseDir . '/database/migrations/2016_06_17_175633_drop_public_from_tutors.php',
     'DropTotalCommissionFromAccounts' => $baseDir . '/database/migrations/2016_05_13_190547_drop_total_commission_from_accounts.php',
     'EgecrmCreateSettingsTable' => $baseDir . '/database/migrations/2016_06_17_121558_egecrm_create_settings_table.php',
     'File_Iterator' => $vendorDir . '/phpunit/php-file-iterator/src/Iterator.php',

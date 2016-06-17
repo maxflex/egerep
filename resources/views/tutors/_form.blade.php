@@ -306,25 +306,6 @@
                             <label>Опубликованное описание на сайте ЕГЭ-Центра</label>
                             <textarea class="md-input" ng-model="tutor.description"></textarea>
                         </md-input-container>
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="inline-block">
-                                    Опубликованный педагогический опыт
-                                </div>
-                                <md-input-container class="md-block inline-input">
-                                    <textarea class="md-input" ng-model="tutor.public_seniority" maxlength="2"></textarea>
-                                </md-input-container>
-                                <div class="inline-block">
-                                    <plural count='tutor.public_seniority' type='age' text-only></plural>, опыт подготовки к ЕГЭ/ОГЭ с
-                                </div>
-                                <md-input-container class="md-block inline-input">
-                                    <textarea class="md-input" ng-model="tutor.public_ege_start" maxlength="4"></textarea>
-                                </md-input-container>
-                                <div class="inline-block">
-                                    <plural count='tutor.public_ege_start' type='age' text-only></plural>.
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </section>
