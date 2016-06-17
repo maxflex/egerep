@@ -202,6 +202,7 @@ angular
                         $scope.closeDialog('change-photo')
 
         bindCropper = ->
+            $scope.quality = null
             $('#photo-edit').cropper 'destroy'
             $('#photo-edit').cropper
                 aspectRatio: 4 / 5
