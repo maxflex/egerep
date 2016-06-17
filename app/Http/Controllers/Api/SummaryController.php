@@ -91,7 +91,7 @@ class SummaryController extends Controller
                         ->get();
 
         $active_attachments = DB::table('summaries')
-                                    ->select(DB::raw('active_attachments as sum, date as time'))
+                                    ->select(DB::raw('active_attachments, date as time'))
                                     ->whereRaw("date > '{$end_date}'")
                                     ->whereRaw("date <= '{$start_date}'")
                                     ->groupBy('time')
@@ -99,7 +99,7 @@ class SummaryController extends Controller
                                     ->get();
 
         $new_clients        = DB::table('summaries')
-                                    ->select(DB::raw('new_clients as sum, date as time'))
+                                    ->select(DB::raw('new_clients, date as time'))
                                     ->whereRaw("date > '{$end_date}'")
                                     ->whereRaw("date <= '{$start_date}'")
                                     ->groupBy('time')
