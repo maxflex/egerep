@@ -37,11 +37,6 @@ class Account extends Model
         return $this->belongsTo('App\Models\Tutor');
     }
 
-    public function test()
-    {
-        return DB::connection();
-    }
-
     /**
      * Данные по отчетности
      */
