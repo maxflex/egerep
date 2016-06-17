@@ -21,6 +21,15 @@ class AddUniqueKeys extends Migration
         Schema::table('attachments', function (Blueprint $table) {
             $table->unique(['tutor_id','client_id']);
         });
+
+
+        $query = Tutor::query();
+
+        if ($query->exists()) {
+            echo 1;
+        }
+
+        $query->where('id', 1)->get();
     }
 
     /**

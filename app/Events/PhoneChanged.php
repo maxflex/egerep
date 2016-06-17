@@ -30,7 +30,7 @@ class PhoneChanged extends Event
         // условие удаления из таблицы дублей:
         // таких номеров <= 2 И номер находится в таблице дублей
         // ВАЖНО: цифра 2 превратится в цифру 1 после сохранения
-        if ($query->findByPhone($old_phone)->count() <= 2 && PhoneDuplicate::exists($old_phone, $entity_type)) {
+        if (! empty($old_phone) && PhoneDuplicate::countByPhone($query, $old_phone) <= 2 && PhoneDuplicate::exists($old_phone, $entity_type)) {
             PhoneDuplicate::remove($old_phone, $entity_type);
         }
 
@@ -38,14 +38,10 @@ class PhoneChanged extends Event
             return;
         }
 
-        // ОБЯЗАТЕЛЬНЫЙ todo: узнать как не зацикливать $query
-        $query = $entity_type == 'client' ? Client::query() : Tutor::query();
-        // !!!!!!!
-
         // условие добавления в таблицу дублей:
         // номера $new_phone есть в таблице дублей (т.к. запуск идет в static::saving,
         // то нового номера еще нет в базе, поэтому если есть хотя бы один, то дубль)
-        if ($query->findByPhone($new_phone)->count()) {
+        if (PhoneDuplicate::countByPhone($query, $new_phone)) {
             PhoneDuplicate::add($new_phone, $entity_type);
         }
     }

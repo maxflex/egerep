@@ -19,6 +19,10 @@ Route::group(['middleware' => ['web']], function () {
             return redirect()->to('/');
         }
     });
+    Route::get('tutors/old/{id}', function($id) {
+        $tutor = \App\Models\Tutor::where('id_a_pers', $id)->first();
+        return redirect()->to("https://lk.ege-repetitor.ru/tutors/{$tutor->id}/edit");
+    });
     Route::get('/', 'TutorsController@index');
     Route::resource('tutors', 'TutorsController');
     Route::resource('requests', 'RequestsController', ['except' => ['index', 'show']]);

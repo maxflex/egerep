@@ -280,8 +280,12 @@
         <div ng-show="tutor.in_egecentr == 1" class="egecentrInformation">
             <h4>ИНФОРМАЦИЯ ПО ЕГЭ-ЦЕНТРУ</h4>
             <md-input-container class="md-block" style="margin-top: 20px">
-                <label>Описание эксперта</label>
+                <label>Описание</label>
                 <textarea class="md-input" ng-model="tutor.comment"></textarea>
+            </md-input-container>
+            <md-input-container class="md-block" style="margin-top: 20px">
+                <label>Расширенное описание</label>
+                <textarea class="md-input" ng-model="tutor.comment_extended"></textarea>
             </md-input-container>
             <md-input-container class="md-block" style="margin-top: 20px">
                 <div class="row">
@@ -306,25 +310,6 @@
                             <label>Опубликованное описание на сайте ЕГЭ-Центра</label>
                             <textarea class="md-input" ng-model="tutor.description"></textarea>
                         </md-input-container>
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="inline-block">
-                                    Опубликованный педагогический опыт
-                                </div>
-                                <md-input-container class="md-block inline-input">
-                                    <textarea class="md-input" ng-model="tutor.public_seniority" maxlength="2"></textarea>
-                                </md-input-container>
-                                <div class="inline-block">
-                                    <plural count='tutor.public_seniority' type='age' text-only></plural>, опыт подготовки к ЕГЭ/ОГЭ с
-                                </div>
-                                <md-input-container class="md-block inline-input">
-                                    <textarea class="md-input" ng-model="tutor.public_ege_start" maxlength="4"></textarea>
-                                </md-input-container>
-                                <div class="inline-block">
-                                    <plural count='tutor.public_ege_start' type='age' text-only></plural>.
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </section>

@@ -21,7 +21,7 @@ class CalcSummary extends Command
      *
      * @var string
      */
-    protected $description = 'calculates forecast and debt summary table fields';
+    protected $description = 'Calculates forecast and debt summary table fields';
 
     /**
      * Create a new command instance.
@@ -42,13 +42,15 @@ class CalcSummary extends Command
     {
         $this->line('Starting...');
 
-        $date = date('Y-m-d', strtotime('yesterday'));
-        $forecast = Attachment::doesntHave('archive')->sum('forecast');
-        $debt     = Tutor::sum('debt_calc');
+        $no_archive_attachments = Attachment::doesntHave('archive');
 
-        DB::table('summaries')->insert([
-            ['date' => $date, 'forecast' => $forecast, 'debt' => $debt],
-        ]);
+        $date               = date('Y-m-d', strtotime('yesterday'));
+        $forecast           = $no_archive_attachments->newQuery()->sum('forecast');
+        $debt               = Tutor::sum('debt_calc');
+        $new_clients        = $no_archive_attachments->newQuery()->where('forecast', 0)->count();
+        $active_attachments = $no_archive_attachments->count();
+
+        DB::table('summaries')->insert(compact('date', 'forecast', 'debt', 'new_clients', 'active_attachments'));
 
         $this->info('Summary calculated');
     }

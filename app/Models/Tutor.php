@@ -62,15 +62,14 @@ class Tutor extends Model
         'expert_mark',
         'rubbles',
         'description',
-        'public_seniority',
-        'public_ege_start',
         'login',
         'password',
         'branches',
         'banned',
         'in_egecentr',
         'video_link',
-        'debt_comment'
+        'debt_comment',
+        'comment_extended'
     ];
 
     protected $appends = [

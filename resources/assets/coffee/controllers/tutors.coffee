@@ -205,18 +205,23 @@ angular
             $('#photo-edit').cropper 'destroy'
             $('#photo-edit').cropper
                 aspectRatio: 4 / 5
-                minContainerHeight: 700
-                minContainerWidth: 700
-                minCropBoxWidth: 240
-                minCropBoxHeight: 300
+                # minContainerHeight: 700
+                # minContainerWidth: 700
+                # minCropBoxWidth: 240
+                # minCropBoxHeight: 300
                 preview: '.img-preview'
                 viewMode: 1
+                zoomable: false
+                zoomOnWheel: false
                 crop: (e) ->
-                    width = $('#photo-edit').cropper('getCropBoxData').width
-                    if width >= 240
-                        $('.cropper-line, .cropper-point').css 'background-color', '#158E51'
-                    else
-                        $('.cropper-line, .cropper-point').css 'background-color', '#D9534F'
+                    width   = $('#photo-edit').cropper('getCroppedCanvas').width
+                    quality = Math.round(width / 240 * 100)
+                    $scope.quality = if quality > 100 then 100 else quality
+                    $scope.$apply()
+                built: ->
+                    $scope.cropper_built = true
+                    $scope.$apply()
+
 
         $scope.picture_version = 1;
         bindFileUpload = ->
@@ -252,10 +257,8 @@ angular
         # show photo editor
         $scope.showPhotoEditor = ->
             $scope.dialog('change-photo')
-            # rare bug fix
-            $timeout ->
-                $('#photo-edit').cropper 'resize'
-            , 100
+            $scope.cropper_built = false
+            bindCropper()
 
         $scope.toggleBanned = ->
             $scope.tutor.banned = +(!$scope.tutor.banned)
@@ -266,7 +269,7 @@ angular
             if $scope.id > 0
                 $scope.tutor = Tutor.get {id: $scope.id}, ->
                     $timeout ->
-                        bindCropper()
+                        # bindCropper()
                         bindFileUpload()
                     , 1000
                     $scope.original_tutor = angular.copy $scope.tutor

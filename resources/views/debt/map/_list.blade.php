@@ -19,7 +19,7 @@
             <tbody>
                 <tr ng-repeat="tutor in tutors | orderBy:sortType:sortReverse">
                     <td>
-                        <a href='tutors/@{{ tutor.id }}/edit'>@{{ tutor.full_name }}</a>
+                        @{{ $index + 1 }}. <a href='tutors/@{{ tutor.id }}/edit'>@{{ tutor.full_name }}</a>
                     </td>
                     <td>
                         <span ng-class="{

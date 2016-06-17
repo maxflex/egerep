@@ -30,4 +30,16 @@ class PhoneDuplicate extends Model
     {
         return $query->where('phone', $phone)->where('entity_type', $entity_type);
     }
+
+    /**
+     * Кол-во номеров телефона в БД
+     */
+    public static function countByPhone($query, $phone)
+    {
+        $count = 0;
+        foreach(\App\Traits\Person::$phone_fields as $phone_field) {
+            $count += $query->where($phone_field, $phone)->count();
+        }
+        return $count;
+    }
 }

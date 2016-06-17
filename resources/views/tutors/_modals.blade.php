@@ -23,6 +23,9 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-sm-10 image-col-left">
+                        <div class="div-loading" ng-show='!cropper_built'>
+                            <span>загрузка...</span>
+                        </div>
                         <div ng-show='tutor.has_photo_original' style="height: 100%">
                             <img src="img/tutors/@{{ tutor.id + '_original.' + tutor.photo_extension }}?ver=@{{ picture_version }}" id='photo-edit'>
                         </div>
@@ -35,6 +38,9 @@
                       </div>
 
                       <div class='photo-sizes'>
+                          <div ng-show='quality'>
+                              @{{ quality }}%
+                          </div>
                           <div ng-show='tutor.photo_original_size'>
                               @{{ formatBytes(tutor.photo_original_size) }}
                           </div>

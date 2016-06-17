@@ -11,15 +11,17 @@ use DB;
 class SummaryController extends Controller
 {
     private $columns = [
-        'requests', 
-        'attachments', 
-        'received', 
-        'commission', 
-        'forecast', 
-        'debt', 
-        'mutual_debts'
+        'requests',
+        'attachments',
+        'received',
+        'commission',
+        'forecast',
+        'debt',
+        'mutual_debts',
+        'active_attachments',
+        'new_clients'
     ];
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -106,6 +108,22 @@ class SummaryController extends Controller
                         ->groupBy('time')
                         ->groupBy('debt')
                         ->get();
+
+        $active_attachments = DB::table('summaries')
+                                    ->select(DB::raw('active_attachments as sum, date as time'))
+                                    ->whereRaw("date > '{$end_date}'")
+                                    ->whereRaw("date <= '{$start_date}'")
+                                    ->groupBy('time')
+                                    ->groupBy('active_attachments')
+                                    ->get();
+
+        $new_clients        = DB::table('summaries')
+                                    ->select(DB::raw('new_clients as sum, date as time'))
+                                    ->whereRaw("date > '{$end_date}'")
+                                    ->whereRaw("date <= '{$start_date}'")
+                                    ->groupBy('time')
+                                    ->groupBy('new_clients')
+                                    ->get();
 
         /**
          * @notice (new \DateTime($start_date))->add($interval) :  add($interval) чтобы последняя дата тоже вошла.
