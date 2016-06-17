@@ -35,6 +35,9 @@
                       </div>
 
                       <div class='photo-sizes'>
+                          <div ng-show='quality'>
+                              @{{ quality }}%
+                          </div>
                           <div ng-show='tutor.photo_original_size'>
                               @{{ formatBytes(tutor.photo_original_size) }}
                           </div>
