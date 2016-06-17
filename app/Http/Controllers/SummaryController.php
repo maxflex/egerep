@@ -21,14 +21,33 @@ class SummaryController extends Controller
         $item_cnt = \App\Models\Request::summaryItemsCount($filter);
 
         return view('summary.index', [
-                        'item_cnt'  => $item_cnt,
-                        'per_page' => self::PER_PAGE
+                        'item_cnt' => $item_cnt,
+                        'per_page' => self::PER_PAGE,
                     ])->with(
                         ngInit([
                             'page'          => $request->page,
                             'filter'        => $filter,
                             'total_debt'    => Tutor::totalDebt(),
                             'debt_updated'  => Settings::get('debt_updated'),
+                            'type'          => 'total'
+                        ])
+                    );
+    }
+
+    public function payments(Request $request, $filter = 'day')
+    {
+        $item_cnt = \App\Models\Account::summaryItemsCount($filter);
+
+        return view('summary.index', [
+                        'item_cnt' => $item_cnt,
+                        'per_page' => self::PER_PAGE,
+                    ])->with(
+                        ngInit([
+                            'page'          => $request->page,
+                            'filter'        => $filter,
+                            'total_debt'    => Tutor::totalDebt(),
+                            'debt_updated'  => Settings::get('debt_updated'),
+                            'type'          => 'payments'
                         ])
                     );
     }

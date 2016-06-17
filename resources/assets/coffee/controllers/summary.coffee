@@ -1,6 +1,6 @@
 angular
     .module 'Egerep'
-    .controller 'SummaryIndex', ($rootScope, $scope, $http, $timeout) ->
+    .controller 'SummaryIndex', ($rootScope, $scope, $http, $timeout, PaymentMethods) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
         $scope.debt_updating = false
@@ -21,10 +21,11 @@ angular
             ajaxStart()
             loadSummary $scope.current_page
 
-            paginate 'summary/' + $scope.filter, $scope.current_page
+            paginate 'summary/' + ($scope.type ? $scope.type + '/' : '') + $scope.filter, $scope.current_page
 
         loadSummary = (page) ->
-            params  = '?page='   + page
+            params  = if $scope.type == 'payments' then '/' + $scope.type else ''
+            params += '?page='   + page
             params += '&filter=' + $scope.filter
 
             $http.post "api/summary#{ params }"

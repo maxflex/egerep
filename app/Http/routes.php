@@ -29,6 +29,7 @@ Route::group(['middleware' => ['web']], function () {
     // Route::resource('debt', 'DebtController', ['only' => 'index']);
     Route::get('debt/map', 'DebtController@map');
 
+    Route::get('summary/payments/{filter?}', 'SummaryController@payments');
     Route::get('summary/{filter?}', 'SummaryController@index');
 
     Route::controllers([
@@ -70,6 +71,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('sms', 'SmsController');
         Route::resource('periods', 'PeriodsController');
 
+        Route::post('summary/payments', 'SummaryController@payments');
         Route::post('summary', 'SummaryController@index');
         Route::controllers([
             'command'  => 'CommandsController',
