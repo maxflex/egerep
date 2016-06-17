@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Request extends Model
 {
+    // @todo: дублирование статусов в factory.coffee – плохо
     public static $states = [
         'new',
         'awaiting',
         'finished',
         'deny',
         'spam',
-        'motivated_deny'
+        'reasoned_deny'
     ];
     protected $attributes = [
         'state' => 'new',
@@ -26,6 +27,7 @@ class Request extends Model
         'user_id_created',
         'lists',
         'id_a_pers',
+        'deny_reason',
     ];
 
     // ------------------------------------------------------------------------
@@ -66,7 +68,7 @@ class Request extends Model
         static::deleted(function($request) {
             Client::removeWithoutRequests();
         });
-        
+
         static::saving(function ($model) {
             if (! $model->exists) {
                 $model->user_id_created = userIdOrSystem();

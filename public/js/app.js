@@ -90,6 +90,22 @@
         return $rootScope.toggleEnum(ngModel, status, ngEnum, skip_values, allowed_user_ids, true);
       }
     };
+    $rootScope.toggleEnumServer = function(ngModel, status, ngEnum, Resource) {
+      var status_id, statuses, update_data;
+      statuses = Object.keys(ngEnum);
+      status_id = statuses.indexOf(ngModel[status].toString());
+      status_id++;
+      if (status_id > (statuses.length - 1)) {
+        status_id = 0;
+      }
+      update_data = {
+        id: ngModel.id
+      };
+      update_data[status] = status_id;
+      return Resource.update(update_data, function() {
+        return ngModel[status] = statuses[status_id];
+      });
+    };
     $rootScope.formatDateTime = function(date) {
       return moment(date).format("DD.MM.YY в HH:mm");
     };
@@ -1938,13 +1954,7 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').factory('Request', function($resource) {
-    return $resource('api/requests/:id', {}, {
-      update: {
-        method: 'PUT'
-      }
-    });
-  }).controller('RequestsIndex', function($rootScope, $scope, $timeout, $http, Request, RequestStates, Comment, PhoneService, UserService, Grades) {
+  angular.module('Egerep').controller('RequestsIndex', function($rootScope, $scope, $timeout, $http, Request, RequestStates, Comment, PhoneService, UserService, Grades, DenyReasons) {
     var extendRequestStates, loadRequests;
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
@@ -3128,7 +3138,16 @@
     awaiting: 'в ожидании',
     finished: 'выполненные',
     deny: 'отказы',
-    motivated_deny: 'мотивированный отказ'
+    reasoned_deny: 'обоснованный отказ'
+  }).value('DenyReasons', {
+    0: 'не установлено',
+    1: 'нет связи с клиентом',
+    2: 'неадекватный клиент',
+    3: 'клиент не является опекуном/родителем',
+    4: 'клиент платит ниже пороговой цены',
+    5: 'клиент живет дальше 20 минут пути от метро и за МКАД',
+    6: 'не 6-11 классы',
+    7: 'нестандартный предмет'
   }).value('ArchiveStates', {
     impossible: 'невозможно',
     possible: 'возможно'

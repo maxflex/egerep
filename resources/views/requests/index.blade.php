@@ -68,6 +68,9 @@
                 </div>
                 <div class="col-sm-2">
                     <span class="link-like" ng-click="toggleState(request)">@{{ RequestStates[request.state] }}</span>
+                    <div ng-show="request.state == 'reasoned_deny'">
+                        <span class="link-like" ng-click="toggleEnumServer(request, 'deny_reason', DenyReasons, Request)">@{{ DenyReasons[request.deny_reason] }}</span>
+                    </div>
                 </div>
             </div>
             <hr class='list-separate' ng-hide="$last">

@@ -1,10 +1,6 @@
 angular
     .module 'Egerep'
-    .factory 'Request', ($resource) ->
-        $resource 'api/requests/:id', {},
-            update:
-                method: 'PUT'
-    .controller 'RequestsIndex', ($rootScope, $scope, $timeout, $http, Request, RequestStates, Comment, PhoneService, UserService, Grades) ->
+    .controller 'RequestsIndex', ($rootScope, $scope, $timeout, $http, Request, RequestStates, Comment, PhoneService, UserService, Grades, DenyReasons) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
@@ -62,7 +58,8 @@ angular
                 $scope.data = response.data
                 $scope.requests = $scope.data.data
                 $rootScope.frontend_loading = false if not $scope.requests.length
-                
+
+        # @todo использовать $rootScope.toggleEnumServer
         $scope.toggleState = (request) ->
             request_cpy = angular.copy request
             $rootScope.toggleEnum request_cpy, 'state', RequestStates
@@ -72,6 +69,5 @@ angular
                 state: request_cpy.state
             , (response) ->
                 $rootScope.toggleEnum request, 'state', RequestStates
-
     .controller 'RequestsForm', ($scope) ->
         console.log 'here'
