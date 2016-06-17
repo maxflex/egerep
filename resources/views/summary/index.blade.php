@@ -70,8 +70,8 @@
 				<td ng-show="user.show_summary">
 					@{{ summary.debt.sum | hideZero | number }}
 				</td>
-                <td>@{{ summary.active_attachments }}</td>
-                <td>@{{ summary.new_clients }}</td>
+                <td>@{{ summary.active_attachments.sum }}</td>
+                <td>@{{ summary.new_clients.sum }}</td>
 			</tr>
 		</tbody>
 	</table>
