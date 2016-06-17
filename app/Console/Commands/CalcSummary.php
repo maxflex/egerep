@@ -47,8 +47,8 @@ class CalcSummary extends Command
         $date               = date('Y-m-d', strtotime('yesterday'));
         $forecast           = $no_archive_attachments->newQuery()->sum('forecast');
         $debt               = Tutor::sum('debt_calc');
-        $new_clients        = Attachment::where('date', $date)->count(),
-        $active_attachments = $no_archive_attachments->count(),
+        $new_clients        = Attachment::where('date', $date)->count();
+        $active_attachments = $no_archive_attachments->count();
 
         DB::table('summaries')->insert(compact('date', 'forecast', 'debt', 'new_clients', 'active_attachments'));
 
