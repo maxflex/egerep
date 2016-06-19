@@ -3636,7 +3636,7 @@ table.summary-table.left-align tr td {
 	cursor: default !important;
 }
 
-.list-group, .panel-heading, .controls-line a, .controls-line span.link-like, .top-links, .options-list {
+.list-group, .panel-heading, .controls-line a, .controls-line span.link-like, .top-links, .options-list, .nav-tabs-links {
 	-webkit-font-smoothing: auto !important;
 }
 
@@ -3656,4 +3656,9 @@ table.summary-table.left-align tr td {
 
 .cropper-line, .cropper-point {
 	background-color: #158E51 !important;
+}
+
+
+.request-status-li.active a {
+	color: black !important;
 }
