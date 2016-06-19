@@ -113,6 +113,38 @@ class Attachment extends Model
     }
 
     /**
+     * Заархивированные стыковки
+     */
+    public function scopeArchived($query)
+    {
+        return $query->has('archive');
+    }
+
+    /**
+     * Новые или в процессе стыковки
+     */
+    public function scopeNewOrActive($query)
+    {
+        return $query->doesntHave('archive');
+    }
+
+    /**
+     * Рабочие стыковки
+     */
+    public function scopeActive($query)
+    {
+        return $query->doesntHave('archive')->where('forecast', '>', 0);
+    }
+
+    /**
+     * Новые стыковки
+     */
+    public function scopeNew($query)
+    {
+        return $query->doesntHave('archive')->whereNullOrZero('forecast');
+    }
+
+    /**
      * Получить статус стыковки
      */
     public function getState()

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Account;
+use App\Models\Attachment;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -143,6 +144,16 @@ class SummaryController extends Controller
                 }
             }
         }
+
+        // сегодня
+        $return[now(true)] = [
+            'active_attachments' => [
+                'sum' => Attachment::active()->count(),
+            ],
+            'new_clients'       => [
+                'sum' => Attachment::new()->count(),
+            ]
+        ];
 
         /**
          * сортируем по дате
