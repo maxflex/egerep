@@ -203,7 +203,7 @@ class Tutor extends Model
 
     public function getActiveClientsCountAttribute()
     {
-        return $this->clientsCount(0);
+        return $this->attachments()->newOrActive()->count();
     }
 
     /**

@@ -1,5 +1,5 @@
 <div ng-if="type == 'total'">
-    <table class="table table-hover">
+    <table class="table table-hover summary-table">
         <thead>
             <tr>
                 <td width="150">
