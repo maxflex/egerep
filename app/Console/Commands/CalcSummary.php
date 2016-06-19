@@ -42,13 +42,18 @@ class CalcSummary extends Command
     {
         $this->line('Starting...');
 
-        $no_archive_attachments = Attachment::doesntHave('archive');
+
 
         $date               = date('Y-m-d', strtotime('yesterday'));
-        $forecast           = $no_archive_attachments->newQuery()->sum('forecast');
+        $forecast           = Attachment::doesntHave('archive')->sum('forecast');
         $debt               = Tutor::sum('debt_calc');
-        $new_clients        = $no_archive_attachments->newQuery()->whereNullOrZero('forecast')->count();
-        $active_attachments = $no_archive_attachments->count();
+        $new_clients        = Attachment::doesntHave('archive')->whereNullOrZero('forecast')->count();
+        $active_attachments = Attachment::doesntHave('archive')->count();
+
+        // @todo: в этом случае newQuery() не работает
+        // $no_archive_attachments = Attachment::doesntHave('archive');
+        // $new_clients        = $no_archive_attachments->newQuery()->whereNullOrZero('forecast')->count();
+        // $active_attachments = $no_archive_attachments->count();
 
         DB::table('summaries')->insert(compact('date', 'forecast', 'debt', 'new_clients', 'active_attachments'));
 
