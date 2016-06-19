@@ -49,6 +49,9 @@
                         <td width='100'>
                             @{{ time(data.seconds) }}
                         </td>
+                        <td width='50'>
+                            @{{ data.disconnect_reason }}
+                        </td>
                         <td width='100'>
                             <span class="link-like" ng-show='data.recording_id'>
                                 <span class='link-like text-danger' ng-show='isPlaying(data.recording_id)' ng-click='stop(data.recording_id)'>остановить</span>
