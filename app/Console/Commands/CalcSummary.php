@@ -48,7 +48,7 @@ class CalcSummary extends Command
         $forecast           = Attachment::doesntHave('archive')->sum('forecast');
         $debt               = Tutor::sum('debt_calc');
         $new_clients        = Attachment::doesntHave('archive')->whereNullOrZero('forecast')->count();
-        $active_attachments = Attachment::doesntHave('archive')->count();
+        $active_attachments = Attachment::doesntHave('archive')->where('forecast', '>', 0)->count();
 
         // @todo: в этом случае newQuery() не работает
         // $no_archive_attachments = Attachment::doesntHave('archive');
