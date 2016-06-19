@@ -926,6 +926,14 @@ class Builder
         return $this;
     }
 
+    // @custom
+    public function whereNullOrZero($column)
+    {
+        return $this->where(function($query) use ($column) {
+            $query->whereNull($column)->orWhere($column, 0);
+        });
+    }
+
     /**
      * Add an "or where null" clause to the query.
      *
