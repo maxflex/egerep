@@ -4,7 +4,7 @@
 
 @section('content')
 <div>
-    <table class="table summary-table">
+    <table class="table summary-table table-hover">
         <thead>
             <tr>
                 <td>Преподаватель</td>

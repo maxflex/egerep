@@ -10,7 +10,7 @@
                 <td>
                     взаимозачет
                 </td>
-                <td class="left-border">Итого платежи</td>
+                <td class="left-border">все платежи</td>
             </tr>
         </thead>
         <tbody>

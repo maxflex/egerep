@@ -14,19 +14,19 @@
                     получено
                 </td>
                 <td ng-show="user.show_summary">
-                    проведенные занятия
+                    комиссия
                 </td>
                 <td ng-show="user.show_summary">
-                    общий прогноз
+                    прогноз
                 </td>
                 <td ng-show="user.show_summary">
-                    общий дебет
+                    дебет
                 </td>
                 <td>
                     рабочих процессов
                 </td>
                 <td>
-                    новых клиентов
+                    новых процессов
                 </td>
             </tr>
         </thead>

@@ -29295,7 +29295,7 @@ body {
     display: inline-block; }
   .top-links span.active, .top-links a.active {
     font-weight: bold;
-    color: black;
+    color: black !important;
     cursor: default;
     text-decoration: none; }
 
@@ -30784,7 +30784,7 @@ table.summary-table.left-align tr td {
 .cursor-default {
   cursor: default !important; }
 
-.list-group, .panel-heading, .controls-line a, .controls-line span.link-like {
+.list-group, .panel-heading, .controls-line a, .controls-line span.link-like, .top-links, .options-list {
   -webkit-font-smoothing: auto !important; }
 
 .vertical-center {
