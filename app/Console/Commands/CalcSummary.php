@@ -45,7 +45,7 @@ class CalcSummary extends Command
         $date               = date('Y-m-d', strtotime('yesterday'));
         $forecast           = Attachment::newOrActive()->sum('forecast');
         $debt               = Tutor::sum('debt_calc');
-        $new_clients        = Attachment::new()->count();
+        $new_clients        = Attachment::newest()->count();
         $active_attachments = Attachment::active()->count();
 
         // @todo: в этом случае newQuery() не работает

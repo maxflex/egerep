@@ -151,7 +151,7 @@ class SummaryController extends Controller
                 'sum' => Attachment::active()->count(),
             ],
             'new_clients'       => [
-                'sum' => Attachment::new()->count(),
+                'sum' => Attachment::newest()->count(),
             ]
         ];
 

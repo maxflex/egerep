@@ -139,7 +139,7 @@ class Attachment extends Model
     /**
      * Новые стыковки
      */
-    public function scopeNew($query)
+    public function scopeNewest($query)
     {
         return $query->doesntHave('archive')->whereNullOrZero('forecast');
     }
