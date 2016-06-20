@@ -73,7 +73,7 @@ class Mango {
                     if (count($info) > 1) {
 						$disconnect_reason = filter_var($info[7], FILTER_SANITIZE_NUMBER_INT);
 
-						if ($info[6] == static::NUMBER_EGE_REPETITOR && in_array($disconnect_reason, [1131, 1100, 1121])) {
+						if (! empty($info[5]) && in_array($disconnect_reason, [1131, 1100, 1121])) {
 							continue;
 						}
 
