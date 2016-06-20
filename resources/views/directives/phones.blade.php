@@ -29,13 +29,14 @@
 
 {{-- API --}}
 <div class="modal" id='api-phone-info' tabindex="-1">
-    <div class="modal-dialog" style="width: 50%">
+    <div class="modal-dialog" style="width: 60%; margin: 10% auto">
         <div class="modal-content" style="height: 50%">
             <div class="div-loading" ng-show='mango_info === null'>
                 <span>загрузка...</span>
             </div>
-            <div class="modal-body" style="height: 300px; overflow: scroll; max-height: 100%" >
+            <div class="modal-body" style="height: 500px; overflow: scroll; max-height: 100%" >
                 <div class="vertical-center" ng-show='!mango_info.length'>нет данных</div>
+                <h4 ng-show='mango_info.length' class="modal-title" style="margin-bottom: 10px">Детализация по номеру @{{ api_number }}</h4>
                 <table class='table table-divlike'>
                     <tr ng-repeat='data in mango_info'>
                         <td width='300'>
@@ -50,7 +51,7 @@
                             @{{ time(data.seconds) }}
                         </td>
                         <td width='50'>
-                            @{{ data.disconnect_reason }}
+                            @{{ disconnectReason(data) }}
                         </td>
                         <td width='100'>
                             <span class="link-like" ng-show='data.recording_id'>

@@ -2838,8 +2838,7 @@
       restrict: 'E',
       templateUrl: 'directives/phones',
       scope: {
-        entity: '=',
-        entityType: '@'
+        entity: '='
       },
       controller: function($scope, $timeout, $rootScope, PhoneService, UserService) {
         var recodringLink;
@@ -2884,11 +2883,9 @@
           return moment({}).seconds(seconds).format("mm:ss");
         };
         $scope.getNumberTitle = function(number) {
-          if (number === $scope.api_number) {
-            return $scope.entityType;
-          }
-          if (number === '74956461080') {
-            return 'егэ-репетитор';
+          console.log(number, $scope.api_number);
+          if (number === PhoneService.clean($scope.api_number)) {
+            return 'текущий номер';
           }
           return number;
         };
@@ -2913,9 +2910,15 @@
         $scope.isPlaying = function(recording_id) {
           return $scope.is_playing === recording_id;
         };
-        return $scope.stop = function(recording_id) {
+        $scope.stop = function(recording_id) {
           $scope.is_playing = null;
           return $scope.audio.pause();
+        };
+        return $scope.disconnectReason = function(data) {
+          if (data.to_extension === '' && data.disconnect_reason === '1100') {
+            return 'НБТ';
+          }
+          return data.disconnect_reason;
         };
       }
     };

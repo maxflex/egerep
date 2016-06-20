@@ -3,7 +3,6 @@ angular.module('Egerep').directive 'phones', ->
     templateUrl: 'directives/phones'
     scope:
         entity: '='
-        entityType: '@'
     controller: ($scope, $timeout, $rootScope, PhoneService, UserService) ->
         $scope.PhoneService = PhoneService
         $scope.UserService  = UserService
@@ -49,8 +48,8 @@ angular.module('Egerep').directive 'phones', ->
             moment({}).seconds(seconds).format("mm:ss")
 
         $scope.getNumberTitle = (number) ->
-            return $scope.entityType if number is $scope.api_number
-            return 'егэ-репетитор' if number is '74956461080'
+            console.log number, $scope.api_number
+            return 'текущий номер' if number is PhoneService.clean($scope.api_number)
             number
 
         recodringLink = (recording_id) ->
@@ -69,10 +68,14 @@ angular.module('Egerep').directive 'phones', ->
             $scope.audio = new Audio recodringLink(recording_id)
             $scope.audio.play()
             $scope.is_playing = recording_id
-            
+
         $scope.isPlaying = (recording_id) ->
             $scope.is_playing is recording_id
 
         $scope.stop = (recording_id) ->
             $scope.is_playing = null
             $scope.audio.pause()
+
+        $scope.disconnectReason = (data) ->
+            return 'НБТ' if data.to_extension is '' and data.disconnect_reason is '1100'
+            data.disconnect_reason

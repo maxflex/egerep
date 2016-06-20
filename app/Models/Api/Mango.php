@@ -96,7 +96,7 @@ class Mango {
                 }
 
 				usort($return, function($a, $b) {
-					return $b['start'] > $a['start'];
+					return $a['start'] > $b['start'];
 				});
 
                 return $return;
