@@ -33,6 +33,20 @@ class CalcSummary extends Command
         parent::__construct();
     }
 
+    public static function calcData()
+    {
+        $forecast           = Attachment::newOrActive()->sum('forecast');
+        $debt               = Tutor::sum('debt_calc');
+        $new_clients        = Attachment::newest()->count();
+        $active_attachments = Attachment::active()->count();
+        // @todo: в этом случае newQuery() не работает
+        // $no_archive_attachments = Attachment::doesntHave('archive');
+        // $new_clients        = $no_archive_attachments->newQuery()->whereNullOrZero('forecast')->count();
+        // $active_attachments = $no_archive_attachments->count();
+
+        return compact('forecast', 'debt', 'new_clients', 'active_attachments');
+    }
+
     /**
      * Execute the console command.
      *
@@ -42,18 +56,10 @@ class CalcSummary extends Command
     {
         $this->line('Starting...');
 
-        $date               = date('Y-m-d', strtotime('yesterday'));
-        $forecast           = Attachment::newOrActive()->sum('forecast');
-        $debt               = Tutor::sum('debt_calc');
-        $new_clients        = Attachment::newest()->count();
-        $active_attachments = Attachment::active()->count();
+        $date = date('Y-m-d', strtotime('yesterday'));
+        $summary = self::calcData() + compact('date');
 
-        // @todo: в этом случае newQuery() не работает
-        // $no_archive_attachments = Attachment::doesntHave('archive');
-        // $new_clients        = $no_archive_attachments->newQuery()->whereNullOrZero('forecast')->count();
-        // $active_attachments = $no_archive_attachments->count();
-
-        DB::table('summaries')->insert(compact('date', 'forecast', 'debt', 'new_clients', 'active_attachments'));
+        DB::table('summaries')->insert($summary);
 
         $this->info('Summary calculated');
     }

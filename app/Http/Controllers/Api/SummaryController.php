@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Console\Commands\CalcSummary;
 use App\Models\Account;
 use App\Models\Attachment;
 use Illuminate\Http\Request;
@@ -134,26 +135,34 @@ class SummaryController extends Controller
 
         $return = [];
         foreach ($period as $dt) {
-            $return[$dt->format("Y-m-d")] = []; // для лоопа в ангуляре все даты.
+            $return_date = $dt->format("Y-m-d");
+
+            $return[$return_date] = []; // для лоопа в ангуляре все даты.
             foreach ($this->columns as $elems) {
                 foreach ($$elems as $elem) {
-                    if ($elem->time == $dt->format("Y-m-d")) {
-                        $return[$dt->format("Y-m-d")][$elems] = $elem;
-                        break;
+                    if ($elem->time == $return_date) {
+                        $return[$return_date][$elems] = $elem;
                     }
                 }
             }
         }
 
-        // сегодня
-        $return[now(true)] = [
-            'active_attachments' => [
-                'sum' => Attachment::active()->count(),
-            ],
-            'new_clients'       => [
-                'sum' => Attachment::newest()->count(),
-            ]
-        ];
+        // сегодня - это первая страница
+        if (!$page)
+            $return[now(true)] += [
+                'forecast' => [
+                    'sum' => Attachment::newOrActive()->sum('forecast')
+                ],
+                'debt' => [
+                    'sum' => \App\Models\Tutor::sum('debt_calc')
+                ],
+                'active_attachments' => [
+                    'sum' => Attachment::active()->count(),
+                ],
+                'new_clients'       => [
+                    'sum' => Attachment::newest()->count(),
+                ]
+            ];
 
         /**
          * сортируем по дате
@@ -171,7 +180,7 @@ class SummaryController extends Controller
         $start_date = clone $date->sub(new \DateInterval('P210D'));
 
         $return = [];
-        while ($start_date <= $end_date) {
+        while ($start_date < $end_date) {
             $week_end = clone $start_date;
             $week_end->modify('+1 week');
 
@@ -204,15 +213,18 @@ class SummaryController extends Controller
                           ->where('date', '<=', $end)
                           ->select(DB::raw('sum(if(commission > 0, commission, 0.25*sum)) as sum'))->first()->sum;
 
-            $summary = DB::table('summaries')->where('date', $week_end)->first();
-
-            $forecast = $summary ? $summary->forecast : 0;
-            $debt     = $summary ? $summary->debt : 0;
-            $active_attachments = $summary ? $summary->active_attachments : 0;
-            $new_clients  = $summary ? $summary->new_clients : 0;
-
             $today = new \DateTime();
-            $return_date = $week_end > $today ? $today->format('Y-m-d') : $end;
+            if ($week_end >= $today) {
+                extract(CalcSummary::calcData());
+            } else {
+                $summary = DB::table('summaries')->where('date', $week_end)->first();
+                $forecast = $summary ? $summary->forecast : 0;
+                $debt     = $summary ? $summary->debt : 0;
+                $active_attachments = $summary ? $summary->active_attachments : 0;
+                $new_clients  = $summary ? $summary->new_clients : 0;
+            }
+
+            $return_date = $week_end >= $today ? $today->format('Y-m-d') : $end;
             $return[$return_date] = [];
 
             foreach ($this->columns as $elem) {
@@ -235,7 +247,7 @@ class SummaryController extends Controller
 
         $start_date = $date->sub(new \DateInterval("P{$skip_month}M"))->format('Y-m-t');
         $end_date   = $date->sub(new \DateInterval('P30M'))->format('Y-m-d');
-
+        
         $requests = DB::table('requests')
                         ->select(DB::raw('COUNT(*) as cnt, LAST_DAY(created_at) as time'))
                         ->whereRaw("DATE(created_at) >= '{$end_date}'")
@@ -341,7 +353,7 @@ class SummaryController extends Controller
 
     private function getByYear($request)
     {
-        $year_cnt = \App\Models\Request::summaryItemsCount('year');
+        $year_cnt = \App\Models\Request::summaryItemsCount('year'); // количество страниц для пейджера
 
         $start_of_year = '15 july';
         if (date('m') >= 7) {
@@ -358,69 +370,72 @@ class SummaryController extends Controller
 
             $requests = DB::table('requests')
                             ->select(DB::raw('COUNT(*) as cnt'))
-                            ->whereRaw("DATE(created_at) >= '{$end_date}'")
-                            ->whereRaw("DATE(created_at) < '{$start_date}'")
-                            ->get();
+                            ->whereRaw("DATE(created_at) > '{$end_date}'")
+                            ->whereRaw("DATE(created_at) <= '{$start_date}'")
+                            ->first();
 
             $attachments = DB::table('attachments')
                             ->select(DB::raw('COUNT(*) as cnt'))
-                            ->whereRaw("date >= '{$end_date}'")
-                            ->whereRaw("date < '{$start_date}'")
-                            ->get();
+                            ->whereRaw("date > '{$end_date}'")
+                            ->whereRaw("date <= '{$start_date}'")
+                            ->first();
 
             $received = DB::table('accounts')
                             ->select(DB::raw('sum(received) as sum'))
                             ->whereRaw("date_end > '{$end_date}'")
                             ->whereRaw("date_end <= '{$start_date}'")
-                            ->get();
+                            ->first();
 
             $mutual_debts = DB::connection('egecrm')->table('teacher_payments')
                             ->select(DB::raw("sum(sum) as sum"))
                             ->where('id_status', Account::MUTUAL_DEBT_STATUS)
                             ->whereRaw("STR_TO_DATE(date, '%d.%c.%Y') > '{$end_date}'")
                             ->whereRaw("STR_TO_DATE(date, '%d.%c.%Y') <= '{$start_date}'")
-                            ->get();
+                            ->first();
 
             $commission = DB::table('account_datas')
                             ->select(DB::raw('sum(if(commission > 0, commission, 0.25*sum)) as sum'))
                             ->whereRaw("date > '{$end_date}'")
                             ->whereRaw("date <= '{$start_date}'")
-                            ->get();
+                            ->first();
 
-            $forecast = DB::table('summaries')
+            /* если сеголнящняя дата, то считаем текущие значения */
+            if ($period_start_date > new \DateTime()) {
+                $start_date = (new \DateTime())->format('Y-m-d');
+                extract(CalcSummary::calcData());
+                foreach (['forecast','debt','active_attachments','new_clients'] as $field) {
+                    $$field = ['sum' => $$field];
+                }
+            } else {
+                $forecast = DB::table('summaries')
                             ->select('forecast as sum')
                             ->where('date', $start_date)
                             ->orderBy('date', 'desc')
-                            ->get();
+                            ->first();
 
-            $debt = DB::table('summaries')
-                            ->select('debt as sum')
-                            ->where('date', $start_date)
-                            ->orderBy('date', 'desc')
-                            ->get();
+                $debt = DB::table('summaries')
+                        ->select('debt as sum')
+                        ->where('date', $start_date)
+                        ->orderBy('date', 'desc')
+                        ->first();
 
-            $active_attachments = DB::table('summaries')
+                $active_attachments = DB::table('summaries')
                                     ->select('active_attachments as sum')
                                     ->where('date', $start_date)
                                     ->orderBy('date', 'desc')
-                                    ->get();
+                                    ->first();
 
-            $new_clients = DB::table('summaries')
-                                    ->select('new_clients as sum')
-                                    ->where('date', $start_date)
-                                    ->orderBy('date', 'desc')
-                                    ->get();
-
-            if ($period_start_date > new \DateTime()) {
-                $start_date = (new \DateTime())->format('Y-m-d');
+                $new_clients = DB::table('summaries')
+                                ->select('new_clients as sum')
+                                ->where('date', $start_date)
+                                ->orderBy('date', 'desc')
+                                ->first();
             }
 
             $return[$start_date] = []; // для лоопа в ангуляре все даты.
 
-            foreach ($this->columns as $elems) {
-                foreach ($$elems as $elem) {
-                        $return[$start_date][$elems] = $elem;
-                }
+            foreach ($this->columns as $elem) {
+                $return[$start_date][$elem] = $$elem;
             }
 
             $period_start_date->sub(new \DateInterval("P1Y"));
