@@ -18,6 +18,9 @@ class Mango {
     const TRIALS = 5; // попыток запроса статистики
     const SLEEP  = 2; // секунд между попытками
 
+	# номер
+	const NUMBER_EGE_REPETITOR = '74956461080';
+
     public static function run($command, $data)
     {
         return static::_run($command, $data);
@@ -68,6 +71,12 @@ class Mango {
                     // echo $index;
                     $info = explode(';', $response_line);
                     if (count($info) > 1) {
+						$disconnect_reason = filter_var($info[7], FILTER_SANITIZE_NUMBER_INT);
+
+						if ($info[6] == static::NUMBER_EGE_REPETITOR && in_array($disconnect_reason, [1131, 1100, 1121])) {
+							continue;
+						}
+
                         $return[] = [
                             'recording_id'		=> trim($info[0], '[]'),
                             // 'recording_id'		=> $info[0],
@@ -77,7 +86,7 @@ class Mango {
                             'from_number'       => $info[4],
                             'to_extension'      => $info[5],
                             'to_number'         => $info[6],
-                            'disconnect_reason' => filter_var($info[7], FILTER_SANITIZE_NUMBER_INT),
+                            'disconnect_reason' => $disconnect_reason,
                             'seconds'           => $info[2] - $info[1],
                             'from_user'         => $info[3] ? User::find($info[3]) : null,
                             'from_user'         => $info[5] ? User::find($info[5]) : null,
