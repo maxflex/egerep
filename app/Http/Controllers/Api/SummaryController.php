@@ -241,107 +241,75 @@ class SummaryController extends Controller
 
     private function getByMonth($request)
     {
-        $page = intval($request->page) ? $request->page-1 : 0;
-        $date = new \DateTime('last day of this month');
+        $page       = intval($request->page) ? $request->page-1 : 0;
+        $date       = new \DateTime('last day of this month');
         $skip_month = $page*30;
 
-        $start_date = $date->sub(new \DateInterval("P{$skip_month}M"))->format('Y-m-t');
-        $end_date   = $date->sub(new \DateInterval('P30M'))->format('Y-m-d');
-        
-        $requests = DB::table('requests')
-                        ->select(DB::raw('COUNT(*) as cnt, LAST_DAY(created_at) as time'))
-                        ->whereRaw("DATE(created_at) >= '{$end_date}'")
-                        ->whereRaw("DATE(created_at) <= '{$start_date}'")
-                        ->groupBy(DB::raw('YEAR(created_at)'))
-                        ->groupBy(DB::raw('MONTH(created_at)'))
-                        ->get();
-
-        $attachments = DB::table('attachments')
-                            ->select(DB::raw('COUNT(*) as cnt, LAST_DAY(date) as time'))
-                            ->whereRaw("date >= '{$end_date}'")
-                            ->whereRaw("date <= '{$start_date}'")
-                            ->groupBy(DB::raw('YEAR(date)'))
-                            ->groupBy(DB::raw('MONTH(date)'))
-                            ->get();
-
-        $received = DB::table('accounts')
-                        ->select(DB::raw('sum(received) as sum, LAST_DAY(date_end) as time'))
-                        ->whereRaw("date_end > '{$end_date}'")
-                        ->whereRaw("date_end <= '{$start_date}'")
-                        ->groupBy(DB::raw('YEAR(date_end)'))
-                        ->groupBy(DB::raw('MONTH(date_end)'))
-                        ->get();
-
-        $mutual_debts = DB::connection('egecrm')->table('teacher_payments')
-                        ->select(DB::raw("sum(sum) as sum, LAST_DAY(STR_TO_DATE(date, '%d.%c.%Y')) as time"))
-                        ->where('id_status', Account::MUTUAL_DEBT_STATUS)
-                        ->whereRaw("STR_TO_DATE(date, '%d.%c.%Y') > '{$end_date}'")
-                        ->whereRaw("STR_TO_DATE(date, '%d.%c.%Y') <= '{$start_date}'")
-                        ->groupBy(DB::raw('YEAR(time)'))
-                        ->groupBy(DB::raw('MONTH(time)'))
-                        ->get();
-
-        $commission = DB::table('account_datas')
-                        ->select(DB::raw('sum(if(commission > 0, commission, 0.25*sum)) as sum, LAST_DAY(date) as time'))
-                        ->whereRaw("date > '{$end_date}'")
-                        ->whereRaw("date <= '{$start_date}'")
-                        ->groupBy(DB::raw('YEAR(date)'))
-                        ->groupBy(DB::raw('MONTH(date)'))
-                        ->get();
-
-        $forecast = DB::table(DB::raw('(select * from summaries order by date desc) as s'))
-                        ->select(DB::raw('forecast as sum, date as time'))
-                        ->whereRaw("date > '{$end_date}'")
-                        ->whereRaw("date <= '{$start_date}'")
-                        ->groupBy(DB::raw('YEAR(date)'))
-                        ->groupBy(DB::raw('MONTH(date)'))
-                        ->orderBy('date', 'desc')
-                        ->get();
-
-        $debt = DB::table(DB::raw('(select * from summaries order by date desc) as s'))
-                        ->select(DB::raw('debt as sum, date as time'))
-                        ->whereRaw("date > '{$end_date}'")
-                        ->whereRaw("date <= '{$start_date}'")
-                        ->groupBy(DB::raw('YEAR(date)'))
-                        ->groupBy(DB::raw('MONTH(date)'))
-                        ->orderBy('date', 'desc')
-                        ->get();
-
-        $active_attachments = DB::table(DB::raw('(select * from summaries order by date desc) as s'))
-                                ->select(DB::raw('active_attachments as sum, date as time'))
-                                ->whereRaw("date > '{$end_date}'")
-                                ->whereRaw("date <= '{$start_date}'")
-                                ->groupBy(DB::raw('YEAR(date)'))
-                                ->groupBy(DB::raw('MONTH(date)'))
-                                ->orderBy('date', 'desc')
-                                ->get();
-
-        $new_clients = DB::table(DB::raw('(select * from summaries order by date desc) as s'))
-                                ->select(DB::raw('new_clients as sum, date as time'))
-                                ->whereRaw("date > '{$end_date}'")
-                                ->whereRaw("date <= '{$start_date}'")
-                                ->groupBy(DB::raw('YEAR(date)'))
-                                ->groupBy(DB::raw('MONTH(date)'))
-                                ->orderBy('date', 'desc')
-                                ->get();
+        $end_date   = clone $date->sub(new \DateInterval("P{$skip_month}M"));
+        $start_date = clone $date->sub(new \DateInterval('P30M'));
 
         $return = [];
+        while ($start_date < $end_date) {
+            $start = $start_date->modify('first day of next month')->format('Y-m-d');
+            $end   = $start_date->modify('last day of this month')->format('Y-m-d');
 
-        $start = new \DateTime($start_date);
-        $end   = new \DateTime($end_date);
-        while ($end < $start) {
-            $end->modify("last day of next month");
+            $return_date = $start_date > new \DateTime ? now(true) : $end;
 
-            $return_date = $end > new \DateTime() ? (new \DateTime())->format('Y-m-d') : $end->format("Y-m-t");
-            $return[$return_date] = [];
+            $requests = DB::table('requests')
+                        ->whereRaw("DATE(created_at) >= '{$start}'")
+                        ->whereRaw("DATE(created_at) <= '{$end}'")
+                        ->count();
 
-            foreach ($this->columns as $elems) {
-                foreach ($$elems as $elem) {
-                    if ($elem->time == $end->format("Y-m-t")) {
-                        $return[$return_date][$elems] = $elem;
-                        break;
-                    }
+            $attachments = DB::table('attachments')
+                           ->whereRaw("date >= '{$start}'")
+                           ->whereRaw("date <= '{$end}'")
+                           ->count();
+
+            $received = DB::table('accounts')
+                        ->whereRaw("date_end >= '{$start}'")
+                        ->whereRaw("date_end <= '{$end}'")
+                        ->sum('received');
+
+            $mutual_debts = DB::connection('egecrm')->table('teacher_payments')
+                            ->where('id_status', Account::MUTUAL_DEBT_STATUS)
+                            ->whereRaw("STR_TO_DATE(date, '%d.%c.%Y') >= '{$start}'")
+                            ->whereRaw("STR_TO_DATE(date, '%d.%c.%Y') <= '{$end}'")
+                            ->sum('sum');
+
+            $commission = DB::table('account_datas')
+                            ->whereRaw("date >= '{$start}'")
+                            ->whereRaw("date <= '{$end}'")
+                            ->sum(DB::raw('if(commission > 0, commission, 0.25*sum)'));
+
+            $return[$return_date] = [
+                'requests' => [
+                    'cnt' => $requests
+                ],
+                'attachments' => [
+                    'cnt' => $attachments
+                ],
+                'received' => [
+                    'sum' => $received
+                ],
+                'mutual_debts' => [
+                    'sum' => $mutual_debts
+                ],
+                'commission' => [
+                    'sum' => $commission
+                ]
+            ];
+
+            if (new \DateTime($end) >= new \DateTime()) {
+                extract(CalcSummary::calcData());
+                foreach (['forecast', 'debt', 'active_attachments', 'new_clients'] as $field) {
+                    $return[$return_date][$field]['sum'] = $$field;
                 }
+            } else {
+                $summary = DB::table('summaries')->where('date', $end)->first();
+                if ($summary)
+                    foreach (['forecast', 'debt', 'active_attachments', 'new_clients'] as $field) {
+                        $return[$return_date][$field]['sum'] = $summary->$field;
+                    }
             }
         }
 
