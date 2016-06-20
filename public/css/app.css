@@ -30812,4 +30812,7 @@ table.summary-table.left-align tr td {
 .request-status-li.active a {
   color: black !important; }
 
+.active a.list-link:hover {
+  color: black !important; }
+
 /*# sourceMappingURL=app.css.map */

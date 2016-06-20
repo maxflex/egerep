@@ -25,7 +25,6 @@ class EgecrmAddYearToVisitJournal extends Migration
     public function down()
     {
         Schema::table('visit_journal', function (Blueprint $table) {
-            //
         });
     }
 }
