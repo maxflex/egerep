@@ -277,7 +277,7 @@
             <textarea class="md-input" ng-model="tutor.ready_to_work"></textarea>
         </md-input-container>
 
-        <div ng-show="tutor.in_egecentr == 1" class="egecentrInformation">
+        <div ng-show="tutor.in_egecentr" class="egecentrInformation">
             <h4>ИНФОРМАЦИЯ ПО ЕГЭ-ЦЕНТРУ</h4>
             <md-input-container class="md-block" style="margin-top: 20px">
                 <label>Описание</label>

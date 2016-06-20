@@ -84,6 +84,7 @@ return array(
     'DropObsoleteFieldsFromTutors' => $baseDir . '/database/migrations/2016_06_05_135150_drop_obsolete_fields_from_tutors.php',
     'DropPublicFromTutors' => $baseDir . '/database/migrations/2016_06_17_175633_drop_public_from_tutors.php',
     'DropTotalCommissionFromAccounts' => $baseDir . '/database/migrations/2016_05_13_190547_drop_total_commission_from_accounts.php',
+    'EgecrmAddYearToVisitJournal' => $baseDir . '/database/migrations/2016_06_20_163857_egecrm_add_year_to_visit_journal.php',
     'EgecrmCreateSettingsTable' => $baseDir . '/database/migrations/2016_06_17_121558_egecrm_create_settings_table.php',
     'File_Iterator' => $vendorDir . '/phpunit/php-file-iterator/src/Iterator.php',
     'File_Iterator_Facade' => $vendorDir . '/phpunit/php-file-iterator/src/Facade.php',
