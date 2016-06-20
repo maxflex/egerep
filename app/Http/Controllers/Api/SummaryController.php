@@ -519,7 +519,7 @@ class SummaryController extends Controller
         $start_date = clone $date->sub(new \DateInterval('P210D'));
 
         $return = [];
-        while ($start_date <= $end_date) {
+        while ($start_date < $end_date) {
             $week_end = clone $start_date;
             $week_end->modify('+1 week');
 
@@ -540,7 +540,7 @@ class SummaryController extends Controller
                             ->sum('sum');
 
             $today = new \DateTime();
-            $return_date = $week_end > $today ? $today->format('Y-m-d') : $end;
+            $return_date = $week_end >= $today ? $today->format('Y-m-d') : $end;
             $return[$return_date] = [];
             $total = 0;
             foreach ($received as $elem) {
