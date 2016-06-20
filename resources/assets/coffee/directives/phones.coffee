@@ -77,5 +77,5 @@ angular.module('Egerep').directive 'phones', ->
             $scope.audio.pause()
 
         $scope.disconnectReason = (data) ->
-            return 'НБТ' if data.to_extension is '' and data.disconnect_reason is '1100'
+            # return 'НБТ' if data.to_extension is '' and data.disconnect_reason is '1100'
             data.disconnect_reason
