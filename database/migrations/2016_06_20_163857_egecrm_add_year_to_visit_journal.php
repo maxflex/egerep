@@ -12,7 +12,7 @@ class EgecrmAddYearToVisitJournal extends Migration
      */
     public function up()
     {
-        Schema::table('visit_journal', function (Blueprint $table) {
+        Schema::connection('egecrm')->table('visit_journal', function (Blueprint $table) {
             $table->integer('year')->default(2015);
         });
     }
