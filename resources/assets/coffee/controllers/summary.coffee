@@ -20,8 +20,8 @@ angular
         $scope.pageChanged = ->
             ajaxStart()
             loadSummary $scope.current_page
-
-            paginate 'summary/' + ($scope.type ? $scope.type + '/' : '') + $scope.filter, $scope.current_page
+            page_prefix = if $scope.type == 'payments' then $scope.type + '/' else ''
+            paginate 'summary/' + page_prefix + $scope.filter, $scope.current_page
 
         loadSummary = (page) ->
             params  = if $scope.type == 'payments' then '/' + $scope.type else ''

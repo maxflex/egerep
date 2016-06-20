@@ -100,13 +100,12 @@ class Attachment extends Model
     {
         if (isset($state) && in_array($state, self::$states)) {
             if ($state == 'ended') {
-                return $query->has('archive');
+                return $query->archived();
             } else {
-                $query->has('archive', '=', 0);
                 if ($state == 'inprogress') {
-                    return $query->where('forecast', '>', 0);
+                    return $query->active();
                 } else {
-                    return $query->whereNull('forecast');
+                    return $query->newest();
                 }
             }
         }
