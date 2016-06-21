@@ -52,9 +52,7 @@ class UpdateRequestUserId extends Command
             foreach($user_ids as $user_id) {
                 $percentage = (array_count_values($user_ids)[$user_id] / count($user_ids)) * 100;
                 if ($percentage > 50) {
-                    \DB::table('requests')->where('id', $request->id)->update([
-                        'user_id' => $user_ids[$index]
-                    ]);
+                    \DB::table('requests')->where('id', $request->id)->update(compact('user_id'));
                     //$request->user_id = $user_ids[$index];
                     break;
                 }
