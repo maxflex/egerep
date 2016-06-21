@@ -46,7 +46,7 @@ class UpdateRequestUserId extends Command
         $bar = $this->output->createProgressBar(count($requests));
 
         foreach($requests as $request) {
-            $user_ids = Comment::where('entity_type', 'request')->where('entity_id', $request->id)->pluck('user_id');
+            $user_ids = Comment::where('entity_type', 'request')->where('entity_id', $request->id)->pluck('user_id')->all();
             $user_ids[] = $request->user_id_created;
 
             foreach(static::_getPercentage($user_ids) as $index => $percentage) {
