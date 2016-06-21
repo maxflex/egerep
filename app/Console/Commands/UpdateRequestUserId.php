@@ -55,7 +55,7 @@ class UpdateRequestUserId extends Command
                 continue;
             }
 
-            foreach(static::_getPercentage($user_ids) as $index => $percentage) {
+            foreach($percentages as $index => $percentage) {
                 if ($percentage > 50) {
                     \DB::table('requests')->where('id', $request->id)->update([
                         'user_id' => $user_ids[$index]
