@@ -49,6 +49,12 @@ class UpdateRequestUserId extends Command
             $user_ids = Comment::where('entity_type', 'request')->where('entity_id', $request->id)->pluck('user_id')->all();
             $user_ids[] = $request->user_id_created;
 
+            $percentages = static::_getPercentage($user_ids);
+
+            if ($percentages === false) {
+                continue;
+            }
+
             foreach(static::_getPercentage($user_ids) as $index => $percentage) {
                 if ($percentage > 50) {
                     \DB::table('requests')->where('id', $request->id)->update([
@@ -68,6 +74,10 @@ class UpdateRequestUserId extends Command
     private static function _getPercentage($share)
     {
         $total = array_sum($share);
+
+        if (! $total) {
+            return false;
+        }
 
         $share = array_map(function($hits) use ($total) {
            return round($hits / $total * 100, 1) . '%';
