@@ -41,7 +41,7 @@ class UpdateRequestUserId extends Command
     {
         $this->info('Getting requests...');
 
-        $requests = Request::all();
+        $requests = \DB::table('requests')->get();
 
         $bar = $this->output->createProgressBar(count($requests));
 
@@ -51,7 +51,10 @@ class UpdateRequestUserId extends Command
 
             foreach(static::_getPercentage($user_ids) as $index => $percentage) {
                 if ($percentage > 50) {
-                    $request->user_id = $user_ids[$index];
+                    \DB::table('requests')->where('id', $request->id)->update([
+                        'user_id' => $user_ids[$index]
+                    ]);
+                    //$request->user_id = $user_ids[$index];
                     break;
                 }
             }
