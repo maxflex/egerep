@@ -32,6 +32,7 @@ class Kernel extends ConsoleKernel
         Commands\CalcSummary::class,
         Commands\CheckFinishedRequests::class,
         Commands\TransferActiveClients::class,
+        Commands\UpdateRequestUserId::class,
     ];
 
     /**
