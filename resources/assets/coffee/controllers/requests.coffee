@@ -4,6 +4,9 @@ angular
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
+        $scope.state            = localStorage.getItem('requests_index_state') or 'all'
+        $scope.user_id          = localStorage.getItem('requests_index_user_id')
+
         # track comment loading.
         $rootScope.loaded_comments = 0
         $scope.$watch () ->
@@ -34,11 +37,6 @@ angular
             extendRequestStates()
             loadRequests $scope.page
             $scope.current_page = $scope.page
-            if not $scope.state_counts
-                $http.post "api/requests/counts",
-                    state: $scope.request_state
-                .then (response) ->
-                    $scope.request_state_counts = response.data.request_state_counts
 
         $scope.pageChanged = ->
             $rootScope.frontend_loading = true
@@ -47,10 +45,11 @@ angular
             paginate('requests/' + $scope.chosen_state_id, $scope.current_page)
 
         loadRequests = (page) ->
-            $scope.chosen_state_id = 'new' if not $scope.chosen_state_id
+            $scope.chosen_state_id = 'all' if not $scope.chosen_state_id
 
             params = '?page=' + page
             params += '&state=' + $scope.chosen_state_id
+            params += "&user_id=#{ $scope.user_id }" if $scope.user_id isnt ''
 
 
             $http.get "api/requests#{ params }"
@@ -58,6 +57,28 @@ angular
                 $scope.data = response.data
                 $scope.requests = $scope.data.data
                 $rootScope.frontend_loading = false if not $scope.requests.length
+
+            $http.post "api/requests/counts",
+                state: $scope.state
+                user_id: $scope.user_id
+            .then (response) ->
+                $scope.request_state_counts = response.data.request_state_counts
+                $scope.user_counts          = response.data.user_counts
+                console.log 'counts updated'
+                $timeout ->
+                    $('#change-state option, #change-user option').each (index, el) ->
+                        $(el).data 'subtext', $(el).attr 'data-subtext'
+                        $(el).data 'content', $(el).attr 'data-content'
+                    $('#change-state, #change-user').selectpicker 'refresh'
+
+        $scope.changeState = ->
+            localStorage.setItem('requests_index_state', $scope.state)
+            $scope.changeList($scope.state)
+
+        $scope.changeUser = ->
+            localStorage.setItem('requests_index_user_id', $scope.user_id)
+            $scope.changeList($scope.state)
+            # $scope.changeList($scope.state)
 
         # @todo использовать $rootScope.toggleEnumServer
         $scope.toggleState = (request) ->

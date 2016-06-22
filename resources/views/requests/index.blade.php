@@ -8,17 +8,33 @@
 
 @section('content')
 <sms number='sms_number'></sms>
-<div class="row">
-    <div class="col-sm-12">
-        <ul class="nav nav-tabs nav-tabs-links" style="margin-bottom: 20px">
-             <li ng-repeat="(state_id, state) in RequestStatesForTabLabel" data-id="@{{state_id }}"
-                ng-class="{'active' : chosen_state_id == state_id || !chosen_state_id && state_id == 'new', 'request-status-li': status_id != 'all' && (chosen_state_id != status_id)}"
-                >
-                <a class="list-link" href="#@{{status_id}}" ng-click="changeList(state_id)" data-toggle="tab" aria-expanded="@{{$index == 0}}">
-                    @{{ state }} (@{{ request_state_counts[state_id] }})
-                </a>
-             </li>
-        </ul>
+
+<div class="row mb">
+    <div class="col-sm-3">
+        {{-- <ng-select object='TutorStates' model='state' none-text='статус'></ng-select> --}}
+        <select class="form-control" ng-model='state' ng-change="changeState()" id='change-state'>
+            <option value="all">все</option>
+            <option disabled>──────────────</option>
+            <option
+                ng-repeat="(state_id, state) in RequestStates"
+                data-subtext="@{{ request_state_counts[state_id] || '' }}"
+                value="@{{ state_id }}"
+            >
+                @{{ state }}
+            </option>
+        </select>
+    </div>
+    <div class="col-sm-3">
+        {{-- <ng-select object='TutorStates' model='state' none-text='статус'></ng-select> --}}
+        <select class="form-control" ng-model='user_id' ng-change="changeUser()" id='change-user'>
+            <option value="">пользователь</option>
+            <option disabled>──────────────</option>
+            <option
+                ng-repeat="user in UserService.getWithSystem()"
+                value="@{{ user.id }}"
+                data-content="<span style='color: @{{ user.color || 'black' }}'>@{{ user.login }} @{{ $var }}</span><small class='text-muted'>@{{ user_counts[user.id] || '' }}</small>"
+            ></option>
+        </select>
     </div>
 </div>
 

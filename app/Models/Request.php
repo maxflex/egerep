@@ -94,16 +94,47 @@ class Request extends Model
      * State counts
      * @return array [state_id] => state_count
      */
-    public static function stateCounts()
+    public static function stateCounts($user_id)
     {
         $return = [];
         foreach (self::$states as $state) {
             $query = static::where('state', $state);
+            if (! empty($user_id)) {
+                $query->where('user_id', $user_id);
+            }
             $return[$state] = $query->count();
         }
 
         $return['all'] = array_sum($return);
         return $return;
+    }
+
+    /**
+     * State counts
+     * @return array [user_id] => state_count
+     */
+    public static function userCounts($state)
+    {
+        $user_ids = static::where('user_id', '>', 0)->groupBy('user_id')->pluck('user_id');
+        $return = [];
+        foreach ($user_ids as $user_id) {
+            $query = static::where('user_id', $user_id);
+            if (! empty($state) || strlen($state) > 0) {
+                $query->where('state', $state);
+            }
+            $return[$user_id] = $query->count();
+        }
+        return $return;
+    }
+
+    /**
+     * Search by user id
+     */
+    public function scopeSearchByUser($query, $user_id)
+    {
+        if (isset($user_id)) {
+            return $query->where('user_id', $user_id);
+        }
     }
 
     /**

@@ -14,10 +14,11 @@ class RequestsController extends Controller
     /**
      * Get request state counts
      */
-    public function counts()
+    public function counts(Request $request)
     {
         return [
-            'request_state_counts'  => \App\Models\Request::stateCounts(),
+            'request_state_counts'  => \App\Models\Request::stateCounts($request->user_id),
+            'user_counts'           => \App\Models\Request::userCounts($request->state),
         ];
     }
 
@@ -64,7 +65,7 @@ class RequestsController extends Controller
      */
     public function index(Request $request)
     {
-        return \App\Models\Request::searchByState($request->state)
+        return \App\Models\Request::searchByState($request->state)->searchByUser($request->user_id)
                                     ->with(['client'])
                                     ->orderBy('created_at', 'desc')
                                     ->paginate(20)->toJson();
