@@ -119,7 +119,7 @@ class Request extends Model
         $return = [];
         foreach ($user_ids as $user_id) {
             $query = static::where('user_id', $user_id);
-            if (! empty($state) || strlen($state) > 0) {
+            if ((! empty($state) || strlen($state) > 0) && $state != 'all') {
                 $query->where('state', $state);
             }
             $return[$user_id] = $query->count();
