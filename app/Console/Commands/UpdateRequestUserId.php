@@ -41,7 +41,7 @@ class UpdateRequestUserId extends Command
     {
         $this->info('Getting requests...');
 
-        $requests = \DB::table('requests')->get();
+        $requests = \DB::table('requests')->where('state', 'deny')->get();
 
         $bar = $this->output->createProgressBar(count($requests));
 
