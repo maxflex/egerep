@@ -116,6 +116,7 @@ class Request extends Model
     public static function userCounts($state)
     {
         $user_ids = static::where('user_id', '>', 0)->groupBy('user_id')->pluck('user_id');
+        $user_ids[] = 0;
         $return = [];
         foreach ($user_ids as $user_id) {
             $query = static::where('user_id', $user_id);
