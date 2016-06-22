@@ -48,7 +48,7 @@ angular
             $scope.chosen_state_id = 'all' if not $scope.chosen_state_id
 
             params = '?page=' + page
-            params += '&state=' + $scope.chosen_state_id
+            params += '&state=' + $scope.state
             params += "&user_id=#{ $scope.user_id }" if $scope.user_id isnt ''
 
 
