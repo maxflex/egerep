@@ -132,7 +132,7 @@ class Request extends Model
      */
     public function scopeSearchByUser($query, $user_id)
     {
-        if (isset($user_id)) {
+        if (isset($user_id) && $user_id !== null) {
             return $query->where('user_id', $user_id);
         }
     }
