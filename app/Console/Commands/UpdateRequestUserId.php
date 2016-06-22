@@ -47,8 +47,10 @@ class UpdateRequestUserId extends Command
 
         foreach($requests as $request) {
             $user_ids = \DB::table('comments')->where('entity_type', 'request')->where('entity_id', $request->id)->pluck('user_id');
+            $user_ids[] = $request->user_id_created;
             $user_ids = array_diff($user_ids, [0]);
-            
+
+
             foreach($user_ids as $user_id) {
                 $percentage = (array_count_values($user_ids)[$user_id] / count($user_ids)) * 100;
                 if ($percentage > 50) {
