@@ -88,6 +88,7 @@ return array(
     'EgecrmAddYearToReports' => $baseDir . '/database/migrations/2016_06_21_194301_egecrm_add_year_to_reports.php',
     'EgecrmAddYearToVisitJournal' => $baseDir . '/database/migrations/2016_06_20_163857_egecrm_add_year_to_visit_journal.php',
     'EgecrmCreateReportsForce' => $baseDir . '/database/migrations/2016_06_21_112712_egecrm_create_reports_force.php',
+    'EgecrmCreateReportsHelperTable' => $baseDir . '/database/migrations/2016_06_22_153228_egecrm_create_reports_helper_table.php',
     'EgecrmCreateSettingsTable' => $baseDir . '/database/migrations/2016_06_17_121558_egecrm_create_settings_table.php',
     'File_Iterator' => $vendorDir . '/phpunit/php-file-iterator/src/Iterator.php',
     'File_Iterator_Facade' => $vendorDir . '/phpunit/php-file-iterator/src/Facade.php',
