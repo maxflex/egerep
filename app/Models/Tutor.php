@@ -153,6 +153,14 @@ class Tutor extends Model
         return $this->user ? $this->user->banned : false;
     }
 
+    public function getHoldCoeffAttribute()
+    {
+        if ($this->in_egecentr) {
+            return Api\Api::exec('teacherHoldCoeff', ['tutor_id' => $this->id]);
+        }
+        return false;
+    }
+
     public function getPhotoUrlAttribute()
     {
         if ($this->has_photo_cropped) {

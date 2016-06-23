@@ -319,6 +319,12 @@
                 <textarea class="md-input" ng-model="tutor.video_link"></textarea>
             </md-input-container>
 
+            <div>
+                <h4>Статистика</h4>
+                <div>
+                    Коэффициент удержания: @{{ tutor.hold_coeff.coeff }}%
+                </div>
+            </div>
         </div>
         <div ng-if="tutor.id">
             <h4>КОММЕНТАРИИ</h4>
