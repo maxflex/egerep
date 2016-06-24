@@ -154,7 +154,7 @@ class SummaryController extends Controller
                     'sum' => Attachment::newOrActive()->sum('forecast')
                 ],
                 'debt' => [
-                    'sum' => \App\Models\Tutor::sum('debt_calc')
+                    'sum' => \App\Models\Tutor::where('debtor', 0)->sum('debt_calc')
                 ],
                 'active_attachments' => [
                     'sum' => Attachment::active()->count(),

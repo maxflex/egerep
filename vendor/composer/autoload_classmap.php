@@ -12,6 +12,7 @@ return array(
     'AddDebtCalcToAccounts' => $baseDir . '/database/migrations/2016_05_30_135837_add_debt_calc_to_accounts.php',
     'AddDebtCalcToTutors' => $baseDir . '/database/migrations/2016_05_31_104820_add_debt_calc_to_tutors.php',
     'AddDebtToTutors' => $baseDir . '/database/migrations/2016_05_26_182758_add_debt_to_tutors.php',
+    'AddDebtorToTutors' => $baseDir . '/database/migrations/2016_06_24_174827_add_debtor_to_tutors.php',
     'AddDenyReasonToRequests' => $baseDir . '/database/migrations/2016_06_17_110936_add_deny_reason_to_requests.php',
     'AddDeparturePriceToTeachers' => $baseDir . '/database/migrations/2016_02_17_121119_add_departure_price_to_teachers.php',
     'AddDoubledToClients' => $baseDir . '/database/migrations/2016_06_02_191234_add_doubled_to_clients.php',

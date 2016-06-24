@@ -1,6 +1,6 @@
 angular
     .module 'Egerep'
-    .controller 'DebtMap', ($scope, $timeout, TutorService, Tutor, Subjects) ->
+    .controller 'DebtMap', ($scope, $timeout, TutorService, Tutor, Subjects, YesNo) ->
         bindArguments($scope, arguments)
 
         # transparent marker opacity

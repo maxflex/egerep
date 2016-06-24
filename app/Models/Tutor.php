@@ -69,7 +69,8 @@ class Tutor extends Model
         'in_egecentr',
         'video_link',
         'debt_comment',
-        'comment_extended'
+        'comment_extended',
+        'debtor'
     ];
 
     protected $appends = [
@@ -525,7 +526,7 @@ class Tutor extends Model
       */
      public static function totalDebt()
      {
-         return DB::table('tutors')->sum('debt_calc');
+         return DB::table('tutors')->where('debtor', 0)->sum('debt_calc');
      }
 
 

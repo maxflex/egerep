@@ -36,7 +36,7 @@ class CalcSummary extends Command
     public static function calcData()
     {
         $forecast           = Attachment::newOrActive()->sum('forecast');
-        $debt               = Tutor::sum('debt_calc');
+        $debt               = Tutor::where('debtor', 0)->sum('debt_calc');
         $new_clients        = Attachment::newest()->count();
         $active_attachments = Attachment::active()->count();
         // @todo: в этом случае newQuery() не работает

@@ -19,14 +19,14 @@
         </div>
     </div>
     <div class="row mb">
-        <div class="col-sm-3">
+        <div class="col-sm-3" style="width: 20%">
             <div class="form-group">
                 <div class="double-input">
-                    <div class="input-group custom" style="width: 70%">
+                    <div class="input-group custom" style="width: 60%">
                       <span class="input-group-addon">дебет от </span>
                       <input type="text" class="form-control digits-only" ng-model="search.debt_calc_from">
                     </div>
-                    <div class="input-group custom" style="width: 30%">
+                    <div class="input-group custom" style="width: 40%">
                       <span class="input-group-addon">до </span>
                       <input type="text" class="form-control digits-only" ng-model="search.debt_calc_to">
                     </div>
@@ -47,9 +47,18 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-4" style="width: 28%">
+        <div class="col-sm-2">
             <div class="form-group">
                 <ng-multi none-text='предметы' model='search.subjects' object='Subjects.all'></ng-multi>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="form-group">
+                <select ng-model='search.debtor' class="sp">
+                    <option value=''>все</option>
+                    <option disabled>──────────────</option>
+                    <option ng-repeat='(value, name) in YesNo' value="@{{value}}">@{{ name }}</option>
+                </select>
             </div>
         </div>
         <div class="col-sm-2">

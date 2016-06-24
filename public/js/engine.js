@@ -135,6 +135,8 @@
 	function rebindMasks(delay) {
 		// Немного ждем, чтобы новые элементы успели добавиться в DOM
 		setTimeout(function() {
+			$('.sp').selectpicker()
+
 			// Дата
 			$('.bs-date').datepicker({
 				language	: 'ru',
