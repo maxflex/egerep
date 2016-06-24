@@ -131,6 +131,10 @@
         return date('Y-m-d' . ($no_time ? '' : ' H:i:s'));
     }
 
+    function isBlank($value) {
+        return empty($value) && !is_numeric($value);
+    }
+
     /**
      * Разбить enter'ом
      */
