@@ -85,6 +85,7 @@ return array(
     'DropPublicFromTutors' => $baseDir . '/database/migrations/2016_06_17_175633_drop_public_from_tutors.php',
     'DropTotalCommissionFromAccounts' => $baseDir . '/database/migrations/2016_05_13_190547_drop_total_commission_from_accounts.php',
     'EgecrmAddIndexesToForceReports' => $baseDir . '/database/migrations/2016_06_23_172142_egecrm_add_indexes_to_force_reports.php',
+    'EgecrmAddIndexesToTeacherReviews' => $baseDir . '/database/migrations/2016_06_23_180357_egecrm_add_indexes_to_teacher_reviews.php',
     'EgecrmAddIndexesToVj' => $baseDir . '/database/migrations/2016_06_22_111633_egecrm_add_indexes_to_vj.php',
     'EgecrmAddYearToReports' => $baseDir . '/database/migrations/2016_06_21_194301_egecrm_add_year_to_reports.php',
     'EgecrmAddYearToVisitJournal' => $baseDir . '/database/migrations/2016_06_20_163857_egecrm_add_year_to_visit_journal.php',
