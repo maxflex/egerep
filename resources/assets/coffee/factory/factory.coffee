@@ -64,8 +64,8 @@ angular.module('Egerep')
         male:   'мужской'
         female: 'женский'
     .value 'YesNo',
-        0: 'да'
-        1: 'нет'
+        0: 'нет'
+        1: 'да'
     .value 'TutorStates',
         0: 'не установлено'
         1: 'на проверку'
