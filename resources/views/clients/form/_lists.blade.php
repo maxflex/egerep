@@ -36,13 +36,13 @@
                         <td width='50'>
                             @{{ tutor.js }}
                         </td>
-                        <td ng-init='recommendation = getRecommendation(tutor)'>
+                        <td ng-init='recommendation = RecommendationService.get(tutor)'>
                             <span aria-label='@{{ recommendation.text }}' class='hint--bottom-right cursor-default' ng-class="{
                                 'text-success': recommendation.type == 0,
                                 'text-warning': recommendation.type == 1,
                                 'text-danger': recommendation.type == 2,
                             }">
-                                @{{ RecommendationTypes[recommendation.type] }}
+                                @{{ recommendation.type_text }}
                             </span>
                         </td>
                         <td>
