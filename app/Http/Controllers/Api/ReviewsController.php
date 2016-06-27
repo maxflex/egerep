@@ -18,7 +18,7 @@ class ReviewsController extends Controller
      */
     public function index()
     {
-        $search = isset($_COOKIE['reviews']) ? json_decode($_COOKIE['reviews']) : new stdClass;
+        $search = isset($_COOKIE['reviews']) ? json_decode($_COOKIE['reviews']) : (object)[];
 
         return [
             'counts' => Review::counts($search),
