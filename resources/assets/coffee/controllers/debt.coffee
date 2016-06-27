@@ -19,7 +19,8 @@ angular
         $scope.loading = false
 
         # search params
-        $scope.search = {}
+        $scope.search =
+            debtor: '0'
 
         $scope.tutor_ids = []
 
