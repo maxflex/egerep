@@ -14,6 +14,7 @@ class EgecrmAddReviewUserIdToStudents extends Migration
     {
         Schema::connection('egecrm')->table('students', function (Blueprint $table) {
             $table->integer('id_user_review')->unsigned();
+            $table->index('id_user_review');
         });
     }
 
@@ -24,8 +25,8 @@ class EgecrmAddReviewUserIdToStudents extends Migration
      */
     public function down()
     {
-        Schema::table('students', function (Blueprint $table) {
-            //
+        Schema::connection('egecrm')->table('students', function (Blueprint $table) {
+            $table->dropColumn('id_user_review');
         });
     }
 }
