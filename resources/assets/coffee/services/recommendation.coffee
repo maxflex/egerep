@@ -1,14 +1,14 @@
 angular.module 'Egerep'
     .service 'RecommendationService', (Recommendations, RecommendationTypes) ->
-        @get = (tutor) ->
-            recommendation = @getRecommendation(tutor)
+        @get = (tutor, grade) ->
+            recommendation = @getRecommendation(tutor, grade)
             recommendation.type_label = RecommendationTypes[recommendation.type]
             recommendation
 
-        @getRecommendation = (tutor) ->
+        @getRecommendation = (tutor, grade) ->
             month = moment().format 'M'
             # не 10 класс?
-            if $scope.client.grade isnt 10
+            if grade isnt 10
                 if month >= 7 && month <= 10
                     if tutor.meeting_count >= 2
                         return Recommendations[1]

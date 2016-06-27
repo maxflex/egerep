@@ -3534,16 +3534,16 @@
 
 (function() {
   angular.module('Egerep').service('RecommendationService', function(Recommendations, RecommendationTypes) {
-    this.get = function(tutor) {
+    this.get = function(tutor, grade) {
       var recommendation;
-      recommendation = this.getRecommendation(tutor);
+      recommendation = this.getRecommendation(tutor, grade);
       recommendation.type_label = RecommendationTypes[recommendation.type];
       return recommendation;
     };
-    this.getRecommendation = function(tutor) {
+    this.getRecommendation = function(tutor, grade) {
       var month;
       month = moment().format('M');
-      if ($scope.client.grade !== 10) {
+      if (grade !== 10) {
         if (month >= 7 && month <= 10) {
           if (tutor.meeting_count >= 2) {
             return Recommendations[1];
