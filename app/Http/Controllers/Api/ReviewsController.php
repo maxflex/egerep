@@ -22,7 +22,7 @@ class ReviewsController extends Controller
 
         return [
             'counts' => Review::counts($search),
-            'data'   => Review::search($search)->paginate(2, ['link'])
+            'data'   => Review::search($search)->paginate(30, ['link'])
         ];
     }
 
