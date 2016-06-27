@@ -18,8 +18,12 @@ class ReviewsController extends Controller
      */
     public function index()
     {
-        $search = filterParams(json_decode($_COOKIE['reviews']));
-        return Review::search($search)->paginate(2, ['link'])->toJson();
+        $search = json_decode($_COOKIE['reviews']);
+        
+        return [
+            'counts' => Review::counts($search),
+            'data'   => Review::search($search)->paginate(2, ['link'])
+        ];
     }
 
     /**

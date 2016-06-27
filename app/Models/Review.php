@@ -40,8 +40,39 @@ class Review extends Model
 
     // ------------------------------------------------------------------------
 
-    public function search($search)
+    public static function counts($search)
     {
+		foreach(["", 0, 1] as $mode) {
+			$new_search = clone $search;
+			$new_search->mode = $mode;
+			$counts['mode'][$mode] = static::search($new_search)->count();
+		}
+		foreach(["", "published", "unpublished"] as $state) {
+			$new_search = clone $search;
+			$new_search->state = $state;
+			$counts['state'][$state] = static::search($new_search)->count();
+		}
+		foreach(["", 0, 1] as $signature) {
+			$new_search = clone $search;
+			$new_search->signature = $signature;
+			$counts['signature'][$signature] = static::search($new_search)->count();
+		}
+		foreach(["", 0, 1] as $comment) {
+			$new_search = clone $search;
+			$new_search->comment = $comment;
+			$counts['comment'][$comment] = static::search($new_search)->count();
+		}
+        foreach(array_merge([""], range(1, 11)) as $score) {
+            $new_search = clone $search;
+            $new_search->score = $score;
+            $counts['score'][$score] = static::search($new_search)->count();
+        }
+        return $counts;
+    }
+
+    public static function search($search)
+    {
+        $search = filterParams($search);
         $query = Attachment::with(['tutor'])->has('archive');
 
         if (isset($search->mode)) {
@@ -69,6 +100,6 @@ class Review extends Model
             });
         }
 
-        return $query;
+        return $query->orderBy('date', 'desc');
     }
 }

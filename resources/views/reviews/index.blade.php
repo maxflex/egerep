@@ -7,37 +7,47 @@
 <div class="row flex-list">
     <div>
         <select ng-model='search.mode' class='selectpicker' ng-change='filter()'>
-            <option value="">все типы отзывов</option>
+            <option value="" data-subtext="@{{ counts.mode[''] || '' }}">все типы отзывов</option>
             <option disabled>──────────────</option>
-            <option ng-repeat='(id, name) in Existance' value="@{{id}}">@{{ name }}</option>
+            <option ng-repeat='(id, name) in Existance'
+                data-subtext="@{{ counts.mode[id] || '' }}"
+                value="@{{id}}">@{{ name }}</option>
         </select>
     </div>
     <div>
         <select ng-model='search.state' class='selectpicker' ng-change='filter()'>
-            <option value="">тип публикации</option>
+            <option value="" data-subtext="@{{ counts.state[''] || '' }}">тип публикации</option>
             <option disabled>──────────────</option>
-            <option ng-repeat='(id, name) in ReviewStates' value="@{{id}}">@{{ name }}</option>
+            <option ng-repeat='(id, name) in ReviewStates'
+                data-subtext="@{{ counts.state[id] || '' }}"
+                value="@{{id}}">@{{ name }}</option>
         </select>
     </div>
     <div>
         <select ng-model='search.signature' class='selectpicker' ng-change='filter()'>
-            <option value="">подпись</option>
+            <option value="" data-subtext="@{{ counts.signature[''] || '' }}">подпись</option>
             <option disabled>──────────────</option>
-            <option ng-repeat='(id, name) in Presence' value="@{{id}}">@{{ name }}</option>
+            <option ng-repeat='(id, name) in Presence'
+                data-subtext="@{{ counts.signature[id] || '' }}"
+                value="@{{id}}">@{{ name }}</option>
         </select>
     </div>
     <div>
         <select ng-model='search.comment' class='selectpicker' ng-change='filter()'>
-            <option value="">текст отзыва</option>
+            <option value="" data-subtext="@{{ counts.comment[''] || '' }}">текст отзыва</option>
             <option disabled>──────────────</option>
-            <option ng-repeat='(id, name) in Presence' value="@{{id}}">@{{ name }}</option>
+            <option ng-repeat='(id, name) in Presence'
+                data-subtext="@{{ counts.comment[id] || '' }}"
+                value="@{{id}}">@{{ name }}</option>
         </select>
     </div>
     <div>
         <select ng-model='search.score' class='selectpicker' ng-change='filter()'>
-            <option value="">все оценки</option>
+            <option value="" data-subtext="@{{ counts.score[''] || '' }}">все оценки</option>
             <option disabled>──────────────</option>
-            <option ng-repeat='(id, name) in ReviewScores' value="@{{id}}">@{{ name }}</option>
+            <option ng-repeat='(id, name) in ReviewScores'
+                data-subtext="@{{ counts.score[id] || '' }}"
+                value="@{{id}}">@{{ name }}</option>
         </select>
     </div>
 </div>
@@ -83,10 +93,12 @@
                         <span ng-if='attachment.review'>@{{ ReviewStates[attachment.review.state] }}</span>
                     </td>
                     <td class="center">
-                        <span ng-show='attachment.review && attachment.review.signature'>есть</span>
+                        <span ng-show='attachment.review && attachment.review.signature'
+                            aria-label='@{{ attachment.review.signature }}' class='cursor-default hint--bottom'>есть</span>
                     </td>
                     <td class="center">
-                        <span ng-show='attachment.review && attachment.review.comment'>есть</span>
+                        <span ng-show='attachment.review && attachment.review.comment'
+                            aria-label='@{{ attachment.review.comment }}' class='cursor-default hint--bottom'>есть</span>
                     </td>
                     <td class="center">
                         <span ng-if='attachment.review'>@{{ ReviewScores[attachment.review.score] }}</span>

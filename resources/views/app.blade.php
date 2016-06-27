@@ -36,19 +36,8 @@
             <!-- /input-group-->
           </form>
           <div class="list-group">
-              <a class="list-group-item active">Меню</a>
-              <a href="requests" class="list-group-item">Заявки</a>
-              <a href="attachments" class="list-group-item">Стыковки</a>
-              <a href="tutors" class="list-group-item">Преподаватели</a>
-              @if (\App\Models\User::fromSession()->show_accounts)
-                  <a href="periods" class="list-group-item">Расчеты</a>
-              @endif
-
-              @if (\App\Models\User::fromSession()->show_debt)
-                  <a href="debt/map" class="list-group-item">Дебет</a>
-              @endif
-              <a href="summary" class="list-group-item">Итоги</a>
-              <a href="logout" class="list-group-item">Выход</a></div>
+              @include('_menu')
+          </div>
         </div>
       </div>
       <div style="padding: 0; width: 80.6%;" class="col-sm-9 content-col">

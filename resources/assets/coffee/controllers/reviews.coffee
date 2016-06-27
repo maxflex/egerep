@@ -4,6 +4,14 @@ angular
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = false
 
+        refreshCounts = ->
+            $timeout ->
+                $('.selectpicker option').each (index, el) ->
+                    $(el).data 'subtext', $(el).attr 'data-subtext'
+                    $(el).data 'content', $(el).attr 'data-content'
+                $('.selectpicker').selectpicker 'refresh'
+            , 100
+
         $scope.filter = ->
             $.cookie("reviews", JSON.stringify($scope.search), { expires: 365, path: '/' });
             $scope.current_page = 1
@@ -24,6 +32,9 @@ angular
 
             $http.get "api/reviews#{ params }"
             .then (response) ->
-                $scope.data = response.data
-                $scope.attachments = $scope.data.data
+                console.log response
+                $scope.counts = response.data.counts
+                $scope.data = response.data.data
+                $scope.attachments = response.data.data.data
                 $rootScope.frontend_loading = false
+                refreshCounts()
