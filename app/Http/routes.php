@@ -10,11 +10,12 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
 });
 
 Route::group(['middleware' => ['web']], function () {
+    Route::resource('reviews', 'ReviewsController', ['only' => 'index']);
+    
     Route::get('client/{id}', function($id) {
         $request_id = \App\Models\Request::where('client_id', $id)->value('id');
         if ($request_id) {
             return redirect()->to("https://lk.ege-repetitor.ru/requests/{$request_id}/edit");
-            // return redirect()->route('requests.edit', $request_id);
         } else {
             return redirect()->to('/');
         }

@@ -28112,7 +28112,7 @@ email .input-group {
 a {
   color: #158E51; }
   a:hover {
-    color: #0e6238 !important; }
+    color: #0e6238; }
 
 .tutor-list-comment {
   width: 100%; }
@@ -30814,5 +30814,18 @@ table.summary-table.left-align tr td {
 
 .active a.list-link:hover {
   color: black !important; }
+
+.row.flex-list {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 20px; }
+  .row.flex-list > div {
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    margin-right: 10px; }
 
 /*# sourceMappingURL=app.css.map */

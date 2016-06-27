@@ -54,5 +54,6 @@ elixir(function(mix) {
             '../bower/StickyTableHeaders/js/jquery.stickytableheaders.js',
             '../bower/jquery.floatThead/dist/jquery.floatThead.min.js',
             '../bower/jsSHA/src/sha256.js',
+            '../bower/jquery.cookie/jquery.cookie.js',
         ], 'public/js/vendor.js');
 });

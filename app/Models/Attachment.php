@@ -91,6 +91,11 @@ class Attachment extends Model
                           ->count();
     }
 
+    public function getLinkAttribute()
+    {
+        return "requests/{$this->requestList->request->id}/edit#{$this->requestList->id}#{$this->id}";
+    }
+
     // ------------------------------------------------------------------------
 
     /**

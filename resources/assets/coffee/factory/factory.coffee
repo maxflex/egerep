@@ -115,6 +115,9 @@ angular.module('Egerep')
         unpublished: 'не опубликован'
         published:   'опубликован'
 
+    .value 'Existance', ['созданные', 'требующие создания']
+    .value 'Presence', ['есть', 'отсутствует']
+
     .value 'AttachmentVisibility',
         0: 'скрыто'
         1: 'показано'
@@ -157,10 +160,6 @@ angular.module('Egerep')
         9: 9
         10: 10
         11: 'отзыв не собирать'
-#        11: 'не берет'
-#        12: 'не помнит'
-#        13: 'недоступен'
-#        14: 'позвонить позже'
 
     .value 'Grades',
         1: '1 класс'

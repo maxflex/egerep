@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Attachment;
 
 class Review extends Model
 {
@@ -35,5 +36,39 @@ class Review extends Model
                 $model->user_id = User::fromSession()->id;
             }
         });
+    }
+
+    // ------------------------------------------------------------------------
+
+    public function search($search)
+    {
+        $query = Attachment::with(['tutor'])->has('archive');
+
+        if (isset($search->mode)) {
+            if ($search->mode) {
+                $query->doesntHave('review');
+            } else {
+                $query->has('review');
+            }
+        }
+
+        if (isset($search->state) || isset($search->signature) || isset($search->comment) || isset($search->score)) {
+            $query->whereHas('review', function($query) use ($search) {
+                if (isset($search->state)) {
+                    $query->where('state', $search->state);
+                }
+                if (isset($search->signature)) {
+                    $query->where('signature', $search->signature ? '=' : '<>', '');
+                }
+                if (isset($search->comment)) {
+                    $query->where('comment', $search->comment ? '=' : '<>', '');
+                }
+                if (isset($search->score)) {
+                    $query->where('score', $search->score);
+                }
+            });
+        }
+
+        return $query;
     }
 }

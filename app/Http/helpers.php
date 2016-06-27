@@ -153,3 +153,14 @@
 
 ', array_filter($array));
     }
+
+
+    /**
+     * Удалить пустые строки
+     */
+    function filterParams($a)
+    {
+        return (object)array_filter((array)$a, function($e) {
+            return $e !== '';
+        });
+    }

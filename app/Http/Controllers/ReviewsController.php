@@ -1,13 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use App\Models\Review;
-use App\Models\Attachment;
 
 class ReviewsController extends Controller
 {
@@ -16,10 +14,13 @@ class ReviewsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $search = filterParams(json_decode($_COOKIE['reviews']));
-        return Review::search($search)->paginate(2, ['link'])->toJson();
+        return view('reviews.index')->with(
+            ngInit([
+                'page' => $request->page,
+            ])
+        );
     }
 
     /**
@@ -40,7 +41,7 @@ class ReviewsController extends Controller
      */
     public function store(Request $request)
     {
-        return Review::create($request->input())->fresh();
+        //
     }
 
     /**
@@ -85,6 +86,6 @@ class ReviewsController extends Controller
      */
     public function destroy($id)
     {
-        Review::destroy($id);
+        //
     }
 }
