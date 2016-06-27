@@ -91,6 +91,7 @@ class DebtController extends Controller
 
     public function map(Request $request)
     {
+        $debtor = $request->search->debtor;
         extract(array_filter($request->search));
 
         // показывать в списке нужно преподавателей, у которых а) дебет не = 0 либо б) расчетный дебет не = 0
