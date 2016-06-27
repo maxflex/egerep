@@ -2,7 +2,7 @@ angular.module 'Egerep'
     .service 'RecommendationService', (Recommendations, RecommendationTypes) ->
         @get = (tutor, grade) ->
             recommendation = @getRecommendation(tutor, grade)
-            recommendation.type_label = RecommendationTypes[recommendation.type]
+            recommendation.type_text = RecommendationTypes[recommendation.type]
             recommendation
 
         @getRecommendation = (tutor, grade) ->
