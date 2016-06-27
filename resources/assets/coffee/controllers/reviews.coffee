@@ -2,7 +2,7 @@ angular
     .module 'Egerep'
     .controller 'ReviewsIndex', ($rootScope, $scope, $timeout, $http, Existance, ReviewStates, Presence, ReviewScores) ->
         bindArguments($scope, arguments)
-        $rootScope.frontend_loading = false
+        $rootScope.frontend_loading = true
 
         refreshCounts = ->
             $timeout ->
