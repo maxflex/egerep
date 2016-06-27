@@ -135,6 +135,15 @@
         return empty($value) && !is_numeric($value);
     }
 
+    function notBlank($value) {
+        return ! isBlank($value);
+    }
+
+    function isFilled($value)
+    {
+        return (isset($value) && ! empty($value));
+    }
+
     /**
      * Разбить enter'ом
      */
