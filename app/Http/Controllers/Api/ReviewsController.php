@@ -18,8 +18,8 @@ class ReviewsController extends Controller
      */
     public function index()
     {
-        $search = json_decode($_COOKIE['reviews']);
-        
+        $search = isset($_COOKIE['reviews']) ? json_decode($_COOKIE['reviews']) : new stdClass;
+
         return [
             'counts' => Review::counts($search),
             'data'   => Review::search($search)->paginate(2, ['link'])
