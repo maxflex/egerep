@@ -39,7 +39,7 @@ class ReviewsCreate extends Command
      */
     public function handle()
     {
-        $attachments = Attachment::whereHas('archive', function($query) {
+        $attachments = Attachment::doesntHave('review')->whereHas('archive', function($query) {
             $query->where('date', '<', '2014-08-01');
         })->get();
 
