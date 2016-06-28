@@ -3,131 +3,123 @@
 @section('controller', 'AttachmentsIndex')
 
 @section('content')
-<div class="row">
-    <div class="col-sm-12">
-        <ul class="nav nav-tabs nav-tabs-links" style="margin-bottom: 20px">
-             <li ng-repeat="(state_id, state) in AttachmentStates" data-id="@{{state_id }}"
-                ng-class="{'active' : chosen_state_id == state_id || !chosen_state_id && state_id == 'new', 'request-status-li': state_id != 'all' && (chosen_state_id != state_id)}"
-                >
-                <a class="list-link" href="@{{state_id}}" ng-click="changeState(state_id)" data-toggle="tab" aria-expanded="@{{$index == 0}}">
-                    @{{ state.label }} (@{{ state_counts[state_id] }})
-                </a>
-             </li>
-        </ul>
+
+<div class="row flex-list">
+    <div>
+        <select ng-model='search.state' class='selectpicker' ng-change='filter()'>
+            <option value="" data-subtext="@{{ counts.state[''] || '' }}">все статусы</option>
+            <option disabled>──────────────</option>
+            <option ng-repeat='(id, name) in AttachmentStates'
+                data-subtext="@{{ counts.state[id] || '' }}"
+                value="@{{id}}">@{{ name }}</option>
+        </select>
+    </div>
+    <div>
+        <select ng-model='search.hide' class='selectpicker' ng-change='filter()'>
+            <option value="" data-subtext="@{{ counts.hide[''] || '' }}">любая видимость</option>
+            <option disabled>──────────────</option>
+            <option ng-repeat='(id, name) in AttachmentVisibility'
+                data-subtext="@{{ counts.hide[id] || '' }}"
+                value="@{{id}}">@{{ name }}</option>
+        </select>
+    </div>
+    <div>
+        <select ng-model='search.account_data' class='selectpicker' ng-change='filter()'>
+            <option value="" data-subtext="@{{ counts.account_data[''] || '' }}">занятия в отчетности</option>
+            <option disabled>──────────────</option>
+            <option ng-repeat='(id, name) in Presence[1]'
+                data-subtext="@{{ counts.account_data[id] || '' }}"
+                value="@{{id}}">@{{ name }}</option>
+        </select>
+    </div>
+    <div>
+        <select ng-model='search.total_lessons_missing' class='selectpicker' ng-change='filter()'>
+            <option value="" data-subtext="@{{ counts.total_lessons_missing[''] || '' }}">занятия к проводке</option>
+            <option disabled>──────────────</option>
+            <option ng-repeat='(id, name) in Presence[1]'
+                data-subtext="@{{ counts.total_lessons_missing[id] || '' }}"
+                value="@{{id}}">@{{ name }}</option>
+        </select>
+    </div>
+    <div>
+        <select ng-model='search.forecast' class='selectpicker' ng-change='filter()'>
+            <option value="" data-subtext="@{{ counts.forecast[''] || '' }}">прогноз</option>
+            <option disabled>──────────────</option>
+            <option ng-repeat='(id, name) in Presence[1]'
+                data-subtext="@{{ counts.forecast[id] || '' }}"
+                value="@{{id}}">@{{ name }}</option>
+        </select>
     </div>
 </div>
 
-
-<div ng-if="chosen_state_id == 'new'" ng-repeat="attachment in attachments" class="attachment-list">
-    <div class="attachment-list-item">
-        <div>
-            <span ng-show="attachment.client.name">@{{ attachment.client.name }},</span>
-            <span ng-show="attachment.client.grade > 0">@{{ Grades[attachment.client.grade] }},</span>
-            <span ng-show="attachment.client.address">@{{ attachment.client.address }},</span>
-            <span ng-repeat="phone_field in ['phone', 'phone2', 'phone3', 'phone4']">
-                <span ng-show="attachment.client[phone_field]">
-                    <span class="underline-hover inline-block"
-                          ng-click="PhoneService.call(attachment.client[phone_field])"
-                          ng-class="{'phone-duplicate-new': attachment.client[phone_field + '_duplicate']}"
-                    >
-                          @{{ PhoneService.format(attachment.client[phone_field]) }}</span>
-                    <span class="glyphicon glyphicon-envelope sms-in-list"
-                          ng-click="PhoneService.sms(attachment.client[phone_field])"
-                          ng-show="PhoneService.isMobile(PhoneService.format(attachment.client[phone_field]))"></span>
-                </span>
+<table class="table attachment-table" style="font-size: 0.8em;">
+    <thead class="bold">
+    <tr>
+        <td></td>
+        <td class="col-sm-2"  align="left">
+            Преподаватель
+        </td>
+        <td class="col-sm-1">
+            <span ng-click="sort('created_at')" role="button">
+                Cтыковка
             </span>
-        </div>
-        <div>
-            Репетитор: <a href="tutors/@{{ attachment.tutor_id }}/edit">@{{ attachment.tutor.full_name}}</a>
-            (<span ng-repeat="subject_id in attachment.subjects">@{{ Subjects.all[subject_id] + ($last ? '' : ', ') }}</span>),
-            <span ng-show="!attachment.account_data_count">занятий не было</span>
-            <span ng-show="attachment.account_data_count">
-                проведено @{{ attachment.account_data_count }}
-                <plural count='attachment.account_data_count' type='lesson' text-only></plural>
+        </td>
+        <td class="col-sm-1">
+            <span ng-click="sort('lesson_count')" role="button">
+                Занятия
             </span>
-        </div>
-        <div ng-show="attachment.comment">Условия: @{{ attachment.comment }}</div>
-        <br/>
-        <div class="attachment-list-item-comments">
-            <comments entity-type='attachment' entity-id='attachment.id' user='{{ $user }}' track-loading='1'></comments>
-        </div>
-        <div>
-            Стыковку №@{{ attachment.id }} создал: @{{ UserService.getLogin(attachment.user_id) }} @{{ formatDateTime(attachment.created_at) }} <a href="requests/@{{ attachment.request_id }}/edit#@{{ attachment.request_list_id }}#@{{ attachment.id }}">редактировать</a>
-        </div>
-        <hr class='list-separate' ng-hide="$last">
-    </div>
-</div>
-
-<div ng-if="['inprogress', 'ended', 'all'].indexOf(chosen_state_id) != -1">
-    <table class="table attachment-table" style="font-size: 0.8em;">
-        <thead class="bold">
-        <tr>
-            <td></td>
-            <td class="col-sm-2"  align="left">
-                Преподаватель
-            </td>
-            <td class="col-sm-1">
-                <span ng-click="sort('created_at')" role="button">
-                    Cтыковка
-                </span>
-            </td>
-            <td class="col-sm-1">
-                <span ng-click="sort('lesson_count')" role="button">
-                    Занятия
-                </span>
-            </td>
-            <td class="col-sm-1">
-                <span ng-click="sort('total_lessons_missing')" role="button">
-                    Занятия к проводке
-                </span>
-            </td>
-            <td class="col-sm-1">
-                <span ng-click="sort('forecast')" role="button">
-                    Прогноз
-                </span>
-            </td>
-            <td class="col-sm-1">
-                <span ng-click="sort('archive_date')" role="button">
-                    Архивация
-                </span>
-            </td>
-            <td class="col-sm-1">Статус</td>
-            <td>Реквизиты</td>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="attachment in attachments">
-            <td align="left">
-                <a href="requests/@{{ attachment.request_id }}/edit#@{{ attachment.request_list_id }}#@{{ attachment.id }}">стыковка @{{ attachment.id }}</a>
-            </td>
-            <td align="left">
-                <a href="tutors/@{{ attachment.tutor_id }}/edit">@{{ attachment.tutor.full_name}}</a>
-            </td>
-            <td>
-                @{{ attachment.date }}
-            </td>
-            <td>
-                @{{ attachment.lesson_count | hideZero }}
-            </td>
-            <td>
-                @{{ attachment.archive.total_lessons_missing | hideZero }}
-            </td>
-            <td>
-                @{{ attachment.forecast | hideZero | number}}
-            </td>
-            <td>
-                @{{ formatDate(attachment.archive.created_at) }}
-            </td>
-            <td>
-                @{{ AttachmentService.getStatus(attachment) }}
-            </td>
-            <td>
-                @{{ UserService.getLogin(attachment.user_id) }}: @{{ formatDateTime(attachment.created_at) }}
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+        </td>
+        <td class="col-sm-1">
+            <span ng-click="sort('total_lessons_missing')" role="button">
+                Занятия к проводке
+            </span>
+        </td>
+        <td class="col-sm-1">
+            <span ng-click="sort('forecast')" role="button">
+                Прогноз
+            </span>
+        </td>
+        <td class="col-sm-1">
+            <span ng-click="sort('archive_date')" role="button">
+                Архивация
+            </span>
+        </td>
+        <td class="col-sm-1">Статус</td>
+        <td>Реквизиты</td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="attachment in attachments">
+        <td align="left">
+            <a href="requests/@{{ attachment.request_id }}/edit#@{{ attachment.request_list_id }}#@{{ attachment.id }}">стыковка @{{ attachment.id }}</a>
+        </td>
+        <td align="left">
+            <a href="tutors/@{{ attachment.tutor_id }}/edit">@{{ attachment.tutor.full_name}}</a>
+        </td>
+        <td>
+            @{{ attachment.date }}
+        </td>
+        <td>
+            @{{ attachment.lesson_count | hideZero }}
+        </td>
+        <td>
+            @{{ attachment.archive.total_lessons_missing | hideZero }}
+        </td>
+        <td>
+            @{{ attachment.forecast | hideZero | number}}
+        </td>
+        <td>
+            @{{ formatDate(attachment.archive.created_at) }}
+        </td>
+        <td>
+            @{{ AttachmentService.getStatus(attachment) }}
+        </td>
+        <td>
+            @{{ UserService.getLogin(attachment.user_id) }}: @{{ formatDateTime(attachment.created_at) }}
+        </td>
+    </tr>
+    </tbody>
+</table>
 
 <div class="row" ng-hide="attachments.length">
     <div class="col-sm-12">

@@ -16,13 +16,11 @@ class AttachmentsController extends Controller
      * @return \Illuminate\Http\Response
      * @state  Attachment state.
      */
-    public function index(Request $request, $state = 'new')
+    public function index(Request $request)
     {
         return view('attachments.index')->with(
             ngInit([
                 'page'            => $request->input('page'),
-                'chosen_state_id' => $state,
-                'state_counts'    => Attachment::stateCounts()
             ])
         );
     }
