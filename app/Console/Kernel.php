@@ -33,6 +33,7 @@ class Kernel extends ConsoleKernel
         Commands\CheckFinishedRequests::class,
         Commands\TransferActiveClients::class,
         Commands\UpdateRequestUserId::class,
+        Commands\ReviewsCreate::class,
     ];
 
     /**
