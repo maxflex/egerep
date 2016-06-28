@@ -47,7 +47,7 @@ class ReviewsCreate extends Command
 
         foreach ($attachments as $attachment) {
             if (!$attachment->account_data_count && !$attachment->archive->total_lessons_missing) {
-                DB::table('reviews')->insert([
+                \DB::table('reviews')->insert([
                     'attachment_id' => $attachment->id,
                     'user_id'       => 0,
                     'created_at'    => '2016-06-28 17:00:00',
