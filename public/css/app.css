@@ -27414,6 +27414,9 @@ md-tooltip {
   left: calc(50% - 6px); }
 
 .hint--bottom:after {
+  border-radius: 4px;
+  width: 300px;
+  white-space: inherit;
   -webkit-transform: translateX(-50%);
   transform: translateX(-50%); }
 
@@ -27422,7 +27425,6 @@ md-tooltip {
   transform: translateY(8px); }
 
 .hint--bottom:hover:after {
-  border-radius: 4px;
   -webkit-transform: translateX(-50%) translateY(8px);
   transform: translateX(-50%) translateY(8px); }
 
