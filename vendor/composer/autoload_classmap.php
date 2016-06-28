@@ -90,6 +90,7 @@ return array(
     'EgecrmAddIndexesToTeacherReviews' => $baseDir . '/database/migrations/2016_06_23_180357_egecrm_add_indexes_to_teacher_reviews.php',
     'EgecrmAddIndexesToVj' => $baseDir . '/database/migrations/2016_06_22_111633_egecrm_add_indexes_to_vj.php',
     'EgecrmAddReviewUserIdToStudents' => $baseDir . '/database/migrations/2016_06_27_160333_egecrm_add_review_user_id_to_students.php',
+    'EgecrmAddSignatureToReviews' => $baseDir . '/database/migrations/2016_06_28_131228_egecrm_add_signature_to_reviews.php',
     'EgecrmAddYearToReports' => $baseDir . '/database/migrations/2016_06_21_194301_egecrm_add_year_to_reports.php',
     'EgecrmAddYearToVisitJournal' => $baseDir . '/database/migrations/2016_06_20_163857_egecrm_add_year_to_visit_journal.php',
     'EgecrmCreateReportsForce' => $baseDir . '/database/migrations/2016_06_21_112712_egecrm_create_reports_force.php',
