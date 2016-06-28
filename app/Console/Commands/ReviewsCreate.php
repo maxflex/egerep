@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\Reviews;
+use App\Models\Review;
 use App\Models\Attachment;
 
 class ReviewsCreate extends Command
