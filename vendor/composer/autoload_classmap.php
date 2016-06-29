@@ -27,6 +27,7 @@ return array(
     'AddIdAPersToRequests' => $baseDir . '/database/migrations/2016_05_16_173348_add_id_a_pers_to_requests.php',
     'AddIndexOnTutorState' => $baseDir . '/database/migrations/2016_03_25_135311_add_index_on_tutor_state.php',
     'AddIndexToAccountDatas' => $baseDir . '/database/migrations/2016_06_29_173145_add_index_to_account_datas.php',
+    'AddIndexesToComments' => $baseDir . '/database/migrations/2016_06_29_181152_add_indexes_to_comments.php',
     'AddIndexesToMarkers' => $baseDir . '/database/migrations/2016_03_23_120624_add_indexes_to_markers.php',
     'AddIndexesToPhones' => $baseDir . '/database/migrations/2016_06_05_122554_add_indexes_to_phones.php',
     'AddLessonLength' => $baseDir . '/database/migrations/2016_03_10_174030_addLessonLength.php',

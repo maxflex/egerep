@@ -113,29 +113,28 @@ class SetChecked extends Command
 
     private function _three()
     {
-        $attachments = DB::table('attachments')->join('account_datas', function($join) {
-            $join->on('attachments.tutor_id', '=', 'account_datas.tutor_id')
-                 ->on('account_datas.date', '=', DB::raw('
-                    (SELECT MAX(date)
-                    FROM account_datas ad
-                    WHERE attachments.tutor_id = ad.tutor_id)
-                '));
+        $attachments = DB::table('attachments')->join(DB::raw('(
+              SELECT MAX(date) as last_lesson_date, tutor_id, client_id
+              FROM account_datas
+              GROUP BY tutor_id, client_id
+          ) ad'), function($join) {
+            $join->on('attachments.tutor_id', '=', 'ad.tutor_id')
+                 ->on('attachments.client_id', '=', 'ad.client_id');
             })
             ->join('archives', 'attachments.id', '=', 'archives.attachment_id')
-            ->where('account_datas.date', '<=', '2015-03-01')
+            ->where('ad.last_lesson_date', '<=', '2015-03-01')
             ->whereNullOrZero('archives.total_lessons_missing')
             ->get([
                 'attachments.id',
                 DB::raw('archives.id as archive_id'),
-                'account_datas.date',
+                'ad.last_lesson_date',
             ]);
-
 
         $bar = $this->output->createProgressBar(count($attachments));
 
         foreach ($attachments as $attachment) {
             DB::table('attachments')->where('id', $attachment->id)->update(['checked' => 1]);
-            DB::table('archives')->where('id', $attachment->archive_id)->update(['date' => $attachment->date]);
+            DB::table('archives')->where('id', $attachment->archive_id)->update(['date' => $attachment->last_lesson_date]);
 
             $bar->advance();
         }
