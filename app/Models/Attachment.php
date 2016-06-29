@@ -217,10 +217,10 @@ class Attachment extends Model
 			$new_search->state = $state;
 			$counts['state'][$state] = static::search($new_search)->count();
 		}
-		foreach(['', 0, 1] as $hide) {
+		foreach(['', 0, 1] as $checked) {
 			$new_search = clone $search;
-			$new_search->hide = $hide;
-			$counts['hide'][$hide] = static::search($new_search)->count();
+			$new_search->checked = $checked;
+			$counts['checked'][$checked] = static::search($new_search)->count();
 		}
 		foreach(['', 0, 1] as $account_data) {
 			$new_search = clone $search;

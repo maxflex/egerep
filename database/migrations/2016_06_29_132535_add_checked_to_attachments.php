@@ -14,6 +14,7 @@ class AddCheckedToAttachments extends Migration
     {
         Schema::table('attachments', function (Blueprint $table) {
             $table->boolean('checked')->default(0);
+            $table->index('checked');
         });
     }
 
@@ -25,7 +26,7 @@ class AddCheckedToAttachments extends Migration
     public function down()
     {
         Schema::table('attachments', function (Blueprint $table) {
-            //
+            $table->dropColumn('checked');
         });
     }
 }
