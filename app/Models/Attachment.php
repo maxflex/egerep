@@ -264,15 +264,6 @@ class Attachment extends Model
            $query->where('attachments.hide', $search->hide);
         }
 
-        /**
-         * количество занятий - есть и атирибут account_data_count.
-         * но чтобы сортировка была правильной, должны через join получить.
-         */
-        // $query->leftJoin('account_datas as ad', function($query) {
-        //     $query->on('ad.tutor_id', '=', 'attachments.tutor_id');
-        //     $query->on('ad.client_id', '=', 'attachments.client_id');
-        // })->groupBy('attachments.id');
-
         $query->select(
             'attachments.*', 'r.request_id',
             'a.created_at AS archive_date', 'a.total_lessons_missing',

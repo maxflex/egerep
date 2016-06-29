@@ -29,6 +29,7 @@ angular
             window.history.pushState(state_id, '', 'attachments/' + state_id.toLowerCase());
 
         $timeout ->
+            $scope.search = if $.cookie("attachments") then JSON.parse($.cookie("attachments")) else {}
             loadAttachments $scope.page
             $scope.current_page = $scope.page
 
