@@ -54,9 +54,9 @@ class SetChecked extends Command
         if ($this->option('three')) {
             $this->_three();
         }
-        // if ($this->option('four')) {
-        //     $this->_four();
-        // }
+        if ($this->option('four')) {
+            $this->_four();
+        }
     }
 
     private function _one()
