@@ -13,7 +13,7 @@ class SetChecked extends Command
      *
      * @var string
      */
-    protected $signature = 'once:checked {--truncate} {--one} {--two}';
+    protected $signature = 'once:checked {--truncate} {--one} {--two} {--three} {--four}';
 
     /**
      * The console command description.
@@ -51,6 +51,12 @@ class SetChecked extends Command
         if ($this->option('two')) {
             $this->_two();
         }
+        if ($this->option('three')) {
+            $this->_three();
+        }
+        // if ($this->option('four')) {
+        //     $this->_four();
+        // }
     }
 
     private function _one()
@@ -86,6 +92,37 @@ class SetChecked extends Command
             ->join('clients', 'attachments.client_id', '=', 'clients.id')
             ->where('account_datas.date', '<=', '2015-07-15')
             ->where('clients.grade', 12)
+            ->whereNullOrZero('archives.total_lessons_missing')
+            ->get([
+                'attachments.id',
+                DB::raw('archives.id as archive_id'),
+                'account_datas.date',
+            ]);
+
+
+        $bar = $this->output->createProgressBar(count($attachments));
+
+        foreach ($attachments as $attachment) {
+            DB::table('attachments')->where('id', $attachment->id)->update(['checked' => 1]);
+            DB::table('archives')->where('id', $attachment->archive_id)->update(['date' => $attachment->date]);
+
+            $bar->advance();
+        }
+        $bar->finish();
+    }
+
+    private function _three()
+    {
+        $attachments = DB::table('attachments')->join('account_datas', function($join) {
+            $join->on('attachments.tutor_id', '=', 'account_datas.id')
+                 ->on('account_datas.date', '=', DB::raw('
+                    (SELECT MAX(date)
+                    FROM account_datas ad
+                    WHERE attachments.tutor_id = ad.tutor_id)
+                '));
+            })
+            ->join('archives', 'attachments.id', '=', 'archives.attachment_id')
+            ->where('account_datas.date', '<=', '2015-03-01')
             ->whereNullOrZero('archives.total_lessons_missing')
             ->get([
                 'attachments.id',
