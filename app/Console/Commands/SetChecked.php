@@ -1,0 +1,70 @@
+<?php
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+use DB;
+use App\Models\Attachment;
+
+class SetChecked extends Command
+{
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'once:checked {--one}';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Command description';
+
+    /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
+        DB::table('attachments')->update([
+            'checked' => 0
+        ]);
+
+        if ($this->option('one')) {
+            $this->_one();
+        }
+    }
+
+    private function _one()
+    {
+        $attachments = Attachment::whereHas('archive', function($query) {
+            $query->whereNullOrZero('total_lessons_missing');
+        })->where('date', '<=', '2015-03-01')->whereRaw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) = 0')->get();
+
+        $bar = $this->output->createProgressBar($attachments->count());
+
+        foreach ($attachments as $attachment) {
+            $date = strtotime($attachment->date);
+            $date = strtotime("+7 day", $date);
+
+            DB::table('attachments')->where('id', $attachment->id)->update(['checked' => 1]);
+            DB::table('archives')->where('attachment_id', $attachment->id)->update(['date' => date('Y-m-d', $date)]);
+
+            $bar->advance();
+        }
+        $bar->finish();
+    }
+}
