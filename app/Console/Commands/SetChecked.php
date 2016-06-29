@@ -81,7 +81,7 @@ class SetChecked extends Command
     private function _two()
     {
         $attachments = DB::table('attachments')->join('account_datas', function($join) {
-            $join->on('attachments.tutor_id', '=', 'account_datas.id')
+            $join->on('attachments.tutor_id', '=', 'account_datas.tutor_id')
                  ->on('account_datas.date', '=', DB::raw('
                     (SELECT MAX(date)
                     FROM account_datas ad
@@ -114,7 +114,7 @@ class SetChecked extends Command
     private function _three()
     {
         $attachments = DB::table('attachments')->join('account_datas', function($join) {
-            $join->on('attachments.tutor_id', '=', 'account_datas.id')
+            $join->on('attachments.tutor_id', '=', 'account_datas.tutor_id')
                  ->on('account_datas.date', '=', DB::raw('
                     (SELECT MAX(date)
                     FROM account_datas ad
