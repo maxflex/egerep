@@ -204,4 +204,107 @@ class Attachment extends Model
             event(new DebtRecalc($this->tutor_id));
         }
     }
+
+    //
+    //
+    //
+
+    public static function counts($search)
+    {
+		foreach(['', 'new', 'inprogress', 'ended'] as $state) {
+			$new_search = clone $search;
+			$new_search->state = $state;
+			$counts['state'][$state] = static::search($new_search)->get()->count();
+		}
+		foreach(['', 0, 1] as $hide) {
+			$new_search = clone $search;
+			$new_search->hide = $hide;
+			$counts['hide'][$hide] = static::search($new_search)->get()->count();
+		}
+		foreach(['', 0, 1] as $account_data) {
+			$new_search = clone $search;
+			$new_search->account_data = $account_data;
+			$counts['account_data'][$account_data] = static::search($new_search)->get()->count();
+		}
+		foreach(['', 0, 1] as $total_lessons_missing) {
+			$new_search = clone $search;
+			$new_search->total_lessons_missing = $total_lessons_missing;
+			$counts['total_lessons_missing'][$total_lessons_missing] = static::search($new_search)->get()->count();
+		}
+		foreach(['', 0, 1] as $forecast) {
+			$new_search = clone $search;
+			$new_search->forecast = $forecast;
+			$counts['forecast'][$forecast] = static::search($new_search)->get()->count();
+		}
+        foreach(['', 0, 1] as $debtor) {
+            $new_search = clone $search;
+            $new_search->debtor = $debtor;
+            $counts['debtor'][$debtor] = static::search($new_search)->get()->count();
+        }
+        return $counts;
+    }
+
+    public static function search($search)
+    {
+        $search = filterParams($search);
+
+        /**
+         * сделал с join чтобы сортировать
+         */
+        $query = static::with(['tutor', 'client']);
+
+        if (isset($search->state)) {
+            $query->searchByState($search->state);
+        }
+
+        $query->join('request_lists as r', 'request_list_id', '=', 'r.id');             /* request_id нужен чтобы генерить правильную ссылку для редактирования */
+        $query->leftJoin('archives as a', 'a.attachment_id', '=', 'attachments.id');
+
+        if (isset($search->hide)) {
+           $query->where('attachments.hide', $search->hide);
+        }
+
+        /**
+         * количество занятий - есть и атирибут account_data_count.
+         * но чтобы сортировка была правильной, должны через join получить.
+         */
+        $query->leftJoin('account_datas as ad', function($query) {
+            $query->on('ad.tutor_id', '=', 'attachments.tutor_id');
+            $query->on('ad.client_id', '=', 'attachments.client_id');
+        })->groupBy('attachments.id');
+
+        $query->select(
+            'attachments.*', 'r.request_id',
+            'a.created_at AS archive_date', 'a.total_lessons_missing',
+            \DB::raw('count(ad.id) as lesson_count')
+        );
+
+        if (isset($search->account_data)) {
+           $query->havingRaw('count(ad.id) ' . ($search->account_data ? '=' : '>') . 0);
+        }
+
+        if (isset($search->forecast)) {
+            if ($search->forecast) {
+                $query->whereNullOrZero('attachments.forecast');
+            } else {
+                $query->where('attachments.forecast', '>', 0);
+            }
+        }
+
+        if (isset($search->debtor)) {
+            $query->whereHas('tutor', function($query) use ($search) {
+                $query->where('debtor', ($search->debtor ? '>' : '='), 0);
+            });
+        }
+
+        if (isset($search->total_lessons_missing)) {
+            if ($search->total_lessons_missing) {
+                $query->whereNullOrZero('a.total_lessons_missing');
+            } else {
+                $query->where('a.total_lessons_missing', '>', 0);
+            }
+        }
+
+        return $query->orderBy('attachments.date', 'desc');
+    }
 }

@@ -50,6 +50,15 @@
                 value="@{{id}}">@{{ name }}</option>
         </select>
     </div>
+    <div>
+        <select ng-model='search.debtor' class='selectpicker' ng-change='filter()'>
+            <option value="" data-subtext="@{{ counts.debtor[''] || '' }}">вечный должник</option>
+            <option disabled>──────────────</option>
+            <option ng-repeat='(id, name) in YesNo'
+                data-subtext="@{{ counts.debtor[id] || '' }}"
+                value="@{{id}}">@{{ name }}</option>
+        </select>
+    </div>
 </div>
 
 <table class="table attachment-table" style="font-size: 0.8em;">
@@ -66,12 +75,7 @@
         </td>
         <td class="col-sm-1">
             <span ng-click="sort('lesson_count')" role="button">
-                Занятия
-            </span>
-        </td>
-        <td class="col-sm-1">
-            <span ng-click="sort('total_lessons_missing')" role="button">
-                Занятия к проводке
+                Занятий
             </span>
         </td>
         <td class="col-sm-1">
@@ -100,10 +104,7 @@
             @{{ attachment.date }}
         </td>
         <td>
-            @{{ attachment.lesson_count | hideZero }}
-        </td>
-        <td>
-            @{{ attachment.archive.total_lessons_missing | hideZero }}
+            @{{ attachment.lesson_count | hideZero }}<plus previous='attachment.lesson_count' count='attachment.archive.total_lessons_missing'></plus>
         </td>
         <td>
             @{{ attachment.forecast | hideZero | number}}

@@ -4,7 +4,7 @@ angular
         $resource 'api/attachments/:id', {},
             update:
                 method: 'PUT'
-    .controller 'AttachmentsIndex', ($rootScope, $scope, $timeout, $http, AttachmentStates, AttachmentService, UserService, PhoneService, Subjects, Grades, AttachmentVisibility, Presence) ->
+    .controller 'AttachmentsIndex', ($rootScope, $scope, $timeout, $http, AttachmentStates, AttachmentService, UserService, PhoneService, Subjects, Grades, AttachmentVisibility, Presence, YesNo) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
@@ -43,6 +43,8 @@ angular
 
             $http.get "api/attachments#{ params }"
             .then (response) ->
-                $scope.data = response.data
-                $scope.attachments = $scope.data.data
+                $scope.data = response.data.data
+                $scope.attachments = response.data.data.data
+                $scope.counts = response.data.counts
                 $rootScope.frontend_loading = false
+                refreshCounts()
