@@ -214,56 +214,50 @@ class Attachment extends Model
 		foreach(['', 'new', 'inprogress', 'ended'] as $state) {
 			$new_search = clone $search;
 			$new_search->state = $state;
-			$counts['state'][$state] = static::search($new_search, true)->count();
+			$counts['state'][$state] = static::search($new_search)->count();
 		}
 		foreach(['', 0, 1] as $hide) {
 			$new_search = clone $search;
 			$new_search->hide = $hide;
-			$counts['hide'][$hide] = static::search($new_search, true)->count();
+			$counts['hide'][$hide] = static::search($new_search)->count();
 		}
 		foreach(['', 0, 1] as $account_data) {
 			$new_search = clone $search;
 			$new_search->account_data = $account_data;
-			$counts['account_data'][$account_data] = static::search($new_search, true)->count();
+			$counts['account_data'][$account_data] = static::search($new_search)->count();
 		}
 		foreach(['', 0, 1] as $total_lessons_missing) {
 			$new_search = clone $search;
 			$new_search->total_lessons_missing = $total_lessons_missing;
-			$counts['total_lessons_missing'][$total_lessons_missing] = static::search($new_search, true)->count();
+			$counts['total_lessons_missing'][$total_lessons_missing] = static::search($new_search)->count();
 		}
 		foreach(['', 0, 1] as $forecast) {
 			$new_search = clone $search;
 			$new_search->forecast = $forecast;
-			$counts['forecast'][$forecast] = static::search($new_search, true)->count();
+			$counts['forecast'][$forecast] = static::search($new_search)->count();
 		}
         foreach(['', 0, 1] as $debtor) {
             $new_search = clone $search;
             $new_search->debtor = $debtor;
-            $counts['debtor'][$debtor] = static::search($new_search, true)->count();
+            $counts['debtor'][$debtor] = static::search($new_search)->count();
         }
         return $counts;
     }
 
-    public static function search($search, $count = false)
+    public static function search($search)
     {
         $search = filterParams($search);
-        $query = static::query();
-        
+
         /**
          * сделал с join чтобы сортировать
          */
-        if (! $count) {
-            $query = static::with(['tutor', 'client']);
-        }
+        $query = static::with(['tutor', 'client']);
 
         if (isset($search->state)) {
             $query->searchByState($search->state);
         }
 
-        if (! $count) {
-            $query->join('request_lists as r', 'request_list_id', '=', 'r.id');             /* request_id нужен чтобы генерить правильную ссылку для редактирования */
-        }
-
+        $query->join('request_lists as r', 'request_list_id', '=', 'r.id');             /* request_id нужен чтобы генерить правильную ссылку для редактирования */
         $query->leftJoin('archives as a', 'a.attachment_id', '=', 'attachments.id');
 
         if (isset($search->hide)) {
@@ -279,13 +273,11 @@ class Attachment extends Model
         //     $query->on('ad.client_id', '=', 'attachments.client_id');
         // })->groupBy('attachments.id');
 
-        if (! $count) {
-            $query->select(
-                'attachments.*', 'r.request_id',
-                'a.created_at AS archive_date', 'a.total_lessons_missing',
-                \DB::raw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) as lesson_count')
-            );
-        }
+        $query->select(
+            'attachments.*', 'r.request_id',
+            'a.created_at AS archive_date', 'a.total_lessons_missing',
+            \DB::raw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) as lesson_count')
+        );
 
         if (isset($search->account_data)) {
            $query->whereRaw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) ' . ($search->account_data ? '=' : '>') . 0);
@@ -313,10 +305,6 @@ class Attachment extends Model
             }
         }
 
-        if (! $count) {
-            $query->orderBy('attachments.date', 'desc');
-        }
-
-        return $query;
+        return $query->orderBy('attachments.date', 'desc');
     }
 }
