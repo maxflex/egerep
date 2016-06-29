@@ -214,32 +214,32 @@ class Attachment extends Model
 		foreach(['', 'new', 'inprogress', 'ended'] as $state) {
 			$new_search = clone $search;
 			$new_search->state = $state;
-			$counts['state'][$state] = static::search($new_search)->get()->count();
+			$counts['state'][$state] = static::search($new_search)->count();
 		}
 		foreach(['', 0, 1] as $hide) {
 			$new_search = clone $search;
 			$new_search->hide = $hide;
-			$counts['hide'][$hide] = static::search($new_search)->get()->count();
+			$counts['hide'][$hide] = static::search($new_search)->count();
 		}
 		foreach(['', 0, 1] as $account_data) {
 			$new_search = clone $search;
 			$new_search->account_data = $account_data;
-			$counts['account_data'][$account_data] = static::search($new_search)->get()->count();
+			$counts['account_data'][$account_data] = static::search($new_search)->count();
 		}
 		foreach(['', 0, 1] as $total_lessons_missing) {
 			$new_search = clone $search;
 			$new_search->total_lessons_missing = $total_lessons_missing;
-			$counts['total_lessons_missing'][$total_lessons_missing] = static::search($new_search)->get()->count();
+			$counts['total_lessons_missing'][$total_lessons_missing] = static::search($new_search)->count();
 		}
 		foreach(['', 0, 1] as $forecast) {
 			$new_search = clone $search;
 			$new_search->forecast = $forecast;
-			$counts['forecast'][$forecast] = static::search($new_search)->get()->count();
+			$counts['forecast'][$forecast] = static::search($new_search)->count();
 		}
         foreach(['', 0, 1] as $debtor) {
             $new_search = clone $search;
             $new_search->debtor = $debtor;
-            $counts['debtor'][$debtor] = static::search($new_search)->get()->count();
+            $counts['debtor'][$debtor] = static::search($new_search)->count();
         }
         return $counts;
     }
@@ -268,19 +268,19 @@ class Attachment extends Model
          * количество занятий - есть и атирибут account_data_count.
          * но чтобы сортировка была правильной, должны через join получить.
          */
-        $query->leftJoin('account_datas as ad', function($query) {
-            $query->on('ad.tutor_id', '=', 'attachments.tutor_id');
-            $query->on('ad.client_id', '=', 'attachments.client_id');
-        })->groupBy('attachments.id');
+        // $query->leftJoin('account_datas as ad', function($query) {
+        //     $query->on('ad.tutor_id', '=', 'attachments.tutor_id');
+        //     $query->on('ad.client_id', '=', 'attachments.client_id');
+        // })->groupBy('attachments.id');
 
         $query->select(
             'attachments.*', 'r.request_id',
             'a.created_at AS archive_date', 'a.total_lessons_missing',
-            \DB::raw('count(ad.id) as lesson_count')
+            \DB::raw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) as lesson_count')
         );
 
         if (isset($search->account_data)) {
-           $query->havingRaw('count(ad.id) ' . ($search->account_data ? '=' : '>') . 0);
+           $query->whereRaw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) ' . ($search->account_data ? '=' : '>') . 0);
         }
 
         if (isset($search->forecast)) {
