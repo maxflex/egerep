@@ -15,11 +15,11 @@
         </select>
     </div>
     <div>
-        <select ng-model='search.hide' class='selectpicker' ng-change='filter()'>
-            <option value="" data-subtext="@{{ counts.hide[''] || '' }}">любая видимость</option>
+        <select ng-model='search.checked' class='selectpicker' ng-change='filter()'>
+            <option value="" data-subtext="@{{ counts.checked[''] || '' }}">все статусы</option>
             <option disabled>──────────────</option>
-            <option ng-repeat='(id, name) in AttachmentVisibility'
-                data-subtext="@{{ counts.hide[id] || '' }}"
+            <option ng-repeat='(id, name) in Checked'
+                data-subtext="@{{ counts.checked[id] || '' }}"
                 value="@{{id}}">@{{ name }}</option>
         </select>
     </div>

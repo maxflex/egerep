@@ -22,7 +22,8 @@ class Attachment extends Model
         'review',
         'comment',
         'forecast',
-        'hide'
+        'hide',
+        'checked'
     ];
     protected $casts = [
         'grade' => 'int',
@@ -260,8 +261,8 @@ class Attachment extends Model
         $query->join('request_lists as r', 'request_list_id', '=', 'r.id');             /* request_id нужен чтобы генерить правильную ссылку для редактирования */
         $query->leftJoin('archives as a', 'a.attachment_id', '=', 'attachments.id');
 
-        if (isset($search->hide)) {
-           $query->where('attachments.hide', $search->hide);
+        if (isset($search->checked)) {
+           $query->where('attachments.checked', $search->checked);
         }
 
         $query->select(

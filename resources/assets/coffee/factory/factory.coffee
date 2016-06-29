@@ -124,10 +124,13 @@ angular.module('Egerep')
     .value 'AttachmentVisibility',
         0: 'скрыто'
         1: 'показано'
+
     .value 'AttachmentStates',
         new: 'новые'
         inprogress: 'рабочие'
         ended: 'завершенные'
+
+    .value 'Checked', ['не проверено', 'проверено']
 
     .value 'ReviewScores',
         1: 1
