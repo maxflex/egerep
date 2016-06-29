@@ -104,7 +104,7 @@ class SetChecked extends Command
 
         foreach ($attachments as $attachment) {
             DB::table('attachments')->where('id', $attachment->id)->update(['checked' => 1]);
-            DB::table('archives')->where('id', $attachment->archive_id)->update(['date' => $attachment->date]);
+            DB::table('archives')->where('id', $attachment->archive_id)->update(['date' => $attachment->last_lesson_date]);
 
             $bar->advance();
         }
