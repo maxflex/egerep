@@ -27,7 +27,7 @@
         <select ng-model='search.signature' class='selectpicker' ng-change='filter()'>
             <option value="" data-subtext="@{{ counts.signature[''] || '' }}">подпись</option>
             <option disabled>──────────────</option>
-            <option ng-repeat='(id, name) in Presence'
+            <option ng-repeat='(id, name) in Presence[0]'
                 data-subtext="@{{ counts.signature[id] || '' }}"
                 value="@{{id}}">@{{ name }}</option>
         </select>
@@ -36,7 +36,7 @@
         <select ng-model='search.comment' class='selectpicker' ng-change='filter()'>
             <option value="" data-subtext="@{{ counts.comment[''] || '' }}">текст отзыва</option>
             <option disabled>──────────────</option>
-            <option ng-repeat='(id, name) in Presence'
+            <option ng-repeat='(id, name) in Presence[0]'
                 data-subtext="@{{ counts.comment[id] || '' }}"
                 value="@{{id}}">@{{ name }}</option>
         </select>

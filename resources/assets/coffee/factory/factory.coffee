@@ -116,37 +116,18 @@ angular.module('Egerep')
         published:   'опубликован'
 
     .value 'Existance', ['созданные', 'требующие создания']
-    .value 'Presence', ['есть', 'отсутствует']
+    .value 'Presence', [
+        ['есть', 'отсутствует'],
+        ['есть', 'нет']
+    ]
 
     .value 'AttachmentVisibility',
         0: 'скрыто'
         1: 'показано'
     .value 'AttachmentStates',
-        new:
-            label:     'новые'
-            page_size: 30
-            sort:
-                field: 'created_at'
-                type:  'asc'
-            track_comment_load: true
-        inprogress:
-            label:     'рабочие'
-            page_size: 200
-            sort:
-                field: 'created_at'
-                type:  'desc'
-        ended:
-            label:     'завершенные'
-            page_size: 200
-            sort:
-                field: 'created_at'
-                type:  'desc'
-        all:
-            label: 'все'
-            page_size: 50
-            sort:
-                field: 'created_at'
-                type:  'desc'
+        new: 'новые'
+        inprogress: 'рабочие'
+        ended: 'завершенные'
 
     .value 'ReviewScores',
         1: 1

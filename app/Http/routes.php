@@ -11,7 +11,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
 
 Route::group(['middleware' => ['web']], function () {
     Route::resource('reviews', 'ReviewsController', ['only' => 'index']);
-    
+
     Route::get('client/{id}', function($id) {
         $request_id = \App\Models\Request::where('client_id', $id)->value('id');
         if ($request_id) {
@@ -30,7 +30,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('requests/{state_id?}', 'RequestsController@index');
     Route::resource('clients', 'ClientsController');
     Route::resource('periods', 'PeriodsController');
-    Route::get('attachments/{state?}', 'AttachmentsController@index');
+    Route::get('attachments', 'AttachmentsController@index');
     // Route::resource('debt', 'DebtController', ['only' => 'index']);
     Route::get('debt/map', 'DebtController@map');
 
