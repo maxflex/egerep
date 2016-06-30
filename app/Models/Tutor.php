@@ -539,13 +539,22 @@ class Tutor extends Model
                         ->where('tutor_id', $id);
 
         $account = $query->orderBy('date_end', 'desc')->first();
-        if ($account) {
-            $account->append('mutual_debts');
+
+        $accounts_in_week = [];
+        if ($query->exists()) {
+            // периоды, которые входят в зону недельной видимости последнего отчета
+            $accounts_in_week = Account::where('tutor_id', $id)
+                                ->where('date_end', '<', $account->date_end)
+                                ->where('date_end', '>', date('Y-m-d', strtotime('-7 day', strtotime($account->date_end))))->get();
         }
+        // if ($account) {
+        //     $account->append('mutual_debts');
+        // }
 
         return [
-            'left'      => $query->count(),
-            'account'   => $account,
+            'left'             => $query->count(),
+            'account'          => $account,
+            'accounts_in_week' => $accounts_in_week,
         ];
     }
 
