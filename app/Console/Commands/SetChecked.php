@@ -13,7 +13,7 @@ class SetChecked extends Command
      *
      * @var string
      */
-    protected $signature = 'once:checked {--truncate} {--one} {--two} {--three} {--four} {--ten}';
+    protected $signature = 'once:checked {--truncate} {--one} {--two} {--three} {--four} {--ten} {--twelve}';
 
     /**
      * The console command description.
@@ -59,6 +59,9 @@ class SetChecked extends Command
         }
         if ($this->option('ten')) {
             $this->_ten();
+        }
+        if ($this->option('twelve')) {
+            $this->_twelve();
         }
     }
 
@@ -166,6 +169,26 @@ class SetChecked extends Command
         $attachments = Attachment::doesntHave('review')->whereHas('archive', function($query) {
             $query->whereNullOrZero('total_lessons_missing');
         })->where('date', '<=', '2015-07-01')->whereRaw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) = 0')->get();
+
+        $bar = $this->output->createProgressBar(count($attachments));
+
+        foreach ($attachments as $attachment) {
+            DB::table('reviews')->insert([
+                'attachment_id' => $attachment->id,
+                'user_id'       => 0,
+                'created_at'    => now(),
+                'score'         => 11,
+                'state'         => 'unpublished',
+            ]);
+        }
+        $bar->finish();
+    }
+
+    public function _twelve()
+    {
+        $attachments = Attachment::doesntHave('review')->whereHas('archive', function($query) {
+            $query->where('date', '<=', '2015-08-01');
+        })->get();
 
         $bar = $this->output->createProgressBar(count($attachments));
 
