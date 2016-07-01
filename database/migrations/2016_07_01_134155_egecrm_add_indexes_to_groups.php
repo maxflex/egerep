@@ -24,6 +24,11 @@ class EgecrmAddIndexesToGroups extends Migration
             $table->index('day');
             $table->index('time');
         });
+        Schema::connection('egecrm')->table('group_schedule', function (Blueprint $table) {
+            $table->index('is_free');
+            $table->index('id_group');
+            $table->index('cancelled');
+        });
     }
 
     /**
