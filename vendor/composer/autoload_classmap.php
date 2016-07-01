@@ -90,6 +90,7 @@ return array(
     'DropTotalCommissionFromAccounts' => $baseDir . '/database/migrations/2016_05_13_190547_drop_total_commission_from_accounts.php',
     'EgecrmAddCodeToReviews' => $baseDir . '/database/migrations/2016_06_28_113029_egecrm_add_code_to_reviews.php',
     'EgecrmAddIndexesToForceReports' => $baseDir . '/database/migrations/2016_06_23_172142_egecrm_add_indexes_to_force_reports.php',
+    'EgecrmAddIndexesToGroups' => $baseDir . '/database/migrations/2016_07_01_134155_egecrm_add_indexes_to_groups.php',
     'EgecrmAddIndexesToTeacherReviews' => $baseDir . '/database/migrations/2016_06_23_180357_egecrm_add_indexes_to_teacher_reviews.php',
     'EgecrmAddIndexesToVj' => $baseDir . '/database/migrations/2016_06_22_111633_egecrm_add_indexes_to_vj.php',
     'EgecrmAddReviewUserIdToStudents' => $baseDir . '/database/migrations/2016_06_27_160333_egecrm_add_review_user_id_to_students.php',
