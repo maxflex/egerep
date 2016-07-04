@@ -48,6 +48,7 @@ angular
         loadTutors = (page) ->
             $rootScope.frontend_loading = true
             params = '?page=' + page
+            params += "&debtor=1" if $scope.debtor
             params += "&global_search=#{ $scope.global_search }" if $scope.global_search
             params += "&state=#{ $scope.state }" if $scope.state isnt null and $scope.state isnt ''
             params += "&user_id=#{ $scope.user_id }" if $scope.user_id

@@ -54,15 +54,6 @@
         </div>
         <div class="col-sm-2">
             <div class="form-group">
-                <select ng-model='search.debtor' class="sp">
-                    <option value=''>вечный должник</option>
-                    <option disabled>──────────────</option>
-                    <option ng-repeat='(value, name) in YesNo' value="@{{value}}">@{{ name }}</option>
-                </select>
-            </div>
-        </div>
-        <div class="col-sm-2">
-            <div class="form-group">
                 <button class="btn btn-primary full-width" ng-click='find()' ng-disabled='loading'>
                     @{{ loading ? 'поиск...' : 'найти' }}
                 </button>

@@ -91,16 +91,10 @@ class DebtController extends Controller
 
     public function map(Request $request)
     {
-        $_debtor = @$request->search['debtor'];
-
         extract(array_filter($request->input('search')));
 
         // показывать в списке нужно преподавателей, у которых а) дебет не = 0 либо б) расчетный дебет не = 0
-        $query = Tutor::with(['markers'])->where('tutors.debt_calc', '>', 0);
-
-        if (isset($_debtor) && ! isBlank($_debtor)) {
-            $query->where('tutors.debtor', $_debtor);
-        }
+        $query = Tutor::with(['markers'])->where('tutors.debt_calc', '>', 0)->where('debtor', 0);
 
         if (isset($debt_calc_from)) {
             $query->where('tutors.debt_calc', '>=', $debt_calc_from);

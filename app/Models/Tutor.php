@@ -408,6 +408,16 @@ class Tutor extends Model
     }
 
     /**
+     * Search by debtor
+     */
+    public function scopeSearchByDebtor($query, $debtor)
+    {
+        if (isset($debtor)) {
+            return $query->where('debtor', $debtor);
+        }
+    }
+
+    /**
      * Search by user id
      */
     public function scopeSearchByUser($query, $user_id)

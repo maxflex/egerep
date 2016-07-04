@@ -2,6 +2,7 @@
 <a href="requests" class="list-group-item">Заявки</a>
 <a href="attachments" class="list-group-item">Стыковки</a>
 <a href="tutors" class="list-group-item">Преподаватели</a>
+<a href="tutors?debtor=1" class="list-group-item">Должники</a>
 @if (\App\Models\User::fromSession()->show_accounts)
     <a href="periods" class="list-group-item">Расчеты</a>
 @endif
