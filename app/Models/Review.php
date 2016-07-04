@@ -62,7 +62,7 @@ class Review extends Model
 			$new_search->comment = $comment;
 			$counts['comment'][$comment] = static::search($new_search)->count();
 		}
-        foreach(array_merge([""], range(1, 11)) as $score) {
+        foreach(array_merge([""], range(1, 12)) as $score) {
             $new_search = clone $search;
             $new_search->score = $score;
             $counts['score'][$score] = static::search($new_search)->count();
