@@ -20,6 +20,7 @@ return array(
     'AddFieldsToTeachers' => $baseDir . '/database/migrations/2016_01_15_122608_add_fields_to_teachers.php',
     'AddForecastToAttachment' => $baseDir . '/database/migrations/2016_02_23_224011_add_forecast_to_attachment.php',
     'AddForeignKeys' => $baseDir . '/database/migrations/2016_05_19_180538_add_foreign_keys.php',
+    'AddGoogleIdToRequests' => $baseDir . '/database/migrations/2016_07_04_170547_add_google_id_to_requests.php',
     'AddGradesToTeachers' => $baseDir . '/database/migrations/2016_02_15_193218_add_grades_to_teachers.php',
     'AddHasClientsToTeachers' => $baseDir . '/database/migrations/2016_03_16_172334_add_has_clients_to_teachers.php',
     'AddHideToAttachments' => $baseDir . '/database/migrations/2016_05_17_182544_add_hide_to_attachments.php',

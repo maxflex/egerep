@@ -78,7 +78,8 @@ class ExternalController extends Controller
 			$comment = breakLines([($new_tutor_id ? "Репетитор " . $new_tutor_id : null), $data->message, "Метро: " . $data->metro_name]);
 			// создаем заявку клиента
 	        $client->requests()->create([
-	            'comment' => $comment,
+	            'comment' 	=> $comment,
+				'google_id'	=> $data->google_id,
 	        ]);
 		}
     }

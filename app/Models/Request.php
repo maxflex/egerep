@@ -28,6 +28,7 @@ class Request extends Model
         'lists',
         'id_a_pers',
         'deny_reason',
+        'google_id'
     ];
 
     // ------------------------------------------------------------------------
