@@ -59,6 +59,15 @@
                 value="@{{id}}">@{{ name }}</option>
         </select>
     </div>
+    <div>
+        <select ng-model='search.hide' class='selectpicker' ng-change='filter()'>
+            <option value="" data-subtext="@{{ counts.hide[''] || '' }}">все</option>
+            <option disabled>──────────────</option>
+            <option ng-repeat='(id, name) in AttachmentVisibility'
+                data-subtext="@{{ counts.hide[id] || '' }}"
+                value="@{{id}}">@{{ name }}</option>
+        </select>
+    </div>
 </div>
 
 <table class="table attachment-table" style="font-size: 0.8em;">

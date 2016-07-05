@@ -259,6 +259,11 @@ class Attachment extends Model
             $new_search->debtor = $debtor;
             $counts['debtor'][$debtor] = static::search($new_search)->count();
         }
+        foreach(['', 0, 1] as $hide) {
+            $new_search = clone $search;
+            $new_search->hide = $hide;
+            $counts['hide'][$hide] = static::search($new_search)->count();
+        }
         return $counts;
     }
 
@@ -298,6 +303,9 @@ class Attachment extends Model
             } else {
                 $query->where('attachments.forecast', '>', 0);
             }
+        }
+        if (isset($search->hide)) {
+            $query->where('attachments.hide', $search->hide);
         }
 
         if (isset($search->debtor)) {
