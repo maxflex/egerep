@@ -122,8 +122,8 @@ angular.module('Egerep')
     ]
 
     .value 'AttachmentVisibility',
-        0: 'скрыто'
-        1: 'показано'
+        0: 'показано'
+        1: 'скрыто'
 
     .value 'AttachmentStates',
         new: 'новые'
