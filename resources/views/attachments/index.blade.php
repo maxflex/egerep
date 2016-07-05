@@ -60,7 +60,7 @@
         </select>
     </div>
     <div>
-        <select ng-model='search.hide' class='selectpicker' ng-change='filter()'>
+        <select ng-model='search.hide' class='selectpicker fix-viewport' ng-change='filter()'>
             <option value="" data-subtext="@{{ counts.hide[''] || '' }}">все</option>
             <option disabled>──────────────</option>
             <option ng-repeat='(id, name) in AttachmentVisibility'

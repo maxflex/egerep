@@ -30831,4 +30831,7 @@ table.summary-table.left-align tr td {
     flex: 1;
     margin-right: 10px; }
 
+.fix-viewport > .dropdown-menu {
+  left: -60px; }
+
 /*# sourceMappingURL=app.css.map */

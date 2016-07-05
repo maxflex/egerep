@@ -3676,3 +3676,9 @@ table.summary-table.left-align tr td {
 		margin-right: 10px;
 	}
 }
+
+.fix-viewport {
+	& > .dropdown-menu {
+		left: -60px;
+	}
+}
