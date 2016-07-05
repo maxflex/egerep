@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use App\Events\DebtRecalc;
+use DB;
 
 class Attachment extends Model
 {
@@ -147,6 +148,22 @@ class Attachment extends Model
     public function scopeNewest($query)
     {
         return $query->doesntHave('archive')->whereNullOrZero('forecast');
+    }
+
+    /**
+     * Стыковка без занятий
+     */
+    public function scopeNoLessons($query)
+    {
+        return $query->whereRaw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) = 0');
+    }
+
+    /**
+     * Стыковка с занятиями
+     */
+    public function scopeHasLessons($query)
+    {
+        return $query->whereRaw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) > 0');
     }
 
     /**
@@ -298,5 +315,20 @@ class Attachment extends Model
         }
 
         return $query->orderBy('attachments.date', 'desc');
+    }
+
+    /**
+     * Получить дату последнего занятия по ID стыковки
+     */
+    public static function getLastLessonDate($attachment_id)
+    {
+        return DB::table('attachments')->join(DB::raw('(
+              SELECT MAX(date) as last_lesson_date, tutor_id, client_id
+              FROM account_datas
+              GROUP BY tutor_id, client_id
+          ) ad'), function($join) {
+            $join->on('attachments.tutor_id', '=', 'ad.tutor_id')
+                 ->on('attachments.client_id', '=', 'ad.client_id');
+            })->where('id', $attachment_id)->value('last_lesson_date');
     }
 }

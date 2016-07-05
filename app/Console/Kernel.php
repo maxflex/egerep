@@ -35,6 +35,7 @@ class Kernel extends ConsoleKernel
         Commands\UpdateRequestUserId::class,
         Commands\ReviewsCreate::class,
         Commands\SetChecked::class,
+        Commands\Tutors::class,
     ];
 
     /**
