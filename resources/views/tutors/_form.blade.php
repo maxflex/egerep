@@ -287,21 +287,6 @@
                 <label>Расширенное описание</label>
                 <textarea class="md-input" ng-model="tutor.comment_extended"></textarea>
             </md-input-container>
-            <md-input-container class="md-block" style="margin-top: 20px">
-                <div class="row">
-                    <div class="col-sm-12">
-                            <div class="inline-block">Оценка эксперта</div>
-                            <md-input-container class="md-block inline-input">
-                                <textarea class="md-input digits-only" ng-model="tutor.expert_mark" maxlength="2"></textarea>
-                            </md-input-container>
-                            <div class="inline-block"><plural count='tutor.expert_mark' type='score' text-only></plural>. Стоимость проведения 135-минутного занятия</div>
-                            <md-input-container class="md-block  inline-input">
-                                <textarea class="md-input" ng-model="tutor.rubbles" maxlength="4"></textarea>
-                            </md-input-container>
-                            <div class="inline-block"><plural count='tutor.rubbles' type='rubbles' text-only></plural></div>
-                    </div>
-                </div>
-            </md-input-container>
 
             <section class='blue-section'>
                 <div class="row">

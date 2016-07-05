@@ -85,6 +85,7 @@ return array(
     'DropDebtFromAccounts' => $baseDir . '/database/migrations/2016_06_03_154739_drop_debt_from_accounts.php',
     'DropDebtFromTutors' => $baseDir . '/database/migrations/2016_06_03_182030_drop_debt_from_tutors.php',
     'DropDuplicateFormClients' => $baseDir . '/database/migrations/2016_06_05_103258_drop_duplicate_form_clients.php',
+    'DropExpertColumnsFromTutors' => $baseDir . '/database/migrations/2016_07_05_201806_drop_expert_columns_from_tutors.php',
     'DropMoscowmapIdFromStations' => $baseDir . '/database/migrations/2016_03_17_110405_drop_moscowmap_id_from_stations.php',
     'DropObsoleteFieldsFromTutors' => $baseDir . '/database/migrations/2016_06_05_135150_drop_obsolete_fields_from_tutors.php',
     'DropPublicFromTutors' => $baseDir . '/database/migrations/2016_06_17_175633_drop_public_from_tutors.php',

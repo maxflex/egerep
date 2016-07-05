@@ -59,8 +59,6 @@ class Tutor extends Model
         'lesson_duration',
         'ready_to_work',
         'comment',
-        'expert_mark',
-        'rubbles',
         'description',
         'login',
         'password',
