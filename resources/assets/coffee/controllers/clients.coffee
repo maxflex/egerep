@@ -488,7 +488,7 @@ angular
 
         # determine whether tutor had already been added
         $scope.added = (tutor_id) ->
-            tutor_id in $scope.tutor_ids
+            tutor_id in $scope.tutor_ids.map(Number)
 
         # rebind draggable
         rebindDraggable = ->
@@ -497,7 +497,7 @@ angular
                 revert: (valid) ->
                     return true if valid
                     $scope.tutor_list   = removeById($scope.tutor_list, $scope.dragging_tutor.id)
-                    $scope.tutor_ids    = _.without($scope.tutor_ids, $scope.dragging_tutor.id)
+                    $scope.tutor_ids    = _.without($scope.tutor_ids.map(Number), $scope.dragging_tutor.id)
                     $scope.$apply()
                     repaintChosen()
 
@@ -594,18 +594,19 @@ angular
         # add or remove tutor from list
         $scope.addOrRemove = (tutor_id) ->
             tutor_id = parseInt(tutor_id)
-            if tutor_id in $scope.tutor_ids
-                $scope.tutor_ids = _.without($scope.tutor_ids, tutor_id)
+            $scope.tutor_ids = [] if $scope.tutor_ids is undefined
+            if tutor_id in $scope.tutor_ids.map(Number)
+                $scope.tutor_ids = _.without($scope.tutor_ids.map(Number), tutor_id)
             else
                 $scope.tutor_ids.push(tutor_id)
             repaintChosen()
 
         repaintChosen = ->
             $scope.markers2.forEach (marker) ->
-                if marker.tutor.id in $scope.tutor_ids and not marker.chosen
+                if marker.tutor.id in $scope.tutor_ids.map(Number) and not marker.chosen
                     marker.chosen = true
                     marker.setIcon ICON_BLUE
-                if marker.tutor.id not in $scope.tutor_ids and marker.chosen
+                if marker.tutor.id not in $scope.tutor_ids.map(Number) and marker.chosen
                     marker.chosen = false
                     marker.setIcon getMarkerType(marker.type)
 
