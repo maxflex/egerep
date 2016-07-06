@@ -18,14 +18,19 @@ class LogAction extends Event
      */
     public function __construct($model, $type = 'update')
     {
-        if ($model->getDrity()) {
-            DB::table('logs')->insert([
-                'user_id'   => userIdOrSystem(),
-                'data'      => static::_generateData($model),
-                'table'     => $model->getTable(),
-                'type'      => $type,
-                'created_at'=> now(),
-            ]);
+        try {
+            if ($model->getDirty()) {
+                DB::table('logs')->insert([
+                    'user_id'   => userIdOrSystem(),
+                    'data'      => static::_generateData($model),
+                    'table'     => $model->getTable(),
+                    'type'      => $type,
+                    'created_at'=> now(),
+                ]);
+            }
+        } catch (\Exception $e) {
+            \Log::info(get_class($this));
+            \Log::info('Error: ' . $e->getMessage());
         }
     }
 

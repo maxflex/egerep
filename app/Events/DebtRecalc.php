@@ -24,7 +24,6 @@ class DebtRecalc extends Event
      */
     public function __construct($tutor_id = null)
     {
-        \Log::info('Recalc start for tutor_id: ' . $tutor_id);
 
         $query = Account::query();
 
@@ -39,17 +38,23 @@ class DebtRecalc extends Event
         }
 
         // Преподаватели с клиентами, но без встреч
-        $query = DB::table('tutors')
-            ->join('attachments', 'attachments.tutor_id', '=', 'tutors.id')
+        $query = DB::table('tutors');
+
+        if ($tutor_id) {
+            $query->where('tutors.id', $tutor_id);
+        }
+
+        // #1082 сначала очищаем значения
+        $query->newQuery()->update([
+            'debt_calc' => 0,
+        ]);
+
+        $query->join('attachments', 'attachments.tutor_id', '=', 'tutors.id')
             ->leftJoin('accounts', 'accounts.tutor_id', '=', 'tutors.id')
             ->whereNull('accounts.id')
             ->orderBy('attachments.date', 'asc')
             ->select('attachments.tutor_id', 'attachments.date')
             ->groupBy('attachments.tutor_id');
-
-        if ($tutor_id) {
-            $query->where('tutors.id', $tutor_id);
-        }
 
         $no_accounts = $query->get();
 

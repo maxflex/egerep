@@ -32,7 +32,7 @@ class Review extends Model
     protected static function boot()
     {
         static::saving(function ($model) {
-            if (!$model->exists) {
+            if (! $model->exists) {
                 $model->user_id = User::fromSession()->id;
             }
         });
