@@ -23,7 +23,7 @@
                         <td style='width: 10%'>
                             @include('modules.subjects-list', ['subjects' => 'tutor.subjects', 'type' => 'three_letters'])
                         </td>
-                        <td  style='width: 7%'>
+                        <td style='width: 7%'>
                             <plural count='tutor.age' type='age'></plural>
                         </td>
                         <td  style='width: 3%'>

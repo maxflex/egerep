@@ -53,6 +53,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('search', 'TutorsController@index');
 
     Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
+        Route::get('tutors/list', 'TutorsController@lists');
         Route::post('tutors/filtered', 'TutorsController@filtered');
         Route::post('tutors/counts', 'TutorsController@counts');
         Route::post('tutors/merge', 'TutorsController@merge');

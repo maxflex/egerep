@@ -911,6 +911,9 @@
     };
     $timeout(function() {
       $scope.users = User.query();
+      $http.get('api/tutors/list').success(function(tutors) {
+        return $scope.tutors = tutors;
+      });
       if ($scope.id > 0) {
         return $scope.client = Client.get({
           id: $scope.id
@@ -920,10 +923,7 @@
           }) : client.requests[0];
           $scope.parseHash();
           sp('list-subjects', 'выберите предмет');
-          $rootScope.frontendStop();
-          return $timeout(function() {
-            return bindDroppable();
-          });
+          return $rootScope.frontendStop();
         });
       } else {
         $scope.client = $scope.new_client;

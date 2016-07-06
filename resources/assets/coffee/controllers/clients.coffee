@@ -92,6 +92,10 @@ angular
         # get teacher
         $timeout ->
             $scope.users = User.query()
+            
+            $http.get 'api/tutors/list'
+                .success (tutors) ->
+                    $scope.tutors = tutors
 
             # $rootScope.frontendStop() - 2 раза потому что Client.get загружает клиента асинхронно. если сделать общим
             # рендер телефонных номеров может сломаться, т. к. она сработает как только frontendStopped.
@@ -101,8 +105,6 @@ angular
                     $scope.parseHash()
                     sp 'list-subjects', 'выберите предмет'
                     $rootScope.frontendStop()
-                    $timeout ->
-                        bindDroppable()
             else
                 $scope.client = $scope.new_client
                 $scope.client.requests = [$scope.new_request]
