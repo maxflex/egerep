@@ -137,15 +137,6 @@ class TutorsController extends Controller
         Tutor::find($id)->delete();
     }
 
-    /**
-     * Get a list of only tutor_id => tutor full name
-     */
-     public function lists()
-     {
-         return Tutor::selectRaw("CONCAT_WS(' ', last_name, first_name, middle_name) as name, id")
-            ->pluck('name', 'id');
-     }
-
      public function deletePhoto($id)
      {
         $tutor = Tutor::find($id);
