@@ -27,7 +27,7 @@
             <b>Статус заявки:</b> <span class="link-like"
                 ng-click="toggleEnum(selected_request, 'state', RequestStates)">@{{ RequestStates[selected_request.state] }}</span>
         </div>
-        <div class='mbs' ng-show='tutor_ids.length > 0'>
+        <div class='mbs' ng-show='request_tutor_ids.length > 0'>
             <b>Отмеченные репетиторы в заявке:</b>
             <span ng-repeat="tutor_id in request_tutor_ids" style="display: block">
                 <a href="tutors/@{{ tutor_id }}/edit" target="_blank">@{{ tutors[tutor_id] }}</a>
