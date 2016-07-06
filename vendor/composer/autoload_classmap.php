@@ -69,6 +69,7 @@ return array(
     'CreateClientsTable' => $baseDir . '/database/migrations/2016_01_20_161717_create_clients_table.php',
     'CreateCommentsTable' => $baseDir . '/database/migrations/2016_02_15_004853_create_comments_table.php',
     'CreateEmailsTable' => $baseDir . '/database/migrations/2016_02_16_173835_create_emails_table.php',
+    'CreateLogsTable' => $baseDir . '/database/migrations/2016_07_06_133957_create_logs_table.php',
     'CreateMarkersTable' => $baseDir . '/database/migrations/2016_01_20_083340_create_markers_table.php',
     'CreateMetrosTable' => $baseDir . '/database/migrations/2016_02_24_105830_create_metros_table.php',
     'CreatePhoneDuplicatesTable' => $baseDir . '/database/migrations/2016_06_05_103425_create_phone_duplicates_table.php',

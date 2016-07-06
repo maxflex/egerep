@@ -16,6 +16,7 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\ResponsibleUserChanged' => [],
         'App\Events\PhoneChanged' => [],
         'App\Events\DebtRecalc' => [],
+        'App\Events\LogAction' => [],
     ];
 
     /**

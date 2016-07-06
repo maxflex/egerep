@@ -92,7 +92,7 @@ angular
         # get teacher
         $timeout ->
             $scope.users = User.query()
-            
+
             $http.get 'api/tutors/list'
                 .success (tutors) ->
                     $scope.tutors = tutors
@@ -270,11 +270,11 @@ angular
         $scope.$watch 'selected_request.comment', (newVal, oldVal) ->
             return if newVal is undefined and oldVal is undefined
             newVal = oldVal if newVal is undefined
-            $scope.tutor_ids = []
+            $scope.request_tutor_ids = []
             matches = newVal.match /Репетитор [\d]+/gi
             $.each matches, (index, match) ->
                 tutor_id = match.match /[\d]+/gi
-                $scope.tutor_ids.push parseInt(tutor_id)
+                $scope.request_tutor_ids.push parseInt(tutor_id)
 
         # refresh selectpicker on $selected_attachment update
         $scope.$watch 'selected_attachment', (newVal, oldVal) ->

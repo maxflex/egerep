@@ -2,6 +2,9 @@
 
 namespace Illuminate\Database\Eloquent;
 
+// @custom
+use App\Events\LogAction;
+
 use Closure;
 use DateTime;
 use Exception;
@@ -1553,7 +1556,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
         // Unset virtual attributes before save
         // @custom
         foreach (static::$virtual as $attribute) {
-            \Log::info('Unsetting ' . $attribute);
             unset($this->{$attribute});
         }
 
@@ -1568,6 +1570,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
         // ID attribute on the model to the value of the newly inserted row's ID
         // which is typically an auto-increment value managed by the database.
         else {
+            # event(new LogAction($this, 'create'));
             $saved = $this->performInsert($query, $options);
         }
 
