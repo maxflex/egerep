@@ -20,7 +20,7 @@
                         <td style='width: 25%'>
                             <a href="tutors/@{{ tutor.id }}/edit">@{{ tutor.full_name }}</a>
                         </td>
-                        <td style='width: 7%'>
+                        <td style='width: 10%'>
                             @include('modules.subjects-list', ['subjects' => 'tutor.subjects', 'type' => 'three_letters'])
                         </td>
                         <td  style='width: 5%'>
