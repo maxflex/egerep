@@ -63,7 +63,7 @@ class DebtRecalc extends Event
             static::recalcDebt($account->date, now(true), $account->tutor_id);
         }
 
-        if ($tutor_id) {
+        if (! $tutor_id) {
             Settings::set('debt_updated', now());
         }
     }
