@@ -45,7 +45,8 @@ class DebtRecalc extends Event
         }
 
         // #1082 сначала очищаем значения
-        $query->newQuery()->update([
+        $update_query = clone $query;
+        $update_query->update([
             'debt_calc' => 0,
         ]);
 
