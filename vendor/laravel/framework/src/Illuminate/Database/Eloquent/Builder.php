@@ -66,6 +66,13 @@ class Builder
     protected $scopes = [];
 
     /**
+     * Removed global scopes.
+     *
+     * @var array
+     */
+    protected $removedScopes = [];
+
+    /**
      * Create a new Eloquent query builder instance.
      *
      * @param  \Illuminate\Database\Query\Builder  $query
@@ -134,6 +141,16 @@ class Builder
         }
 
         return $this;
+    }
+
+    /**
+     * Get an array of global scopes that were removed from the query.
+     *
+     * @return array
+     */
+    public function removedScopes()
+    {
+        return $this->removedScopes;
     }
 
     /**
@@ -908,6 +925,24 @@ class Builder
     }
 
     /**
+     * Merge the constraints from a relation query to the current query.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $relation
+     * @return \Illuminate\Database\Eloquent\Builder|static
+     */
+    public function mergeModelDefinedRelationConstraints(Builder $relation)
+    {
+        $removedScopes = $relation->removedScopes();
+        $relationQuery = $relation->getQuery();
+        // Here we have some relation query and the original relation. We need to copy over any
+        // where clauses that the developer may have put in the relation definition function.
+        // We need to remove any global scopes that the developer already removed as well.
+        return $this->withoutGlobalScopes($removedScopes)->mergeWheres(
+            $relationQuery->wheres, $relationQuery->getBindings()
+        );
+    }
+
+    /**
      * Merge the "wheres" from a relation query to a has query.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $hasQuery
@@ -955,6 +990,33 @@ class Builder
 
         $this->eagerLoad = array_merge($this->eagerLoad, $eagers);
 
+        return $this;
+    }
+
+    /**
+     * Add subselect queries to count the relations.
+     *
+     * @param  mixed  $relations
+     * @return $this
+     */
+    public function withCount($relations)
+    {
+        if (is_null($this->query->columns)) {
+            $this->query->select(['*']);
+        }
+        $relations = is_array($relations) ? $relations : func_get_args();
+        foreach ($this->parseWithRelations($relations) as $name => $constraints) {
+            // Here we will get the relationship count query and prepare to add it to the main query
+            // as a sub-select. First, we'll get the "has" query and use that to get the relation
+            // count query. We will normalize the relation name then append _count as the name.
+            $relation = $this->getHasRelationQuery($name);
+            $query = $relation->getRelationCountQuery(
+                $relation->getRelated()->newQuery(), $this
+            );
+            $query->_callScope($constraints);
+            $query->mergeModelDefinedRelationConstraints($relation->getQuery());
+            $this->selectSub($query->toBase(), snake_case($name).'_count');
+        }
         return $this;
     }
 
@@ -1042,6 +1104,28 @@ class Builder
             $this->nestWheresForScope($query, $originalWhereCount);
         }
 
+        return $result;
+    }
+
+    /**
+     * Apply the given scope on the current builder instance.
+     *
+     * @param  callable $scope
+     * @param  array $parameters
+     * @return mixed
+     */
+    protected function _callScope(callable $scope, $parameters = [])
+    {
+        array_unshift($parameters, $this);
+        $query = $this->getQuery();
+        // We will keep track of how many wheres are on the query before running the
+        // scope so that we can properly group the added scope constraints in the
+        // query as their own isolated nested where statement and avoid issues.
+        $originalWhereCount = count($query->wheres);
+        $result = call_user_func_array($scope, $parameters) ?: $this;
+        if ($this->shouldNestWheresForScope($query, $originalWhereCount)) {
+            $this->nestWheresForScope($query, $originalWhereCount);
+        }
         return $result;
     }
 
