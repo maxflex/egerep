@@ -24,6 +24,8 @@ class DebtRecalc extends Event
      */
     public function __construct($tutor_id = null)
     {
+        // #1082 сначала очищаем значения
+        static::_resetDebt($tutor_id);
 
         $query = Account::query();
 
@@ -43,12 +45,6 @@ class DebtRecalc extends Event
         if ($tutor_id) {
             $query->where('tutors.id', $tutor_id);
         }
-
-        // #1082 сначала очищаем значения
-        $update_query = clone $query;
-        $update_query->update([
-            'debt_calc' => 0,
-        ]);
 
         $query->join('attachments', 'attachments.tutor_id', '=', 'tutors.id')
             ->leftJoin('accounts', 'accounts.tutor_id', '=', 'tutors.id')
@@ -166,6 +162,19 @@ class DebtRecalc extends Event
         return .72;
     }
 
+    /**
+     * Очищаем значения
+     */
+    private static function _resetDebt($tutor_id)
+    {
+        $query = Tutor::query();
+        if ($tutor_id) {
+            $query->where('tutor_id', $tutor_id);
+        }
+        $query->update([
+            'debt_calc' => 0,
+        ]);
+    }
 
     /**
      * Get the channels the event should be broadcast on.
