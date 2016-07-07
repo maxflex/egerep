@@ -231,6 +231,14 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     public $wasRecentlyCreated = false;
 
     /**
+     * Indicates if the model was deleted during the current request lifecycle.
+     *
+     * @var bool
+     * @custom
+     */
+    public $wasRecentlyDeleted = false;
+
+    /**
      * Indicates whether attributes are snake cased on arrays.
      *
      * @var bool
@@ -1222,6 +1230,10 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
             $this->exists = false;
 
+            // @custom
+            $this->wasRecentlyDeleted = true;
+            event(new LogAction($this));
+
             // Once the model has been deleted, we will fire off the deleted event so that
             // the developers may hook into post-delete operations. We will then return
             // a boolean true as the delete is presumably successful on the database.
@@ -1583,7 +1595,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
         // @custom
         if ($this->loggable) {
-        //    event(new LogAction($this));
+           event(new LogAction($this));
         }
 
         if ($saved) {

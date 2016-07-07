@@ -18,7 +18,7 @@ class CreateLogsTable extends Migration
             $table->integer('row_id');
             $table->integer('user_id');
             $table->index('user_id');
-            $table->text('data');
+            $table->text('data')->nullable();
             $table->string('type', 100);
             $table->datetime('created_at');
         });
