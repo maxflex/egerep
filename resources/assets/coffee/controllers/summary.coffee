@@ -5,7 +5,8 @@ angular
         $rootScope.frontend_loading = true
         $scope.debt_updating = false
 
-        $scope.getSummarySum = (summary) ->
+        $scope.getSum = (summary) ->
+            console.log(summary, parseInt(summary.sum), parseInt(summary.debt_sum), parseInt(summary.sum) + parseInt(summary.debt_sum))
             return parseInt(summary.sum) + parseInt(summary.debt_sum)
 
         $scope.updateDebt = ->
