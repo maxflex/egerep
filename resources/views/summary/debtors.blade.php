@@ -21,7 +21,7 @@
                     @{{ summary.cnt | hideZero }}
                 </td>
                 <td class="text-center">
-                    @{{ (parseInt(summary.sum) + parseInt(summary.debt_sum)) | hideZero | number }}
+                    @{{ getSummarySum(summary) | hideZero | number }}
                 </td>
             </tr>
         </tbody>
