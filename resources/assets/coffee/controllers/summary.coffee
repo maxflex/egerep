@@ -6,8 +6,7 @@ angular
         $scope.debt_updating = false
 
         $scope.getSum = (summary) ->
-            console.log(summary, parseInt(summary.sum), parseInt(summary.debt_sum), parseInt(summary.sum) + parseInt(summary.debt_sum))
-            return parseInt(summary.sum) + parseInt(summary.debt_sum)
+            (parseInt(summary.sum) or 0) + (parseInt(summary.debt_sum) or 0)
 
         $scope.updateDebt = ->
             $scope.debt_updating = true
