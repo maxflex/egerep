@@ -8,6 +8,7 @@ class PhoneDuplicate extends Model
 {
     protected $fillable = ['phone', 'entity_type'];
     public $timestamps = false;
+    public $loggable = false;
 
     public static function exists($phone, $entity_type)
     {
