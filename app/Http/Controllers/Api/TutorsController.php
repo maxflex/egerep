@@ -31,7 +31,6 @@ class TutorsController extends Controller
     {
         return Tutor::searchByState($request->state)
                     ->searchByUser($request->user_id)
-                    ->searchByDebtor($request->debtor)
                     ->searchByLastNameAndPhone($request->global_search)
                     ->searchByPublishedState($request->published_state)
                     ->paginate(30, ['clients_count'])

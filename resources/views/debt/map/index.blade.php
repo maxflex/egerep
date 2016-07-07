@@ -15,6 +15,7 @@
             <div class="options-list">
                 <span ng-class="{'link-like': mode !== 'map'}" ng-click="mode = 'map'">карта</span>
                 <span ng-class="{'link-like': mode !== 'list'}" ng-click="mode = 'list'">список</span>
+                <span ng-class="{'link-like': mode !== 'debtor'}" ng-click="mode = 'debtor'">вечные должники</span>
             </div>
         </div>
     </div>

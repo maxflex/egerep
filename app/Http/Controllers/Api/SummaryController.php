@@ -52,7 +52,7 @@ class SummaryController extends Controller
             default:
                 $return = $this->getByDay('summary', $page);
         }
-        echo json_encode(array_reverse($return));
+        return array_reverse($return);
     }
 
     public function payments(Request $request)
@@ -74,7 +74,29 @@ class SummaryController extends Controller
             default:
                 $return = $this->getByDay('payments', $page);
         }
-        echo json_encode(array_reverse($return));
+        return array_reverse($return);
+    }
+
+    public function debtors(Request $request)
+    {
+        $return = [];
+
+        $page   = intval($request->page) ? $request->page - 1 : 0;
+        switch ($request->filter) {
+            case 'week':
+                $return = $this->getByWeek('debtors', $page);
+                break;
+            case 'month':
+                $return = $this->getByMonth('debtors', $page);
+                break;
+            case 'year':
+                $return = $this->getByYear('debtors');
+                break;
+            case 'day':
+            default:
+                $return = $this->getByDay('debtors', $page);
+        }
+        return array_reverse($return);
     }
 
     private function getByDay($type, $page)
@@ -158,6 +180,9 @@ class SummaryController extends Controller
     {
         $return = [];
         switch ($type) {
+            case 'debtors':
+                $return = $this->_getDebtorsData($start, $end);
+                break;
             case 'payments':
                 $return = $this->_getPaymentsData($start, $end);
                 break;
@@ -262,5 +287,19 @@ class SummaryController extends Controller
         $return['mutual_debts']['sum'] = $mutual_debts;
         $return['total'] = $total + $mutual_debts;
         return $return;
+    }
+
+    private function _getDebtorsData($start, $end)
+    {
+        return DB::table('tutors')
+            ->join(DB::raw('(
+                SELECT MAX(date_end) as last_account_date, tutor_id
+                FROM accounts
+                GROUP BY tutor_id
+                ) a'), 'tutors.id', '=', 'a.tutor_id')
+            ->where('debtor', 1)
+            ->whereRaw("last_account_date >= '{$start}'")
+            ->whereRaw("last_account_date <= '{$end}'")
+            ->select(DB::raw('count(*) as cnt, sum(debt_calc) as sum'))->first();
     }
 }

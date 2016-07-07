@@ -19,17 +19,22 @@ angular
         $scope.loading = false
 
         # search params
-        $scope.search =
-            debtor: '0'
+        $scope.search = {}
 
         $scope.tutor_ids = []
 
         $scope.sortType     = 'debt_calc'
         $scope.sortReverse  = false
 
+        $scope.$watch 'mode', (newVal, oldVal) ->
+            if newVal is 'debtor' and $scope.debtors is undefined
+                TutorService.getDebtors().then (response) ->
+                    $scope.debtors = response.data
+
         $scope.totalLastDebt = ->
             sum = 0
-            $.each $scope.tutors, (index, tutor) ->
+            tutors = if $scope.mode == 'list' then $scope.tutors else $scope.debtors
+            $.each tutors, (index, tutor) ->
                 if tutor.last_account_info isnt null
                     debt = tutor.last_account_info.debt
                     sum += if tutor.last_account_info.debt_type then +debt else -debt

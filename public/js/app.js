@@ -1485,16 +1485,22 @@
     markerClusterer = void 0;
     $scope.mode = 'map';
     $scope.loading = false;
-    $scope.search = {
-      debtor: '0'
-    };
+    $scope.search = {};
     $scope.tutor_ids = [];
     $scope.sortType = 'debt_calc';
     $scope.sortReverse = false;
+    $scope.$watch('mode', function(newVal, oldVal) {
+      if (newVal === 'debtor' && $scope.debtors === void 0) {
+        return TutorService.getDebtors().then(function(response) {
+          return $scope.debtors = response.data;
+        });
+      }
+    });
     $scope.totalLastDebt = function() {
-      var sum;
+      var sum, tutors;
       sum = 0;
-      $.each($scope.tutors, function(index, tutor) {
+      tutors = $scope.mode === 'list' ? $scope.tutors : $scope.debtors;
+      $.each(tutors, function(index, tutor) {
         var debt;
         if (tutor.last_account_info !== null) {
           debt = tutor.last_account_info.debt;
@@ -1855,6 +1861,54 @@
 }).call(this);
 
 (function() {
+  angular.module('Egerep').controller('LogsIndex', function($rootScope, $scope, $timeout, $http) {
+    var load, refreshCounts;
+    bindArguments($scope, arguments);
+    $rootScope.frontend_loading = true;
+    refreshCounts = function() {
+      return $timeout(function() {
+        $('.selectpicker option').each(function(index, el) {
+          $(el).data('subtext', $(el).attr('data-subtext'));
+          return $(el).data('content', $(el).attr('data-content'));
+        });
+        return $('.selectpicker').selectpicker('refresh');
+      }, 100);
+    };
+    $scope.filter = function() {
+      $.cookie("logs", JSON.stringify($scope.search), {
+        expires: 365,
+        path: '/'
+      });
+      $scope.current_page = 1;
+      return $scope.pageChanged();
+    };
+    $timeout(function() {
+      $scope.search = $.cookie("logs") ? JSON.parse($.cookie("logs")) : {};
+      load($scope.page);
+      return $scope.current_page = $scope.page;
+    });
+    $scope.pageChanged = function() {
+      $rootScope.frontend_loading = true;
+      load($scope.current_page);
+      return paginate('logs', $scope.current_page);
+    };
+    return load = function(page) {
+      var params;
+      params = '?page=' + page;
+      return $http.get("api/logs" + params).then(function(response) {
+        console.log(response);
+        $scope.counts = response.data.counts;
+        $scope.data = response.data.data;
+        $scope.logs = response.data.data.data;
+        $rootScope.frontend_loading = false;
+        return refreshCounts();
+      });
+    };
+  });
+
+}).call(this);
+
+(function() {
   angular.module('Egerep').controller('PeriodsIndex', function($scope, $timeout, $rootScope, $http, PaymentMethods, DebtTypes) {
     var getCommission, load;
     bindArguments($scope, arguments);
@@ -2056,7 +2110,7 @@
 
 (function() {
   angular.module('Egerep').controller('SummaryIndex', function($rootScope, $scope, $http, $timeout, PaymentMethods) {
-    var loadSummary;
+    var getPrefix, loadSummary;
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
     $scope.debt_updating = false;
@@ -2072,16 +2126,18 @@
       loadSummary($scope.page);
       return $scope.current_page = $scope.page;
     });
+    getPrefix = function() {
+      var prefix;
+      return prefix = $scope.type === 'total' ? '' : "/" + $scope.type;
+    };
     $scope.pageChanged = function() {
-      var page_prefix;
       ajaxStart();
       loadSummary($scope.current_page);
-      page_prefix = $scope.type === 'payments' ? $scope.type + '/' : '';
-      return paginate('summary/' + page_prefix + $scope.filter, $scope.current_page);
+      return paginate('summary' + getPrefix() + $scope.filter, $scope.current_page);
     };
     return loadSummary = function(page) {
       var params;
-      params = $scope.type === 'payments' ? '/' + $scope.type : '';
+      params = getPrefix();
       params += '?page=' + page;
       params += '&filter=' + $scope.filter;
       return $http.post("api/summary" + params).then(function(response) {
@@ -2142,9 +2198,6 @@
       var params;
       $rootScope.frontend_loading = true;
       params = '?page=' + page;
-      if ($scope.debtor) {
-        params += "&debtor=1";
-      }
       if ($scope.global_search) {
         params += "&global_search=" + $scope.global_search;
       }
@@ -3082,95 +3135,11 @@
 }).call(this);
 
 (function() {
-  var apiPath, updateMethod;
-
-  angular.module('Egerep').factory('Account', function($resource) {
-    return $resource(apiPath('accounts'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Review', function($resource) {
-    return $resource(apiPath('reviews'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Archive', function($resource) {
-    return $resource(apiPath('archives'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Attachment', function($resource) {
-    return $resource(apiPath('attachments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('RequestList', function($resource) {
-    return $resource(apiPath('lists'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Request', function($resource) {
-    return $resource(apiPath('requests'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      transfer: {
-        method: 'POST',
-        url: apiPath('requests', 'transfer')
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  }).factory('Sms', function($resource) {
-    return $resource(apiPath('sms'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Comment', function($resource) {
-    return $resource(apiPath('comments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Client', function($resource) {
-    return $resource(apiPath('clients'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('User', function($resource) {
-    return $resource(apiPath('users'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Tutor', function($resource) {
-    return $resource(apiPath('tutors'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      deletePhoto: {
-        url: apiPath('tutors', 'photo'),
-        method: 'DELETE'
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  });
-
-  apiPath = function(entity, additional) {
-    if (additional == null) {
-      additional = '';
-    }
-    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
-  };
-
-  updateMethod = function() {
-    return {
-      update: {
-        method: 'PUT'
-      }
-    };
-  };
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').value('Recommendations', {
+  angular.module('Egerep').value('LogTypes', {
+    create: 'создание',
+    update: 'обновление',
+    "delete": 'удаление'
+  }).value('Recommendations', {
     1: {
       text: 'У этого репетитора уже было несколько расчетов, поэтому ему можно доверить длительное обучение, требующееся данному клиенту',
       type: 0
@@ -3478,6 +3447,94 @@
       color: '#ACADAF'
     }
   });
+
+}).call(this);
+
+(function() {
+  var apiPath, updateMethod;
+
+  angular.module('Egerep').factory('Account', function($resource) {
+    return $resource(apiPath('accounts'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Review', function($resource) {
+    return $resource(apiPath('reviews'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Archive', function($resource) {
+    return $resource(apiPath('archives'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Attachment', function($resource) {
+    return $resource(apiPath('attachments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('RequestList', function($resource) {
+    return $resource(apiPath('lists'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Request', function($resource) {
+    return $resource(apiPath('requests'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      transfer: {
+        method: 'POST',
+        url: apiPath('requests', 'transfer')
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  }).factory('Sms', function($resource) {
+    return $resource(apiPath('sms'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Comment', function($resource) {
+    return $resource(apiPath('comments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Client', function($resource) {
+    return $resource(apiPath('clients'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('User', function($resource) {
+    return $resource(apiPath('users'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Tutor', function($resource) {
+    return $resource(apiPath('tutors'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      deletePhoto: {
+        url: apiPath('tutors', 'photo'),
+        method: 'DELETE'
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  });
+
+  apiPath = function(entity, additional) {
+    if (additional == null) {
+      additional = '';
+    }
+    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
+  };
+
+  updateMethod = function() {
+    return {
+      update: {
+        method: 'PUT'
+      }
+    };
+  };
 
 }).call(this);
 
@@ -3836,6 +3893,9 @@
     };
     this.getDebtMap = function(search_data) {
       return $http.post('api/debt/map', search_data);
+    };
+    this.getDebtors = function() {
+      return $http.get('api/debt');
     };
     this.generateLogin = function(tutor) {
       var i, len, letter, login, ref;

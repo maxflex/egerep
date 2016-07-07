@@ -18,9 +18,8 @@ class DebtController extends Controller
      */
     public function index(Request $request)
     {
-        return Tutor::where('debt', '>', 0)
-                ->paginate(30, ['last_account_info'])
-                ->toJson();
+        // вечные должники
+        return Tutor::where('debtor', 1)->get()->append('last_account_info');
     }
 
     /**
