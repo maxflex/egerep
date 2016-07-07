@@ -169,7 +169,7 @@ class DebtRecalc extends Event
     {
         $query = Tutor::query();
         if ($tutor_id) {
-            $query->where('tutor_id', $tutor_id);
+            $query->where('id', $tutor_id);
         }
         $query->update([
             'debt_calc' => 0,

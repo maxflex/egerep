@@ -38,6 +38,14 @@ use Illuminate\Database\ConnectionResolverInterface as Resolver;
 abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializable, QueueableEntity, UrlRoutable
 {
     /**
+     * Model should be loggable
+     *
+     * @var boolean
+     * @custom
+     */
+    protected $loggable = true;
+
+    /**
      * The connection name for the model.
      *
      * @var string
@@ -1563,8 +1571,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
         // that is already in this database using the current IDs in this "where"
         // clause to only update this model. Otherwise, we'll just insert them.
         if ($this->exists) {
-            // @custom
-            // event(new LogAction($this, 'create'));
             $saved = $this->performUpdate($query, $options);
         }
 
@@ -1572,9 +1578,12 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
         // ID attribute on the model to the value of the newly inserted row's ID
         // which is typically an auto-increment value managed by the database.
         else {
-            // @custom
-            // event(new LogAction($this, 'create'));
             $saved = $this->performInsert($query, $options);
+        }
+
+        // @custom
+        if ($this->loggable) {
+        //    event(new LogAction($this));
         }
 
         if ($saved) {
