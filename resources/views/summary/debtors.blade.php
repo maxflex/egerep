@@ -21,7 +21,7 @@
                     @{{ summary.cnt | hideZero }}
                 </td>
                 <td class="text-center">
-                    @{{ summary.sum | hideZero }}
+                    @{{ summary.sum | hideZero | number }}
                 </td>
             </tr>
         </tbody>
