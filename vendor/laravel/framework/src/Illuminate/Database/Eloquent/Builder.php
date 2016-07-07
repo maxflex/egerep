@@ -993,6 +993,22 @@ class Builder
         return $this;
     }
 
+
+    /**
+     * Prevent the specified relations from being eager loaded.
+     *
+     * @param  mixed  $relations
+     * @return $this
+     */
+    public function without($relations)
+    {
+        if (is_string($relations)) {
+            $relations = func_get_args();
+        }
+        $this->eagerLoad = array_diff_key($this->eagerLoad, array_flip($relations));
+        return $this;
+    }
+
     /**
      * Add subselect queries to count the relations.
      *
