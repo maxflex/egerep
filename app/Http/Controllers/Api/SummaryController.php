@@ -292,12 +292,12 @@ class SummaryController extends Controller
     private function _getDebtorsData($start, $end)
     {
         return DB::table('tutors')
-            ->join('attachments a', 'a.tutor_id', '=', 'tutors.id')
+            ->join('attachments', 'attachments.tutor_id', '=', 'tutors.id')
             ->join(DB::raw('(
                 SELECT MAX(date) as last_archive_date, attachment_id
                 FROM archives
                 GROUP BY attachment_id
-                ) ar'), 'ar.attachment_id', '=', 'a.id')
+                ) ar'), 'ar.attachment_id', '=', 'attachments.id')
             ->where('debtor', 1)
             ->whereRaw("last_archive_date >= '{$start}'")
             ->whereRaw("last_archive_date <= '{$end}'")
