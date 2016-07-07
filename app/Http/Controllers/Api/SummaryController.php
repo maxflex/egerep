@@ -302,9 +302,14 @@ class SummaryController extends Controller
                 FROM archives
                 GROUP BY attachment_id
                 ) ar'), 'ar.attachment_id', '=', 'a.max_attachment_id')
+            ->leftJoin(DB::raw('(
+                  SELECT MAX(date_end) as last_account_date, debt_calc as last_account_debt, tutor_id
+                  FROM accounts
+                  GROUP BY tutor_id
+                  ) ac'), 'tutors.id', '=', 'ac.tutor_id')
             ->where('debtor', 1)
             ->whereRaw("last_archive_date >= '{$start}'")
             ->whereRaw("last_archive_date <= '{$end}'")
-            ->select(DB::raw('count(*) as cnt, sum(debt_calc) as sum'))->first();
+            ->select(DB::raw('count(*) as cnt, sum(debt_calc) as sum, sum(last_account_debt) as debt_sum'))->first();
     }
 }
