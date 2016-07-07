@@ -6,7 +6,7 @@ angular
         $scope.debt_updating = false
 
         $scope.getSummarySum = (summary) ->
-            parseInt(summary.sum) + parseInt(summary.debt_sum)
+            return parseInt(summary.sum) + parseInt(summary.debt_sum)
 
         $scope.updateDebt = ->
             $scope.debt_updating = true
