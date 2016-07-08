@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="row flex-list">
+<div class="row flex-list ng-hide">
     <div>
         <select ng-model='search.mode' class='selectpicker' ng-change='filter()'>
             <option value="" data-subtext="@{{ counts.mode[''] || '' }}">все типы отзывов</option>
@@ -55,7 +55,7 @@
 
 <div class="row">
     <div class="col-sm-12">
-        <table class="table">
+        <table class="table reverse-borders">
             <thead>
                 <td></td>
                 <td></td>
