@@ -72,6 +72,9 @@
                     <td>
                         @{{ log.row_id }}
                     </td>
+                    <td>
+                        <user model='log.user'></user>
+                    </td>
                     <td ng-init='d = toJson(log.data)'>
                         <div ng-repeat="(key, data) in d track by $index" class="log-info">
                             <span>@{{ key }}</span>

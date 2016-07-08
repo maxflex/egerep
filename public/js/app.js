@@ -3141,6 +3141,19 @@
 }).call(this);
 
 (function() {
+  angular.module('Egerep').directive('user', function() {
+    return {
+      restrict: 'E',
+      scope: {
+        model: '='
+      },
+      templateUrl: 'directives/user'
+    };
+  });
+
+}).call(this);
+
+(function() {
   angular.module('Egerep').value('LogTypes', {
     create: 'создание',
     update: 'обновление',
