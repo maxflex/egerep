@@ -13,6 +13,7 @@ class AccountData extends Model
         'value',
     ];
     public $timestamps = false;
+    public $loggable = false;
 
     // ------------------------------------------------------------------------
 
