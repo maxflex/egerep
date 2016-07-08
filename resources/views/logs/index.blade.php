@@ -75,7 +75,7 @@
                     <td ng-init='d = toJson(log.data)'>
                         <div ng-repeat="(key, data) in d track by $index" class="log-info">
                             <span>@{{ key }}</span>
-                            <span>@{{ data[0] }}</span>
+                            <span class="text-gray">@{{ data[0] }}</span>
                             <span class='text-gray glyphicon glyphicon-arrow-right' style="margin: 0 5px"></span>
                             <span>@{{ data[1] }}</span>
                         </div>
