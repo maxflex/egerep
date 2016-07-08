@@ -4,6 +4,9 @@ angular
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
+        $scope.toJson = (data)->
+            JSON.parse(data)
+
         refreshCounts = ->
             $timeout ->
                 $('.selectpicker option').each (index, el) ->
@@ -33,8 +36,8 @@ angular
             $http.get "api/logs#{ params }"
             .then (response) ->
                 console.log response
-                $scope.counts = response.data.counts
-                $scope.data = response.data.data
-                $scope.logs = response.data.data.data
+                $scope.counts = response.counts
+                $scope.data = response.data
+                $scope.logs = response.data.data
                 $rootScope.frontend_loading = false
                 refreshCounts()

@@ -58,50 +58,30 @@
         <table class="table">
             <thead>
                 <td></td>
-                <td>ФИО РЕПЕТИТОРА</td>
-                <td class="center">СТЫКОВКА</td>
-                <td class="center">ЗАНЯТИЙ</td>
-                <td class="center">АРХИВАЦИЯ</td>
                 <td></td>
-                <td class="center">ПОДПИСЬ</td>
-                <td class="center">ТЕКСТ ОТЗЫВА</td>
-                <td class="center">ОЦЕНКА</td>
+                <td></td>
             </thead>
             <tbody>
-                <tr ng-repeat='attachment in attachments'>
+                <tr ng-repeat='log in logs'>
                     <td>
-                        <a ng-show='attachment.review' href='@{{ attachment.link }}'>
-                            отзыв @{{ attachment.review.id }}
-                        </a>
-                        <a href='@{{ attachment.link }}' ng-show='!attachment.review' href='' class='text-danger'>
-                            создать отзыв
-                        </a>
+                        @{{ log.table }}
                     </td>
                     <td>
-                        <a href='tutors/@{{ attachment.tutor.id }}/edit'>@{{ attachment.tutor.full_name }}</a>
+                        @{{ log.type }}
                     </td>
-                    <td class="center">
-                        @{{ attachment.date }}
+                    <td>
+                        @{{ log.row_id }}
                     </td>
-                    <td class="center">
-                        @{{ attachment.account_data_count | hideZero }}<plus previous='attachment.account_data_count' count='attachment.archive.total_lessons_missing'></plus>
+                    <td ng-init='d = toJson(log.data)'>
+                        <div ng-repeat="(key, data) in d track by $index" class="log-info">
+                            <span>@{{ key }}</span>
+                            <span>@{{ data[0] }}</span>
+                            <span class='text-gray glyphicon glyphicon-arrow-right' style="margin: 0 5px"></span>
+                            <span>@{{ data[1] }}</span>
+                        </div>
                     </td>
-                    <td class="center">
-                        @{{ attachment.archive.date }}
-                    </td>
-                    <td class="center">
-                        <span ng-if='attachment.review'>@{{ ReviewStates[attachment.review.state] }}</span>
-                    </td>
-                    <td class="center">
-                        <span ng-show='attachment.review && attachment.review.signature'
-                            aria-label='@{{ attachment.review.signature }}' class='cursor-default hint--bottom'>есть</span>
-                    </td>
-                    <td class="center">
-                        <span ng-show='attachment.review && attachment.review.comment'
-                            aria-label='@{{ attachment.review.comment }}' class='cursor-default hint--bottom'>есть</span>
-                    </td>
-                    <td class="center">
-                        <span ng-if='attachment.review'>@{{ ReviewScores[attachment.review.score] }}</span>
+                    <td>
+                        @{{ formatDateTime(log.created_at) }}
                     </td>
                 </tr>
             </tbody>

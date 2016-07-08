@@ -3682,3 +3682,13 @@ table.summary-table.left-align tr td {
 		left: -60px;
 	}
 }
+
+.log-info {
+	& span {
+		&:nth-child(1) {
+			color: gray;
+			display: inline-block;
+			width: 100px;
+		}
+	}
+}

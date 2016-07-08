@@ -17,14 +17,9 @@ class LogsController extends Controller
      */
     public function index()
     {
-        $search = isset($_COOKIE['reviews']) ? json_decode($_COOKIE['reviews']) : (object)[];
-
-        return [
-            'counts' => Log::counts($search),
-            'data'   => Log::search($search)->paginate(30, ['link'])
-        ];
-
-        return Log::paginate(30)->toJson();
+        $search = isset($_COOKIE['logs']) ? json_decode($_COOKIE['logs']) : (object)[];
+        return Log::search($search)->paginate(30);
+        // return Log::search($search)->paginate(30);
     }
 
     /**
