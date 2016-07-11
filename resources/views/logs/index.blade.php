@@ -36,7 +36,7 @@
             <div class="input-group custom">
               <span class="input-group-addon">дата начала –</span>
               <input type="text" readonly ng-change='filter()'
-                  class="form-control bs-date-top pointer" ng-model="search.date_start">
+                  class="form-control bs-date-clear pointer" ng-model="search.date_start">
             </div>
         </div>
     </div>
@@ -45,7 +45,7 @@
             <div class="input-group custom">
               <span class="input-group-addon">дата конца –</span>
               <input type="text" readonly ng-change='filter()'
-                  class="form-control bs-date-top pointer" ng-model="search.date_end">
+                  class="form-control bs-date-clear pointer" ng-model="search.date_end">
             </div>
         </div>
     </div>
