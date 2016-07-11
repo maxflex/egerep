@@ -13,12 +13,12 @@
 <div class="row flex-list">
     <div>
         <select class="form-control selectpicker" ng-model='search.user_id' ng-change="filter()" id='change-user'>
-            <option value="">пользователь</option>
+            <option value="" data-subtext="@{{ counts.user[''] || '' }}">пользователь</option>
             <option disabled>──────────────</option>
             <option
                 ng-repeat="user in UserService.getWithSystem()"
                 value="@{{ user.id }}"
-                data-content="<span style='color: @{{ user.color || 'black' }}'>@{{ user.login }} @{{ $var }}</span><small class='text-muted'>@{{ counts.user[user.id] || '' }}</small>"
+                data-content="<span style='color: @{{ user.color || 'black' }}'>@{{ user.login }}</span><small class='text-muted'>@{{ counts.user[user.id] || '' }}</small>"
             ></option>
         </select>
     </div>
