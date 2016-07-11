@@ -83,7 +83,6 @@ angular
                 tolerance: 'pointer'
                 hoverClass: 'drop-hover'
                 drop: (e, ui) ->
-                    console.log('here')
                     tutor_id = $(ui.draggable).data 'id'
                     $timeout ->
                         $scope.selected_list.tutor_ids = _.without($scope.selected_list.tutor_ids, tutor_id.toString())
@@ -282,6 +281,9 @@ angular
             sp 'attachment-subjects', 'выберите предмет' if oldVal is undefined
             spRefresh 'attachment-subjects' if oldVal isnt undefined
             rebindMasks()
+
+        $scope.$watch 'selected_list', (newVal, oldVal) ->
+            bindDroppable() if oldVal is undefined and newVal isnt undefined
 
 
         #

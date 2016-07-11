@@ -79,7 +79,7 @@
                         <div ng-repeat="(key, data) in d track by $index" class="log-info">
                             <span>@{{ key }}</span>
                             <span class="text-gray">@{{ data[0] }}</span>
-                            <span class='text-gray' ng-show="data[0] == ''">⟶</span>
+                            <span class='text-gray'>⟶</span>
                             <span>@{{ data[1] }}</span>
                         </div>
                     </td>
