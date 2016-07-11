@@ -44,7 +44,7 @@
         <select ng-model='search.column' class='selectpicker' ng-change='filter()'>
             <option value="" data-subtext="@{{ counts.column[''] || '' }}">ячейка</option>
             <option disabled>──────────────</option>
-            <option ng-repeat='column in LogColumns| orderBy'
+            <option ng-repeat='column in LogColumns'
                 data-subtext="@{{ counts.column[column] || '' }}"
                 value="@{{column}}">@{{ column }}</option>
         </select>

@@ -37,6 +37,7 @@ class Log extends Model
                 $columns[] = $column;
             }
         }
+        sort($columns);
         return array_unique($columns);
     }
 
