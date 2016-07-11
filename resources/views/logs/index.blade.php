@@ -78,7 +78,7 @@
                     <td ng-init='d = toJson(log.data)'>
                         <table style="font-size: 12px">
                             <tr ng-repeat="(key, data) in d track by $index">
-                                <td style="vertical-align: top; width: 100px">@{{ key }}</td>
+                                <td style="vertical-align: top; width: 150px">@{{ key }}</td>
                                 <td>
                                     <span class="text-gray">@{{ data[0]  }}</span>
                                     <span class='text-gray'>⟶</span>
