@@ -55,7 +55,7 @@
 
 <div class="row">
     <div class="col-sm-12">
-        <table class="table reverse-borders">
+        <table class="table reverse-borders" style="font-size: 12px">
             <thead>
                 <td></td>
                 <td></td>
@@ -76,15 +76,25 @@
                         <user model='log.user'></user>
                     </td>
                     <td ng-init='d = toJson(log.data)'>
-                        <div ng-repeat="(key, data) in d track by $index" class="log-info">
+                        <table style="font-size: 12px">
+                            <tr ng-repeat="(key, data) in d track by $index">
+                                <td style="vertical-align: top; width: 100px">@{{ key }}</td>
+                                <td>
+                                    <span class="text-gray">@{{ data[0]  }}</span>
+                                    <span class='text-gray'>⟶</span>
+                                    <span>@{{ data[1] }}</span>
+                                </td>
+                            </tr>
+                        </table>
+                        {{-- <div ng-repeat="(key, data) in d track by $index" class="log-info">
                             <span>@{{ key }}</span>
                             <span class="text-gray">@{{ data[0] }}</span>
                             <span class='text-gray'>⟶</span>
                             <span>@{{ data[1] }}</span>
-                        </div>
+                        </div> --}}
                     </td>
                     <td>
-                        @{{ formatDateTime(log.created_at) }}
+                        <span style="white-space: nowrap">@{{ formatDateTime(log.created_at) }}</span>
                     </td>
                 </tr>
             </tbody>
