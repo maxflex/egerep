@@ -28,6 +28,18 @@ class Log extends Model
         return static::groupBy('table')->orderBy('table', 'asc')->pluck('table')->all();
     }
 
+    public static function getColumns()
+    {
+        $columns = [];
+        $tables = \DB::select('SHOW TABLES');
+        foreach($tables as $t) {
+            foreach(\Schema::getColumnListing($t->Tables_in_egerep) as $column) {
+                $columns[] = $column;
+            }
+        }
+        return array_unique($columns);
+    }
+
     // public function getDataAttribute()
     // {
     //     return json_decode($this->attributes['data']);
@@ -50,7 +62,7 @@ class Log extends Model
 			$new_search->table = $table;
 			$counts['table'][$table] = static::search($new_search)->count();
 		}
-        foreach(array_merge([''], static::COLUMNS) as $column) {
+        foreach(array_merge([''], static::getColumns()) as $column) {
 			$new_search = clone $search;
 			$new_search->column = $column;
 			$counts['column'][$column] = static::search($new_search)->count();
