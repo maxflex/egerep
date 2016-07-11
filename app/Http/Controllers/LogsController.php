@@ -15,9 +15,14 @@ class LogsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('logs.index');
+        return view('logs.index')->with(
+            ngInit([
+                'page'      => $request->page,
+                'tables'    => Log::getTables(),
+            ])
+        );
     }
 
     /**

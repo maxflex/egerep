@@ -18,7 +18,7 @@ angular
               lastspace = lastspace - 1
             value = value.substr(0, lastspace)
         value + (tail or ' …')
-    .controller 'LogsIndex', ($rootScope, $scope, $timeout, $http, UserService, LogTypes) ->
+    .controller 'LogsIndex', ($rootScope, $scope, $timeout, $http, UserService, LogTypes, LogColumns) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
