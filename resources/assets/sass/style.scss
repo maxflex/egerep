@@ -3692,3 +3692,7 @@ table.summary-table.left-align tr td {
 		}
 	}
 }
+
+.btn-primary.focus, .btn-primary:focus {
+	background-color: $green_main;
+}

@@ -18,14 +18,14 @@ angular
               lastspace = lastspace - 1
             value = value.substr(0, lastspace)
         value + (tail or ' …')
-    .controller 'LogsIndex', ($rootScope, $scope, $timeout, $http) ->
+    .controller 'LogsIndex', ($rootScope, $scope, $timeout, $http, UserService) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
         $scope.toJson = (data)->
             JSON.parse(data)
 
-        refreshCounts = ->
+        $scope.refreshCounts = ->
             $timeout ->
                 $('.selectpicker option').each (index, el) ->
                     $(el).data 'subtext', $(el).attr 'data-subtext'
@@ -54,8 +54,8 @@ angular
             $http.get "api/logs#{ params }"
             .then (response) ->
                 console.log response
-                $scope.counts = response.counts
-                $scope.data = response.data
-                $scope.logs = response.data.data
+                $scope.counts = response.data.counts
+                $scope.data = response.data.data
+                $scope.logs = response.data.data.data
                 $rootScope.frontend_loading = false
-                refreshCounts()
+                $scope.refreshCounts()

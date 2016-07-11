@@ -1890,14 +1890,14 @@
       }
       return value + (tail || ' …');
     };
-  }).controller('LogsIndex', function($rootScope, $scope, $timeout, $http) {
-    var load, refreshCounts;
+  }).controller('LogsIndex', function($rootScope, $scope, $timeout, $http, UserService) {
+    var load;
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
     $scope.toJson = function(data) {
       return JSON.parse(data);
     };
-    refreshCounts = function() {
+    $scope.refreshCounts = function() {
       return $timeout(function() {
         $('.selectpicker option').each(function(index, el) {
           $(el).data('subtext', $(el).attr('data-subtext'));
@@ -1929,11 +1929,11 @@
       params = '?page=' + page;
       return $http.get("api/logs" + params).then(function(response) {
         console.log(response);
-        $scope.counts = response.counts;
-        $scope.data = response.data;
-        $scope.logs = response.data.data;
+        $scope.counts = response.data.counts;
+        $scope.data = response.data.data;
+        $scope.logs = response.data.data.data;
         $rootScope.frontend_loading = false;
-        return refreshCounts();
+        return $scope.refreshCounts();
       });
     };
   });

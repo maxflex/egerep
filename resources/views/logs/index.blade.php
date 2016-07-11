@@ -4,51 +4,38 @@
 
 @section('content')
 
-<div class="row flex-list ng-hide">
+<div class="row flex-list">
     <div>
-        <select ng-model='search.mode' class='selectpicker' ng-change='filter()'>
-            <option value="" data-subtext="@{{ counts.mode[''] || '' }}">все типы отзывов</option>
+        <select class="form-control selectpicker" ng-model='search.user_id' ng-change="filter()" id='change-user'>
+            <option value="">пользователь</option>
             <option disabled>──────────────</option>
-            <option ng-repeat='(id, name) in Existance'
-                data-subtext="@{{ counts.mode[id] || '' }}"
-                value="@{{id}}">@{{ name }}</option>
+            <option
+                ng-repeat="user in UserService.getWithSystem()"
+                value="@{{ user.id }}"
+                data-content="<span style='color: @{{ user.color || 'black' }}'>@{{ user.login }} @{{ $var }}</span><small class='text-muted'>@{{ counts.user[user.id] || '' }}</small>"
+            ></option>
         </select>
     </div>
     <div>
-        <select ng-model='search.state' class='selectpicker' ng-change='filter()'>
-            <option value="" data-subtext="@{{ counts.state[''] || '' }}">тип публикации</option>
-            <option disabled>──────────────</option>
-            <option ng-repeat='(id, name) in ReviewStates'
-                data-subtext="@{{ counts.state[id] || '' }}"
-                value="@{{id}}">@{{ name }}</option>
-        </select>
+        <div class="form-group">
+            <div class="input-group custom">
+              <span class="input-group-addon">дата начала –</span>
+              <input type="text"
+                  class="form-control bs-date-top" ng-model="search.date_start">
+            </div>
+        </div>
     </div>
     <div>
-        <select ng-model='search.signature' class='selectpicker' ng-change='filter()'>
-            <option value="" data-subtext="@{{ counts.signature[''] || '' }}">подпись</option>
-            <option disabled>──────────────</option>
-            <option ng-repeat='(id, name) in Presence[0]'
-                data-subtext="@{{ counts.signature[id] || '' }}"
-                value="@{{id}}">@{{ name }}</option>
-        </select>
+        <div class="form-group">
+            <div class="input-group custom">
+              <span class="input-group-addon">дата конца –</span>
+              <input type="text"
+                  class="form-control bs-date-top" ng-model="search.date_end">
+            </div>
+        </div>
     </div>
-    <div>
-        <select ng-model='search.comment' class='selectpicker' ng-change='filter()'>
-            <option value="" data-subtext="@{{ counts.comment[''] || '' }}">текст отзыва</option>
-            <option disabled>──────────────</option>
-            <option ng-repeat='(id, name) in Presence[0]'
-                data-subtext="@{{ counts.comment[id] || '' }}"
-                value="@{{id}}">@{{ name }}</option>
-        </select>
-    </div>
-    <div>
-        <select ng-model='search.score' class='selectpicker' ng-change='filter()'>
-            <option value="" data-subtext="@{{ counts.score[''] || '' }}">все оценки</option>
-            <option disabled>──────────────</option>
-            <option ng-repeat='(id, name) in ReviewScores'
-                data-subtext="@{{ counts.score[id] || '' }}"
-                value="@{{id}}">@{{ name }}</option>
-        </select>
+    <div style="margin-right: 0">
+        <button class="btn btn-primary full-width" ng-click='filter()'>поиск</button>
     </div>
 </div>
 
@@ -72,7 +59,7 @@
                     <td>
                         @{{ log.row_id }}
                     </td>
-                    <td>
+                    <td width="100">
                         <user model='log.user'></user>
                     </td>
                     <td ng-init='d = toJson(log.data)'>

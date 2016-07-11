@@ -3,6 +3,7 @@
 namespace App\Models\Service;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class Log extends Model
 {
@@ -21,35 +22,32 @@ class Log extends Model
     //     return json_decode($this->attributes['data']);
     // }
 
+    public static function counts($search)
+    {
+		foreach(array_merge(['', 0], User::active()->pluck('id')->all()) as $user_id) {
+			$new_search = clone $search;
+			$new_search->user_id = $user_id;
+			$counts['user'][$user_id] = static::search($new_search)->count();
+		}
+        return $counts;
+    }
+
     public static function search($search)
     {
         $search = filterParams($search);
         $query = Log::query();
 
-        // if (isset($search->mode)) {
-        //     if ($search->mode) {
-        //         $query->doesntHave('review');
-        //     } else {
-        //         $query->has('review');
-        //     }
-        // }
-        //
-        // if (isset($search->state) || isset($search->signature) || isset($search->comment) || isset($search->score)) {
-        //     $query->whereHas('review', function($query) use ($search) {
-        //         if (isset($search->state)) {
-        //             $query->where('state', $search->state);
-        //         }
-        //         if (isset($search->signature)) {
-        //             $query->where('signature', $search->signature ? '=' : '<>', '');
-        //         }
-        //         if (isset($search->comment)) {
-        //             $query->where('comment', $search->comment ? '=' : '<>', '');
-        //         }
-        //         if (isset($search->score)) {
-        //             $query->where('score', $search->score);
-        //         }
-        //     });
-        // }
+        if (isset($search->user_id)) {
+            $query->where('user_id', $search->user_id);
+        }
+
+        if (isset($search->date_start)) {
+            $query->where('created_at', '>=', fromDotDate($search->date_start));
+        }
+
+        if (isset($search->date_end)) {
+            $query->where('created_at', '<=', fromDotDate($search->date_end));
+        }
 
         return $query->orderBy('created_at', 'desc');
     }

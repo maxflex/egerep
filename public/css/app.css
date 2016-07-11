@@ -30838,4 +30838,7 @@ table.summary-table.left-align tr td {
   color: gray;
   display: inline-block; }
 
+.btn-primary.focus, .btn-primary:focus {
+  background-color: #158E51; }
+
 /*# sourceMappingURL=app.css.map */

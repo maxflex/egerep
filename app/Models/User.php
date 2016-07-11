@@ -134,4 +134,13 @@ class User extends Model
     {
         return $query->where('type', static::USER_TYPE);
     }
+
+    /**
+     * Get real users
+     *
+     */
+    public static function scopeActive($query)
+    {
+        return $query->where('type', static::USER_TYPE)->where('banned_egerep', 0);
+    }
 }
