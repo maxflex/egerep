@@ -29,6 +29,11 @@ class Log extends Model
 			$new_search->user_id = $user_id;
 			$counts['user'][$user_id] = static::search($new_search)->count();
 		}
+        foreach(['', 'update', 'create', 'delete'] as $type) {
+			$new_search = clone $search;
+			$new_search->type = $type;
+			$counts['type'][$type] = static::search($new_search)->count();
+		}
         return $counts;
     }
 
@@ -47,6 +52,10 @@ class Log extends Model
 
         if (isset($search->date_end)) {
             $query->where('created_at', '<=', fromDotDate($search->date_end));
+        }
+
+        if (isset($search->type)) {
+            $query->where('type', $search->type);
         }
 
         return $query->orderBy('created_at', 'desc');

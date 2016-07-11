@@ -2,6 +2,12 @@
 @section('title', 'Логи')
 @section('controller', 'LogsIndex')
 
+@section('title-right')
+    {{-- нужно поправить функция link_to_route, чтобы она работала с https --}}
+    {{-- {{ link_to_route('tutors.create', 'добавить преподавателя') }} --}}
+    <span class='ng-hide' ng-show='data !== undefined'>всего результатов: @{{ data.total }}</span>
+@endsection
+
 @section('content')
 
 <div class="row flex-list">
@@ -17,11 +23,20 @@
         </select>
     </div>
     <div>
+        <select ng-model='search.type' class='selectpicker' ng-change='filter()'>
+            <option value="" data-subtext="@{{ counts.type[''] || '' }}">тип действия</option>
+            <option disabled>──────────────</option>
+            <option ng-repeat='(id, name) in LogTypes'
+                data-subtext="@{{ counts.type[id] || '' }}"
+                value="@{{id}}">@{{ name }}</option>
+        </select>
+    </div>
+    <div>
         <div class="form-group">
             <div class="input-group custom">
               <span class="input-group-addon">дата начала –</span>
-              <input type="text"
-                  class="form-control bs-date-top" ng-model="search.date_start">
+              <input type="text" readonly ng-change='filter()'
+                  class="form-control bs-date-top pointer" ng-model="search.date_start">
             </div>
         </div>
     </div>
@@ -29,13 +44,10 @@
         <div class="form-group">
             <div class="input-group custom">
               <span class="input-group-addon">дата конца –</span>
-              <input type="text"
-                  class="form-control bs-date-top" ng-model="search.date_end">
+              <input type="text" readonly ng-change='filter()'
+                  class="form-control bs-date-top pointer" ng-model="search.date_end">
             </div>
         </div>
-    </div>
-    <div style="margin-right: 0">
-        <button class="btn btn-primary full-width" ng-click='filter()'>поиск</button>
     </div>
 </div>
 
@@ -54,7 +66,7 @@
                         @{{ log.table }}
                     </td>
                     <td>
-                        @{{ log.type }}
+                        @{{ LogTypes[log.type] }}
                     </td>
                     <td>
                         @{{ log.row_id }}
