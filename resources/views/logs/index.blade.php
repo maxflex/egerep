@@ -35,7 +35,7 @@
         <select ng-model='search.table' class='selectpicker' ng-change='filter()'>
             <option value="" data-subtext="@{{ counts.table[''] || '' }}">таблица</option>
             <option disabled>──────────────</option>
-            <option ng-repeat='table in tables'
+            <option ng-repeat='table in tables' ng-show="counts.table[table]"
                 data-subtext="@{{ counts.table[table] || '' }}"
                 value="@{{table}}">@{{ table }}</option>
         </select>
