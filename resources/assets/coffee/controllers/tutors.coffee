@@ -107,7 +107,7 @@ angular
     #
     #   ADD/EDIT CONTROLLER
     #
-    .controller "TutorsForm", ($scope, $rootScope, $timeout, Tutor, SvgMap, Subjects, Grades, ApiService, TutorStates, Genders, Workplaces, Branches, BranchService, TutorService, $http) ->
+    .controller "TutorsForm", ($scope, $rootScope, $timeout, Tutor, SvgMap, Subjects, Grades, ApiService, TutorStates, Genders, Workplaces, Branches, BranchService, TutorService, $http, Marker) ->
         bindArguments($scope, arguments)
 
         $rootScope.frontend_loading = true
@@ -352,7 +352,7 @@ angular
         filterMarkers = ->
             new_markers = []
             $.each $scope.tutor.markers, (index, marker) ->
-                new_markers.push _.pick(marker, 'lat', 'lng', 'type', 'metros')
+                new_markers.push _.pick(marker, 'lat', 'lng', 'type', 'metros', 'server_id')
             $scope.tutor.markers = new_markers
 
         $scope.$on 'mapInitialized', (event, map) ->
@@ -439,6 +439,8 @@ angular
                 $.each $scope.tutor.markers, (index, m) ->
                     console.log 'id', t.id, m.id
                     if m isnt undefined and t.id == m.id
+                        # удаляем маркер с сервера, если нужно
+                        Marker.delete({id: m.server_id}) if m.server_id isnt undefined
                         $scope.tutor.markers.splice index, 1
 
         $scope.bindMarkerChangeType = (marker) ->
@@ -449,6 +451,7 @@ angular
                 else
                     @type = 'green'
                     @setIcon ICON_GREEN
+                Marker.update({id: marker.server_id, type: @type}) if marker.server_id isnt undefined
 
         # Поиск по карте
         $scope.searchMap = (address) ->
@@ -503,7 +506,7 @@ angular
                 $.each $scope.tutor.markers, (index, marker) ->
                     # Создаем маркер
                     # @todo: сделать так, чтобы type и metros и еще дургие можно было передавать массивом в последнем параметре
-                    new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, marker.type)
+                    new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, marker.type, marker.id)
                     new_marker.metros = marker.metros
 
                     # Добавляем маркер на карту

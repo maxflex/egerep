@@ -33,7 +33,7 @@ angular
     #
     #   ADD/EDIT CONTROLLER
     #
-    .controller "ClientsForm", ($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, AttachmentStates, ReviewScores, Archive, Review, ApiService, UserService, RecommendationService, AttachmentService, Checked, AttachmentVisibility) ->
+    .controller "ClientsForm", ($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, AttachmentStates, ReviewScores, Archive, Review, ApiService, UserService, RecommendationService, AttachmentService, Checked, AttachmentVisibility, Marker) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
@@ -295,7 +295,7 @@ angular
         filterMarkers = ->
             new_markers = []
             $.each $scope.client.markers, (index, marker) ->
-                new_markers.push _.pick(marker, 'lat', 'lng', 'type', 'metros')
+                new_markers.push _.pick(marker, 'lat', 'lng', 'type', 'metros', 'server_id')
             $scope.client.markers = new_markers
 
 
@@ -391,8 +391,9 @@ angular
                 t.setMap null
                 # удаляем маркер из коллекции
                 $.each $scope.client.markers, (index, m) ->
-                    console.log 'id', t.id, m.id
                     if m isnt undefined and t.id == m.id
+                        # удаляем маркер с сервера, если нужно
+                        Marker.delete({id: m.server_id}) if m.server_id isnt undefined
                         $scope.client.markers.splice index, 1
 
         $scope.bindMarkerChangeType = (marker) ->
@@ -406,6 +407,7 @@ angular
                 else
                     @type = 'green'
                     @setIcon ICON_GREEN
+                Marker.update({id: marker.server_id, type: @type}) if marker.server_id isnt undefined
 
         # Поиск по карте
         $scope.searchMap = (address) ->
@@ -460,7 +462,7 @@ angular
                 $.each $scope.client.markers, (index, marker) ->
                     # Создаем маркер
                     # @todo: сделать так, чтобы type и metros и еще дургие можно было передавать массивом в последнем параметре
-                    new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.gmap, marker.type)
+                    new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.gmap, marker.type, marker.id)
                     new_marker.metros = marker.metros
 
                     # Добавляем маркер на карту

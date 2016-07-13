@@ -16,7 +16,6 @@ class Marker extends Model
     ];
     protected $with = ['metros'];
     public $timestamps = false;
-    public $loggable = false;
 
     // ------------------------------------------------------------------------
 

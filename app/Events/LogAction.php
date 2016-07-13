@@ -11,7 +11,7 @@ class LogAction extends Event
 {
     use SerializesModels;
 
-    const DO_NOT_LOG = ['created_at', 'updated_at'];
+    const DO_NOT_LOG = ['id', 'created_at', 'updated_at'];
 
     /**
      * Create a new event instance.
@@ -39,7 +39,7 @@ class LogAction extends Event
 
     private static function _generateData($model)
     {
-        if ($model->wasRecentlyCreated || $model->wasRecentlyDeleted) {
+        if ($model->wasRecentlyDeleted) {
             return null;
         }
 

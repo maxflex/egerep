@@ -10,8 +10,8 @@ class Log extends Model
     public $loggable   = false;
     public $timestamps = false;
 
-    // по этим ячейкам можно искать
-    const COLUMNS = ['comment', 'hide', 'checked'];
+    // не включать эти таблицы в список полей
+    const EXCEPT_TABLES = ['logs', 'distances', 'graph_distances', 'graph_places', 'migrations', 'phone_duplicates', 'stations'];
 
     protected $appends = ['user'];
 
@@ -33,8 +33,11 @@ class Log extends Model
         $columns = [];
         $tables = \DB::select('SHOW TABLES');
         foreach($tables as $t) {
-            foreach(\Schema::getColumnListing($t->Tables_in_egerep) as $column) {
-                $columns[] = $column;
+            $table_name = $t->Tables_in_egerep;
+            if (! in_array($table_name, static::EXCEPT_TABLES)) {
+                foreach(\Schema::getColumnListing($table_name) as $column) {
+                    $columns[] = $column;
+                }
             }
         }
         sort($columns);

@@ -13,5 +13,4 @@ class Summary extends Model
     ];
 
     public $timestamps = false;
-    public $loggable = false;
 }
