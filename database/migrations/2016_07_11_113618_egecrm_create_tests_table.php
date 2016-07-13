@@ -21,9 +21,9 @@ class EgecrmCreateTestsTable extends Migration
             $table->increments('id');
             $table->integer('id_test')->unsigned();
             $table->foreign('id_test')->references('id')->on('tests')->onDelete('cascade');
-            $table->text('problem');
-            $table->text('answers');
-            $table->integer('corrent_answer');
+            $table->mediumText('problem');
+            $table->mediumText('answers');
+            $table->integer('correct_answer')->nullable();
             $table->integer('score');
         });
     }

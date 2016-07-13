@@ -30841,4 +30841,7 @@ table.summary-table.left-align tr td {
 .btn-primary.focus, .btn-primary:focus {
   background-color: #158E51; }
 
+.table-small {
+  font-size: 12px; }
+
 /*# sourceMappingURL=app.css.map */
