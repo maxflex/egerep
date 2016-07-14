@@ -72,7 +72,7 @@ class Mango {
                     $info = explode(';', $response_line);
                     if (count($info) > 1) {
 						// если это входящий звонок и разговора не было, не выводить
-						if (! empty($info[5] && $info[8] == 0) {
+						if (! empty($info[5]) && $info[8] == 0) {
 							continue;
 						}
 
