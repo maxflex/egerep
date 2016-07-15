@@ -85,7 +85,7 @@ class Mango {
                             'to_extension'      => $info[5],
                             'to_number'         => $info[6],
                             'disconnect_reason' => $info[7],
-                            'seconds'           => $info[2] - $info[8],
+                            'seconds'           => ($info[8] != 0 ? ($info[2] - $info[8]) : 0),
                             'from_user'         => $info[3] ? User::find($info[3]) : null,
                             'from_user'         => $info[5] ? User::find($info[5]) : null,
                             'date_start'        => date('Y-m-d H:i:s', $info[1]),
