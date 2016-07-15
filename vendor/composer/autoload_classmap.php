@@ -47,6 +47,7 @@ return array(
     'AddTimestampsToLists' => $baseDir . '/database/migrations/2016_05_17_112210_add_timestamps_to_lists.php',
     'AddUniqueKeys' => $baseDir . '/database/migrations/2016_06_15_125012_add_unique_keys.php',
     'AddUniqueKeysToAccounts' => $baseDir . '/database/migrations/2016_06_16_131038_add_unique_keys_to_accounts.php',
+    'AddUniqueToMarkers' => $baseDir . '/database/migrations/2016_07_15_170748_add_unique_to_markers.php',
     'AddUniqueToSummariesDate' => $baseDir . '/database/migrations/2016_06_19_103712_add_unique_to_summaries_date.php',
     'AddUserCreatedIdToRequests' => $baseDir . '/database/migrations/2016_01_22_123001_add_user_created_id_to_requests.php',
     'AddUserIdToAccounts' => $baseDir . '/database/migrations/2016_05_25_122002_add_user_id_to_accounts.php',
