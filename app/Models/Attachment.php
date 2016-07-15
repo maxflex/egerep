@@ -24,7 +24,6 @@ class Attachment extends Model
         'comment',
         'forecast',
         'hide',
-        'checked'
     ];
     protected $casts = [
         'grade' => 'int',
@@ -250,11 +249,6 @@ class Attachment extends Model
 			$new_search->state = $state;
 			$counts['state'][$state] = static::search($new_search)->count();
 		}
-		foreach(['', 0, 1] as $checked) {
-			$new_search = clone $search;
-			$new_search->checked = $checked;
-			$counts['checked'][$checked] = static::search($new_search)->count();
-		}
 		foreach(['', 0, 1] as $account_data) {
 			$new_search = clone $search;
 			$new_search->account_data = $account_data;
@@ -298,10 +292,6 @@ class Attachment extends Model
 
         $query->join('request_lists as r', 'request_list_id', '=', 'r.id');             /* request_id нужен чтобы генерить правильную ссылку для редактирования */
         $query->leftJoin('archives as a', 'a.attachment_id', '=', 'attachments.id');
-
-        if (isset($search->checked)) {
-           $query->where('attachments.checked', $search->checked);
-        }
 
         $query->select(
             'attachments.*', 'r.request_id',

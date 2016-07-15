@@ -15,15 +15,6 @@
         </select>
     </div>
     <div>
-        <select ng-model='search.checked' class='selectpicker' ng-change='filter()'>
-            <option value="" data-subtext="@{{ counts.checked[''] || '' }}">все статусы</option>
-            <option disabled>──────────────</option>
-            <option ng-repeat='(id, name) in Checked'
-                data-subtext="@{{ counts.checked[id] || '' }}"
-                value="@{{id}}">@{{ name }}</option>
-        </select>
-    </div>
-    <div>
         <select ng-model='search.account_data' class='selectpicker' ng-change='filter()'>
             <option value="" data-subtext="@{{ counts.account_data[''] || '' }}">занятия в отчетности</option>
             <option disabled>──────────────</option>

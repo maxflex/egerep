@@ -82,6 +82,7 @@ return array(
     'CreateTutorStateChangeTable' => $baseDir . '/database/migrations/2016_04_29_103710_create_tutor_state_change_table.php',
     'DatabaseSeeder' => $baseDir . '/database/seeds/DatabaseSeeder.php',
     'DropAttachmentColumns' => $baseDir . '/database/migrations/2016_02_19_133212_drop_attachment_columns.php',
+    'DropCheckedFromAttachments' => $baseDir . '/database/migrations/2016_07_15_133620_drop_checked_from_attachments.php',
     'DropClientSubjectList' => $baseDir . '/database/migrations/2016_02_19_112701_drop_client_subject_list.php',
     'DropDebtFromAccounts' => $baseDir . '/database/migrations/2016_06_03_154739_drop_debt_from_accounts.php',
     'DropDebtFromTutors' => $baseDir . '/database/migrations/2016_06_03_182030_drop_debt_from_tutors.php',

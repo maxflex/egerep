@@ -47,12 +47,6 @@
             </span>
         </div>
         <div class='mbs'>
-            <b>Статус:</b>
-            <span ng-click="deny(selected_attachment, 'checked')" class="link-like">
-                @{{ Checked[selected_attachment.checked] }}
-            </span>
-        </div>
-        <div class='mbs'>
             <b>Проведено занятий:</b> @{{ selected_attachment.account_data_count }}
         </div>
     </div>
