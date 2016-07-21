@@ -1,4 +1,8 @@
 angular.module('Egerep')
+    .value 'LogTypes',
+        create: 'создание'
+        update: 'обновление'
+        delete: 'удаление'
     .value 'Recommendations',
         1:
             text: 'У этого репетитора уже было несколько расчетов, поэтому ему можно доверить длительное обучение, требующееся данному клиенту'
@@ -122,12 +126,15 @@ angular.module('Egerep')
     ]
 
     .value 'AttachmentVisibility',
-        0: 'скрыто'
-        1: 'показано'
+        0: 'показано'
+        1: 'скрыто'
+
     .value 'AttachmentStates',
         new: 'новые'
         inprogress: 'рабочие'
         ended: 'завершенные'
+
+    .value 'Checked', ['не проверено', 'проверено']
 
     .value 'ReviewScores',
         1: 1
@@ -141,6 +148,7 @@ angular.module('Egerep')
         9: 9
         10: 10
         11: 'отзыв не собирать'
+        12: 'отзыв собрать позже'
 
     .value 'Grades',
         1: '1 класс'

@@ -15,15 +15,6 @@
         </select>
     </div>
     <div>
-        <select ng-model='search.hide' class='selectpicker' ng-change='filter()'>
-            <option value="" data-subtext="@{{ counts.hide[''] || '' }}">любая видимость</option>
-            <option disabled>──────────────</option>
-            <option ng-repeat='(id, name) in AttachmentVisibility'
-                data-subtext="@{{ counts.hide[id] || '' }}"
-                value="@{{id}}">@{{ name }}</option>
-        </select>
-    </div>
-    <div>
         <select ng-model='search.account_data' class='selectpicker' ng-change='filter()'>
             <option value="" data-subtext="@{{ counts.account_data[''] || '' }}">занятия в отчетности</option>
             <option disabled>──────────────</option>
@@ -59,63 +50,72 @@
                 value="@{{id}}">@{{ name }}</option>
         </select>
     </div>
+    <div>
+        <select ng-model='search.hide' class='selectpicker fix-viewport' ng-change='filter()'>
+            <option value="" data-subtext="@{{ counts.hide[''] || '' }}">все</option>
+            <option disabled>──────────────</option>
+            <option ng-repeat='(id, name) in AttachmentVisibility'
+                data-subtext="@{{ counts.hide[id] || '' }}"
+                value="@{{id}}">@{{ name }}</option>
+        </select>
+    </div>
 </div>
 
 <table class="table attachment-table" style="font-size: 0.8em;">
     <thead class="bold">
-    <tr>
-        <td></td>
-        <td class="col-sm-2"  align="left">
-            Преподаватель
-        </td>
-        <td class="col-sm-1">
-            <span ng-click="sort('created_at')" role="button">
-                Cтыковка
-            </span>
-        </td>
-        <td class="col-sm-1">
-            <span ng-click="sort('lesson_count')" role="button">
-                Занятий
-            </span>
-        </td>
-        <td class="col-sm-1">
-            <span ng-click="sort('forecast')" role="button">
-                Прогноз
-            </span>
-        </td>
-        <td class="col-sm-1">
-            <span ng-click="sort('archive_date')" role="button">
-                Архивация
-            </span>
-        </td>
-        <td class="col-sm-1">Статус</td>
-        <td>Реквизиты</td>
-    </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                Преподаватель
+            </td>
+            <td>
+                <span ng-click="sort('created_at')" role="button">
+                    Cтыковка
+                </span>
+            </td>
+            <td>
+                <span ng-click="sort('lesson_count')" role="button">
+                    Занятий
+                </span>
+            </td>
+            <td>
+                <span ng-click="sort('forecast')" role="button">
+                    Прогноз
+                </span>
+            </td>
+            <td>
+                <span ng-click="sort('archive_date')" role="button">
+                    Архивация
+                </span>
+            </td>
+            <td>Статус</td>
+            <td>Реквизиты</td>
+        </tr>
     </thead>
     <tbody>
     <tr ng-repeat="attachment in attachments">
-        <td align="left">
+        <td align="left" width="10%">
             <a href="requests/@{{ attachment.request_id }}/edit#@{{ attachment.request_list_id }}#@{{ attachment.id }}">стыковка @{{ attachment.id }}</a>
         </td>
-        <td align="left">
+        <td align="left" width="20%">
             <a href="tutors/@{{ attachment.tutor_id }}/edit">@{{ attachment.tutor.full_name}}</a>
         </td>
-        <td>
+        <td width="10%">
             @{{ attachment.date }}
         </td>
-        <td>
+        <td width="10%">
             @{{ attachment.lesson_count | hideZero }}<plus previous='attachment.lesson_count' count='attachment.archive.total_lessons_missing'></plus>
         </td>
-        <td>
+        <td width="10%">
             @{{ attachment.forecast | hideZero | number}}
         </td>
-        <td>
+        <td width='10%'>
             @{{ formatDate(attachment.archive.created_at) }}
         </td>
-        <td>
+        <td width='10%'>
             @{{ AttachmentService.getStatus(attachment) }}
         </td>
-        <td>
+        <td width='20%'>
             @{{ UserService.getLogin(attachment.user_id) }}: @{{ formatDateTime(attachment.created_at) }}
         </td>
     </tr>

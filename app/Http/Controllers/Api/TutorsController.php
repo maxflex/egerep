@@ -4,13 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Models\Tutor;
-use App\Models\RequestList;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Metro;
-use App\Models\Attachment;
-use App\Models\Account;
-use App\Models\AccountData;
 
 class TutorsController extends Controller
 {
@@ -24,46 +20,6 @@ class TutorsController extends Controller
             'user_counts'       => Tutor::userCounts($request->state, $request->published_state),
             'published_counts'  => Tutor::publishedCounts($request->state, $request->user_id),
         ];
-    }
-
-    /**
-     * Merge tutors
-     */
-    public function merge(Request $request)
-    {
-        // Check client ids
-        $client_ids = Attachment::whereIn('tutor_id', [$request->tutor_id, $request->new_tutor_id])
-                                    ->pluck('client_id');
-
-        if (count($client_ids->all()) != count(array_unique($client_ids->all()))) {
-            return 'false';
-        }
-
-        // Request Lists
-        $request_lists = RequestList::whereRaw("FIND_IN_SET({$request->tutor_id}, tutor_ids)")->get();
-
-        foreach ($request_lists as $rl) {
-            $new_tutor_ids = array_diff($rl->tutor_ids, [$request->tutor_id]);
-            $new_tutor_ids[] = $request->new_tutor_id;
-            RequestList::where('id', $rl->id)->update([
-                'tutor_ids' => implode(',', $new_tutor_ids)
-            ]);
-        }
-
-        // Attachments
-        Attachment::where('tutor_id', $request->tutor_id)->update([
-            'tutor_id' => $request->new_tutor_id,
-        ]);
-
-        // Accounts
-        Account::where('tutor_id', $request->tutor_id)->update([
-            'tutor_id' => $request->new_tutor_id,
-        ]);
-
-        // Lessons
-        AccountData::where('tutor_id', $request->tutor_id)->update([
-            'tutor_id' => $request->new_tutor_id,
-        ]);
     }
 
     /**
@@ -110,7 +66,7 @@ class TutorsController extends Controller
      */
     public function show($id)
     {
-        return Tutor::with(['markers'])->find($id)->append(['banned', 'hold_coeff'])->toJson();
+        return Tutor::with(['markers'])->find($id)->append('banned')->toJson();
     }
 
     /**

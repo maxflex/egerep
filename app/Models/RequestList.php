@@ -66,6 +66,8 @@ class RequestList extends Model
         static::saving(function ($model) {
             if (! $model->exists) {
                 $model->user_id = User::fromSession()->id;
+            } else {
+                $model->tutor_ids = array_unique($model->tutor_ids);
             }
         });
     }

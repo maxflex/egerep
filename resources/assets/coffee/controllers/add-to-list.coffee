@@ -39,7 +39,7 @@ angular.module 'Egerep'
 
         # determine whether tutor had already been added
         $scope.added = (tutor_id) ->
-            tutor_id in $scope.list.tutor_ids
+            tutor_id in $scope.list.tutor_ids.map(Number)
 
         # rebind draggable
         rebindDraggable = ->
@@ -158,8 +158,8 @@ angular.module 'Egerep'
         # add or remove tutor from list
         $scope.addOrRemove = (tutor_id) ->
             tutor_id = parseInt(tutor_id)
-            if tutor_id in $scope.list.tutor_ids
-                $scope.list.tutor_ids = _.without($scope.list.tutor_ids, tutor_id)
+            if tutor_id in $scope.list.tutor_ids.map(Number)
+                $scope.list.tutor_ids = _.without($scope.list.tutor_ids.map(Number), tutor_id)
             else
                 $scope.list.tutor_ids.push(tutor_id)
             repaintChosen()
@@ -167,11 +167,11 @@ angular.module 'Egerep'
 
         repaintChosen = ->
             $scope.markers.forEach (marker) ->
-                if marker.tutor.id in $scope.list.tutor_ids and not marker.chosen
+                if marker.tutor.id in $scope.list.tutor_ids.map(Number) and not marker.chosen
                     marker.chosen = true
                     marker.setOpacity(1)
                     marker.setIcon ICON_BLUE
-                if marker.tutor.id not in $scope.list.tutor_ids and marker.chosen
+                if marker.tutor.id not in $scope.list.tutor_ids.map(Number) and marker.chosen
                     marker.chosen = false
                     marker.setOpacity if marker.intersecting then 1 else TRANSPARENT_MARKER
                     marker.setIcon getMarkerType(marker.type)
@@ -193,3 +193,6 @@ angular.module 'Egerep'
             $scope.gmap.setZoom 11
 
             showClientOnMap()
+            $scope.tutors = $scope.list.tutors
+            showTutorsOnMap()
+            repaintChosen()

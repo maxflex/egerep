@@ -5,6 +5,9 @@ angular
         $rootScope.frontend_loading = true
         $scope.debt_updating = false
 
+        $scope.getSum = (summary) ->
+            (parseInt(summary.sum) or 0) + (parseInt(summary.debt_sum) or 0)
+
         $scope.updateDebt = ->
             $scope.debt_updating = true
             $http.post 'api/command/recalc-debt'
@@ -17,17 +20,18 @@ angular
             loadSummary $scope.page
             $scope.current_page = $scope.page
 
+        getPrefix = ->
+            prefix = if $scope.type is 'total' then '' else "/#{$scope.type}"
+
         $scope.pageChanged = ->
             ajaxStart()
             loadSummary $scope.current_page
-            page_prefix = if $scope.type == 'payments' then $scope.type + '/' else ''
-            paginate 'summary/' + page_prefix + $scope.filter, $scope.current_page
+            paginate 'summary' + getPrefix() + $scope.filter, $scope.current_page
 
         loadSummary = (page) ->
-            params  = if $scope.type == 'payments' then '/' + $scope.type else ''
+            params  = getPrefix()
             params += '?page='   + page
             params += '&filter=' + $scope.filter
-
             $http.post "api/summary#{ params }"
             .then (response) ->
                 ajaxEnd()

@@ -11,4 +11,5 @@
 @endif
 <a href="reviews" class="list-group-item">Отзывы</a>
 <a href="summary" class="list-group-item">Итоги</a>
+<a href="logs" class="list-group-item">Логи</a>
 <a href="logout" class="list-group-item">Выход</a>

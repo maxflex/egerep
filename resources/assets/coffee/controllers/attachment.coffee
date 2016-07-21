@@ -4,7 +4,7 @@ angular
         $resource 'api/attachments/:id', {},
             update:
                 method: 'PUT'
-    .controller 'AttachmentsIndex', ($rootScope, $scope, $timeout, $http, AttachmentStates, AttachmentService, UserService, PhoneService, Subjects, Grades, AttachmentVisibility, Presence, YesNo) ->
+    .controller 'AttachmentsIndex', ($rootScope, $scope, $timeout, $http, AttachmentStates, AttachmentService, UserService, PhoneService, Subjects, Grades, Presence, YesNo, AttachmentVisibility) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
@@ -29,6 +29,7 @@ angular
             window.history.pushState(state_id, '', 'attachments/' + state_id.toLowerCase());
 
         $timeout ->
+            $scope.search = if $.cookie("attachments") then JSON.parse($.cookie("attachments")) else {}
             loadAttachments $scope.page
             $scope.current_page = $scope.page
 

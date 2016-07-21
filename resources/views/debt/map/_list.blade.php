@@ -1,4 +1,4 @@
-<div ng-show="mode == 'list'" class="row">
+<div ng-show="mode == 'list' || mode == 'debtor'" class="row">
     <div class="col-sm-12">
         <table class="table">
             <thead class="bold">
@@ -17,7 +17,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="tutor in tutors | orderBy:sortType:sortReverse">
+                <tr ng-repeat="tutor in (mode == 'list' ? tutors : debtors) | orderBy:sortType:sortReverse">
                     <td>
                         @{{ $index + 1 }}. <a href='tutors/@{{ tutor.id }}/edit'>@{{ tutor.full_name }}</a>
                     </td>
@@ -46,7 +46,7 @@
                         >
                     </td>
                 </tr>
-                <tfoot ng-show='tutors && tutors.length'>
+                <tfoot ng-show='_tutors && _tutors.length'>
                     <tr>
                         <td></td>
                         <td>
@@ -57,7 +57,7 @@
                                 @{{ totalLastDebt().debt }}
                             </span>
                         </td>
-                        <td>@{{ total(tutors, 'debt_calc') }}</td>
+                        <td>@{{ total(_tutors, 'debt_calc') }}</td>
                         <td></td>
                         <td></td>
                     </tr>

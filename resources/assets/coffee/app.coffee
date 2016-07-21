@@ -109,6 +109,9 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
                 sum += v
             sum
 
+        $rootScope.deny = (ngModel, prop) ->
+            ngModel[prop] = +(!ngModel[prop])
+
         $rootScope.formatBytes = (bytes) ->
           if bytes < 1024
             bytes + ' Bytes'

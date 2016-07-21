@@ -42,9 +42,8 @@
         </div>
         <div class='mbs'>
             <b>Видимость:</b>
-            <span ng-click="selected_attachment.hide = +(!selected_attachment.hide)" class="link-like">
-                <span ng-show="selected_attachment.hide">скрыто</span>
-                <span ng-show="!selected_attachment.hide">показано</span>
+            <span ng-click="deny(selected_attachment, 'hide')" class="link-like">
+                @{{ AttachmentVisibility[selected_attachment.hide] }}
             </span>
         </div>
         <div class='mbs'>

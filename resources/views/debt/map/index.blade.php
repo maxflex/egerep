@@ -15,6 +15,7 @@
             <div class="options-list">
                 <span ng-class="{'link-like': mode !== 'map'}" ng-click="mode = 'map'">карта</span>
                 <span ng-class="{'link-like': mode !== 'list'}" ng-click="mode = 'list'">список</span>
+                <span ng-class="{'link-like': mode !== 'debtor'}" ng-click="mode = 'debtor'">вечные должники</span>
             </div>
         </div>
     </div>
@@ -50,15 +51,6 @@
         <div class="col-sm-2">
             <div class="form-group">
                 <ng-multi none-text='предметы' model='search.subjects' object='Subjects.all'></ng-multi>
-            </div>
-        </div>
-        <div class="col-sm-2">
-            <div class="form-group">
-                <select ng-model='search.debtor' class="sp">
-                    <option value=''>вечный должник</option>
-                    <option disabled>──────────────</option>
-                    <option ng-repeat='(value, name) in YesNo' value="@{{value}}">@{{ name }}</option>
-                </select>
             </div>
         </div>
         <div class="col-sm-2">

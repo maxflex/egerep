@@ -8,6 +8,8 @@ use \DB;
 class Metro extends Model
 {
     public $timestamps = false;
+    public $loggable = false;
+
     protected $fillable = [
         'minutes',
         'meters',

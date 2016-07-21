@@ -68,6 +68,8 @@ angular.module('Egerep')
                     $scope.tutor.last_accounts.unshift(data.account)
                     $scope.date_limit = moment(data.account.date_end).subtract(7, 'days').format('YYYY-MM-DD')
                     $scope.left       = data.left
+                    if data.accounts_in_week.length
+                        $scope.tutor.last_accounts = data.accounts_in_week.concat($scope.tutor.last_accounts)
             $rootScope.frontend_loading = false
             $('.accounts-table').stickyTableHeaders('destroy')
             $timeout ->

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use App\Events\DebtRecalc;
+use DB;
 
 class Attachment extends Model
 {
@@ -22,7 +23,7 @@ class Attachment extends Model
         'review',
         'comment',
         'forecast',
-        'hide'
+        'hide',
     ];
     protected $casts = [
         'grade' => 'int',
@@ -165,6 +166,22 @@ class Attachment extends Model
     }
 
     /**
+     * Стыковка без занятий
+     */
+    public function scopeNoLessons($query)
+    {
+        return $query->whereRaw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) = 0');
+    }
+
+    /**
+     * Стыковка с занятиями
+     */
+    public function scopeHasLessons($query)
+    {
+        return $query->whereRaw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) > 0');
+    }
+
+    /**
      * Получить статус стыковки
      */
     public function getState()
@@ -232,11 +249,6 @@ class Attachment extends Model
 			$new_search->state = $state;
 			$counts['state'][$state] = static::search($new_search)->count();
 		}
-		foreach(['', 0, 1] as $hide) {
-			$new_search = clone $search;
-			$new_search->hide = $hide;
-			$counts['hide'][$hide] = static::search($new_search)->count();
-		}
 		foreach(['', 0, 1] as $account_data) {
 			$new_search = clone $search;
 			$new_search->account_data = $account_data;
@@ -257,6 +269,11 @@ class Attachment extends Model
             $new_search->debtor = $debtor;
             $counts['debtor'][$debtor] = static::search($new_search)->count();
         }
+        foreach(['', 0, 1] as $hide) {
+            $new_search = clone $search;
+            $new_search->hide = $hide;
+            $counts['hide'][$hide] = static::search($new_search)->count();
+        }
         return $counts;
     }
 
@@ -276,19 +293,6 @@ class Attachment extends Model
         $query->join('request_lists as r', 'request_list_id', '=', 'r.id');             /* request_id нужен чтобы генерить правильную ссылку для редактирования */
         $query->leftJoin('archives as a', 'a.attachment_id', '=', 'attachments.id');
 
-        if (isset($search->hide)) {
-           $query->where('attachments.hide', $search->hide);
-        }
-
-        /**
-         * количество занятий - есть и атирибут account_data_count.
-         * но чтобы сортировка была правильной, должны через join получить.
-         */
-        // $query->leftJoin('account_datas as ad', function($query) {
-        //     $query->on('ad.tutor_id', '=', 'attachments.tutor_id');
-        //     $query->on('ad.client_id', '=', 'attachments.client_id');
-        // })->groupBy('attachments.id');
-
         $query->select(
             'attachments.*', 'r.request_id',
             'a.created_at AS archive_date', 'a.total_lessons_missing',
@@ -306,6 +310,9 @@ class Attachment extends Model
                 $query->where('attachments.forecast', '>', 0);
             }
         }
+        if (isset($search->hide)) {
+            $query->where('attachments.hide', $search->hide);
+        }
 
         if (isset($search->debtor)) {
             $query->whereHas('tutor', function($query) use ($search) {
@@ -322,5 +329,20 @@ class Attachment extends Model
         }
 
         return $query->orderBy('attachments.date', 'desc');
+    }
+
+    /**
+     * Получить дату последнего занятия по ID стыковки
+     */
+    public static function getLastLessonDate($attachment_id)
+    {
+        return DB::table('attachments')->join(DB::raw('(
+              SELECT MAX(date) as last_lesson_date, tutor_id, client_id
+              FROM account_datas
+              GROUP BY tutor_id, client_id
+          ) ad'), function($join) {
+            $join->on('attachments.tutor_id', '=', 'ad.tutor_id')
+                 ->on('attachments.client_id', '=', 'ad.client_id');
+            })->where('id', $attachment_id)->value('last_lesson_date');
     }
 }

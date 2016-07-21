@@ -2,6 +2,9 @@
 
 namespace Illuminate\Database\Eloquent;
 
+// @custom
+use App\Events\LogAction;
+
 use Closure;
 use DateTime;
 use Exception;
@@ -34,6 +37,14 @@ use Illuminate\Database\ConnectionResolverInterface as Resolver;
 
 abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializable, QueueableEntity, UrlRoutable
 {
+    /**
+     * Model should be loggable
+     *
+     * @var boolean
+     * @custom
+     */
+    protected $loggable = true;
+
     /**
      * The connection name for the model.
      *
@@ -218,6 +229,14 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      * @var bool
      */
     public $wasRecentlyCreated = false;
+
+    /**
+     * Indicates if the model was deleted during the current request lifecycle.
+     *
+     * @var bool
+     * @custom
+     */
+    public $wasRecentlyDeleted = false;
 
     /**
      * Indicates whether attributes are snake cased on arrays.
@@ -1211,6 +1230,10 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
 
             $this->exists = false;
 
+            // @custom
+            $this->wasRecentlyDeleted = true;
+            event(new LogAction($this));
+
             // Once the model has been deleted, we will fire off the deleted event so that
             // the developers may hook into post-delete operations. We will then return
             // a boolean true as the delete is presumably successful on the database.
@@ -1553,7 +1576,6 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
         // Unset virtual attributes before save
         // @custom
         foreach (static::$virtual as $attribute) {
-            \Log::info('Unsetting ' . $attribute);
             unset($this->{$attribute});
         }
 
@@ -1569,6 +1591,11 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
         // which is typically an auto-increment value managed by the database.
         else {
             $saved = $this->performInsert($query, $options);
+        }
+
+        // @custom
+        if ($this->loggable) {
+           event(new LogAction($this));
         }
 
         if ($saved) {

@@ -27,7 +27,7 @@ class AccountData extends Model
             $this->sum = $data[0];
         }
         if (count($data) == 2) {
-            $this->commission = $data[1];
+            $this->commission = intval($data[1]);
         }
     }
 

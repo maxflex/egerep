@@ -159,6 +159,14 @@
 				orientation	: 'bottom auto',
 			})
 
+			// С очисткой даты
+			$(".bs-date-clear").datepicker({
+				language	: 'ru',
+				autoclose	: true,
+				orientation	: 'bottom auto',
+				clearBtn    : true
+			})
+
 			// $(".bs-datetime").datetimepicker({
 			// 	format: 'YYYY-MM-DD HH:mm',
 			// 	locale: 'ru',

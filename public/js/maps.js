@@ -64,7 +64,7 @@ MAP_CENTER = new google.maps.LatLng(55.7387, 37.6032);
 
 RECOM_BOUNDS = new google.maps.LatLngBounds(new google.maps.LatLng(INIT_COORDS.lat - 0.5, INIT_COORDS.lng - 0.5, new google.maps.LatLng(INIT_COORDS.lat + 0.5, INIT_COORDS.lng + 0.5)));
 
-this.newMarker = function(id, latLng, map, type) {
+this.newMarker = function(id, latLng, map, type, server_id) {
   if (type == null) {
     type = 'green';
   }
@@ -75,7 +75,8 @@ this.newMarker = function(id, latLng, map, type) {
     id: id,
     type: type,
     lat: latLng.lat(),
-    lng: latLng.lng()
+    lng: latLng.lng(),
+    server_id: server_id
   });
 };
 

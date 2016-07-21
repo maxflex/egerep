@@ -44,7 +44,7 @@ class Mango {
         return static::_run(static::COMMAND_REQUEST_STATS, [
             'date_from'  => Carbon::now()->subMonth()->timestamp,
             'date_to'    => Carbon::now()->timestamp,
-            'fields'     => 'records, start, finish, from_extension, from_number, to_extension, to_number, disconnect_reason',
+            'fields'     => 'records, start, finish, from_extension, from_number, to_extension, to_number, disconnect_reason, answer',
             'call_party' => [
                 'number' => $number,
             ],
@@ -71,23 +71,21 @@ class Mango {
                     // echo $index;
                     $info = explode(';', $response_line);
                     if (count($info) > 1) {
-						$disconnect_reason = filter_var($info[7], FILTER_SANITIZE_NUMBER_INT);
-
-						if (! empty($info[5]) && in_array($disconnect_reason, [1131, 1100, 1121])) {
+						// если это входящий звонок и разговора не было, не выводить
+						if (! empty($info[5]) && $info[8] == 0) {
 							continue;
 						}
 
                         $return[] = [
                             'recording_id'		=> trim($info[0], '[]'),
-                            // 'recording_id'		=> $info[0],
                             'start'             => $info[1],
                             'finish'            => $info[2],
                             'from_extension'    => $info[3],
                             'from_number'       => $info[4],
                             'to_extension'      => $info[5],
                             'to_number'         => $info[6],
-                            'disconnect_reason' => $disconnect_reason,
-                            'seconds'           => $info[2] - $info[1],
+                            'disconnect_reason' => $info[7],
+                            'seconds'           => ($info[8] != 0 ? ($info[2] - $info[8]) : 0),
                             'from_user'         => $info[3] ? User::find($info[3]) : null,
                             'from_user'         => $info[5] ? User::find($info[5]) : null,
                             'date_start'        => date('Y-m-d H:i:s', $info[1]),

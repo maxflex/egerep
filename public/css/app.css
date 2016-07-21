@@ -30831,4 +30831,17 @@ table.summary-table.left-align tr td {
     flex: 1;
     margin-right: 10px; }
 
+.fix-viewport > .dropdown-menu {
+  left: -60px; }
+
+.log-info span:nth-child(1) {
+  color: gray;
+  display: inline-block; }
+
+.btn-primary.focus, .btn-primary:focus {
+  background-color: #158E51; }
+
+.table-small {
+  font-size: 12px; }
+
 /*# sourceMappingURL=app.css.map */

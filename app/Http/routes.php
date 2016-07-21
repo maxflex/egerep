@@ -27,6 +27,7 @@ Route::group(['middleware' => ['web']], function () {
     });
     Route::get('/', 'TutorsController@index');
     Route::resource('tutors', 'TutorsController');
+    Route::resource('logs', 'LogsController');
     Route::resource('requests', 'RequestsController', ['except' => ['index', 'show']]);
     Route::get('requests/{state_id?}', 'RequestsController@index');
     Route::resource('clients', 'ClientsController');
@@ -36,6 +37,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('debt/map', 'DebtController@map');
 
     Route::get('summary/payments/{filter?}', 'SummaryController@payments');
+    Route::get('summary/debtors/{filter?}', 'SummaryController@debtors');
     Route::get('summary/{filter?}', 'SummaryController@index');
 
     Route::controllers([
@@ -54,6 +56,8 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('search', 'TutorsController@index');
 
     Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
+        Route::resource('markers', 'MarkersController');
+        Route::resource('logs', 'LogsController');
         Route::get('tutors/list', 'TutorsController@lists');
         Route::post('tutors/filtered', 'TutorsController@filtered');
         Route::post('tutors/counts', 'TutorsController@counts');
@@ -78,6 +82,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('periods', 'PeriodsController');
 
         Route::post('summary/payments', 'SummaryController@payments');
+        Route::post('summary/debtors', 'SummaryController@debtors');
         Route::post('summary', 'SummaryController@index');
         Route::controllers([
             'command'  => 'CommandsController',

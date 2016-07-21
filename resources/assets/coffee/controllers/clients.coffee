@@ -33,7 +33,7 @@ angular
     #
     #   ADD/EDIT CONTROLLER
     #
-    .controller "ClientsForm", ($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, AttachmentStates, ReviewScores, Archive, Review, ApiService, UserService, RecommendationService, AttachmentService) ->
+    .controller "ClientsForm", ($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, AttachmentStates, ReviewScores, Archive, Review, ApiService, UserService, RecommendationService, AttachmentService, AttachmentVisibility, Marker) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
@@ -78,10 +78,7 @@ angular
                     return true
             return false
 
-
-
-        # get teacher
-        $timeout ->
+        bindDroppable = ->
             $('.teacher-remove-droppable').droppable
                 tolerance: 'pointer'
                 hoverClass: 'drop-hover'
@@ -91,6 +88,8 @@ angular
                         $scope.selected_list.tutor_ids = _.without($scope.selected_list.tutor_ids, tutor_id.toString())
                         saveSelectedList()
 
+        # get teacher
+        $timeout ->
             $scope.users = User.query()
 
             $http.get 'api/tutors/list'
@@ -270,11 +269,11 @@ angular
         $scope.$watch 'selected_request.comment', (newVal, oldVal) ->
             return if newVal is undefined and oldVal is undefined
             newVal = oldVal if newVal is undefined
-            $scope.tutor_ids = []
+            $scope.request_tutor_ids = []
             matches = newVal.match /Репетитор [\d]+/gi
             $.each matches, (index, match) ->
                 tutor_id = match.match /[\d]+/gi
-                $scope.tutor_ids.push parseInt(tutor_id)
+                $scope.request_tutor_ids.push parseInt(tutor_id)
 
         # refresh selectpicker on $selected_attachment update
         $scope.$watch 'selected_attachment', (newVal, oldVal) ->
@@ -282,6 +281,9 @@ angular
             sp 'attachment-subjects', 'выберите предмет' if oldVal is undefined
             spRefresh 'attachment-subjects' if oldVal isnt undefined
             rebindMasks()
+
+        $scope.$watch 'selected_list', (newVal, oldVal) ->
+            bindDroppable() if oldVal is undefined and newVal isnt undefined
 
 
         #
@@ -293,7 +295,7 @@ angular
         filterMarkers = ->
             new_markers = []
             $.each $scope.client.markers, (index, marker) ->
-                new_markers.push _.pick(marker, 'lat', 'lng', 'type', 'metros')
+                new_markers.push _.pick(marker, 'lat', 'lng', 'type', 'metros', 'server_id')
             $scope.client.markers = new_markers
 
 
@@ -389,8 +391,9 @@ angular
                 t.setMap null
                 # удаляем маркер из коллекции
                 $.each $scope.client.markers, (index, m) ->
-                    console.log 'id', t.id, m.id
                     if m isnt undefined and t.id == m.id
+                        # удаляем маркер с сервера, если нужно
+                        Marker.delete({id: m.server_id}) if m.server_id isnt undefined
                         $scope.client.markers.splice index, 1
 
         $scope.bindMarkerChangeType = (marker) ->
@@ -404,6 +407,7 @@ angular
                 else
                     @type = 'green'
                     @setIcon ICON_GREEN
+                Marker.update({id: marker.server_id, type: @type}) if marker.server_id isnt undefined
 
         # Поиск по карте
         $scope.searchMap = (address) ->
@@ -458,7 +462,7 @@ angular
                 $.each $scope.client.markers, (index, marker) ->
                     # Создаем маркер
                     # @todo: сделать так, чтобы type и metros и еще дургие можно было передавать массивом в последнем параметре
-                    new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.gmap, marker.type)
+                    new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.gmap, marker.type, marker.id)
                     new_marker.metros = marker.metros
 
                     # Добавляем маркер на карту
@@ -488,7 +492,7 @@ angular
 
         # determine whether tutor had already been added
         $scope.added = (tutor_id) ->
-            tutor_id in $scope.tutor_ids
+            tutor_id in $scope.tutor_ids.map(Number)
 
         # rebind draggable
         rebindDraggable = ->
@@ -497,7 +501,7 @@ angular
                 revert: (valid) ->
                     return true if valid
                     $scope.tutor_list   = removeById($scope.tutor_list, $scope.dragging_tutor.id)
-                    $scope.tutor_ids    = _.without($scope.tutor_ids, $scope.dragging_tutor.id)
+                    $scope.tutor_ids    = _.without($scope.tutor_ids.map(Number), $scope.dragging_tutor.id)
                     $scope.$apply()
                     repaintChosen()
 
@@ -594,18 +598,19 @@ angular
         # add or remove tutor from list
         $scope.addOrRemove = (tutor_id) ->
             tutor_id = parseInt(tutor_id)
-            if tutor_id in $scope.tutor_ids
-                $scope.tutor_ids = _.without($scope.tutor_ids, tutor_id)
+            $scope.tutor_ids = [] if $scope.tutor_ids is undefined
+            if tutor_id in $scope.tutor_ids.map(Number)
+                $scope.tutor_ids = _.without($scope.tutor_ids.map(Number), tutor_id)
             else
                 $scope.tutor_ids.push(tutor_id)
             repaintChosen()
 
         repaintChosen = ->
             $scope.markers2.forEach (marker) ->
-                if marker.tutor.id in $scope.tutor_ids and not marker.chosen
+                if marker.tutor.id in $scope.tutor_ids.map(Number) and not marker.chosen
                     marker.chosen = true
                     marker.setIcon ICON_BLUE
-                if marker.tutor.id not in $scope.tutor_ids and marker.chosen
+                if marker.tutor.id not in $scope.tutor_ids.map(Number) and marker.chosen
                     marker.chosen = false
                     marker.setIcon getMarkerType(marker.type)
 

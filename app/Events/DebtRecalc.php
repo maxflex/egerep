@@ -24,7 +24,8 @@ class DebtRecalc extends Event
      */
     public function __construct($tutor_id = null)
     {
-        \Log::info('Recalc start for tutor_id: ' . $tutor_id);
+        // #1082 сначала очищаем значения
+        static::_resetDebt($tutor_id);
 
         $query = Account::query();
 
@@ -39,17 +40,18 @@ class DebtRecalc extends Event
         }
 
         // Преподаватели с клиентами, но без встреч
-        $query = DB::table('tutors')
-            ->join('attachments', 'attachments.tutor_id', '=', 'tutors.id')
+        $query = DB::table('tutors');
+
+        if ($tutor_id) {
+            $query->where('tutors.id', $tutor_id);
+        }
+
+        $query->join('attachments', 'attachments.tutor_id', '=', 'tutors.id')
             ->leftJoin('accounts', 'accounts.tutor_id', '=', 'tutors.id')
             ->whereNull('accounts.id')
             ->orderBy('attachments.date', 'asc')
             ->select('attachments.tutor_id', 'attachments.date')
             ->groupBy('attachments.tutor_id');
-
-        if ($tutor_id) {
-            $query->where('tutors.id', $tutor_id);
-        }
 
         $no_accounts = $query->get();
 
@@ -57,7 +59,7 @@ class DebtRecalc extends Event
             static::recalcDebt($account->date, now(true), $account->tutor_id);
         }
 
-        if ($tutor_id) {
+        if (! $tutor_id) {
             Settings::set('debt_updated', now());
         }
     }
@@ -160,6 +162,19 @@ class DebtRecalc extends Event
         return .72;
     }
 
+    /**
+     * Очищаем значения
+     */
+    private static function _resetDebt($tutor_id)
+    {
+        $query = Tutor::query();
+        if ($tutor_id) {
+            $query->where('id', $tutor_id);
+        }
+        $query->update([
+            'debt_calc' => 0,
+        ]);
+    }
 
     /**
      * Get the channels the event should be broadcast on.
