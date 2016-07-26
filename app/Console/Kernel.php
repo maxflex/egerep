@@ -36,6 +36,7 @@ class Kernel extends ConsoleKernel
         Commands\ReviewsCreate::class,
         Commands\SetChecked::class,
         Commands\Tutors::class,
+        Commands\AddAttachmentCountToTutors::class,
     ];
 
     /**

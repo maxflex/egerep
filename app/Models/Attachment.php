@@ -94,18 +94,30 @@ class Attachment extends Model
 
     public function getLastAccountDateAttribute()
     {
-        return AccountData::where('tutor_id',  $this->tutor_id)
+        $account_data = AccountData::where('tutor_id',  $this->tutor_id)
                           ->where('client_id', $this->client_id)
                           ->orderBy('date','desc')
-                          ->first()->date;
+                          ->first();
+
+        if ($account_data) {
+            return $account_data->date;
+        }
+
+        return false;
     }
 
     public function getFirstAccountDateAttribute()
     {
-        return AccountData::where('tutor_id',  $this->tutor_id)
+        $account_data = AccountData::where('tutor_id',  $this->tutor_id)
                             ->where('client_id', $this->client_id)
-                            ->orderBy('date','desc')
-                            ->first()->date;
+                            ->orderBy('date')
+                            ->first();
+
+        if ($account_data) {
+            return $account_data->date;
+        }
+
+        return false;
     }
 
     public function getLinkAttribute()
@@ -219,9 +231,11 @@ class Attachment extends Model
         });
 
         static::created(function ($model) {
+            \App\Models\Tutor::where('id', $model->tutor_id)->update(['attachments_cnt' => \DB::raw('attachments_cnt + 1')]);
             event(new DebtRecalc($model->tutor_id));
         });
         static::deleted(function ($model) {
+            \App\Models\Tutor::where('id', $model->tutor_id)->update(['attachments_cnt' => \DB::raw('attachments_cnt - 1')]);
             \App\Models\AccountData::where('tutor_id', $model->tutor_id)->where('client_id', $model->client_id)->delete();
             event(new DebtRecalc($model->tutor_id));
         });
