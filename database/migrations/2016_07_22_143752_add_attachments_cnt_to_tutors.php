@@ -13,8 +13,8 @@ class AddAttachmentsCntToTutors extends Migration
     public function up()
     {
         Schema::table('tutors', function (Blueprint $table) {
-            $table->integer('attachments_cnt')->default(0);
-            $table->index('attachments_cnt');
+            $table->integer('attachments_count')->default(0)->unsigned();
+            $table->index('attachments_count');
         });
     }
 
@@ -26,7 +26,7 @@ class AddAttachmentsCntToTutors extends Migration
     public function down()
     {
         Schema::table('tutors', function (Blueprint $table) {
-            $table->dropColumn('attachments_cnt');
+            $table->dropColumn('attachments_count');
         });
     }
 }

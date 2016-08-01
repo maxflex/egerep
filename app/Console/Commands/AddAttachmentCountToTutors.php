@@ -44,7 +44,7 @@ class AddAttachmentCountToTutors extends Command
         $tutors = Tutor::all();
         
         foreach ($tutors as $tutor) {
-            $tutor->attachments_cnt = Attachment::where('tutor_id', $tutor->id)->count();
+            $tutor->attachments_count = Attachment::where('tutor_id', $tutor->id)->count();
             $tutor->save();
         }
     }
