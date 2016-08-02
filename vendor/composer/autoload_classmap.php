@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'AddAttachmentsCntToTutors' => $baseDir . '/database/migrations/2016_07_22_143752_add_attachments_cnt_to_tutors.php',
     'AddCheckedToAttachments' => $baseDir . '/database/migrations/2016_06_29_132535_add_checked_to_attachments.php',
     'AddClientIdToAttachments' => $baseDir . '/database/migrations/2016_05_30_141049_add_client_id_to_attachments.php',
     'AddCommentExtendedToTutors' => $baseDir . '/database/migrations/2016_06_17_180812_add_comment_extended_to_tutors.php',
@@ -87,6 +88,7 @@ return array(
     'DropClientSubjectList' => $baseDir . '/database/migrations/2016_02_19_112701_drop_client_subject_list.php',
     'DropDebtFromAccounts' => $baseDir . '/database/migrations/2016_06_03_154739_drop_debt_from_accounts.php',
     'DropDebtFromTutors' => $baseDir . '/database/migrations/2016_06_03_182030_drop_debt_from_tutors.php',
+    'DropDenyReasonFromRequests' => $baseDir . '/database/migrations/2016_08_02_134452_drop_deny_reason_from_requests.php',
     'DropDuplicateFormClients' => $baseDir . '/database/migrations/2016_06_05_103258_drop_duplicate_form_clients.php',
     'DropExpertColumnsFromTutors' => $baseDir . '/database/migrations/2016_07_05_201806_drop_expert_columns_from_tutors.php',
     'DropMoscowmapIdFromStations' => $baseDir . '/database/migrations/2016_03_17_110405_drop_moscowmap_id_from_stations.php',
@@ -109,6 +111,7 @@ return array(
     'EgecrmCreateSettingsTable' => $baseDir . '/database/migrations/2016_06_17_121558_egecrm_create_settings_table.php',
     'EgecrmCreateTestStudents' => $baseDir . '/database/migrations/2016_07_12_160324_egecrm_create_test_students.php',
     'EgecrmCreateTestsTable' => $baseDir . '/database/migrations/2016_07_11_113618_egecrm_create_tests_table.php',
+    'EgecrmRefactor' => $baseDir . '/database/migrations/2016_08_01_152313_egecrm_refactor.php',
     'File_Iterator' => $vendorDir . '/phpunit/php-file-iterator/src/Iterator.php',
     'File_Iterator_Facade' => $vendorDir . '/phpunit/php-file-iterator/src/Facade.php',
     'File_Iterator_Factory' => $vendorDir . '/phpunit/php-file-iterator/src/Factory.php',

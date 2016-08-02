@@ -1,6 +1,6 @@
 angular
     .module 'Egerep'
-    .controller 'RequestsIndex', ($rootScope, $scope, $timeout, $http, Request, RequestStates, Comment, PhoneService, UserService, Grades, DenyReasons) ->
+    .controller 'RequestsIndex', ($rootScope, $scope, $timeout, $http, Request, RequestStates, Comment, PhoneService, UserService, Grades) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
