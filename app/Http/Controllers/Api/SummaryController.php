@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Console\Commands\CalcSummary;
 use App\Models\Account;
 use App\Models\Attachment;
+use App\Models\Tutor;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -211,8 +212,9 @@ class SummaryController extends Controller
                     ->whereRaw("date_end <= '{$end}'")
                     ->sum('received');
 
-        $mutual_debts = DB::connection('egecrm')->table('teacher_payments')
+        $mutual_debts = DB::connection('egecrm')->table('payments')
                         ->where('id_status', Account::MUTUAL_DEBT_STATUS)
+                        ->where('entity_type', Tutor::USER_TYPE)
                         ->whereRaw("STR_TO_DATE(date, '%d.%c.%Y') >= '{$start}'")
                         ->whereRaw("STR_TO_DATE(date, '%d.%c.%Y') <= '{$end}'")
                         ->sum('sum');
@@ -272,8 +274,9 @@ class SummaryController extends Controller
                     ->groupBy('payment_method')
                     ->get();
 
-        $mutual_debts = DB::connection('egecrm')->table('teacher_payments')
+        $mutual_debts = DB::connection('egecrm')->table('payments')
                         ->where('id_status', Account::MUTUAL_DEBT_STATUS)
+                        ->where('entity_type', Tutor::USER_TYPE)
                         ->whereRaw("STR_TO_DATE(date, '%d.%c.%Y') >= '{$start}'")
                         ->whereRaw("STR_TO_DATE(date, '%d.%c.%Y') <= '{$end}'")
                         ->sum('sum');
