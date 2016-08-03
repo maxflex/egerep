@@ -24,4 +24,22 @@ class AttachmentsController extends Controller
             ])
         );
     }
+
+    public function errors(Request $request)
+    {
+        $errors = [];
+
+        foreach (Attachment::all() as $attachment) {
+            $attachment_errors = $attachment->errors();
+            if (count($attachment_errors)) {
+                $errors[] = (object)[
+                    'id'    => $attachment->id,
+                    'link'  => $attachment->link,
+                    'codes' => $attachment_errors,
+                ];
+            }
+        }
+
+        return view('attachments.errors')->with(compact('errors'));
+    }
 }

@@ -33,6 +33,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::resource('clients', 'ClientsController');
     Route::resource('periods', 'PeriodsController');
     Route::get('attachments', 'AttachmentsController@index');
+    Route::get('attachments/errors', 'AttachmentsController@errors');
     // Route::resource('debt', 'DebtController', ['only' => 'index']);
     Route::get('debt/map', 'DebtController@map');
 
