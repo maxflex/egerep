@@ -92,13 +92,6 @@ angular.module('Egerep')
         3: 'перевод на сотовый'
         4: 'перевод на карту'
 
-    .value 'RequestStates',
-        new          : 'невыполненные'
-        awaiting     : 'в ожидании'
-        finished     : 'выполненные'
-        deny         : 'отказы'
-        reasoned_deny: 'обоснованный отказ'
-
     .value 'ArchiveStates',
         impossible: 'невозможно'
         possible: 'возможно'

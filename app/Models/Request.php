@@ -6,15 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Request extends Model
 {
-    // @todo: дублирование статусов в factory.coffee – плохо
     public static $states = [
-        'new',
-        'awaiting',
-        'finished',
-        'deny',
-        'spam',
-        'reasoned_deny'
+        'невыполненные'      => 'new',
+        'в ожидании'         => 'awaiting',
+        'выполненные'        => 'finished',
+        'отказы'             => 'deny',
+        'обоснованный отказ' => 'reasoned_deny'
     ];
+
     protected $attributes = [
         'state' => 'new',
     ];
