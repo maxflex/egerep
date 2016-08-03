@@ -42,6 +42,11 @@ class Review extends Model
 
     public static function counts($search)
     {
+        foreach(array_merge(['', 0], User::active()->pluck('id')->all()) as $user_id) {
+			$new_search = clone $search;
+			$new_search->user_id = $user_id;
+			$counts['user'][$user_id] = static::search($new_search)->count();
+		}
 		foreach(["", 0, 1] as $mode) {
 			$new_search = clone $search;
 			$new_search->mode = $mode;
@@ -83,7 +88,7 @@ class Review extends Model
             }
         }
 
-        if (isset($search->state) || isset($search->signature) || isset($search->comment) || isset($search->score)) {
+        if (isset($search->state) || isset($search->signature) || isset($search->comment) || isset($search->score) || isset($search->user_id)) {
             $query->whereHas('review', function($query) use ($search) {
                 if (isset($search->state)) {
                     $query->where('state', $search->state);
@@ -96,6 +101,9 @@ class Review extends Model
                 }
                 if (isset($search->score)) {
                     $query->where('score', $search->score);
+                }
+                if (isset($search->user_id)) {
+                    $query->where('user_id', $search->user_id);
                 }
             });
         }

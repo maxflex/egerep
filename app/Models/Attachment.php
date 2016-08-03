@@ -258,6 +258,11 @@ class Attachment extends Model
 
     public static function counts($search)
     {
+        foreach(array_merge(['', 0], User::active()->pluck('id')->all()) as $user_id) {
+			$new_search = clone $search;
+			$new_search->user_id = $user_id;
+			$counts['user'][$user_id] = static::search($new_search)->count();
+		}
 		foreach(['', 'new', 'inprogress', 'ended'] as $state) {
 			$new_search = clone $search;
 			$new_search->state = $state;
@@ -327,6 +332,9 @@ class Attachment extends Model
         if (isset($search->hide)) {
             $query->where('attachments.hide', $search->hide);
         }
+        if (isset($search->user_id)) {
+            $query->where('attachments.user_id', $search->user_id);
+        }
 
         if (isset($search->debtor)) {
             $query->whereHas('tutor', function($query) use ($search) {
@@ -342,7 +350,7 @@ class Attachment extends Model
             }
         }
 
-        return $query->orderBy('attachments.date', 'desc');
+        return $query->orderBy('attachments.created_at', 'desc');
     }
 
     /**

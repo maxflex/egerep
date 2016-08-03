@@ -1,6 +1,6 @@
 angular
     .module 'Egerep'
-    .controller 'ReviewsIndex', ($rootScope, $scope, $timeout, $http, Existance, ReviewStates, Presence, ReviewScores) ->
+    .controller 'ReviewsIndex', ($rootScope, $scope, $timeout, $http, Existance, ReviewStates, Presence, ReviewScores, UserService) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 

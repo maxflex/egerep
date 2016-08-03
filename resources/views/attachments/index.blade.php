@@ -6,6 +6,17 @@
 
 <div class="row flex-list">
     <div>
+        <select class="form-control selectpicker" ng-model='search.user_id' ng-change="filter()" id='change-user'>
+            <option value="" data-subtext="@{{ counts.user[''] || '' }}">пользователь</option>
+            <option disabled>──────────────</option>
+            <option
+                ng-repeat="user in UserService.getWithSystem()"
+                value="@{{ user.id }}"
+                data-content="<span style='color: @{{ user.color || 'black' }}'>@{{ user.login }}</span><small class='text-muted'>@{{ counts.user[user.id] || '' }}</small>"
+            ></option>
+        </select>
+    </div>
+    <div>
         <select ng-model='search.state' class='selectpicker' ng-change='filter()'>
             <option value="" data-subtext="@{{ counts.state[''] || '' }}">все статусы</option>
             <option disabled>──────────────</option>
@@ -69,24 +80,16 @@
                 Преподаватель
             </td>
             <td>
-                <span ng-click="sort('created_at')" role="button">
-                    Cтыковка
-                </span>
+                Cтыковка
             </td>
             <td>
-                <span ng-click="sort('lesson_count')" role="button">
-                    Занятий
-                </span>
+                Занятий
             </td>
             <td>
-                <span ng-click="sort('forecast')" role="button">
-                    Прогноз
-                </span>
+                Прогноз
             </td>
             <td>
-                <span ng-click="sort('archive_date')" role="button">
-                    Архивация
-                </span>
+                Архивация
             </td>
             <td>Статус</td>
             <td>Реквизиты</td>
