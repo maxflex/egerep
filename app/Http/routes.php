@@ -71,6 +71,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('requests', 'RequestsController');
         Route::resource('lists', 'RequestListsController');
         Route::resource('attachments', 'AttachmentsController');
+        Route::post('attachments/errors/{id}', 'AttachmentsController@errors');
         Route::post('debt/map', 'DebtController@map');
         Route::resource('debt', 'DebtController');
         Route::resource('archives', 'ArchivesController');

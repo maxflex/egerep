@@ -93,4 +93,9 @@ class AttachmentsController extends Controller
     {
         return Attachment::destroy($id);
     }
+
+    public function errors($id)
+    {
+        return Attachment::find($id)->errors();
+    }
 }

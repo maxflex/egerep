@@ -33,7 +33,7 @@ angular
     #
     #   ADD/EDIT CONTROLLER
     #
-    .controller "ClientsForm", ($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, AttachmentStates, ReviewScores, Archive, Review, ApiService, UserService, RecommendationService, AttachmentService, AttachmentVisibility, Marker) ->
+    .controller "ClientsForm", ($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, AttachmentStates, ReviewScores, Archive, Review, ApiService, UserService, RecommendationService, AttachmentService, AttachmentVisibility, AttachmentErrors, Marker) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
@@ -56,19 +56,28 @@ angular
         # Save everything
         $scope.edit = ->
             filterMarkers()
-            return if hasErrors()
             $scope.ajaxStart()
             $scope.client.$update()
-                .then (response) ->
+                .then ->
                     $scope.ajaxEnd()
-                    $('#forecast').removeClass('has-error')
+                    $scope.Attachment.validate $scope.selected_attachment, (response) ->
+                        if response.length
+                            notifyAttachmentErrors response
 
         # Save everything
         $scope.save = ->
             filterMarkers()
             $scope.ajaxStart()
-            $scope.Client.save $scope.client, (response) ->
-                window.location = "requests/#{response.id}/edit"
+            $scope.Client.save $scope.client, ->
+                $scope.Attachment.check $scope.selected_attachment, (response) ->
+                    if response.length
+                        notifyAttachmentErrors response
+                    else
+                        window.location = "requests/#{response.id}/edit"
+
+        notifyAttachmentErrors = (error_codes) ->
+            for code in error_codes
+                notifyError AttachmentErrors[code]
 
         bindDroppable = ->
             $('.teacher-remove-droppable').droppable
