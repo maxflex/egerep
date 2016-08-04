@@ -30,10 +30,10 @@ class AttachmentsController extends Controller
     {
         return view('attachments.errors', [
             'errors' => AttachmentError::paginate(30),
-        ])->with([
+        ])->with(
             ngInit([
                 'attachment_errors_updated'  => Settings::get('attachment_errors_updated'),
             ])
-        ]);
+        );
     }
 }

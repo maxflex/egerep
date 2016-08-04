@@ -34,7 +34,7 @@ class CommandsController extends Controller
      */
     public function postRecalcAttachmentErrors(Request $request)
     {
-        Artisan::call('calc:attachment_errors');
+        \Artisan::call('calc:attachment_errors');
         return Settings::get('attachment_errors_updated');
     }
 }

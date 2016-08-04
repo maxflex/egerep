@@ -4,7 +4,7 @@
 @section('title-right')
     обновлено @{{ formatDateTime(attachment_errors_updated) }}
     <span class="glyphicon glyphicon-refresh opacity-pointer" ng-click='recalcAttachmentErrors()' ng-class="{
-        'spinning': attachment_errors_updated
+        'spinning': attachment_errors_updating
     }"></span>
 @stop
 

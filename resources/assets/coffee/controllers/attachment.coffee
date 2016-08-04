@@ -13,7 +13,7 @@ angular
             $http.post 'api/command/recalc-attachment-errors'
             .then (response) ->
                 $scope.attachment_errors_updating = false
-                $scope.attachment_errors_updated = response.data.attachment_errors_updated
+                $scope.attachment_errors_updated = response.data
 
     .controller 'AttachmentsIndex', ($rootScope, $scope, $timeout, $http, AttachmentStates, AttachmentService, UserService, PhoneService, Subjects, Grades, Presence, YesNo, AttachmentVisibility) ->
         bindArguments($scope, arguments)
