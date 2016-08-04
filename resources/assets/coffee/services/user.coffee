@@ -43,4 +43,7 @@ angular.module 'Egerep'
             else
                 entity[user_id] = new_user_id
 
+        this.getBannedUsers = ->
+            _.where this.users, {banned : 1}
+
         this
