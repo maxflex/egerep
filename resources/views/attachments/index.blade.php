@@ -2,6 +2,10 @@
 @section('title', 'Стыковки')
 @section('controller', 'AttachmentsIndex')
 
+@section('title-right')
+    <a href='attachments/errors'>ошибки</a>
+@stop
+
 @section('content')
 
 <div class="row flex-list">
