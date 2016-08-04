@@ -423,7 +423,7 @@ class Attachment extends Model
 
             if (! $archive->total_lessons_missing) {
                 if ($this->hide) {
-                    if (($this->account_data_count && $archive->getClean('date') != $last_lesson_date) || (! $this->account_data_count && $archive_date->diff($attachment_date)->format("%a") == 7)) {
+                    if (($this->account_data_count && $archive->getClean('date') == $last_lesson_date) || (! $this->account_data_count && $archive_date->diff($attachment_date)->format("%a") == 7)) {
                         $errors[] = 13;
                     }
                 } else {
