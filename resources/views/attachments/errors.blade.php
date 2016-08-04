@@ -1,5 +1,5 @@
 @extends('app')
-@section('title', 'Стыковки')
+@section('title', pluralize('ошибка', 'ошибки', 'ошибок', $errors->total()))
 @section('controller', 'AttachmentsErrors')
 
 @section('content')
@@ -18,11 +18,13 @@
                     </td>
                     <td>
                         @foreach($error->codes as $index => $code)
-                            <span ng-attr-aria-label="{{ AttachmentErrors[<?= $index ?>] }}" class='hint--bottom-right'>{{ $code }}</span>{{ ($index + 1 < count($error->codes)) ? ', ' : ''}}
+                            <span ng-attr-aria-label="{{ AttachmentErrors[<?= $code ?>] }}" class='hint--bottom-right'>{{ $code }}</span>{{ ($index + 1 < count($error->codes)) ? ', ' : ''}}
                         @endforeach
                     </td>
                 </tr>
             @endforeach
         </tbody>
     </table>
+
+    {!! $errors->render() !!}
 @stop

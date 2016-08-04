@@ -868,9 +868,6 @@
     };
     $scope.edit = function() {
       filterMarkers();
-      if (hasErrors()) {
-        return;
-      }
       $scope.ajaxStart();
       return $scope.client.$update().then(function(response) {
         $scope.ajaxEnd();
@@ -3311,12 +3308,6 @@
     2: 'яндекс.деньги',
     3: 'перевод на сотовый',
     4: 'перевод на карту'
-  }).value('RequestStates', {
-    "new": 'невыполненные',
-    awaiting: 'в ожидании',
-    finished: 'выполненные',
-    deny: 'отказы',
-    reasoned_deny: 'обоснованный отказ'
   }).value('ArchiveStates', {
     impossible: 'невозможно',
     possible: 'возможно'
@@ -4044,6 +4035,11 @@
       } else {
         return entity[user_id] = new_user_id;
       }
+    };
+    this.getBannedUsers = function() {
+      return _.where(this.users, {
+        banned: 1
+      });
     };
     return this;
   });

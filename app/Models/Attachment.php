@@ -373,7 +373,7 @@ class Attachment extends Model
      */
     public function errors()
     {
-        $attachment_date = new \DateTime(static::getLastLessonDate($this->id));
+        $attachment_date = new \DateTime($this->getClean('date'));
         $archive = $this->archive;
         $review = $this->review;
 
@@ -391,18 +391,18 @@ class Attachment extends Model
             $errors[] = 3;
         }
 
-        if ($this->archive) {
-            $archive_date = new \DateTime($this->archive->date);
+        if ($archive) {
+            $archive_date = new \DateTime($archive->getClean('date'));
             $last_lesson_date = static::getLastLessonDate($this->id);
 
-            if ($this->archive->date <= $this->date) {
+            if ($archive->getClean('date') <= $this->getClean('date')) {
                 $errors[] = 4;
             }
-            if (empty(trim($this->archive->comment))) {
+            if (empty(trim($archive->comment))) {
                 $errors[] = 5;
             }
 
-            $x = $this->archive->total_lessons_missing + $this->account_data_count;
+            $x = $archive->total_lessons_missing + $this->account_data_count;
 
             if (! $this->forecast && $x) {
                 $errors[] = 6;
@@ -412,42 +412,43 @@ class Attachment extends Model
                 $errors[] = 7;
             }
 
-            if ($this->archive->total_lessons_missing && $this->hide) {
+            if ($archive->total_lessons_missing && $this->hide) {
                 $errors[] = 8;
             }
 
             // занятий в отчетности 1 или более + занятий к проводке = 0, дата архивации не совпадает с датой последнего занятия
-            if ($this->account_data_count && ! $this->archive->total_lessons_missing && $this->archive->date != $last_lesson_date) {
+            if ($this->account_data_count && ! $archive->total_lessons_missing && $archive->getClean('date') != $last_lesson_date) {
                 $errors[] = 12;
             }
 
-            if (! $this->archive->total_lessons_missing) {
+            if (! $archive->total_lessons_missing) {
                 if ($this->hide) {
-                    if (($this->account_data_count && $this->archive->date != $last_lesson_date) || (! $this->account_data_count && $archive_date->diff($attachment_date)->format("%a") >= 7)) {
-                        $errors[] = 13;
+                    if (($this->account_data_count && $archive->getClean('date') != $last_lesson_date) || (! $this->account_data_count && $archive_date->diff($attachment_date)->format("%a") != 7)) {
+                        $errors[] = 14;
                     }
                 } else {
-                    if (($this->account_data_count && $this->archive->date != $last_lesson_date) || (! $this->account_data_count && $archive_date->diff($attachment_date)->format("%a") < 7)) {
-                        $errors[] = 14;
+                    if (($this->account_data_count && $archive->getClean('date') == $last_lesson_date) || (! $this->account_data_count && $archive_date->diff($attachment_date)->format("%a") == 7)) {
+                        $errors[] = 13;
                     }
                 }
             }
         }
 
-        if ($this->review) {
-            if ($this->review->state == 'published') {
-                if (empty(trim($this->review->comment))) {
+        if ($review) {
+            if ($review->state == 'published') {
+                if (empty(trim($review->comment))) {
                     $errors[] = 9;
                 }
-                if (empty(trim($this->review->signature))) {
+                if (empty(trim($review->signature))) {
                     $errors[] = 10;
                 }
             }
-            if (! $this->score) {
+            if (! $review->score) {
                 $errors[] = 11;
             }
         }
 
+        sort($errors);
         return $errors;
     }
 }

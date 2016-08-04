@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Attachment;
+use App\Models\Service\AttachmentError;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -27,10 +27,8 @@ class AttachmentsController extends Controller
 
     public function errors(Request $request)
     {
-        $errors = \DB::table('attachment_errors')->get();
-        foreach ($errors as &$error) {
-            $error->codes = explode(',', $error->codes);
-        }
-        return view('attachments.errors')->with(compact('errors'));
+        return view('attachments.errors')->with([
+            'errors' => AttachmentError::paginate(30),
+        ]);
     }
 }
