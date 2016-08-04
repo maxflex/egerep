@@ -24,4 +24,13 @@ class AttachmentsController extends Controller
             ])
         );
     }
+
+    public function errors(Request $request)
+    {
+        $errors = \DB::table('attachment_errors')->get();
+        foreach ($errors as &$error) {
+            $error->codes = explode(',', $error->codes);
+        }
+        return view('attachments.errors')->with(compact('errors'));
+    }
 }

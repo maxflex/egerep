@@ -367,4 +367,87 @@ class Attachment extends Model
                  ->on('attachments.client_id', '=', 'ad.client_id');
             })->where('id', $attachment_id)->value('last_lesson_date');
     }
+
+    /**
+     * Ошибки перед сохранением
+     */
+    public function errors()
+    {
+        $attachment_date = new \DateTime(static::getLastLessonDate($this->id));
+        $archive = $this->archive;
+        $review = $this->review;
+
+        $errors = [];
+
+        if (! $this->grade) {
+            $errors[] = 1;
+        }
+
+        if (! count($this->subjects)) {
+            $errors[] = 2;
+        }
+
+        if (empty(trim($this->comment))) {
+            $errors[] = 3;
+        }
+
+        if ($this->archive) {
+            $archive_date = new \DateTime($this->archive->date);
+            $last_lesson_date = static::getLastLessonDate($this->id);
+
+            if ($this->archive->date <= $this->date) {
+                $errors[] = 4;
+            }
+            if (empty(trim($this->archive->comment))) {
+                $errors[] = 5;
+            }
+
+            $x = $this->archive->total_lessons_missing + $this->account_data_count;
+
+            if (! $this->forecast && $x) {
+                $errors[] = 6;
+            }
+
+            if (! $x && $this->forecast) {
+                $errors[] = 7;
+            }
+
+            if ($this->archive->total_lessons_missing && $this->hide) {
+                $errors[] = 8;
+            }
+
+            // занятий в отчетности 1 или более + занятий к проводке = 0, дата архивации не совпадает с датой последнего занятия
+            if ($this->account_data_count && ! $this->archive->total_lessons_missing && $this->archive->date != $last_lesson_date) {
+                $errors[] = 12;
+            }
+
+            if (! $this->archive->total_lessons_missing) {
+                if ($this->hide) {
+                    if (($this->account_data_count && $this->archive->date != $last_lesson_date) || (! $this->account_data_count && $archive_date->diff($attachment_date)->format("%a") >= 7)) {
+                        $errors[] = 13;
+                    }
+                } else {
+                    if (($this->account_data_count && $this->archive->date != $last_lesson_date) || (! $this->account_data_count && $archive_date->diff($attachment_date)->format("%a") < 7)) {
+                        $errors[] = 14;
+                    }
+                }
+            }
+        }
+
+        if ($this->review) {
+            if ($this->review->state == 'published') {
+                if (empty(trim($this->review->comment))) {
+                    $errors[] = 9;
+                }
+                if (empty(trim($this->review->signature))) {
+                    $errors[] = 10;
+                }
+            }
+            if (! $this->score) {
+                $errors[] = 11;
+            }
+        }
+
+        return $errors;
+    }
 }
