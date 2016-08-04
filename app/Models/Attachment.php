@@ -29,7 +29,7 @@ class Attachment extends Model
         'grade' => 'int',
     ];
     protected $appends = ['user_login', 'account_data_count'];
-    protected $with = ['archive', 'review'];
+    protected $with = ['archive', 'review', 'error'];
     protected static $commaSeparated = ['subjects'];
     protected static $dotDates = ['date'];
 
@@ -58,6 +58,16 @@ class Attachment extends Model
     public function client()
     {
         return $this->belongsTo('App\Models\Client');
+    }
+
+    public function error()
+    {
+        return $this->hasOne('App\Models\Service\AttachmentError');
+    }
+
+    public function accounts()
+    {
+        return $this->hasMany('App\Models\Account', 'tutor_id', 'tutor_id');
     }
 
     // ------------------------------------------------------------------------

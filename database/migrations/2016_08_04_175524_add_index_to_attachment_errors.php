@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class EgecrmAddIndexesToPaymentsTable extends Migration
+class AddIndexToAttachmentErrors extends Migration
 {
     /**
      * Run the migrations.
@@ -12,9 +12,8 @@ class EgecrmAddIndexesToPaymentsTable extends Migration
      */
     public function up()
     {
-        Schema::connection('egecrm')->table('payments', function (Blueprint $table) {
-            // $table->index('entity_type');
-            // $table->index('entity_id');
+        Schema::table('attachment_errors', function (Blueprint $table) {
+            $table->index('attachment_id');
         });
     }
 
@@ -25,6 +24,8 @@ class EgecrmAddIndexesToPaymentsTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('attachment_errors', function (Blueprint $table) {
+            //
+        });
     }
 }

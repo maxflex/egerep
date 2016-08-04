@@ -11,7 +11,6 @@ class AttachmentError extends Model
 
     /**
      * Ошибки перед сохранением
-     * $attachment или $attachment_id
      */
     public static function get($attachment)
     {
@@ -31,6 +30,10 @@ class AttachmentError extends Model
 
         if (empty(trim($attachment->comment))) {
             $errors[] = 3;
+        }
+
+        if ($attachment->hide && $attachment->total_lessons_missing) {
+            $errors[] = 16;
         }
 
         if ($archive) {
@@ -62,17 +65,24 @@ class AttachmentError extends Model
                 $errors[] = 12;
             }
 
-            // if (! $archive->total_lessons_missing) {
-            //     if ($attachment->hide) {
-            //         if (($attachment->account_data_count && $archive->getClean('date') != $last_lesson_date) || (! $attachment->account_data_count && $archive_date->diff($attachment_date)->format("%a") != 7)) {
-            //             $errors[] = 14;
-            //         }
-            //     } else {
-            //         if (($attachment->account_data_count && $archive->getClean('date') == $last_lesson_date) || (! $attachment->account_data_count && $archive_date->diff($attachment_date)->format("%a") == 7)) {
-            //             $errors[] = 13;
-            //         }
-            //     }
-            // }
+            if (! $archive->total_lessons_missing) {
+                if ($attachment->hide) {
+                    if (($archive->getClean('date') != $last_lesson_date) || (! $attachment->account_data_count && $archive_date->diff($attachment_date)->format("%a") != 7)) {
+                        $errors[] = 14;
+                    }
+                } else {
+                    if (($attachment->accounts()->exists() && $archive->getClean('date') <= $attachment->last_account_date && $archive->getClean('date') == $last_lesson_date) || (! $attachment->account_data_count && $archive_date->diff($attachment_date)->format("%a") != 7)) {
+                        $errors[] = 13;
+                    }
+                }
+            }
+            if ($attachment->hide && $archive->getClean('date') > $attachment->last_account_date) {
+                $errors[] = 17;
+            }
+        } else {
+            if ($attachment->hide) {
+                $errors[] = 15;
+            }
         }
 
         if ($review) {
