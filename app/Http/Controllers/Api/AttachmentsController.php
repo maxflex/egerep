@@ -96,6 +96,6 @@ class AttachmentsController extends Controller
 
     public function errors($id)
     {
-        return Attachment::find($id)->errors();
+        return \App\Models\Service\AttachmentError::get(Attachment::find($id));
     }
 }

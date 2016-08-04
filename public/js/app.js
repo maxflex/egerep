@@ -763,8 +763,16 @@
         method: 'PUT'
       }
     });
-  }).controller('AttachmentsErrors', function($scope, AttachmentErrors) {
-    return bindArguments($scope, arguments);
+  }).controller('AttachmentsErrors', function($scope, $http, AttachmentErrors) {
+    bindArguments($scope, arguments);
+    $scope.attachment_errors_updating = false;
+    return $scope.recalcAttachmentErrors = function() {
+      $scope.attachment_errors_updating = true;
+      return $http.post('api/command/recalc-attachment-errors').then(function(response) {
+        $scope.attachment_errors_updating = false;
+        return $scope.attachment_errors_updated = response.data;
+      });
+    };
   }).controller('AttachmentsIndex', function($rootScope, $scope, $timeout, $http, AttachmentStates, AttachmentService, UserService, PhoneService, Subjects, Grades, Presence, YesNo, AttachmentVisibility) {
     var loadAttachments, refreshCounts;
     bindArguments($scope, arguments);
@@ -3216,15 +3224,18 @@
     3: 'не указаны условия стыковки',
     4: 'дата стыковки или архивации неверны',
     5: 'не указан комментарий к архивации',
-    6: 'не указан прогноз',
-    7: 'неверное сочетание прогноза, занятий в отчетности и занятий к проводке',
-    8: 'стыковка скрыта, но остались занятия к проводке',
+    6: 'прогноз и суммарное количество занятий не сочетаются',
+    7: 'неверное сочетание прогноза и суммарного количества занятий',
+    8: 'стыковка скрыта и остались занятия к проводке',
     9: 'не заполнен текст отзыва',
     10: 'не заполнена подпись к отзыву',
     11: 'отсутствует оценка в отзыве',
     12: 'дата архивации не совпадает с датой последнего занятия',
-    13: 'стыковка должна быть скрыта',
-    14: 'ошибка в соответствии правилам скрытых стыковок'
+    13: 'возможно стыковка должна быть скрыта',
+    14: 'ошибка в соответствии правилам скрытых стыковок. Возможно дата архивации указана неверно',
+    15: 'если архивация отсутствует, стыковка не может быть скрыта',
+    16: 'если занятия к проводке > 0, то стыковка не может быть скрыта',
+    17: 'стыковка, у которой дата архивации позже даты последнего расчета не может быть скрыта'
   }).value('LogTypes', {
     create: 'создание',
     update: 'обновление',
