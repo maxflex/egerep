@@ -846,8 +846,8 @@
       load($scope.page);
       return $scope.current_page = $scope.page;
     });
-  }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, AttachmentStates, ReviewScores, Archive, Review, ApiService, UserService, RecommendationService, AttachmentService, AttachmentVisibility, Marker) {
-    var bindDroppable, bindTutorMarkerEvents, filterMarkers, rebindDraggable, repaintChosen, saveSelectedList, showClientOnMap, showTutorsOnMap, unsetAllMarkers, unsetSelected;
+  }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, AttachmentStates, ReviewScores, Archive, Review, ApiService, UserService, RecommendationService, AttachmentService, AttachmentVisibility, AttachmentErrors, Marker) {
+    var bindDroppable, bindTutorMarkerEvents, filterMarkers, notifyAttachmentErrors, rebindDraggable, repaintChosen, saveSelectedList, showClientOnMap, showTutorsOnMap, unsetAllMarkers, unsetSelected;
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
     $scope.is_dragging_teacher = false;
@@ -869,17 +869,36 @@
     $scope.edit = function() {
       filterMarkers();
       $scope.ajaxStart();
-      return $scope.client.$update().then(function(response) {
+      return $scope.client.$update().then(function() {
         $scope.ajaxEnd();
-        return $('#forecast').removeClass('has-error');
+        return $scope.Attachment.validate($scope.selected_attachment, function(response) {
+          if (response.length) {
+            return notifyAttachmentErrors(response);
+          }
+        });
       });
     };
     $scope.save = function() {
       filterMarkers();
       $scope.ajaxStart();
-      return $scope.Client.save($scope.client, function(response) {
-        return window.location = "requests/" + response.id + "/edit";
+      return $scope.Client.save($scope.client, function() {
+        return $scope.Attachment.check($scope.selected_attachment, function(response) {
+          if (response.length) {
+            return notifyAttachmentErrors(response);
+          } else {
+            return window.location = "requests/" + response.id + "/edit";
+          }
+        });
       });
+    };
+    notifyAttachmentErrors = function(error_codes) {
+      var code, j, len, results1;
+      results1 = [];
+      for (j = 0, len = error_codes.length; j < len; j++) {
+        code = error_codes[j];
+        results1.push(notifyError(AttachmentErrors[code]));
+      }
+      return results1;
     };
     bindDroppable = function() {
       return $('.teacher-remove-droppable').droppable({
@@ -3526,7 +3545,16 @@
   }).factory('Attachment', function($resource) {
     return $resource(apiPath('attachments'), {
       id: '@id'
-    }, updateMethod());
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      validate: {
+        method: 'POST',
+        isArray: true,
+        url: apiPath('attachments', 'errors')
+      }
+    });
   }).factory('RequestList', function($resource) {
     return $resource(apiPath('lists'), {
       id: '@id'
