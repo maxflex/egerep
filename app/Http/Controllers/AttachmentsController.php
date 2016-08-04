@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Models\Service\Settings;
 
 class AttachmentsController extends Controller
 {
@@ -27,8 +28,12 @@ class AttachmentsController extends Controller
 
     public function errors(Request $request)
     {
-        return view('attachments.errors')->with([
+        return view('attachments.errors', [
             'errors' => AttachmentError::paginate(30),
+        ])->with([
+            ngInit([
+                'attachment_errors_updated'  => Settings::get('attachment_errors_updated'),
+            ])
         ]);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Service\Settings;
 
 class CommandsController extends Controller
 {
@@ -26,5 +27,14 @@ class CommandsController extends Controller
     public function postMangoStats(Request $request)
     {
         return \App\Models\Api\Mango::getStats($request->number);
+    }
+
+    /*
+     * Обновление таблицы attachment_errors
+     */
+    public function postRecalcAttachmentErrors(Request $request)
+    {
+        Artisan::call('calc:attachment_errors');
+        return Settings::get('attachment_errors_updated');
     }
 }

@@ -1,5 +1,13 @@
 @extends('app')
 @section('title', pluralize('ошибка', 'ошибки', 'ошибок', $errors->total()))
+
+@section('title-right')
+    обновлено @{{ formatDateTime(attachment_errors_updated) }}
+    <span class="glyphicon glyphicon-refresh opacity-pointer" ng-click='recalcAttachmentErrors()' ng-class="{
+        'spinning': attachment_errors_updated
+    }"></span>
+@stop
+
 @section('controller', 'AttachmentsErrors')
 
 @section('content')

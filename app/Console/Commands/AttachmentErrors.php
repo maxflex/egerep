@@ -56,6 +56,7 @@ class AttachmentErrors extends Command
             }
             $bar->advance();
         }
+        Settings::set('attachment_errors_updated', now());
         $bar->finish();
     }
 }
