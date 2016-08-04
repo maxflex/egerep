@@ -423,11 +423,11 @@ class Attachment extends Model
 
             if (! $this->archive->total_lessons_missing) {
                 if ($this->hide) {
-                    if (($this->account_data_count && $this->archive->date != $last_lesson_date) || (! $this->account_data_count && $archive_date->diff($attachment_date)->format("%a") >= 7)) {
+                    if (($this->account_data_count && $this->archive->date != $last_lesson_date) || (! $this->account_data_count && $archive_date->diff($attachment_date)->format("%a") == 7)) {
                         $errors[] = 13;
                     }
                 } else {
-                    if (($this->account_data_count && $this->archive->date != $last_lesson_date) || (! $this->account_data_count && $archive_date->diff($attachment_date)->format("%a") < 7)) {
+                    if (($this->account_data_count && $this->archive->date != $last_lesson_date) || (! $this->account_data_count && $archive_date->diff($attachment_date)->format("%a") != 7)) {
                         $errors[] = 14;
                     }
                 }
@@ -448,6 +448,7 @@ class Attachment extends Model
             }
         }
 
+        sort($errors);
         return $errors;
     }
 }
