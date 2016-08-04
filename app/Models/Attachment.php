@@ -443,7 +443,7 @@ class Attachment extends Model
                     $errors[] = 10;
                 }
             }
-            if (! $this->score) {
+            if (! $review->score) {
                 $errors[] = 11;
             }
         }
