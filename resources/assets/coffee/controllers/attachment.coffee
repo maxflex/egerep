@@ -4,8 +4,10 @@ angular
         $resource 'api/attachments/:id', {},
             update:
                 method: 'PUT'
-    .controller 'AttachmentsErrors', ($scope, $http, AttachmentErrors) ->
+    .controller 'AttachmentsIndex', ($rootScope, $scope, $timeout, $http, AttachmentStates, AttachmentService, UserService, PhoneService, Subjects, Grades, Presence, YesNo, AttachmentVisibility, AttachmentErrors) ->
         bindArguments($scope, arguments)
+        $rootScope.frontend_loading = true
+
         $scope.attachment_errors_updating = false
 
         $scope.recalcAttachmentErrors = ->
@@ -14,10 +16,6 @@ angular
             .then (response) ->
                 $scope.attachment_errors_updating = false
                 $scope.attachment_errors_updated = response.data
-
-    .controller 'AttachmentsIndex', ($rootScope, $scope, $timeout, $http, AttachmentStates, AttachmentService, UserService, PhoneService, Subjects, Grades, Presence, YesNo, AttachmentVisibility) ->
-        bindArguments($scope, arguments)
-        $rootScope.frontend_loading = true
 
         refreshCounts = ->
             $timeout ->

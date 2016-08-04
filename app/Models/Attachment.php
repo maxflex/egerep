@@ -360,6 +360,10 @@ class Attachment extends Model
             }
         }
 
+        if (isset($search->error)) {
+            $query->whereRaw("EXISTS (SELECT id FROM attachment_errors WHERE attachment_errors.attachment_id = attachments.id AND FIND_IN_SET({$search->error}, attachment_errors.codes))");
+        }
+
         return $query->orderBy('attachments.created_at', 'desc');
     }
 

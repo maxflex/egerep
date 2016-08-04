@@ -763,20 +763,18 @@
         method: 'PUT'
       }
     });
-  }).controller('AttachmentsErrors', function($scope, $http, AttachmentErrors) {
+  }).controller('AttachmentsIndex', function($rootScope, $scope, $timeout, $http, AttachmentStates, AttachmentService, UserService, PhoneService, Subjects, Grades, Presence, YesNo, AttachmentVisibility, AttachmentErrors) {
+    var loadAttachments, refreshCounts;
     bindArguments($scope, arguments);
+    $rootScope.frontend_loading = true;
     $scope.attachment_errors_updating = false;
-    return $scope.recalcAttachmentErrors = function() {
+    $scope.recalcAttachmentErrors = function() {
       $scope.attachment_errors_updating = true;
       return $http.post('api/command/recalc-attachment-errors').then(function(response) {
         $scope.attachment_errors_updating = false;
         return $scope.attachment_errors_updated = response.data;
       });
     };
-  }).controller('AttachmentsIndex', function($rootScope, $scope, $timeout, $http, AttachmentStates, AttachmentService, UserService, PhoneService, Subjects, Grades, Presence, YesNo, AttachmentVisibility) {
-    var loadAttachments, refreshCounts;
-    bindArguments($scope, arguments);
-    $rootScope.frontend_loading = true;
     refreshCounts = function() {
       return $timeout(function() {
         $('.selectpicker option').each(function(index, el) {

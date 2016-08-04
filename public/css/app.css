@@ -30832,7 +30832,7 @@ table.summary-table.left-align tr td {
     margin-right: 10px; }
 
 .fix-viewport > .dropdown-menu {
-  left: -60px; }
+  left: -100px; }
 
 .log-info span:nth-child(1) {
   color: gray;
