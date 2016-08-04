@@ -33,7 +33,7 @@ class AttachmentsController extends Controller
         ])->with(
             ngInit([
                 'attachment_errors_updated'  => Settings::get('attachment_errors_updated'),
-                'attachment_errors_updating'  => Settings::get('attachment_errors_updating'),
+                'attachment_errors_updating'  => intval(Settings::get('attachment_errors_updating')),
             ])
         );
     }
