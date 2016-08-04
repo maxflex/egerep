@@ -373,7 +373,7 @@ class Attachment extends Model
      */
     public function errors()
     {
-        $attachment_date = new \DateTime(static::getLastLessonDate($this->id));
+        $attachment_date = new \DateTime($this->getClean('date'));
         $archive = $this->archive;
         $review = $this->review;
 
