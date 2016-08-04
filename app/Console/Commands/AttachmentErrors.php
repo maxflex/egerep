@@ -47,7 +47,7 @@ class AttachmentErrors extends Command
         $bar = $this->output->createProgressBar(count($attachments));
 
         foreach ($attachments as $attachment) {
-            $attachment_errors = $attachment->errors();
+            $attachment_errors = \App\Models\Service\AttachmentError::get($attachment);
             if (count($attachment_errors)) {
                 DB::table('attachment_errors')->insert([
                     'attachment_id' => $attachment->id,
