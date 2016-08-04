@@ -2,9 +2,11 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Service\AttachmentError;
 use Illuminate\Console\Command;
 use DB;
 use App\Models\Service\Settings;
+use App\Models\Attachment;
 
 class AttachmentErrors extends Command
 {
@@ -43,18 +45,14 @@ class AttachmentErrors extends Command
         Settings::set('attachment_errors_updating', 1);
 
         $this->info('Getting attachments...');
-        $attachments = \App\Models\Attachment::all();
+        $attachments = Attachment::all();
 
         $bar = $this->output->createProgressBar(count($attachments));
 
         foreach ($attachments as $attachment) {
             $attachment_errors = $attachment->errors();
             if (count($attachment_errors)) {
-                DB::table('attachment_errors')->insert([
-                    'attachment_id' => $attachment->id,
-                    'link'          => $attachment->link,
-                    'codes'         => implode(',', $attachment_errors),
-                ]);
+                DB::table('attachment_errors')->insert(AttachmentError::prepareData($attachment, $attachment_errors));
             }
             $bar->advance();
         }

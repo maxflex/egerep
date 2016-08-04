@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Attachment;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Models\Service\AttachmentError;
 
 class AttachmentsController extends Controller
 {
@@ -96,6 +97,16 @@ class AttachmentsController extends Controller
 
     public function errors($id)
     {
-        return \App\Models\Service\AttachmentError::get(Attachment::find($id));
+        $attachment_errors = AttachmentError::get(Attachment::find($id));
+
+        if (empty($attachment_errors)) {
+            AttachmentError::where('attachment_id', $id)->delete();
+        } else {
+            $attachment = Attachment::find($id);
+            AttachmentError::updateOrCreate(
+                ['attachment_id' => $attachment->id],
+                AttachmentError::prepareData($attachment, $attachment_errors)
+            );
+        }
     }
 }

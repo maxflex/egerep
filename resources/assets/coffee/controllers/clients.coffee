@@ -60,20 +60,15 @@ angular
             $scope.client.$update()
                 .then ->
                     $scope.ajaxEnd()
-                    $scope.Attachment.validate $scope.selected_attachment, (response) ->
-                        if response.length
-                            notifyAttachmentErrors response
+                    $scope.Attachment.validate $scope.selected_attachment
 
         # Save everything
         $scope.save = ->
             filterMarkers()
             $scope.ajaxStart()
             $scope.Client.save $scope.client, ->
-                $scope.Attachment.check $scope.selected_attachment, (response) ->
-                    if response.length
-                        notifyAttachmentErrors response
-                    else
-                        window.location = "requests/#{response.id}/edit"
+                $scope.Attachment.check $scope.selected_attachment, ->
+                    window.location = "requests/#{response.id}/edit"
 
         notifyAttachmentErrors = (error_codes) ->
             for code in error_codes

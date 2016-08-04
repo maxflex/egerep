@@ -7,6 +7,14 @@ use App\Models\Attachment;
 
 class AttachmentError extends Model
 {
+    protected $fillable = [
+        'attachment_id',
+        'link',
+        'codes'
+    ];
+
+    public $timestamps = false;
+
     protected static $commaSeparated = ['codes'];
 
     /**
@@ -91,5 +99,14 @@ class AttachmentError extends Model
 
         sort($errors);
         return $errors;
+    }
+
+    public static function prepareData($attachment, $attachment_errors)
+    {
+        return [
+            'attachment_id' => $attachment->id,
+            'link'          => $attachment->link,
+            'codes'         => implode(',', $attachment_errors),
+        ];
     }
 }
