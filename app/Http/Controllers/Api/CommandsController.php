@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Jobs\RecalcAttachmentErrors;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Service\Settings;
@@ -32,9 +33,8 @@ class CommandsController extends Controller
     /*
      * Обновление таблицы attachment_errors
      */
-    public function postRecalcAttachmentErrors(Request $request)
+    public function postRecalcAttachmentErrors()
     {
-        \Artisan::call('calc:attachment_errors');
-        return Settings::get('attachment_errors_updated');
+        $this->dispatch(new RecalcAttachmentErrors());
     }
 }
