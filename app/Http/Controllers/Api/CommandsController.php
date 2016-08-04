@@ -6,6 +6,7 @@ use App\Jobs\RecalcAttachmentErrors;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Service\Settings;
+use Illuminate\Support\Facades\Queue;
 
 class CommandsController extends Controller
 {
@@ -35,6 +36,6 @@ class CommandsController extends Controller
      */
     public function postRecalcAttachmentErrors()
     {
-        $this->dispatch(new RecalcAttachmentErrors());
+        Queue::push(new RecalcAttachmentErrors());
     }
 }

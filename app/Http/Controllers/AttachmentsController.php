@@ -21,7 +21,7 @@ class AttachmentsController extends Controller
     {
         return view('attachments.index')->with(
             ngInit([
-                'page'            => $request->input('page'),
+                'page' => $request->input('page'),
             ])
         );
     }

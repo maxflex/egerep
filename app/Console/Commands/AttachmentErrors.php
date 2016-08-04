@@ -50,7 +50,7 @@ class AttachmentErrors extends Command
         $bar = $this->output->createProgressBar(count($attachments));
 
         foreach ($attachments as $attachment) {
-            $attachment_errors = $attachment->errors();
+            $attachment_errors = AttachmentError::get($attachment);
             if (count($attachment_errors)) {
                 DB::table('attachment_errors')->insert(AttachmentError::prepareData($attachment, $attachment_errors));
             }
