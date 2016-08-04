@@ -40,6 +40,7 @@ class AttachmentErrors extends Command
     public function handle()
     {
         DB::table('attachment_errors')->truncate();
+        Settings::set('attachment_errors_updating', 1);
 
         $this->info('Getting attachments...');
         $attachments = \App\Models\Attachment::all();
@@ -58,6 +59,7 @@ class AttachmentErrors extends Command
             $bar->advance();
         }
         Settings::set('attachment_errors_updated', now());
+        Settings::set('attachment_errors_updating', 0);
         $bar->finish();
     }
 }
