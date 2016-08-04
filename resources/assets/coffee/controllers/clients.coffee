@@ -56,7 +56,6 @@ angular
         # Save everything
         $scope.edit = ->
             filterMarkers()
-            return if hasErrors()
             $scope.ajaxStart()
             $scope.client.$update()
                 .then (response) ->
