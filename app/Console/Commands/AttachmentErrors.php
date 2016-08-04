@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use DB;
+use App\Models\Service\Settings;
 
 class AttachmentErrors extends Command
 {
