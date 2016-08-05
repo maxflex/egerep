@@ -3,14 +3,15 @@
 namespace App\Jobs;
 
 use App\Jobs\Job;
-use App\Models\Attachment;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class RecalcAttachmentErrors extends Job implements ShouldQueue
+class RecalcTutorErrors extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
+
+    
 
     /**
      * Create a new job instance.
@@ -29,6 +30,6 @@ class RecalcAttachmentErrors extends Job implements ShouldQueue
      */
     public function handle()
     {
-        \Artisan::call('calc:model_errors', ['--attachments' => true]);
+        \Artisan::call('calc:model_errors', ['--tutors' => true]);
     }
 }

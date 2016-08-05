@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Jobs\RecalcAttachmentErrors;
-use App\Jobs\RecalcReviewErrors;
-use App\Jobs\RecalcTutorErrors;
+use App\Jobs\ModelErrors;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Service\Settings;
@@ -34,20 +32,10 @@ class CommandsController extends Controller
     }
 
     /*
-     * Обновление таблицы attachment_errors
+     * Обновление ошибок модели
      */
-    public function postRecalcAttachmentErrors()
+    public function postModelErrors(Request $request)
     {
-         Queue::push(new RecalcAttachmentErrors());
-    }
-
-    public function postRecalcReviewErrors()
-    {
-         Queue::push(new RecalcReviewErrors());
-    }
-
-    public function postRecalcTutorErrors()
-    {
-         Queue::push(new RecalcTutorErrors());
+         Queue::push(new ModelErrors($request->model));
     }
 }
