@@ -11,16 +11,16 @@ class ModelErrors extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
-
+    private $model;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($model)
     {
-        //
+        $this->model = $model;
     }
 
     /**
@@ -30,6 +30,6 @@ class ModelErrors extends Job implements ShouldQueue
      */
     public function handle()
     {
-        \Artisan::call('calc:model_errors', ['--tutors' => true]);
+        \Artisan::call('calc:model_errors', ["--{$model}" => true]);
     }
 }
