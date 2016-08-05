@@ -2098,6 +2098,10 @@
     var load, refreshCounts;
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
+    $scope.recalcReviewErrors = function() {
+      $scope.review_errors_updating = true;
+      return $http.post('api/command/recalc-review-errors');
+    };
     refreshCounts = function() {
       return $timeout(function() {
         $('.selectpicker option').each(function(index, el) {
