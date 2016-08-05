@@ -2191,13 +2191,14 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').controller("TutorsIndex", function($scope, $rootScope, $timeout, $http, Tutor, TutorStates, UserService, PusherService, TutorPublishedStates, PhoneFields) {
+  angular.module('Egerep').controller("TutorsIndex", function($scope, $rootScope, $timeout, $http, Tutor, TutorStates, UserService, PusherService, TutorPublishedStates, TutorErrors, PhoneFields) {
     var loadTutors;
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
     $scope.state = localStorage.getItem('tutors_index_state');
     $scope.user_id = localStorage.getItem('tutors_index_user_id');
     $scope.published_state = localStorage.getItem('tutors_index_published_state');
+    $scope.errors_state = localStorage.getItem('tutors_index_errors_state');
     PusherService.init('ResponsibleUserChanged', function(data) {
       var tutor;
       if (tutor = findById($scope.tutors, data.tutor_id)) {
@@ -2226,6 +2227,10 @@
       localStorage.setItem('tutors_index_published_state', $scope.published_state);
       return loadTutors($scope.current_page);
     };
+    $scope.changeErrorsState = function() {
+      localStorage.setItem('tutors_index_errors_state', $scope.errors_state);
+      return loadTutors($scope.current_page);
+    };
     $timeout(function() {
       loadTutors($scope.page);
       return $scope.current_page = $scope.page;
@@ -2250,6 +2255,9 @@
       if ($scope.published_state !== null && $scope.published_state !== '') {
         params += "&published_state=" + $scope.published_state;
       }
+      if ($scope.errors_state !== null && $scope.errors_state !== '') {
+        params += "&errors_state=" + $scope.errors_state;
+      }
       $http.get("api/tutors" + params).then(function(response) {
         $rootScope.frontendStop();
         $scope.data = response.data;
@@ -2258,17 +2266,19 @@
       return $http.post("api/tutors/counts", {
         state: $scope.state,
         user_id: $scope.user_id,
-        published_state: $scope.published_state
+        published_state: $scope.published_state,
+        errors_state: $scope.errors_state
       }).then(function(response) {
         $scope.state_counts = response.data.state_counts;
         $scope.user_counts = response.data.user_counts;
         $scope.published_counts = response.data.published_counts;
+        $scope.errors_counts = response.data.errors_counts;
         return $timeout(function() {
-          $('#change-state option, #change-user option, #change-published option').each(function(index, el) {
+          $('#change-state option, #change-user option, #change-published option, #change-errors option').each(function(index, el) {
             $(el).data('subtext', $(el).attr('data-subtext'));
             return $(el).data('content', $(el).attr('data-content'));
           });
-          $('#change-state, #change-user, #change-published').selectpicker('refresh');
+          $('#change-state, #change-user, #change-published, #change-errors').selectpicker('refresh');
           return $rootScope.frontend_loading = false;
         });
       });

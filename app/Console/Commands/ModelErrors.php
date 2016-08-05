@@ -2,12 +2,12 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Service\AttachmentError;
 use Illuminate\Console\Command;
 use DB;
 use App\Models\Service\Settings;
 use App\Models\Attachment;
 use App\Models\Review;
+use App\Models\Tutor;
 
 class ModelErrors extends Command
 {
@@ -16,7 +16,7 @@ class ModelErrors extends Command
      *
      * @var string
      */
-    protected $signature = 'calc:model_errors {--attachments} {--reviews}';
+    protected $signature = 'calc:model_errors {--attachments} {--reviews} {--tutors}';
 
     /**
      * The console command description.
@@ -47,6 +47,10 @@ class ModelErrors extends Command
         }
         if ($this->option('reviews')) {
             $this->reviews();
+        }
+
+        if ($this->option('tutors')) {
+            $this->tutors();
         }
     }
 
@@ -82,6 +86,24 @@ class ModelErrors extends Command
         }
         Settings::set('review_errors_updated', now());
         Settings::set('review_errors_updating', 0);
+        $bar->finish();
+    }
+
+    public function tutors()
+    {
+        Settings::set('tutor_errors_updating', 1);
+        $this->info('Getting tutors...');
+        $tutors = Tutor::all();
+
+        $bar = $this->output->createProgressBar(count($tutors));
+
+        foreach ($tutors as $tutor) {
+            DB::table('tutors')->where('id', $tutor->id)->update(['errors' => \App\Models\Helpers\Tutor::errors($tutor)]);
+            $bar->advance();
+        }
+
+        Settings::set('tutor_errors_updated', now());
+        Settings::set('tutor_errors_updating', 0);
         $bar->finish();
     }
 }

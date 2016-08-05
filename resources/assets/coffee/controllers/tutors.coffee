@@ -4,13 +4,14 @@ angular
     #
     #   LIST CONTROLLER
     #
-    .controller "TutorsIndex", ($scope, $rootScope, $timeout, $http, Tutor, TutorStates, UserService, PusherService, TutorPublishedStates, PhoneFields) ->
+    .controller "TutorsIndex", ($scope, $rootScope, $timeout, $http, Tutor, TutorStates, UserService, PusherService, TutorPublishedStates, TutorErrors, PhoneFields) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
         $scope.state            = localStorage.getItem('tutors_index_state')
         $scope.user_id          = localStorage.getItem('tutors_index_user_id')
         $scope.published_state  = localStorage.getItem('tutors_index_published_state')
+        $scope.errors_state     = localStorage.getItem('tutors_index_errors_state')
 
         PusherService.init 'ResponsibleUserChanged', (data) ->
             if tutor = findById($scope.tutors, data.tutor_id)
@@ -37,6 +38,10 @@ angular
             localStorage.setItem 'tutors_index_published_state', $scope.published_state
             loadTutors $scope.current_page
 
+        $scope.changeErrorsState = ->
+            localStorage.setItem 'tutors_index_errors_state', $scope.errors_state
+            loadTutors $scope.current_page
+
         $timeout ->
             loadTutors($scope.page)
             $scope.current_page = $scope.page
@@ -52,6 +57,7 @@ angular
             params += "&state=#{ $scope.state }" if $scope.state isnt null and $scope.state isnt ''
             params += "&user_id=#{ $scope.user_id }" if $scope.user_id
             params += "&published_state=#{ $scope.published_state }" if $scope.published_state isnt null and $scope.published_state isnt ''
+            params += "&errors_state=#{ $scope.errors_state }" if $scope.errors_state isnt null and $scope.errors_state isnt ''
 
             # update repetitors
             # @todo: why ugly params? maybe use $http.post instead?
@@ -66,19 +72,21 @@ angular
                 state:           $scope.state
                 user_id:         $scope.user_id
                 published_state: $scope.published_state
+                errors_state:    $scope.errors_state
             .then (response) ->
                 $scope.state_counts     = response.data.state_counts
                 $scope.user_counts      = response.data.user_counts
                 $scope.published_counts = response.data.published_counts
+                $scope.errors_counts    = response.data.errors_counts
                 $timeout ->
                     # потому что data кэшируется
                     # @todo: add issue at github
                     # @link: https://github.com/silviomoreto/bootstrap-select/issues/293
-                    $('#change-state option, #change-user option, #change-published option').each (index, el) ->
+                    $('#change-state option, #change-user option, #change-published option, #change-errors option').each (index, el) ->
                         $(el).data 'subtext', $(el).attr 'data-subtext'
                         $(el).data 'content', $(el).attr 'data-content'
 
-                    $('#change-state, #change-user, #change-published').selectpicker 'refresh'
+                    $('#change-state, #change-user, #change-published, #change-errors').selectpicker 'refresh'
                     $rootScope.frontend_loading = false
 
         $scope.blurComment = (tutor) ->

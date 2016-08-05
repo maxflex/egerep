@@ -37,7 +37,7 @@ class CommandsController extends Controller
      */
     public function postRecalcAttachmentErrors()
     {
-         Queue::push(new RecalcAttachmentErrors());
+        Queue::push(new RecalcAttachmentErrors());
     }
     public function postRecalcReviewErrors()
     {
