@@ -164,8 +164,9 @@ class Tutor extends Model
     public function getStatisticsAttribute()
     {
         $stats = Api\Api::exec('teacherStatistics', ['tutor_id' => $this->id]);
-        $stats->er_review_count = Attachment::where('tutor_id', $this->id)->has('review')->count();
-        $review_score_sum = DB::table('reviews')->join('attachments', 'attachments.id', '=', 'attachment_id')->where('tutor_id', $this->id)->select('reviews.score')->sum('reviews.score');
+//        $stats->er_review_count = Attachment::where('tutor_id', $this->id)->has('review')->count();
+        $stats->er_review_count = DB::table('reviews')->join('attachments', 'attachments.id', '=', 'attachment_id')->where('tutor_id', $this->id)->where('score', '<', 11)->count();
+        $review_score_sum = DB::table('reviews')->join('attachments', 'attachments.id', '=', 'attachment_id')->where('tutor_id', $this->id)->where('score', '<', 11)->select('reviews.score')->sum('reviews.score');
         $stats->er_review_avg = (4*($this->lk + $this->tb + ($this->js < 8 ?$this->js : 8 - $this->js % 8)) + $review_score_sum)/(4 + $stats->er_review_count);
         return $stats;
     }
@@ -213,10 +214,11 @@ class Tutor extends Model
         return static::getAge($this->birth_year);
     }
 
-    public function getClientsCountAttribute()
-    {
-        return $this->clientsCount();
-    }
+//    public function getClientsCountAttribute()
+//    {
+////        return $this->attachments_count;
+//        return $this->clientsCount();
+//    }
 
     public function getActiveClientsCountAttribute()
     {
