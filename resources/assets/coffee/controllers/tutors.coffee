@@ -8,6 +8,10 @@ angular
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
+        $scope.recalcTutorErrors = ->
+            $scope.tutor_errors_updating = true
+            $http.post 'api/command/recalc-tutor-errors'
+
         $scope.state            = localStorage.getItem('tutors_index_state')
         $scope.user_id          = localStorage.getItem('tutors_index_user_id')
         $scope.published_state  = localStorage.getItem('tutors_index_published_state')

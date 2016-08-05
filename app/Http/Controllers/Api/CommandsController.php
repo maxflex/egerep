@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Jobs\RecalcAttachmentErrors;
 use App\Jobs\RecalcReviewErrors;
+use App\Jobs\RecalcTutorErrors;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Service\Settings;
@@ -37,10 +38,20 @@ class CommandsController extends Controller
      */
     public function postRecalcAttachmentErrors()
     {
+<<<<<<< HEAD
         Queue::push(new RecalcAttachmentErrors());
+=======
+         Queue::push(new RecalcAttachmentErrors());
+>>>>>>> bec9b39dc11d0eaa0851949bf2d6687bfbcd7496
     }
+
     public function postRecalcReviewErrors()
     {
          Queue::push(new RecalcReviewErrors());
+    }
+
+    public function postRecalcTutorErrors()
+    {
+         Queue::push(new RecalcTutorErrors());
     }
 }

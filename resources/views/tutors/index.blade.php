@@ -6,7 +6,14 @@
     {{-- нужно поправить функция link_to_route, чтобы она работала с https --}}
     {{-- {{ link_to_route('tutors.create', 'добавить преподавателя') }} --}}
     <a href="tutors/create">добавить преподавателя</a>
-@endsection
+
+    обновлено @{{ formatDateTime(tutor_errors_updated) }}
+    <span class="glyphicon glyphicon-refresh opacity-pointer" ng-click='recalcTutorErrors()' ng-class="{
+        'spinning': tutor_errors_updating == 1
+    }"></span>
+@stop
+
+
 
 @section('content')
 
