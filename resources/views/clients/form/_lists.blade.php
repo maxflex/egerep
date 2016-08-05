@@ -46,7 +46,7 @@
                         </td>
                         <td style='width: 13%'>
                             <plural count='tutor.clients_count' type='client' none-text='клиентов нет' hide-zero></plural>
-                            <b ng-show="tutor.margin">(M@{{ tutor.margin }})</b>
+                            <span ng-show="tutor.margin">(M@{{ tutor.margin }})</span>
                         </td>
                         <td style='width: 15%'>
                             <span ng-hide="attachmentExists(tutor.id)"
