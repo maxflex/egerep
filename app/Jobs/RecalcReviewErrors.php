@@ -29,6 +29,6 @@ class RecalcReviewErrors extends Job implements ShouldQueue
      */
     public function handle()
     {
-        \Artisan::call('calc:attachment_errors --reviews');
+        \Artisan::call('calc:model_errors --reviews');
     }
 }
