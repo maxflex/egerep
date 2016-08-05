@@ -15,6 +15,7 @@ class Review extends Model
         'signature',
     ];
     protected $appends = ['user_login'];
+    protected static $commaSeparated = ['errors'];
 
     // ------------------------------------------------------------------------
 

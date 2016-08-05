@@ -30,7 +30,7 @@ class Attachment extends Model
     ];
     protected $appends = ['user_login', 'account_data_count'];
     protected $with = ['archive', 'review'];
-    protected static $commaSeparated = ['subjects', 'codes'];
+    protected static $commaSeparated = ['subjects', 'errors'];
     protected static $dotDates = ['date'];
 
     // ------------------------------------------------------------------------
