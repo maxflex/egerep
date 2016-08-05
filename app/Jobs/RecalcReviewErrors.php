@@ -8,7 +8,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class RecalcAttachmentErrors extends Job implements ShouldQueue
+class RecalcReviewErrors extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
@@ -29,6 +29,6 @@ class RecalcAttachmentErrors extends Job implements ShouldQueue
      */
     public function handle()
     {
-        \Artisan::call('calc:attachment_errors --reviews');
+        \Artisan::call('calc:model_errors', ['--reviews' => true]);
     }
 }

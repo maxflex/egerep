@@ -111,6 +111,14 @@ class Attachment extends Model
         return false;
     }
 
+    /**
+     * Дата последней встречи
+     */
+    public function getLastMeetingDateAttribute()
+    {
+        return Account::where('tutor_id', $this->tutor_id)->orderBy('date_end', 'desc')->value('date_end');
+    }
+
     public function getFirstAccountDateAttribute()
     {
         $account_data = AccountData::where('tutor_id',  $this->tutor_id)

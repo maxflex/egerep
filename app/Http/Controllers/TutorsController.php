@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Tutor;
 use App\Models\RequestList;
+use App\Models\Service\Settings;
 use DB;
 
 class TutorsController extends Controller
@@ -29,6 +30,8 @@ class TutorsController extends Controller
                 ngInit([
                     'page'          => $request->input('page'),
                     'global_search' => $request->input('global_search'),
+                    'tutor_errors_updated'  => Settings::get('tutor_errors_updated'),
+                    'tutor_errors_updating' => Settings::get('tutor_errors_updating'),
                 ])
             );
         }

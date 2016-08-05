@@ -13,7 +13,7 @@ class AddErrorsColumnToTutors extends Migration
     public function up()
     {
         Schema::table('tutors', function (Blueprint $table) {
-            $table->string('errors', 50);
+//            $table->string('errors', 50);
         });
     }
 
