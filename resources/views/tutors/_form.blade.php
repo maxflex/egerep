@@ -303,15 +303,14 @@
                 <label>Ссылка на видео</label>
                 <textarea class="md-input" ng-model="tutor.video_link"></textarea>
             </md-input-container>
-
-            <div>
-                <h4>Статистика</h4>
-                <div>Количество клиентов: @{{ tutor.attachments_count }}</div>
-                <div ng-show="tutor.margin">Группа маржинальности: М@{{ tutor.margin }}</div>
-                <div>Количество оценок и средняя оценка: @{{ tutor.statistics.er_review_count }} | @{{ tutor.statistics.er_review_avg | number : 1 }}</div>
-                <div ng-show="tutor.in_egecentr">Количество занятий, проведенных в ЕГЭ-Центре: @{{ tutor.statistics.ec_lesson_count }}</div>
-                <div ng-show="tutor.in_egecentr">Количество оценок по отзывам ЕГЭ-Центра и средняя оценка: @{{ tutor.statistics.ec_review_count }} | @{{ tutor.statistics.ec_review_avg | number : 1 }}</div>
-            </div>
+        </div>
+        <div>
+            <h4>СТАТИСТИКА</h4>
+            <div>Количество клиентов: @{{ tutor.attachments_count }}</div>
+            <div ng-show="tutor.margin">Группа маржинальности: М@{{ tutor.margin }}</div>
+            <div>Количество оценок и средняя оценка: @{{ tutor.statistics.er_review_count }} | @{{ tutor.statistics.er_review_avg | number : 1 }}</div>
+            <div ng-show="tutor.in_egecentr">Количество занятий, проведенных в ЕГЭ-Центре: @{{ tutor.statistics.ec_lesson_count }}</div>
+            <div ng-show="tutor.in_egecentr">Количество оценок по отзывам ЕГЭ-Центра и средняя оценка: @{{ tutor.statistics.ec_review_count }} | @{{ tutor.statistics.ec_review_avg | number : 1 }}</div>
         </div>
         <div ng-if="tutor.id">
             <h4>КОММЕНТАРИИ</h4>
