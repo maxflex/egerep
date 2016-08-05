@@ -214,11 +214,11 @@ class Tutor extends Model
         return static::getAge($this->birth_year);
     }
 
-    public function getClientsCountAttribute()
-    {
-//        return $this->attachments_count;
-        return $this->clientsCount();
-    }
+//    public function getClientsCountAttribute()
+//    {
+////        return $this->attachments_count;
+//        return $this->clientsCount();
+//    }
 
     public function getActiveClientsCountAttribute()
     {
