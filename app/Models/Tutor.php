@@ -166,7 +166,7 @@ class Tutor extends Model
         $stats = Api\Api::exec('teacherStatistics', ['tutor_id' => $this->id]);
 
         if (! $stats) {
-            $stats = new stdClass();
+            $stats = new \stdClass();
         }
 
         $stats->er_review_count = Attachment::where('tutor_id', $this->id)->has('review')->count();
