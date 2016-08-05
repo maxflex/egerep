@@ -311,7 +311,7 @@
             <div>Количество оценок и средняя оценка: @{{ tutor.statistics.er_review_count }} | @{{ tutor.statistics.er_review_avg | number : 1 }}</div>
             <div ng-show="tutor.in_egecentr">Количество занятий, проведенных в ЕГЭ-Центре: @{{ tutor.statistics.ec_lesson_count }}</div>
             <div ng-show="tutor.in_egecentr">Cредняя оценка: @{{ tutor.statistics.ec_review_avg | number : 1 }} (на основе <plural count='tutor.statistics.ec_review_count' type='mark'></plural>)</div>
-        </div>
+        </div> 
         <div ng-if="tutor.id">
             <h4>КОММЕНТАРИИ</h4>
             <comments entity-type='tutor' entity-id='{{ isset($id) ? $id : 0 }}' user='{{ $user }}'></comments>
