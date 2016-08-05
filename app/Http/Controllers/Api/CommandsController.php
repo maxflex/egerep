@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Jobs\RecalcAttachmentErrors;
+use App\Jobs\RecalcReviewErrors;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Service\Settings;
@@ -36,5 +37,9 @@ class CommandsController extends Controller
     public function postRecalcAttachmentErrors()
     {
         $this->dispatch(new RecalcAttachmentErrors());
+    }
+    public function postRecalcReviewErrors()
+    {
+        $this->dispatch(new RecalcReviewErrors());
     }
 }

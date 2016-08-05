@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Models\Service\Settings;
 
 class ReviewsController extends Controller
 {
@@ -19,6 +20,8 @@ class ReviewsController extends Controller
         return view('reviews.index')->with(
             ngInit([
                 'page' => $request->page,
+                'review_errors_updated'  => Settings::get('review_errors_updated'),
+                'review_errors_updating' => Settings::get('review_errors_updating'),
             ])
         );
     }

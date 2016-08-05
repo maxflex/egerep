@@ -1,5 +1,11 @@
 @extends('app')
 @section('title', 'Отзывы')
+@section('title-right')
+    обновлено @{{ formatDateTime(review_errors_updated) }}
+    <span class="glyphicon glyphicon-refresh opacity-pointer" ng-click='recalcReviewErrors()' ng-class="{
+        'spinning': review_errors_updating
+    }"></span>
+@stop
 @section('controller', 'ReviewsIndex')
 
 @section('content')
@@ -123,7 +129,7 @@
                     <td class="center">
                         <span ng-if='attachment.review'>@{{ ReviewScores[attachment.review.score] }}</span>
                     </td>
-                    <td>
+                    <td style="width: 5%; text-align: center">
                         <span ng-repeat='code in attachment.review.errors' ng-attr-aria-label="@{{ ReviewErrors[code] }}" class='hint--bottom-left'>@{{ code }}@{{ $last ? '' : ',  ' }}</span>
                     </td>
                 </tr>

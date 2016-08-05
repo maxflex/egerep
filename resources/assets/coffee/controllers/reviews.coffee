@@ -4,6 +4,10 @@ angular
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
+        $scope.recalcReviewErrors = ->
+            $scope.review_errors_updating = true
+            $http.post 'api/command/recalc-review-errors'
+
         refreshCounts = ->
             $timeout ->
                 $('.selectpicker option').each (index, el) ->

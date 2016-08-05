@@ -70,6 +70,7 @@ class ModelErrors extends Command
 
     public function reviews()
     {
+        Settings::set('review_errors_updating', 1);
         $this->info('Getting reviews...');
         $reviews = Review::all();
 
@@ -79,6 +80,8 @@ class ModelErrors extends Command
             DB::table('reviews')->where('id', $review->id)->update(['errors' => \App\Models\Helpers\Review::errors($review)]);
             $bar->advance();
         }
+        Settings::set('review_errors_updated', now());
+        Settings::set('review_errors_updating', 0);
         $bar->finish();
     }
 }
