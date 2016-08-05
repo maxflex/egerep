@@ -62,7 +62,7 @@
         </select>
     </div>
     <div>
-        <select ng-model='search.error' class='selectpicker' ng-change='filter()'>
+        <select ng-model='search.error' class='selectpicker fix-viewport' ng-change='filter()'>
             <option value="" data-subtext="@{{ counts.error[''] || '' }}">все</option>
             <option disabled>──────────────</option>
             <option ng-repeat='(id, name) in ReviewErrors'
