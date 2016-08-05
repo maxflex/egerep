@@ -6,7 +6,7 @@ angular
 
         $scope.recalcReviewErrors = ->
             $scope.review_errors_updating = true
-            $http.post 'api/command/recalc-errors', {model: 'reviews'}
+            $http.post 'api/command/model-errors', {model: 'reviews'}
 
         refreshCounts = ->
             $timeout ->

@@ -10,7 +10,7 @@ angular
 
         $scope.recalcAttachmentErrors = ->
             $scope.attachment_errors_updating = true
-            $http.post 'api/command/recalc-errors', {model: 'attachments'}
+            $http.post 'api/command/model-errors', {model: 'attachments'}
 
         refreshCounts = ->
             $timeout ->
