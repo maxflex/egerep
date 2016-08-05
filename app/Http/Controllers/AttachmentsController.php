@@ -21,19 +21,9 @@ class AttachmentsController extends Controller
     {
         return view('attachments.index')->with(
             ngInit([
-                'page' => $request->input('page'),
-            ])
-        );
-    }
-
-    public function errors(Request $request)
-    {
-        return view('attachments.errors', [
-            'errors' => AttachmentError::paginate(30),
-        ])->with(
-            ngInit([
+                'page'                       => $request->input('page'),
                 'attachment_errors_updated'  => Settings::get('attachment_errors_updated'),
-                'attachment_errors_updating'  => intval(Settings::get('attachment_errors_updating')),
+                'attachment_errors_updating' => Settings::get('attachment_errors_updating'),
             ])
         );
     }

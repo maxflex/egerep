@@ -763,20 +763,14 @@
         method: 'PUT'
       }
     });
-  }).controller('AttachmentsErrors', function($scope, $http, AttachmentErrors) {
-    bindArguments($scope, arguments);
-    $scope.attachment_errors_updating = false;
-    return $scope.recalcAttachmentErrors = function() {
-      $scope.attachment_errors_updating = true;
-      return $http.post('api/command/recalc-attachment-errors').then(function(response) {
-        $scope.attachment_errors_updating = false;
-        return $scope.attachment_errors_updated = response.data;
-      });
-    };
-  }).controller('AttachmentsIndex', function($rootScope, $scope, $timeout, $http, AttachmentStates, AttachmentService, UserService, PhoneService, Subjects, Grades, Presence, YesNo, AttachmentVisibility) {
+  }).controller('AttachmentsIndex', function($rootScope, $scope, $timeout, $http, AttachmentStates, AttachmentService, UserService, PhoneService, Subjects, Grades, Presence, YesNo, AttachmentVisibility, AttachmentErrors) {
     var loadAttachments, refreshCounts;
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
+    $scope.recalcAttachmentErrors = function() {
+      $scope.attachment_errors_updating = true;
+      return $http.post('api/command/recalc-attachment-errors');
+    };
     refreshCounts = function() {
       return $timeout(function() {
         $('.selectpicker option').each(function(index, el) {
@@ -854,8 +848,8 @@
       load($scope.page);
       return $scope.current_page = $scope.page;
     });
-  }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, AttachmentStates, ReviewScores, Archive, Review, ApiService, UserService, RecommendationService, AttachmentService, AttachmentVisibility, AttachmentErrors, Marker) {
-    var bindDroppable, bindTutorMarkerEvents, filterMarkers, notifyAttachmentErrors, rebindDraggable, repaintChosen, saveSelectedList, showClientOnMap, showTutorsOnMap, unsetAllMarkers, unsetSelected;
+  }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, AttachmentStates, ReviewScores, Archive, Review, ApiService, UserService, RecommendationService, AttachmentService, AttachmentVisibility, Marker) {
+    var bindDroppable, bindTutorMarkerEvents, filterMarkers, rebindDraggable, repaintChosen, saveSelectedList, showClientOnMap, showTutorsOnMap, unsetAllMarkers, unsetSelected;
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
     $scope.is_dragging_teacher = false;
@@ -879,34 +873,17 @@
       $scope.ajaxStart();
       return $scope.client.$update().then(function() {
         $scope.ajaxEnd();
-        return $scope.Attachment.validate($scope.selected_attachment, function(response) {
-          if (response.length) {
-            return notifyAttachmentErrors(response);
-          }
-        });
+        return $scope.Attachment.validate($scope.selected_attachment);
       });
     };
     $scope.save = function() {
       filterMarkers();
       $scope.ajaxStart();
       return $scope.Client.save($scope.client, function() {
-        return $scope.Attachment.check($scope.selected_attachment, function(response) {
-          if (response.length) {
-            return notifyAttachmentErrors(response);
-          } else {
-            return window.location = "requests/" + response.id + "/edit";
-          }
+        return $scope.Attachment.check($scope.selected_attachment, function() {
+          return window.location = "requests/" + response.id + "/edit";
         });
       });
-    };
-    notifyAttachmentErrors = function(error_codes) {
-      var code, j, len, results1;
-      results1 = [];
-      for (j = 0, len = error_codes.length; j < len; j++) {
-        code = error_codes[j];
-        results1.push(notifyError(AttachmentErrors[code]));
-      }
-      return results1;
     };
     bindDroppable = function() {
       return $('.teacher-remove-droppable').droppable({
@@ -2117,7 +2094,7 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').controller('ReviewsIndex', function($rootScope, $scope, $timeout, $http, Existance, ReviewStates, Presence, ReviewScores, UserService) {
+  angular.module('Egerep').controller('ReviewsIndex', function($rootScope, $scope, $timeout, $http, Existance, ReviewStates, Presence, ReviewScores, UserService, ReviewErrors) {
     var load, refreshCounts;
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
@@ -3218,24 +3195,127 @@
 }).call(this);
 
 (function() {
+  var apiPath, updateMethod;
+
+  angular.module('Egerep').factory('Marker', function($resource) {
+    return $resource(apiPath('markers'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Account', function($resource) {
+    return $resource(apiPath('accounts'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Review', function($resource) {
+    return $resource(apiPath('reviews'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Archive', function($resource) {
+    return $resource(apiPath('archives'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Attachment', function($resource) {
+    return $resource(apiPath('attachments'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      validate: {
+        method: 'POST',
+        isArray: true,
+        url: apiPath('attachments', 'errors')
+      }
+    });
+  }).factory('RequestList', function($resource) {
+    return $resource(apiPath('lists'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Request', function($resource) {
+    return $resource(apiPath('requests'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      transfer: {
+        method: 'POST',
+        url: apiPath('requests', 'transfer')
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  }).factory('Sms', function($resource) {
+    return $resource(apiPath('sms'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Comment', function($resource) {
+    return $resource(apiPath('comments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Client', function($resource) {
+    return $resource(apiPath('clients'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('User', function($resource) {
+    return $resource(apiPath('users'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Tutor', function($resource) {
+    return $resource(apiPath('tutors'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      deletePhoto: {
+        url: apiPath('tutors', 'photo'),
+        method: 'DELETE'
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  });
+
+  apiPath = function(entity, additional) {
+    if (additional == null) {
+      additional = '';
+    }
+    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
+  };
+
+  updateMethod = function() {
+    return {
+      update: {
+        method: 'PUT'
+      }
+    };
+  };
+
+}).call(this);
+
+(function() {
   angular.module('Egerep').value('AttachmentErrors', {
     1: 'в стыковке не указан класс',
     2: 'в стыковке не указан предмет',
     3: 'не указаны условия стыковки',
-    4: 'дата стыковки или архивации неверны',
-    5: 'не указан комментарий к архивации',
-    6: 'прогноз и суммарное количество занятий не сочетаются',
-    7: 'неверное сочетание прогноза и суммарного количества занятий',
-    8: 'стыковка скрыта и остались занятия к проводке',
-    9: 'не заполнен текст отзыва',
-    10: 'не заполнена подпись к отзыву',
-    11: 'отсутствует оценка в отзыве',
-    12: 'дата архивации не совпадает с датой последнего занятия',
-    13: 'возможно стыковка должна быть скрыта',
-    14: 'ошибка в соответствии правилам скрытых стыковок. Возможно дата архивации указана неверно',
-    15: 'если архивация отсутствует, стыковка не может быть скрыта',
-    16: 'если занятия к проводке > 0, то стыковка не может быть скрыта',
-    17: 'стыковка, у которой дата архивации позже даты последнего расчета не может быть скрыта'
+    4: 'дата архивации должна быть позже даты стыковки',
+    5: 'не указаны детали архивации',
+    6: 'прогноз и занятия не сочетаются',
+    7: 'прогноз и занятия не сочетаются',
+    8: 'при наличии занятий к проводке стыковка не может быть скрыта',
+    9: 'дата архивации не совпадает с датой последнего занятия',
+    10: 'возможно стыковку можно скрыть',
+    11: 'возможно стыковку можно скрыть',
+    12: 'в скрытой стыковке дата архивации должна совпадать с датой последнего занятия',
+    13: 'в скрытой стыковке без занятий между датами стыковки и архивации должно быть 7 дней',
+    14: 'если архивация отсутствует, стыковка не может быть скрыта',
+    15: 'стыковка, у которой дата архивации позже даты последнего расчета не может быть скрыта'
+  }).value('ReviewErrors', {
+    1: 'не стоит оценка к отзыву',
+    2: 'нет подписи к опубликованному отзыву',
+    3: 'нет текста отзыва к опубликованному отзыву'
   }).value('LogTypes', {
     create: 'создание',
     update: 'обновление',
@@ -3531,107 +3611,6 @@
       color: '#ACADAF'
     }
   });
-
-}).call(this);
-
-(function() {
-  var apiPath, updateMethod;
-
-  angular.module('Egerep').factory('Marker', function($resource) {
-    return $resource(apiPath('markers'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Account', function($resource) {
-    return $resource(apiPath('accounts'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Review', function($resource) {
-    return $resource(apiPath('reviews'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Archive', function($resource) {
-    return $resource(apiPath('archives'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Attachment', function($resource) {
-    return $resource(apiPath('attachments'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      validate: {
-        method: 'POST',
-        isArray: true,
-        url: apiPath('attachments', 'errors')
-      }
-    });
-  }).factory('RequestList', function($resource) {
-    return $resource(apiPath('lists'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Request', function($resource) {
-    return $resource(apiPath('requests'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      transfer: {
-        method: 'POST',
-        url: apiPath('requests', 'transfer')
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  }).factory('Sms', function($resource) {
-    return $resource(apiPath('sms'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Comment', function($resource) {
-    return $resource(apiPath('comments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Client', function($resource) {
-    return $resource(apiPath('clients'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('User', function($resource) {
-    return $resource(apiPath('users'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Tutor', function($resource) {
-    return $resource(apiPath('tutors'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      deletePhoto: {
-        url: apiPath('tutors', 'photo'),
-        method: 'DELETE'
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  });
-
-  apiPath = function(entity, additional) {
-    if (additional == null) {
-      additional = '';
-    }
-    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
-  };
-
-  updateMethod = function() {
-    return {
-      update: {
-        method: 'PUT'
-      }
-    };
-  };
 
 }).call(this);
 

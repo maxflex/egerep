@@ -1,5 +1,11 @@
 @extends('app')
 @section('title', 'Стыковки')
+@section('title-right')
+    обновлено @{{ formatDateTime(attachment_errors_updated) }}
+    <span class="glyphicon glyphicon-refresh opacity-pointer" ng-click='recalcAttachmentErrors()' ng-class="{
+        'spinning': attachment_errors_updating
+    }"></span>
+@stop
 @section('controller', 'AttachmentsIndex')
 
 @section('content')
@@ -62,12 +68,21 @@
         </select>
     </div>
     <div>
-        <select ng-model='search.hide' class='selectpicker fix-viewport' ng-change='filter()'>
+        <select ng-model='search.hide' class='selectpicker' ng-change='filter()'>
             <option value="" data-subtext="@{{ counts.hide[''] || '' }}">все</option>
             <option disabled>──────────────</option>
             <option ng-repeat='(id, name) in AttachmentVisibility'
                 data-subtext="@{{ counts.hide[id] || '' }}"
                 value="@{{id}}">@{{ name }}</option>
+        </select>
+    </div>
+    <div>
+        <select ng-model='search.error' class='selectpicker fix-viewport' ng-change='filter()'>
+            <option value="" data-subtext="@{{ counts.error[''] || '' }}">все</option>
+            <option disabled>──────────────</option>
+            <option ng-repeat='(id, name) in AttachmentErrors'
+                data-subtext="@{{ counts.error[id] || '' }}"
+                value="@{{id}}">@{{ id }}</option>
         </select>
     </div>
 </div>
@@ -100,7 +115,7 @@
         <td align="left" width="10%">
             <a href="requests/@{{ attachment.request_id }}/edit#@{{ attachment.request_list_id }}#@{{ attachment.id }}">стыковка @{{ attachment.id }}</a>
         </td>
-        <td align="left" width="20%">
+        <td align="left" width="15%">
             <a href="tutors/@{{ attachment.tutor_id }}/edit">@{{ attachment.tutor.full_name}}</a>
         </td>
         <td width="10%">
@@ -118,8 +133,11 @@
         <td width='10%'>
             @{{ AttachmentService.getStatus(attachment) }}
         </td>
-        <td width='20%'>
+        <td width='15%'>
             @{{ UserService.getLogin(attachment.user_id) }}: @{{ formatDateTime(attachment.created_at) }}
+        </td>
+        <td width='10%'>
+            <span ng-repeat='code in attachment.errors' ng-attr-aria-label="@{{ AttachmentErrors[code] }}" class='hint--bottom-left'>@{{ code }}@{{ $last ? '' : ',  ' }}</span>
         </td>
     </tr>
     </tbody>

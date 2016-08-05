@@ -15,6 +15,7 @@ class Review extends Model
         'signature',
     ];
     protected $appends = ['user_login'];
+    protected static $commaSeparated = ['errors'];
 
     // ------------------------------------------------------------------------
 
@@ -35,6 +36,9 @@ class Review extends Model
             if (! $model->exists) {
                 $model->user_id = User::fromSession()->id;
             }
+        });
+        static::saved(function($model) {
+            \DB::table('reviews')->where('id', $model->id)->update(['errors' => \App\Models\Helpers\Review::errors($model)]);
         });
     }
 
@@ -88,7 +92,7 @@ class Review extends Model
             }
         }
 
-        if (isset($search->state) || isset($search->signature) || isset($search->comment) || isset($search->score) || isset($search->user_id)) {
+        if (isset($search->state) || isset($search->signature) || isset($search->comment) || isset($search->score) || isset($search->user_id) || isset($search->error)) {
             $query->whereHas('review', function($query) use ($search) {
                 if (isset($search->state)) {
                     $query->where('state', $search->state);
@@ -104,6 +108,9 @@ class Review extends Model
                 }
                 if (isset($search->user_id)) {
                     $query->where('user_id', $search->user_id);
+                }
+                if (isset($search->error)) {
+                    $query->whereRaw("FIND_IN_SET({$search->error}, errors)");
                 }
             });
         }

@@ -30,7 +30,7 @@ class Attachment extends Model
     ];
     protected $appends = ['user_login', 'account_data_count'];
     protected $with = ['archive', 'review'];
-    protected static $commaSeparated = ['subjects'];
+    protected static $commaSeparated = ['subjects', 'errors'];
     protected static $dotDates = ['date'];
 
     // ------------------------------------------------------------------------
@@ -58,6 +58,11 @@ class Attachment extends Model
     public function client()
     {
         return $this->belongsTo('App\Models\Client');
+    }
+
+    public function accounts()
+    {
+        return $this->hasMany('App\Models\Account', 'tutor_id', 'tutor_id');
     }
 
     // ------------------------------------------------------------------------
@@ -229,7 +234,9 @@ class Attachment extends Model
                 $model->user_id = User::fromSession()->id;
             }
         });
-
+        static::saved(function($model) {
+            DB::table('attachments')->where('id', $model->id)->update(['errors' => \App\Models\Helpers\Attachment::errors($model)]);
+        });
         static::created(function ($model) {
             Tutor::where('id', $model->tutor_id)->update(['attachments_count' => \DB::raw('attachments_count + 1')]);
             event(new DebtRecalc($model->tutor_id));
@@ -293,6 +300,11 @@ class Attachment extends Model
             $new_search->hide = $hide;
             $counts['hide'][$hide] = static::search($new_search)->count();
         }
+        foreach(array_merge([''], range(1, 15)) as $error) {
+            $new_search = clone $search;
+            $new_search->error = $error;
+            $counts['error'][$error] = static::search($new_search)->count();
+        }
         return $counts;
     }
 
@@ -348,6 +360,10 @@ class Attachment extends Model
             } else {
                 $query->where('a.total_lessons_missing', '>', 0);
             }
+        }
+
+        if (isset($search->error)) {
+            $query->whereRaw("FIND_IN_SET({$search->error}, attachments.errors)");
         }
 
         return $query->orderBy('attachments.created_at', 'desc');

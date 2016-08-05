@@ -61,6 +61,15 @@
                 value="@{{id}}">@{{ name }}</option>
         </select>
     </div>
+    <div>
+        <select ng-model='search.error' class='selectpicker fix-viewport' ng-change='filter()'>
+            <option value="" data-subtext="@{{ counts.error[''] || '' }}">все</option>
+            <option disabled>──────────────</option>
+            <option ng-repeat='(id, name) in ReviewErrors'
+                data-subtext="@{{ counts.error[id] || '' }}"
+                value="@{{id}}">@{{ id }}</option>
+        </select>
+    </div>
 </div>
 
 
@@ -113,6 +122,9 @@
                     </td>
                     <td class="center">
                         <span ng-if='attachment.review'>@{{ ReviewScores[attachment.review.score] }}</span>
+                    </td>
+                    <td>
+                        <span ng-repeat='code in attachment.review.errors' ng-attr-aria-label="@{{ ReviewErrors[code] }}" class='hint--bottom-left'>@{{ code }}@{{ $last ? '' : ',  ' }}</span>
                     </td>
                 </tr>
             </tbody>

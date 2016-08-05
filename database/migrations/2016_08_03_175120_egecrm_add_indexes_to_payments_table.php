@@ -13,8 +13,8 @@ class EgecrmAddIndexesToPaymentsTable extends Migration
     public function up()
     {
         Schema::connection('egecrm')->table('payments', function (Blueprint $table) {
-            $table->index('entity_type');
-            $table->index('entity_id');
+            // $table->index('entity_type');
+            // $table->index('entity_id');
         });
     }
 
