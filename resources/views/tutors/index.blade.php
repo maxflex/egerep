@@ -48,6 +48,18 @@
             >@{{ label }}</option>
         </select>
     </div>
+
+    <div class="col-sm-3">
+        <select class="form-control" ng-model='errors_state' ng-change="changeErrorsState()" id='change-errors'>
+            <option value="">все</option>
+            <option disabled>──────────────</option>
+            <option
+                    ng-repeat="(state_id, label) in TutorErrors"
+                    data-subtext="@{{ errors_counts[state_id] || '' }}"
+                    value="@{{ state_id }}"
+            >@{{ state_id }}</option>
+        </select>
+    </div>
 </div>
 
 <table id="tutorList" class="table table-divlike" style="position: relative">
