@@ -17,7 +17,7 @@
             <table class="table reverse-borders">
                 <tbody ui-sortable='sortableOptions' ng-model="selected_list.tutor_ids" ng-if="selected_list">
                     <tr ng-repeat="tutor in getTutorList()" data-id='@{{tutor.id}}'>
-                        <td style='width: 25%'>
+                        <td style='width: 22%'>
                             <a href="tutors/@{{ tutor.id }}/edit">@{{ tutor.full_name }}</a>
                         </td>
                         <td style='width: 10%'>
@@ -44,7 +44,7 @@
                                 @{{ recommendation.type_text }}
                             </span>
                         </td>
-                        <td style='width: 10%'>
+                        <td style='width: 13%'>
                             <plural count='tutor.clients_count' type='client' none-text='клиентов нет' hide-zero></plural>
                             <b ng-show="tutor.margin">(M@{{ tutor.margin }})</b>
                         </td>
