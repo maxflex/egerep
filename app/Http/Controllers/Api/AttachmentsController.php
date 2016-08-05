@@ -94,19 +94,4 @@ class AttachmentsController extends Controller
     {
         return Attachment::destroy($id);
     }
-
-    public function errors($id)
-    {
-        $attachment_errors = AttachmentError::get(Attachment::find($id));
-
-        if (empty($attachment_errors)) {
-            AttachmentError::where('attachment_id', $id)->delete();
-        } else {
-            $attachment = Attachment::find($id);
-            AttachmentError::updateOrCreate(
-                ['attachment_id' => $attachment->id],
-                AttachmentError::prepareData($attachment, $attachment_errors)
-            );
-        }
-    }
 }

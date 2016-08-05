@@ -37,7 +37,7 @@ class Kernel extends ConsoleKernel
         Commands\SetChecked::class,
         Commands\Tutors::class,
         Commands\AddAttachmentCountToTutors::class,
-        Commands\AttachmentErrors::class,
+        Commands\ModelErrors::class,
     ];
 
     /**

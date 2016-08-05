@@ -7,22 +7,23 @@ use Illuminate\Console\Command;
 use DB;
 use App\Models\Service\Settings;
 use App\Models\Attachment;
+use App\Models\Review;
 
-class AttachmentErrors extends Command
+class ModelErrors extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'calc:attachment_errors';
+    protected $signature = 'calc:model_errors {--attachments} {--reviews}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Re-find attachment errors';
+    protected $description = 'Re-find model errors';
 
     /**
      * Create a new command instance.
@@ -41,7 +42,16 @@ class AttachmentErrors extends Command
      */
     public function handle()
     {
-        DB::table('attachment_errors')->truncate();
+        if ($this->option('attachments')) {
+            $this->attachments();
+        }
+        if ($this->option('reviews')) {
+            $this->reviews();
+        }
+    }
+
+    public function attachments()
+    {
         Settings::set('attachment_errors_updating', 1);
 
         $this->info('Getting attachments...');
@@ -50,14 +60,25 @@ class AttachmentErrors extends Command
         $bar = $this->output->createProgressBar(count($attachments));
 
         foreach ($attachments as $attachment) {
-            $attachment_errors = \App\Models\Service\AttachmentError::get($attachment);
-            if (count($attachment_errors)) {
-                DB::table('attachment_errors')->insert(AttachmentError::prepareData($attachment, $attachment_errors));
-            }
+            DB::table('attachments')->where('id', $attachment->id)->update(['errors' => \App\Models\Helpers\Attachment::errors($attachment)]);
             $bar->advance();
         }
         Settings::set('attachment_errors_updated', now());
         Settings::set('attachment_errors_updating', 0);
+        $bar->finish();
+    }
+
+    public function reviews()
+    {
+        $this->info('Getting reviews...');
+        $reviews = Review::all();
+
+        $bar = $this->output->createProgressBar(count($reviews));
+
+        foreach ($reviews as $review) {
+            DB::table('reviews')->where('id', $review->id)->update(['errors' => \App\Models\Helpers\Review::errors($review)]);
+            $bar->advance();
+        }
         $bar->finish();
     }
 }

@@ -1,0 +1,95 @@
+<?php
+
+namespace App\Models\Helpers;
+
+class Attachment
+{
+    /**
+     * Ошибки
+     */
+    public static function errors($attachment)
+    {
+        $attachment_date = new \DateTime($attachment->getClean('date'));
+        $archive = $attachment->archive;
+        $review = $attachment->review;
+
+        $errors = [];
+
+        if (! $attachment->grade) {
+            $errors[] = 1;
+        }
+
+        if (! count($attachment->subjects)) {
+            $errors[] = 2;
+        }
+
+        if (empty(trim($attachment->comment))) {
+            $errors[] = 3;
+        }
+
+        if ($attachment->hide && $attachment->total_lessons_missing) {
+            $errors[] = 16;
+        }
+
+        if ($archive) {
+            $archive_date = new \DateTime($archive->getClean('date'));
+            $last_lesson_date = \App\Models\Attachment::getLastLessonDate($attachment->id);
+
+            if ($archive->getClean('date') <= $attachment->getClean('date')) {
+                $errors[] = 4;
+            }
+            if (empty(trim($archive->comment))) {
+                $errors[] = 5;
+            }
+
+            $x = $archive->total_lessons_missing + $attachment->account_data_count;
+
+            if (! $attachment->forecast && $x) {
+                $errors[] = 6;
+            }
+
+            if (! $x && $attachment->forecast) {
+                $errors[] = 7;
+            }
+
+            if (! $archive->total_lessons_missing && $last_lesson_date && $archive->getClean('date') != $last_lesson_date) {
+                $errors[] = 9;
+            }
+
+            if (! $archive->total_lessons_missing) {
+                if ($attachment->hide) {
+                    if (! $attachment->account_data_count && $archive_date->diff($attachment_date)->format("%a") != 7) {
+                        $errors[] = 13;
+                    }
+                } else {
+                    if ($archive->getClean('date') == $last_lesson_date && $attachment->accounts()->exists() && $archive->getClean('date') <= $attachment->last_account_date) {
+                        $errors[] = 10;
+                    }
+                    if (! $attachment->account_data_count && $archive_date->diff($attachment_date)->format("%a") == 7) {
+                        $errors[] = 11;
+                    }
+                }
+            }
+
+            if ($attachment->hide) {
+                if ($archive->total_lessons_missing) {
+                    $errors[] = 8;
+                }
+                if ($last_lesson_date && $archive->getClean('date') != $last_lesson_date) {
+                    $errors[] = 12;
+                }
+
+                if ($archive->getClean('date') > $attachment->last_account_date) {
+                    $errors[] = 15;
+                }
+            }
+        } else {
+            if ($attachment->hide) {
+                $errors[] = 14;
+            }
+        }
+
+        sort($errors);
+        return implode(',', $errors);
+    }
+}

@@ -8,14 +8,9 @@ angular
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
-        $scope.attachment_errors_updating = false
-
         $scope.recalcAttachmentErrors = ->
             $scope.attachment_errors_updating = true
             $http.post 'api/command/recalc-attachment-errors'
-            .then (response) ->
-#                $scope.attachment_errors_updating = true
-#                $scope.attachment_errors_updated = response.data.
 
         refreshCounts = ->
             $timeout ->

@@ -33,7 +33,7 @@ angular
     #
     #   ADD/EDIT CONTROLLER
     #
-    .controller "ClientsForm", ($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, AttachmentStates, ReviewScores, Archive, Review, ApiService, UserService, RecommendationService, AttachmentService, AttachmentVisibility, AttachmentErrors, Marker) ->
+    .controller "ClientsForm", ($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, AttachmentStates, ReviewScores, Archive, Review, ApiService, UserService, RecommendationService, AttachmentService, AttachmentVisibility, Marker) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
@@ -69,10 +69,6 @@ angular
             $scope.Client.save $scope.client, ->
                 $scope.Attachment.check $scope.selected_attachment, ->
                     window.location = "requests/#{response.id}/edit"
-
-        notifyAttachmentErrors = (error_codes) ->
-            for code in error_codes
-                notifyError AttachmentErrors[code]
 
         bindDroppable = ->
             $('.teacher-remove-droppable').droppable

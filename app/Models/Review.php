@@ -36,6 +36,9 @@ class Review extends Model
                 $model->user_id = User::fromSession()->id;
             }
         });
+        static::saved(function($model) {
+            \DB::table('reviews')->where('id', $model->id)->update(['errors' => \App\Models\Helpers\Review::errors($model)]);
+        });
     }
 
     // ------------------------------------------------------------------------
