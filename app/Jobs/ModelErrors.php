@@ -30,6 +30,6 @@ class ModelErrors extends Job implements ShouldQueue
      */
     public function handle()
     {
-        \Artisan::call('calc:model_errors', ["--{$model}" => true]);
+        \Artisan::call('calc:model_errors', ["--{$this->model}" => true]);
     }
 }
