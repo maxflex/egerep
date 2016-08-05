@@ -68,7 +68,7 @@ class TutorsController extends Controller
      */
     public function show($id)
     {
-        return Tutor::with(['markers'])->find($id)->append('banned')->toJson();
+        return Tutor::with(['markers'])->find($id)->append(['banned', 'statistics'])->toJson();
     }
 
     /**
