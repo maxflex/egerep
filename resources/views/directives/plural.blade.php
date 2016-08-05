@@ -2,5 +2,4 @@
         'one': when[type][0],
         'few': when[type][1],
         'many': when[type][2]
-    }"></ng-pluralize></span>
-<span ng-hide='hideZero' ng-if='noneText && !count'>@{{ noneText }}</span>
+    }"></ng-pluralize></span><span ng-hide='hideZero' ng-if='noneText && !count'>@{{ noneText }}</span>
