@@ -91,7 +91,7 @@ class Review extends Model
             }
         }
 
-        if (isset($search->state) || isset($search->signature) || isset($search->comment) || isset($search->score) || isset($search->user_id)) {
+        if (isset($search->state) || isset($search->signature) || isset($search->comment) || isset($search->score) || isset($search->user_id) || isset($search->error)) {
             $query->whereHas('review', function($query) use ($search) {
                 if (isset($search->state)) {
                     $query->where('state', $search->state);
@@ -107,6 +107,9 @@ class Review extends Model
                 }
                 if (isset($search->user_id)) {
                     $query->where('user_id', $search->user_id);
+                }
+                if (isset($search->error)) {
+                    $query->whereRaw("FIND_IN_SET({$search->error}, errors)");
                 }
             });
         }
