@@ -10,7 +10,7 @@ angular
 
         $scope.recalcTutorErrors = ->
             $scope.tutor_errors_updating = true
-            $http.post 'api/command/recalc-tutor-errors'
+            $http.post 'api/command/model-errors', {model: 'tutors'}
 
         $scope.state            = localStorage.getItem('tutors_index_state')
         $scope.user_id          = localStorage.getItem('tutors_index_user_id')

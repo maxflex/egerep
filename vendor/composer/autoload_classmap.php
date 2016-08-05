@@ -39,6 +39,7 @@ return array(
     'AddLessonLength' => $baseDir . '/database/migrations/2016_03_10_174030_addLessonLength.php',
     'AddListCommentToTeachers' => $baseDir . '/database/migrations/2016_03_02_165455_add_fields_to_teachers.php',
     'AddListsToClient' => $baseDir . '/database/migrations/2016_01_22_152742_add_lists_to_client.php',
+    'AddMarginToTutors' => $baseDir . '/database/migrations/2016_08_05_155612_add_margin_to_tutors.php',
     'AddMoscowmapIdToStations' => $baseDir . '/database/migrations/2016_03_14_225432_add_moscowmap_id_to_stations.php',
     'AddNewClientsAndActiveAttToSummaries' => $baseDir . '/database/migrations/2016_06_17_163735_add_new_clients_and_active_att_to_summaries.php',
     'AddNullableToAccountInts' => $baseDir . '/database/migrations/2016_05_26_123437_add_nullable_to_account_ints.php',
