@@ -34,6 +34,7 @@ class Attachment
         if ($archive) {
             $archive_date = new \DateTime($archive->getClean('date'));
             $last_lesson_date = \App\Models\Attachment::getLastLessonDate($attachment->id);
+            $last_account_date = $attachment->last_account_date;
 
             if ($archive->getClean('date') <= $attachment->getClean('date')) {
                 $errors[] = 4;
@@ -62,7 +63,7 @@ class Attachment
                         $errors[] = 13;
                     }
                 } else {
-                    if ($archive->getClean('date') == $last_lesson_date && $attachment->accounts()->exists() && $archive->getClean('date') <= $attachment->last_account_date) {
+                    if ($archive->getClean('date') == $last_lesson_date && $attachment->accounts()->exists() && $last_account_date && $archive->getClean('date') <= $last_account_date) {
                         $errors[] = 10;
                     }
                     if (! $attachment->account_data_count && $archive_date->diff($attachment_date)->format("%a") == 7) {
@@ -79,7 +80,7 @@ class Attachment
                     $errors[] = 12;
                 }
 
-                if ($archive->getClean('date') > $attachment->last_account_date) {
+                if ($last_account_date && $archive->getClean('date') > $attachment->last_account_date) {
                     $errors[] = 15;
                 }
             }
