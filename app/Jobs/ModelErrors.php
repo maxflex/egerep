@@ -7,11 +7,11 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class RecalcTutorErrors extends Job implements ShouldQueue
+class ModelErrors extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
-    
+
 
     /**
      * Create a new job instance.
