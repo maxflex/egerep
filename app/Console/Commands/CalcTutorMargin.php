@@ -51,7 +51,26 @@ class CalcTutorMargin extends Command
             $b = DB::table('account_datas')->where('tutor_id', $tutor_id)->where('commission', 0)->whereIn('client_id', $hidden_client_ids)->sum('sum');
             $total_commission = ($b * 0.25) + $a;
 
-            DB::table('tutors')->where('id', $tutor_id)->update(['margin' => round($total_commission / count($hidden_client_ids))]);
+            $m = round($total_commission / count($hidden_client_ids));
+            
+            $margin = 0;
+            if ($m >= 3000 && $m < 5000) {
+                $margin = 1;
+            } else
+            if ($m >= 5000 && $m < 7000) {
+                $margin = 2;
+            } else
+            if ($m >= 7000 && $m < 10000) {
+                $margin = 3;
+            } else
+            if ($m >= 10000 && $m < 13000) {
+                $margin = 4;
+            } else
+            if ($m >= 13000) {
+                $margin = 5;
+            }
+
+            DB::table('tutors')->where('id', $tutor_id)->update(compact('margin'));
             $bar->advance();
         }
 
