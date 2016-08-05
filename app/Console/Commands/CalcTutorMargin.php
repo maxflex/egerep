@@ -47,8 +47,8 @@ class CalcTutorMargin extends Command
         foreach($tutor_ids as $tutor_id) {
             $hidden_client_ids = DB::table('attachments')->where('hide', 1)->where('tutor_id', $tutor_id)->pluck('client_id');
 
-            $a = DB::table('account_datas')->where('tutor_id', $tutor_id)->whereIn('client_id', $hidden_client_ids)->sum('commission');
-            $b = DB::table('account_datas')->where('tutor_id', $tutor_id)->whereIn('client_id', $hidden_client_ids)->sum('sum');
+            $a = DB::table('account_datas')->where('tutor_id', $tutor_id)->where('commission', '>', 0)->whereIn('client_id', $hidden_client_ids)->sum('commission');
+            $b = DB::table('account_datas')->where('tutor_id', $tutor_id)->where('commission', 0)->whereIn('client_id', $hidden_client_ids)->sum('sum');
             $total_commission = ($b * 0.25) + $a;
 
             DB::table('tutors')->where('id', $tutor_id)->update(['margin' => round($total_commission / count($hidden_client_ids))]);
