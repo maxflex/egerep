@@ -1,7 +1,8 @@
 angular
     .module 'Egerep'
-    .controller 'RequestsIndex', ($rootScope, $scope, $timeout, $http, Request, RequestStates, Comment, PhoneService, UserService, Grades) ->
+    .controller 'RequestsIndex', ($rootScope, $scope, $timeout, $http, Request, RequestStates, Comment, PhoneService, UserService, Grades, Subjects) ->
         bindArguments($scope, arguments)
+        _.extend RequestStates, { all : 'все' }
         $rootScope.frontend_loading = true
 
         $scope.state            = localStorage.getItem('requests_index_state') or 'all'
@@ -16,6 +17,13 @@ angular
             console.log val
             $rootScope.frontend_loading = false if $scope.requests and $scope.requests.length == val
         # /track comment loading.
+
+        $scope.howLongAgo = (created_at) ->
+            now = moment(Date.now())
+            created_at = moment(new Date(created_at).getTime())
+            days = now.diff(created_at, 'days')
+            hours = now.diff(created_at, 'hours') - (days * 24)
+            {days: days, hours: hours}
 
         $scope.changeList = (state_id) ->
             $scope.chosen_state_id = state_id

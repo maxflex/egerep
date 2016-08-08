@@ -67,8 +67,7 @@ angular
             filterMarkers()
             $scope.ajaxStart()
             $scope.Client.save $scope.client, ->
-                $scope.Attachment.check $scope.selected_attachment, ->
-                    window.location = "requests/#{response.id}/edit"
+                window.location = "requests/#{response.id}/edit"
 
         bindDroppable = ->
             $('.teacher-remove-droppable').droppable

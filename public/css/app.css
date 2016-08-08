@@ -30844,4 +30844,24 @@ table.summary-table.left-align tr td {
 .table-small {
   font-size: 12px; }
 
+.request-links li {
+  margin-right: 25px !important; }
+  .request-links li a {
+    display: inline-block !important;
+    margin-right: 0 !important; }
+
+.fa-circle {
+  font-size: 8px;
+  margin: 0 5px;
+  top: -2px;
+  position: relative; }
+
+.angular-with-newlines {
+  white-space: pre-wrap; }
+
+.vcenter {
+  display: inline-block;
+  vertical-align: middle;
+  float: none; }
+
 /*# sourceMappingURL=app.css.map */

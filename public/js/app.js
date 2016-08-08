@@ -882,9 +882,7 @@
       filterMarkers();
       $scope.ajaxStart();
       return $scope.Client.save($scope.client, function() {
-        return $scope.Attachment.check($scope.selected_attachment, function() {
-          return window.location = "requests/" + response.id + "/edit";
-        });
+        return window.location = "requests/" + response.id + "/edit";
       });
     };
     bindDroppable = function() {
@@ -1994,9 +1992,12 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').controller('RequestsIndex', function($rootScope, $scope, $timeout, $http, Request, RequestStates, Comment, PhoneService, UserService, Grades) {
+  angular.module('Egerep').controller('RequestsIndex', function($rootScope, $scope, $timeout, $http, Request, RequestStates, Comment, PhoneService, UserService, Grades, Subjects) {
     var extendRequestStates, loadRequests;
     bindArguments($scope, arguments);
+    _.extend(RequestStates, {
+      all: 'все'
+    });
     $rootScope.frontend_loading = true;
     $scope.state = localStorage.getItem('requests_index_state') || 'all';
     $scope.user_id = localStorage.getItem('requests_index_user_id');
@@ -2010,6 +2011,17 @@
         return $rootScope.frontend_loading = false;
       }
     });
+    $scope.howLongAgo = function(created_at) {
+      var days, hours, now;
+      now = moment(Date.now());
+      created_at = moment(new Date(created_at).getTime());
+      days = now.diff(created_at, 'days');
+      hours = now.diff(created_at, 'hours') - (days * 24);
+      return {
+        days: days,
+        hours: hours
+      };
+    };
     $scope.changeList = function(state_id) {
       $scope.chosen_state_id = state_id;
       $scope.current_page = 1;
@@ -2902,7 +2914,8 @@
       scope: {
         markers: '='
       },
-      controller: function($scope) {
+      controller: function($scope, $element, $attrs) {
+        $scope.inline = $attrs.hasOwnProperty('inline');
         $scope.short = function(title) {
           return title.slice(0, 3).toUpperCase();
         };
@@ -3087,12 +3100,14 @@
           'student': ['ученик', 'ученика', 'учеников'],
           'minute': ['минуту', 'минуты', 'минут'],
           'hour': ['час', 'часа', 'часов'],
+          'day': ['день', 'дня', 'дней'],
           'meeting': ['встреча', 'встречи', 'встреч'],
           'score': ['балл', 'балла', 'баллов'],
           'rubbles': ['рубль', 'рубля', 'рублей'],
           'lesson': ['занятие', 'занятия', 'занятий'],
           'client': ['клиент', 'клиента', 'клиентов'],
-          'mark': ['оценки', 'оценок', 'оценок']
+          'mark': ['оценки', 'оценок', 'оценок'],
+          'request': ['заявка', 'заявки', 'заявок']
         };
       }
     };
