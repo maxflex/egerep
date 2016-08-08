@@ -5,7 +5,6 @@ angular
         _.extend RequestStates, { all : 'все' }
         $rootScope.frontend_loading = true
 
-        $scope.state            = localStorage.getItem('requests_index_state') or 'all'
         $scope.user_id          = localStorage.getItem('requests_index_user_id')
 
         # track comment loading.
@@ -56,7 +55,7 @@ angular
             $scope.chosen_state_id = 'all' if not $scope.chosen_state_id
 
             params = '?page=' + page
-            params += '&state=' + $scope.state
+            params += '&state=' + $scope.chosen_state_id
             params += "&user_id=#{ $scope.user_id }" if $scope.user_id isnt ''
 
 
