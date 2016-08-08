@@ -35,7 +35,7 @@ class TutorsController extends Controller
                     ->searchByLastNameAndPhone($request->global_search)
                     ->searchByPublishedState($request->published_state)
                     ->searchByErrorsState($request->errors_state)
-                    ->paginate(30)
+                    ->paginate(30, ['clients_count'])
                     ->toJson();
     }
 
@@ -214,12 +214,11 @@ class TutorsController extends Controller
              'tb',
              'lk',
              'js',
-             'clients_count'
          ] + Tutor::$phone_fields);
 
          foreach($tutors as $tutor) {
             # Количество учеников, Количество встреч
-            $tutor->append(['meeting_count']);
+            $tutor->append(['clients_count', 'meeting_count']);
 
             # Получить минуты
             $tutor->minutes = $tutor->getMinutes($request->client_marker);
