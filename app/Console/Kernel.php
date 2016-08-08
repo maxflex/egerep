@@ -36,9 +36,9 @@ class Kernel extends ConsoleKernel
         Commands\ReviewsCreate::class,
         Commands\SetChecked::class,
         Commands\Tutors::class,
-        Commands\AddAttachmentCountToTutors::class,
         Commands\ModelErrors::class,
         Commands\CalcTutorMargin::class,
+        Commands\CalcTutorClientsCount::class,
     ];
 
     /**
@@ -50,5 +50,6 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('summary:calc')->dailyAt('02:30');
+        $schedule->command('tutor:calc_clients')->dailyAt('00:30');
     }
 }
