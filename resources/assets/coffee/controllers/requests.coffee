@@ -90,7 +90,7 @@ angular
 
         $scope.changeUser = ->
             localStorage.setItem('requests_index_user_id', $scope.user_id)
-            $scope.changeList($scope.state)
+            $scope.changeList($scope.chosen_state_id)
             # $scope.changeList($scope.state)
 
         # @todo использовать $rootScope.toggleEnumServer

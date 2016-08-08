@@ -27,12 +27,14 @@
            <option value="">пользователь</option>
            <option disabled>──────────────</option>
            <option
+               ng-show='user_counts[user.id]'
                ng-repeat="user in UserService.getWithSystem()"
                value="@{{ user.id }}"
                data-content="<span style='color: @{{ user.color || 'black' }}'>@{{ user.login }} @{{ $var }}</span><small class='text-muted'>@{{ user_counts[user.id] || '' }}</small>"
            ></option>
            <option disabled>──────────────</option>
            <option
+                   ng-show='user_counts[user.id]'
                    ng-repeat="user in UserService.getBannedUsers()"
                    value="@{{ user.id }}"
                    data-content="<span style='color: @{{ user.color || 'black' }}'>@{{ user.login }} @{{ $var }}</span><small class='text-muted'>@{{ user_counts[user.id] || '' }}</small>"
