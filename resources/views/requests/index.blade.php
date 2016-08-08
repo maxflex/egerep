@@ -76,11 +76,8 @@
                             ng-repeat="list in request.lists"
                         ><a class="link-reverse" href='requests/@{{request.id}}/edit#@{{ list.id }}'><sbj ng-repeat='subject_id in list.subjects'>@{{Subjects.all[subject_id]}}@{{$last ? '' : ' и '}}</sbj></a>@{{ $last ? '' : ', ' }}</span>
                     </div>
-                    <div style="margin-top: 10px">
-                        <comments entity-type='request' entity-id='request.id' user='{{ $user }}' track-loading='1'></comments>
-                    </div>
                 </div>
-                <div class="col-sm-2 vcenter" style="width: 16%; text-align: right; font-size: 16px" ng-init="how_long_ago = howLongAgo(request.created_at)">
+                <div class="col-sm-2 vcenter" style="width: 16%; text-align: right; font-size: 24px" ng-init="how_long_ago = howLongAgo(request.created_at)">
                     <span ng-show="!how_long_ago.days && !how_long_ago.hours">только что</span>
                     <span ng-show="how_long_ago.days">
                         <plural count='how_long_ago.days' type='day'></plural>
@@ -89,6 +86,9 @@
                         <plural ng-show='how_long_ago.hours' count='how_long_ago.hours' type='hour'></plural>
                     </span>
                 </div>
+            </div>
+            <div style="margin-top: 10px">
+                <comments entity-type='request' entity-id='request.id' user='{{ $user }}' track-loading='1'></comments>
             </div>
             {{-- <div class="row" style="margin-top: 20px">
                 <div class="col-sm-6">
