@@ -93,6 +93,14 @@ angular
             $scope.changeList($scope.chosen_state_id)
             # $scope.changeList($scope.state)
 
+        $scope.bannedUsersHaveRequests = ->
+            banned_users_have_requests = false
+            UserService.getBannedUsers().forEach (user) ->
+                if $scope.user_counts[user.id]
+                    banned_users_have_requests = true
+                    return
+            banned_users_have_requests
+
         # @todo использовать $rootScope.toggleEnumServer
         $scope.toggleState = (request) ->
             request_cpy = angular.copy request
