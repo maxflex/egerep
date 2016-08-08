@@ -48,7 +48,7 @@
          ng-class="{ 'manual-request-red': request.contract_time && request.contract_time > 0 && request.contract_time <= 3600 }">
          <div class="col-sm-12">
             <div>
-                <metro-list markers='request.client.markers' inline></metro-list>
+                <metro-list style='top: -2px; position: relative' markers='request.client.markers' inline></metro-list>
                 <b ng-show="request.client.address">@{{request.client.address}}</b>
                 <b ng-show="!request.client.address">описание отсутствует</b>
                 <b ng-show="!request.client.phones.length">телефон отсутствует</b>
