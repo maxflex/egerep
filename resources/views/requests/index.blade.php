@@ -10,7 +10,7 @@
 <sms number='sms_number'></sms>
 
 <div class="row">
-    <div class="col-sm-9">
+    <div class="col-sm-10" style="width: 80%">
         <ul class="nav nav-tabs nav-tabs-links request-links" style="margin: 7px 0 40px">
              <li ng-repeat="(state_id, state) in RequestStates" data-id="@{{state_id }}"
                 ng-class="{'active' : chosen_state_id == state_id || !chosen_state_id && state_id == 'new', 'request-status-li': status_id != 'all' && (chosen_state_id != status_id)}"
@@ -22,7 +22,7 @@
              </li>
         </ul>
     </div>
-    <div class="col-sm-3">
+    <div class="col-sm-2" style="width: 20%">
         <select class="form-control" ng-model='user_id' ng-change="changeUser()" id='change-user'>
            <option value="">пользователь</option>
            <option disabled>──────────────</option>
