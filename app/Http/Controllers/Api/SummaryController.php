@@ -123,7 +123,7 @@ class SummaryController extends Controller
     private function getByWeek($type, $page)
     {
         $date = new \DateTime('sunday');
-        $skip_days = $page * 7 * ($page ? 31 : 30);
+        $skip_days = $page * 7 * 30;
 
         $end_date   = clone $date->sub(new \DateInterval("P{$skip_days}D"));
         $start_date = clone $date->sub(new \DateInterval('P210D'));
@@ -145,16 +145,18 @@ class SummaryController extends Controller
         $date       = new \DateTime('last day of this month');
         $skip_month = $page * 30;
 
-        $end_date   = clone $date->sub(new \DateInterval("P{$skip_month}M"));
-        $start_date = clone $date->sub(new \DateInterval('P30M'));
+        $end_date   = clone $date->modify("last day of -$skip_month months");
+        $start_date = clone $date->modify('last day of -29 months');
 
         $return = [];
         while ($start_date < $end_date) {
-            $start = $start_date->modify('first day of next month')->format('Y-m-d');
+            $start = $start_date->modify('first day of this month')->format('Y-m-d');
             $end   = $start_date->modify('last day of this month')->format('Y-m-d');
 
             $return_date = $start_date > new \DateTime ? now(true) : $end;
             $return[$return_date] = $this->calc($type, $start, $end);
+
+            $start_date->modify('first day of next month');
         }
 
         return $return;

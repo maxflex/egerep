@@ -26,7 +26,7 @@ angular
         $scope.pageChanged = ->
             ajaxStart()
             loadSummary $scope.current_page
-            paginate 'summary' + getPrefix() + $scope.filter, $scope.current_page
+            paginate 'summary' + getPrefix() + '/' + $scope.filter, $scope.current_page
 
         loadSummary = (page) ->
             params  = getPrefix()
