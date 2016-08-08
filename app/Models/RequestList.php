@@ -57,7 +57,7 @@ class RequestList extends Model
             'debt_comment',
             'photo_extension',
             'margin',
-        ])->append(['meeting_count', 'active_clients_count', 'last_account_info']);
+        ])->append(['clients_count', 'meeting_count', 'active_clients_count', 'last_account_info']);
     }
 
     // ------------------------------------------------------------------------
