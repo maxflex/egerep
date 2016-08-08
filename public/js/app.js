@@ -1992,7 +1992,7 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').controller('RequestsIndex', function($rootScope, $scope, $timeout, $http, Request, RequestStates, Comment, PhoneService, UserService, Grades, Subjects) {
+  angular.module('Egerep').controller('RequestsIndex', function($rootScope, $scope, $timeout, $http, Request, RequestStates, Comment, PhoneService, UserService, Grades, Subjects, PusherService) {
     var extendRequestStates, loadRequests;
     bindArguments($scope, arguments);
     _.extend(RequestStates, {
@@ -2000,6 +2000,15 @@
     });
     $rootScope.frontend_loading = true;
     $scope.user_id = localStorage.getItem('requests_index_user_id');
+    PusherService.init('IncomingRequest', function(data) {
+      var new_request;
+      new_request = data.request;
+      $scope.request_state_counts[new_request.state]++;
+      if ($scope.chosen_state_id === new_request.state) {
+        $scope.requests.unshift(new_request);
+      }
+      return $scope.$apply();
+    });
     $rootScope.loaded_comments = 0;
     $scope.$watch(function() {
       console.log($rootScope.loaded_comments);

@@ -1,11 +1,17 @@
 angular
     .module 'Egerep'
-    .controller 'RequestsIndex', ($rootScope, $scope, $timeout, $http, Request, RequestStates, Comment, PhoneService, UserService, Grades, Subjects) ->
+    .controller 'RequestsIndex', ($rootScope, $scope, $timeout, $http, Request, RequestStates, Comment, PhoneService, UserService, Grades, Subjects, PusherService) ->
         bindArguments($scope, arguments)
         _.extend RequestStates, { all : 'все' }
         $rootScope.frontend_loading = true
 
         $scope.user_id          = localStorage.getItem('requests_index_user_id')
+
+        PusherService.init 'IncomingRequest', (data) ->
+            new_request = data.request
+            $scope.request_state_counts[new_request.state]++
+            $scope.requests.unshift(new_request) if $scope.chosen_state_id is new_request.state
+            $scope.$apply()
 
         # track comment loading.
         $rootScope.loaded_comments = 0
