@@ -66,7 +66,7 @@
                 <user-switch entity='request' user-id='user_id' resource='Request'></span>
             </div>
             <div class="row">
-                <div class="col-sm-10 vcenter">
+                <div class="col-sm-10 vcenter" style="width: 20%">
                     <div style="margin-top: 10px">
                         <a class="link-reverse" href="requests/@{{request.id}}/edit">Заявка @{{request.id}}</a>:
                         <span class="angular-with-newlines">@{{ request.comment }}</span>
@@ -77,7 +77,7 @@
                         ><a class="link-reverse" href='requests/@{{request.id}}/edit#@{{ list.id }}'><sbj ng-repeat='subject_id in list.subjects'>@{{Subjects.all[subject_id]}}@{{$last ? '' : ' и '}}</sbj></a>@{{ $last ? '' : ', ' }}</span>
                     </div>
                 </div>
-                <div class="col-sm-2 vcenter" style="width: 16%; text-align: right; font-size: 24px" ng-init="how_long_ago = howLongAgo(request.created_at)">
+                <div class="col-sm-2 vcenter" style="width: 19%; text-align: right; font-size: 24px" ng-init="how_long_ago = howLongAgo(request.created_at)">
                     <span ng-show="!how_long_ago.days && !how_long_ago.hours">только что</span>
                     <span ng-show="how_long_ago.days">
                         <plural count='how_long_ago.days' type='day'></plural>
