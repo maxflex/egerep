@@ -66,7 +66,7 @@
                 <user-switch entity='request' user-id='user_id' resource='Request'></span>
             </div>
             <div class="row">
-                <div class="col-sm-10 vcenter" style="width: 20%">
+                <div class="col-sm-10 vcenter" style="width: 80%">
                     <div style="margin-top: 10px">
                         <a class="link-reverse" href="requests/@{{request.id}}/edit">Заявка @{{request.id}}</a>:
                         <span class="angular-with-newlines">@{{ request.comment }}</span>
