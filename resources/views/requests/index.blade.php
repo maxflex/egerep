@@ -62,7 +62,7 @@
                     </span>
                 </b>
                 <span ng-show="request.client.requests_count > 1"><i class="fa fa-circle"></i> <plural type='request' count='request.client.requests_count'></plural></span>
-                <span ng-show="request.client.address"><i class="fa fa-circle"></i>ответственный:
+                <span><i class="fa fa-circle"></i>ответственный:
                 <user-switch entity='request' user-id='user_id' resource='Request'></span>
             </div>
             <div class="row">
@@ -109,7 +109,7 @@
 
     <div class="row" ng-hide="requests.length">
         <div class="col-sm-12">
-            <h3 style="text-align: center; margin: 50px 0">Список заявок пуст</h3>
+            <h3 style="text-align: center; margin: 220px 0">список заявок пуст</h3>
         </div>
     </div>
 

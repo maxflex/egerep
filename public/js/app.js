@@ -2075,7 +2075,7 @@
         }
       });
       return $http.post("api/requests/counts", {
-        state: $scope.state,
+        state: $scope.chosen_state_id,
         user_id: $scope.user_id
       }).then(function(response) {
         $scope.request_state_counts = response.data.request_state_counts;

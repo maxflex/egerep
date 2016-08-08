@@ -72,7 +72,7 @@ angular
                 $rootScope.frontend_loading = false if not $scope.requests.length
 
             $http.post "api/requests/counts",
-                state: $scope.state
+                state: $scope.chosen_state_id
                 user_id: $scope.user_id
             .then (response) ->
                 $scope.request_state_counts = response.data.request_state_counts
