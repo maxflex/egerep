@@ -164,10 +164,13 @@ class Tutor extends Model
     public function getStatisticsAttribute()
     {
         $stats = Api\Api::exec('teacherStatistics', ['tutor_id' => $this->id]);
-//        $stats->er_review_count = Attachment::where('tutor_id', $this->id)->has('review')->count();
-        $stats->er_review_count = DB::table('reviews')->join('attachments', 'attachments.id', '=', 'attachment_id')->where('tutor_id', $this->id)->where('score', '<', 11)->count();
-        $review_score_sum = DB::table('reviews')->join('attachments', 'attachments.id', '=', 'attachment_id')->where('tutor_id', $this->id)->where('score', '<', 11)->select('reviews.score')->sum('reviews.score');
+
+        $reviews_query = DB::table('reviews')->join('attachments', 'attachments.id', '=', 'attachment_id')->where('tutor_id', $this->id)->whereBetween('score', [1, 10]);
+
+        $stats->er_review_count = $reviews_query->count();
+        $review_score_sum = $reviews_query->select('reviews.score')->sum('reviews.score');
         $stats->er_review_avg = (4*($this->lk + $this->tb + ($this->js < 8 ?$this->js : 8 - $this->js % 8)) + $review_score_sum)/(4 + $stats->er_review_count);
+
         return $stats;
     }
 
