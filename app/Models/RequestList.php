@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use App\Models\Tutor;
-use Illuminate\Database\Eloquent\Model;
 use DB;
+use App\Models\Tutor;
+use App\Models\Marker;
+use Illuminate\Database\Eloquent\Model;
 
 class RequestList extends Model
 {
@@ -44,6 +45,15 @@ class RequestList extends Model
 
     public function getTutorsAttribute()
     {
+        // $client_marker_id = DB::table('request_lists')
+        //                         ->join('requests', 'request_lists.request_id', '=', 'requests.id')
+        //                         ->join('markers', function($join) {
+        //                             $join->on('markers.markerable_id', '=', 'requests.client_id')
+        //                                     ->where('markers.markerable_type', '=', 'App\Models\Client');
+        //                         })->where('request_lists.id', $this->id)->select('markers.*')->value('id');
+        //
+        // $client_marker = Marker::find($client_marker_id);
+
         $tutors = Tutor::with(['markers'])->whereIn('id', $this->tutor_ids)->get([
             'id',
             'first_name',
@@ -59,19 +69,12 @@ class RequestList extends Model
             'photo_extension',
             'margin',
         ])->append(['clients_count', 'meeting_count', 'active_clients_count', 'last_account_info']);
-        $client_marker_id = DB::table('request_lists')
-            ->join('requests', 'request_lists.request_id', '=', 'requests.id')
-            ->join('markers', function($join) {
-                $join->on('markers.markerable_id', '=', 'requests.client_id')
-                    ->where('markers.markerable_type', '=', 'App\Models\Client');
-            })->where('request_lists.id', $this->id)->select('markers.id')->value('id');
-        if ($client_marker_id) {
-            $client_marker = Marker::find($client_marker_id);
-            foreach ($tutors as &$tutor) {
-                # Получить минуты
-                $tutor->minutes = $tutor->getMinutes($client_marker);
-            }
-        }
+
+        // foreach ($tutors as &$tutor) {
+        //     # Получить минуты
+        //     $tutor->minutes = $tutor->getMinutes($client_marker);
+        // }
+
         return $tutors;
     }
 

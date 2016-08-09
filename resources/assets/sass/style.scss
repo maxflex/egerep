@@ -3700,3 +3700,30 @@ table.summary-table.left-align tr td {
 .table-small {
 	font-size: 12px;
 }
+
+.request-links {
+	& li {
+		margin-right: 25px !important;
+		& a {
+			display: inline-block !important;
+		    margin-right: 0 !important;
+			font-weight: normal !important;
+		}
+	}
+}
+
+.fa-circle {
+	font-size: 8px;
+	margin: 0 6px 0 5px;
+    top: -2px;
+    position: relative;
+}
+.angular-with-newlines {
+    white-space: pre-wrap;
+}
+
+.vcenter {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}

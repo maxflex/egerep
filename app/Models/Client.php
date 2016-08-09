@@ -19,6 +19,8 @@ class Client extends Model
 
     protected $with = ['requests', 'markers'];
 
+    protected $appends = ['requests_count'];
+
     protected $fillable = [
         'name',
         'grade',
@@ -31,6 +33,11 @@ class Client extends Model
     public function requests()
     {
         return $this->hasMany('App\Models\Request');
+    }
+
+    public function getRequestsCountAttribute()
+    {
+        return $this->requests()->count();
     }
 
     public function setRequestsAttribute($value)

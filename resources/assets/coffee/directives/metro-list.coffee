@@ -3,7 +3,9 @@ angular.module('Egerep').directive 'metroList', ->
     templateUrl: 'directives/metro-list'
     scope:
         markers: '='
-    controller: ($scope) ->
+    controller: ($scope, $element, $attrs) ->
+        $scope.inline = $attrs.hasOwnProperty('inline')
+        
         $scope.short = (title) ->
             title.slice(0,3).toUpperCase()
 

@@ -13,7 +13,7 @@ class DropColumnClientsCountFromTutors extends Migration
     public function up()
     {
         Schema::table('tutors', function (Blueprint $table) {
-            $table->dropColumn('clients_count');
+           $table->dropColumn('clients_count');
         });
     }
 

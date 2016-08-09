@@ -1,11 +1,17 @@
 angular
     .module 'Egerep'
-    .controller 'RequestsIndex', ($rootScope, $scope, $timeout, $http, Request, RequestStates, Comment, PhoneService, UserService, Grades) ->
+    .controller 'RequestsIndex', ($rootScope, $scope, $timeout, $http, Request, RequestStates, Comment, PhoneService, UserService, Grades, Subjects, PusherService) ->
         bindArguments($scope, arguments)
+        _.extend RequestStates, { all : 'все' }
         $rootScope.frontend_loading = true
 
-        $scope.state            = localStorage.getItem('requests_index_state') or 'all'
         $scope.user_id          = localStorage.getItem('requests_index_user_id')
+
+        PusherService.init 'IncomingRequest', (data) ->
+            new_request = data.request
+            $scope.request_state_counts[new_request.state]++
+            $scope.requests.unshift(new_request) if $scope.chosen_state_id is new_request.state
+            $scope.$apply()
 
         # track comment loading.
         $rootScope.loaded_comments = 0
@@ -16,6 +22,13 @@ angular
             console.log val
             $rootScope.frontend_loading = false if $scope.requests and $scope.requests.length == val
         # /track comment loading.
+
+        $scope.howLongAgo = (created_at) ->
+            now = moment(Date.now())
+            created_at = moment(new Date(created_at).getTime())
+            days = now.diff(created_at, 'days')
+            hours = now.diff(created_at, 'hours') - (days * 24)
+            {days: days, hours: hours}
 
         $scope.changeList = (state_id) ->
             $scope.chosen_state_id = state_id
@@ -48,7 +61,7 @@ angular
             $scope.chosen_state_id = 'all' if not $scope.chosen_state_id
 
             params = '?page=' + page
-            params += '&state=' + $scope.state
+            params += '&state=' + $scope.chosen_state_id
             params += "&user_id=#{ $scope.user_id }" if $scope.user_id isnt ''
 
 
@@ -59,7 +72,7 @@ angular
                 $rootScope.frontend_loading = false if not $scope.requests.length
 
             $http.post "api/requests/counts",
-                state: $scope.state
+                state: $scope.chosen_state_id
                 user_id: $scope.user_id
             .then (response) ->
                 $scope.request_state_counts = response.data.request_state_counts
@@ -77,8 +90,16 @@ angular
 
         $scope.changeUser = ->
             localStorage.setItem('requests_index_user_id', $scope.user_id)
-            $scope.changeList($scope.state)
+            $scope.changeList($scope.chosen_state_id)
             # $scope.changeList($scope.state)
+
+        # $scope.bannedUsersHaveRequests = ->
+        #     banned_users_have_requests = false
+        #     UserService.getBannedUsers().forEach (user) ->
+        #         if $scope.user_counts[user.id]
+        #             banned_users_have_requests = true
+        #             return
+        #     banned_users_have_requests
 
         # @todo использовать $rootScope.toggleEnumServer
         $scope.toggleState = (request) ->

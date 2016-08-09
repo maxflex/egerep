@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Events\IncomingRequest;
 
 class Request extends Model
 {
@@ -73,6 +74,10 @@ class Request extends Model
             if (! $model->exists) {
                 $model->user_id_created = userIdOrSystem();
             }
+        });
+
+        static::created(function ($model) {
+            event(new IncomingRequest($model));
         });
     }
 
