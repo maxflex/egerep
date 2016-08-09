@@ -313,11 +313,11 @@
                 'few': 'оценок',
                 'many': 'оценок'
             }"></ng-pluralize> от учеников и нашей оценки)</div>
-            <div ng-show="tutor.statistics.ec_lesson_count">Количество занятий, проведенных в ЕГЭ-Центре: @{{ tutor.statistics.ec_lesson_count }}</div>
-            <div ng-show="tutor.statistics.ec_review_count">Cредняя оценка в ЕГЭ-Центре: @{{ tutor.statistics.ec_review_avg | number : 1 }} (на основе @{{ tutor.statistics.ec_review_count }} <ng-pluralize count='tutor.statistics.ec_review_count' when="{
+            <div ng-show="tutor.statistics.ec_lesson_count > 0">Количество занятий, проведенных в ЕГЭ-Центре: @{{ tutor.statistics.ec_lesson_count }}</div>
+            <div ng-show="tutor.statistics.ec_review_count > 0">Cредняя оценка в ЕГЭ-Центре: @{{ tutor.statistics.ec_review_avg | number : 1 }} (на основе @{{ tutor.statistics.ec_review_count }} <ng-pluralize count='tutor.statistics.ec_review_count' when="{
                 'one': 'оценки',
                 'few': 'оценок',
-                'many': 'оценок' 
+                'many': 'оценок'
             }"></ng-pluralize> от учеников и нашей оценки)</div>
         </div>
         <div ng-if="tutor.id">
