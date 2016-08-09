@@ -320,8 +320,8 @@
                 'many': 'оценок'
             }"></ng-pluralize>)</div>
             <div ng-show='tutor.statistics.hold_coeff_by_grade[9] > 0'>Коэффициент удержания для 9 класса: @{{ tutor.statistics.hold_coeff_by_grade[9] }}% (@{{ tutor.statistics.coeff_total[9] }}%)</div>
-            <div ng-show='tutor.statistics.hold_coeff_by_grade[10] > 0'>Коэффициент удержания для 10 класса: @{{ tutor.statistics.hold_coeff_by_grade[10] }}%</div>
-            <div ng-show='tutor.statistics.hold_coeff_by_grade[11] > 0'>Коэффициент удержания для 11 класса: @{{ tutor.statistics.hold_coeff_by_grade[11] }}%</div>
+            <div ng-show='tutor.statistics.hold_coeff_by_grade[10] > 0'>Коэффициент удержания для 10 класса: @{{ tutor.statistics.hold_coeff_by_grade[10] }}% (@{{ tutor.statistics.coeff_total[10] }}%)</div>
+            <div ng-show='tutor.statistics.hold_coeff_by_grade[11] > 0'>Коэффициент удержания для 11 класса: @{{ tutor.statistics.hold_coeff_by_grade[11] }}% (@{{ tutor.statistics.coeff_total[11] }}%)</div>
             <div ng-show='tutor.statistics.hold_coeff > 0'>Общий коэффициент удержания: @{{ tutor.statistics.hold_coeff }}%</div>
         </div>
         <div ng-if="tutor.id">
