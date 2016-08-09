@@ -85,8 +85,10 @@ class Request extends Model
             }
         });
         // нужно удалить после решения @todo выше
-        static::created(function ($model) {
-            event(new IncomingRequest($model));
+        static::created(function($model) {
+            if ($model->state == 'new') {
+                event(new IncomingRequest($model));
+            }
         });
     }
 

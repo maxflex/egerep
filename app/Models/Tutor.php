@@ -167,7 +167,22 @@ class Tutor extends Model
 //        $stats->er_review_count = Attachment::where('tutor_id', $this->id)->has('review')->count();
         $stats->er_review_count = DB::table('reviews')->join('attachments', 'attachments.id', '=', 'attachment_id')->where('tutor_id', $this->id)->where('score', '<', 11)->count();
         $review_score_sum = DB::table('reviews')->join('attachments', 'attachments.id', '=', 'attachment_id')->where('tutor_id', $this->id)->where('score', '<', 11)->select('reviews.score')->sum('reviews.score');
-        $stats->er_review_avg = (4*($this->lk + $this->tb + ($this->js < 8 ?$this->js : 8 - $this->js % 8)) + $review_score_sum)/(4 + $stats->er_review_count);
+
+        switch($this->js) {
+            case 10: {
+                $js = 8;
+                break;
+            }
+            case 8: {
+                $js = 10;
+                break;
+            }
+            default: {
+                $js = $this->js;
+            }
+        }
+
+        $stats->er_review_avg = (4*($this->lk + $this->tb + $js) + $review_score_sum)/(4 + $stats->er_review_count);
         return $stats;
     }
 
