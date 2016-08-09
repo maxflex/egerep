@@ -87,7 +87,7 @@
     </div>
 </div>
 
-<table class="table attachment-table" style="font-size: 0.8em;">
+<table class="table" style="font-size: 0.8em;">
     <thead class="bold">
         <tr>
             <td></td>
@@ -108,6 +108,7 @@
             </td>
             <td>Статус</td>
             <td>Реквизиты</td>
+            <td>Ошибки</td>
         </tr>
     </thead>
     <tbody>
