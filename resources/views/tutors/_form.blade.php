@@ -318,7 +318,7 @@
                 'one': 'оценки',
                 'few': 'оценок',
                 'many': 'оценок'
-            }"></ng-pluralize> от учеников и нашей оценки)</div>
+            }"></ng-pluralize>)</div>
         </div>
         <div ng-if="tutor.id">
             <h4>КОММЕНТАРИИ</h4>
