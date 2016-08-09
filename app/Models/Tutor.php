@@ -182,7 +182,7 @@ class Tutor extends Model
             }
         }
 
-        $stats->er_review_avg = (4*($this->lk + $this->tb + $js) + $review_score_sum)/(4 + $stats->er_review_count);
+        $stats->er_review_avg = (4* (($this->lk + $this->tb + $js) / 3) + $review_score_sum)/(4 + $stats->er_review_count);
         return $stats;
     }
 
