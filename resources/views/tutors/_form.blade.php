@@ -319,6 +319,7 @@
                 'few': 'оценок',
                 'many': 'оценок'
             }"></ng-pluralize>)</div>
+            <div>Коэффициент удержания: @{{ tutor.statistics.hold_coeff }}</div>
         </div>
         <div ng-if="tutor.id">
             <h4>КОММЕНТАРИИ</h4>
