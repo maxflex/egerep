@@ -60,14 +60,12 @@ class RequestList extends Model
             'photo_extension',
             'margin',
         ])->append(['clients_count', 'meeting_count', 'active_clients_count', 'last_account_info']);
-
         $client_marker_id = DB::table('request_lists')
-                                ->join('requests', 'request_lists.request_id', '=', 'requests.id')
-                                ->join('markers', function($join) {
-                                    $join->on('markers.markerable_id', '=', 'requests.client_id')
-                                            ->where('markers.markerable_type', '=', 'App\Models\Client');
-                                })->where('request_lists.id', $this->id)->select('markers.*')->value('id');
-
+            ->join('requests', 'request_lists.request_id', '=', 'requests.id')
+            ->join('markers', function($join) {
+                $join->on('markers.markerable_id', '=', 'requests.client_id')
+                    ->where('markers.markerable_type', '=', 'App\Models\Client');
+            })->where('request_lists.id', $this->id)->select('markers.id')->value('id');
         if ($client_marker_id) {
             $client_marker = Marker::find($client_marker_id);
             foreach ($tutors as &$tutor) {
@@ -75,7 +73,6 @@ class RequestList extends Model
                 $tutor->minutes = $tutor->getMinutes($client_marker);
             }
         }
-
         return $tutors;
     }
 

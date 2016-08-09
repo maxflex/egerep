@@ -66,7 +66,7 @@ angular
         $scope.save = ->
             filterMarkers()
             $scope.ajaxStart()
-            $scope.Client.save $scope.client, ->
+            $scope.Client.save $scope.client, (response)->
                 window.location = "requests/#{response.id}/edit"
 
         bindDroppable = ->

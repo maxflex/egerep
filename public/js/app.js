@@ -910,7 +910,7 @@
     $scope.save = function() {
       filterMarkers();
       $scope.ajaxStart();
-      return $scope.Client.save($scope.client, function() {
+      return $scope.Client.save($scope.client, function(response) {
         return window.location = "requests/" + response.id + "/edit";
       });
     };
