@@ -320,7 +320,7 @@
                 'many': 'оценок'
             }"></ng-pluralize> от учеников и нашей оценки)</div>
         </div>
-        <div ng-if="tutor.id">
+        <div ng-if="tutor.id"> 
             <h4>КОММЕНТАРИИ</h4>
             <comments entity-type='tutor' entity-id='{{ isset($id) ? $id : 0 }}' user='{{ $user }}'></comments>
         </div>
