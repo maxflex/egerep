@@ -27,7 +27,7 @@
             'btn-danger': added(_tutor.id),
         }"
         ng-click='addOrRemove(_tutor.id)'
-        ng-show='_.isFunction(added)'
+        ng-hide='{{ $hide_add_button or 0 }}'
     >
         @{{ added(_tutor.id) ? 'убрать из списка' : 'добавить в список' }}
     </button>
