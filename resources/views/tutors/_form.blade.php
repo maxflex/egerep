@@ -317,7 +317,7 @@
             <div ng-show="tutor.statistics.ec_review_count">Cредняя оценка в ЕГЭ-Центре: @{{ tutor.statistics.ec_review_avg | number : 1 }} (на основе @{{ tutor.statistics.ec_review_count }} <ng-pluralize count='tutor.statistics.ec_review_count' when="{
                 'one': 'оценки',
                 'few': 'оценок',
-                'many': 'оценок'
+                'many': 'оценок' 
             }"></ng-pluralize> от учеников и нашей оценки)</div>
         </div>
         <div ng-if="tutor.id">
