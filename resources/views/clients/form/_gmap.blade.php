@@ -16,10 +16,12 @@
 
     <div class="map-tutor-list">
         <div ng-repeat='tutor in tutor_list' class='temporary-tutor' ng-mousedown='startDragging(tutor)'>
-            @include('debt.map._tutor', ['tutor' => 'tutor'])
+            @include('tutors.add-to-list._tutor', ['tutor' => 'tutor'])
+            {{--@include('debt.map._tutor', ['tutor' => 'tutor'])--}}
         </div>
         <div ng-if='hovered_tutor'>
-            @include('debt.map._tutor', ['tutor' => 'hovered_tutor'])
+            @include('tutors.add-to-list._tutor', ['tutor' => 'hovered_tutor'])
+            {{--@include('debt.map._tutor', ['tutor' => 'hovered_tutor'])--}}
         </div>
     </div>
 
