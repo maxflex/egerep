@@ -6,7 +6,6 @@ use DB;
 use App\Models\Tutor;
 use App\Models\Marker;
 use Illuminate\Database\Eloquent\Model;
-use DB;
 
 class RequestList extends Model
 {
