@@ -112,31 +112,31 @@
     </thead>
     <tbody>
     <tr ng-repeat="attachment in attachments">
-        <td align="left" width="10%">
+        <td align="left" width="9%">
             <a href="requests/@{{ attachment.request_id }}/edit#@{{ attachment.request_list_id }}#@{{ attachment.id }}">стыковка @{{ attachment.id }}</a>
         </td>
-        <td align="left" width="15%">
+        <td align="left" width="23%">
             <a href="tutors/@{{ attachment.tutor_id }}/edit">@{{ attachment.tutor.full_name}}</a>
         </td>
-        <td width="10%">
+        <td width="7%">
             @{{ attachment.date }}
         </td>
-        <td width="10%">
+        <td width="7%">
             @{{ attachment.lesson_count | hideZero }}<plus previous='attachment.lesson_count' count='attachment.archive.total_lessons_missing'></plus>
         </td>
-        <td width="10%">
+        <td width="7%">
             @{{ attachment.forecast | hideZero | number}}
         </td>
-        <td width='10%'>
+        <td width='7%'>
             @{{ formatDate(attachment.archive.created_at) }}
         </td>
         <td width='10%'>
             @{{ AttachmentService.getStatus(attachment) }}
         </td>
-        <td width='15%'>
+        <td width='20%' style="text-align: left">
             @{{ UserService.getLogin(attachment.user_id) }}: @{{ formatDateTime(attachment.created_at) }}
         </td>
-        <td width='10%'>
+        <td width='10%' style="text-align: left">
             <span ng-repeat='code in attachment.errors' ng-attr-aria-label="@{{ AttachmentErrors[code] }}" class='hint--bottom-left'>@{{ code }}@{{ $last ? '' : ',  ' }}</span>
         </td>
     </tr>
