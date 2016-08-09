@@ -312,13 +312,13 @@
                 'one': 'оценки',
                 'few': 'оценок',
                 'many': 'оценок'
-            }"></ng-pluralize>)</div>
+            }"></ng-pluralize> от учеников и нашей оценки)</div>
             <div ng-show="tutor.in_egecentr">Количество занятий, проведенных в ЕГЭ-Центре: @{{ tutor.statistics.ec_lesson_count }}</div>
             <div ng-show="tutor.in_egecentr">Cредняя оценка в ЕГЭ-Центре: @{{ tutor.statistics.ec_review_avg | number : 1 }} (на основе @{{ tutor.statistics.ec_review_count }} <ng-pluralize count='tutor.statistics.ec_review_count' when="{
                 'one': 'оценки',
                 'few': 'оценок',
                 'many': 'оценок'
-            }"></ng-pluralize>)</div>
+            }"></ng-pluralize> от учеников и нашей оценки)</div>
         </div>
         <div ng-if="tutor.id">
             <h4>КОММЕНТАРИИ</h4>
