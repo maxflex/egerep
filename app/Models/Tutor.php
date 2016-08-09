@@ -165,8 +165,8 @@ class Tutor extends Model
     {
         $stats = Api\Api::exec('teacherStatistics', ['tutor_id' => $this->id]);
 //        $stats->er_review_count = Attachment::where('tutor_id', $this->id)->has('review')->count();
-        $stats->er_review_count = DB::table('reviews')->join('attachments', 'attachments.id', '=', 'attachment_id')->where('tutor_id', $this->id)->where('score', '<', 11)->count();
-        $review_score_sum = DB::table('reviews')->join('attachments', 'attachments.id', '=', 'attachment_id')->where('tutor_id', $this->id)->where('score', '<', 11)->select('reviews.score')->sum('reviews.score');
+        $stats->er_review_count = DB::table('reviews')->join('attachments', 'attachments.id', '=', 'attachment_id')->where('tutor_id', $this->id)->whereBetween('score', [1, 10]);->count();
+        $review_score_sum = DB::table('reviews')->join('attachments', 'attachments.id', '=', 'attachment_id')->where('tutor_id', $this->id)->whereBetween('score', [1, 10])->select('reviews.score')->sum('reviews.score');
 
         switch($this->js) {
             case 10: {
