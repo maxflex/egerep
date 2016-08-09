@@ -134,10 +134,10 @@
         <td width='10%'>
             @{{ AttachmentService.getStatus(attachment) }}
         </td>
-        <td width='20%' style="text-align: left">
+        <td width='20%'>
             @{{ UserService.getLogin(attachment.user_id) }}: @{{ formatDateTime(attachment.created_at) }}
         </td>
-        <td width='10%' style="text-align: left">
+        <td width='10%'>
             <span ng-repeat='code in attachment.errors' ng-attr-aria-label="@{{ AttachmentErrors[code] }}" class='hint--bottom-left'>@{{ code }}@{{ $last ? '' : ',  ' }}</span>
         </td>
     </tr>

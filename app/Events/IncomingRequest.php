@@ -12,15 +12,17 @@ class IncomingRequest extends Event implements ShouldBroadcast
     use SerializesModels;
 
     public $request;
+    public $delete; // заявка удаляется? по умолчанию добавляется
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(Request $request)
+    public function __construct(Request $request, $delete = false)
     {
         $this->request = $request;
+        $this->delete  = $delete;
     }
 
     /**
@@ -35,6 +37,9 @@ class IncomingRequest extends Event implements ShouldBroadcast
 
     public function broadcastWith()
     {
-        return ['request' => $this->request];
+        return [
+            'request'   => $this->request,
+            'delete'    => $this->delete,
+        ];
     }
 }

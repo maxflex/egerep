@@ -12,6 +12,7 @@
     @yield('scripts')
     <script src="{{ asset('/js/vendor.js', isProduction()) }}"></script>
     <script src="{{ asset('/js/app.js', isProduction()) }}"></script>
+    <script src="//cdn.jsdelivr.net/jquery.color-animation/1/mainfile"></script>
     @foreach($js as $script_name)
         <script src="{{ asset('/js/' . $script_name . '.js', isProduction()) }}"></script>
     @endforeach

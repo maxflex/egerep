@@ -25,8 +25,27 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
     .filter 'hideZero', ->
         (item) ->
             if item > 0 then item else null
-    .run ($rootScope, $q) ->
+    .run ($rootScope, $q, PusherService) ->
         $rootScope.laroute = laroute
+
+        PusherService.init 'IncomingRequest', (data) ->
+            console.log 'INCOMING REQUEST', data
+            request_count = $('#request-count')
+            request_counter = $('#request-counter')
+            animate_speed = 1500
+            request_counter.removeClass('text-success').removeClass('text-danger').css('opacity', 1)
+            if data.delete
+                request_count.text(parseInt(request_count.text()) - 1)
+                request_count.animate({'background-color': '#A94442'}, animate_speed / 2).animate({'background-color': '#777'}, animate_speed / 2)
+                request_counter.text('-1').addClass('text-danger').animate({opacity: 0}, animate_speed)
+            else
+                request_count.text(parseInt(request_count.text()) + 1)
+                request_count.animate({'background-color': '#158E51'}, animate_speed / 2).animate({'background-color': '#777'}, animate_speed / 2)
+                request_counter.text('+1').addClass('text-success').animate({opacity: 0}, animate_speed)
+            # new_request = data.request
+            # $scope.request_state_counts[new_request.state]++
+            # $scope.requests.unshift(new_request) if $scope.chosen_state_id is new_request.state
+            # $scope.$apply()
 
         # отвечает за загрузку данных
         $rootScope.dataLoaded = $q.defer()
