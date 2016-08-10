@@ -73,21 +73,19 @@ class Request extends Model
         static::saving(function ($model) {
             if (! $model->exists) {
                 $model->user_id_created = userIdOrSystem();
-            }
-            // модель создается всегда со state='new' из за $attributes
-            // @todo: нельзя сюда подставить $model->exists: NotFoundHttpException in Handler.php line 102:
-            //                                               No query results for model [App\Models\Request].
-            if ($model->changed('state') && $model->state == 'new') {
-                event(new IncomingRequest($model));
-            }
-            if ($model->getOriginal('state') == 'new' && $model->state != 'new') {
-                event(new IncomingRequest($model, true));
+            } else {
+                if ($model->changed('state') && $model->state == 'new') {
+                    event(new IncomingRequest($model->id));
+                }
+                if ($model->getOriginal('state') == 'new' && $model->state != 'new') {
+                    event(new IncomingRequest($model->id, true));
+                }
             }
         });
         // нужно удалить после решения @todo выше
         static::created(function($model) {
             if ($model->state == 'new') {
-                event(new IncomingRequest($model));
+                event(new IncomingRequest($model->id));
             }
         });
     }
