@@ -12,13 +12,7 @@ angular.module('Egerep')
         $resource apiPath('archives'), {id: '@id'}, updateMethod()
 
     .factory 'Attachment', ($resource) ->
-        $resource apiPath('attachments'), {id: '@id'},
-            update:
-                method: 'PUT'
-            validate:
-                method: 'POST'
-                isArray: true
-                url: apiPath 'attachments', 'errors'
+        $resource apiPath('attachments'), {id: '@id'}, updateMethod()
 
     .factory 'RequestList', ($resource) ->
         $resource apiPath('lists'), {id: '@id'}, updateMethod()

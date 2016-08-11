@@ -60,7 +60,6 @@ angular
             $scope.client.$update()
                 .then ->
                     $scope.ajaxEnd()
-                    $scope.Attachment.validate $scope.selected_attachment
 
         # Save everything
         $scope.save = ->
