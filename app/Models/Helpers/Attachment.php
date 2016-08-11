@@ -10,8 +10,9 @@ class Attachment
     public static function errors($attachment)
     {
         $attachment_date = new \DateTime($attachment->getClean('date'));
-        $archive = $attachment->archive;
-        $review = $attachment->review;
+        // очень важно получать архив именно так, иначе будет рассинхрон при сохранении/обновлении ошибок
+        // "При первом сохранении изменений ошибка не пропадает. При повторном сохранении ошибка пропадает"
+        $archive = \App\Models\Archive::where('attachment_id', $attachment->id)->first();
 
         $errors = [];
 
