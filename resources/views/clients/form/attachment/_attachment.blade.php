@@ -48,7 +48,7 @@
         </div>
         <div class="mbs">
             <b>Прозвонен через 2 дня:</b>
-            <span ng-click="deny(selected_attachment, 'called')">@{{ YesNo[selected_attachment.called] }}</span>
+            <span class='link-like' ng-click="deny(selected_attachment, 'called')">@{{ YesNo[selected_attachment.called] }}</span>
         </div>
         <div class='mbs'>
             <b>Проведено занятий:</b> @{{ selected_attachment.account_data_count }}
