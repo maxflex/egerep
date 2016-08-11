@@ -7,7 +7,7 @@
     {{-- {{ link_to_route('tutors.create', 'добавить преподавателя') }} --}}
     <a href="tutors/create">добавить преподавателя</a>
 
-    обновлено @{{ formatDateTime(tutor_errors_updated) }}
+    ошибки обновлены @{{ formatDateTime(tutor_errors_updated) }}
     <span class="glyphicon glyphicon-refresh opacity-pointer" ng-click='recalcTutorErrors()' ng-class="{
         'spinning': tutor_errors_updating == 1
     }"></span>

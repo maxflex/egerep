@@ -1,7 +1,7 @@
 @extends('app')
 @section('title', 'Отзывы')
 @section('title-right')
-    обновлено @{{ formatDateTime(review_errors_updated) }}
+    ошибки обновлены @{{ formatDateTime(review_errors_updated) }}
     <span class="glyphicon glyphicon-refresh opacity-pointer" ng-click='recalcReviewErrors()' ng-class="{
         'spinning': review_errors_updating == 1
     }"></span>
