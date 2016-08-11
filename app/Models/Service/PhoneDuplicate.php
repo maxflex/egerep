@@ -1,46 +1,61 @@
 <?php
 
-namespace App\Models\Service;
+namespace App\Events;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Events\Event;
+use App\Models\Tutor;
+use App\Models\Client;
+use App\Models\Service\PhoneDuplicate;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class PhoneDuplicate extends Model
+class PhoneChanged extends Event
 {
-    protected $fillable = ['phone', 'entity_type'];
-    public $timestamps = false;
-    public $loggable = false;
+    use SerializesModels;
 
-    public static function exists($phone, $entity_type)
+    /**
+     * Create a new event instance.
+     *
+     * @return void
+     */
+    public function __construct($old_phone, $new_phone = null, $entity_type = 'client')
     {
-        return static::duplicates($phone, $entity_type)->exists();
+        $this->_updateDuplicatesTable($old_phone, $new_phone, $entity_type);
     }
 
-    public static function remove($phone, $entity_type)
+    private function _updateDuplicatesTable($old_phone, $new_phone, $entity_type)
     {
-        static::duplicates($phone, $entity_type)->delete();
-    }
+        // условие удаления из таблицы дублей:
+        // таких номеров <= 2 И номер находится в таблице дублей
+        // ВАЖНО: цифра 2 превратится в цифру 1 после сохранения
+        if (! empty($old_phone) && PhoneDuplicate::countByPhone(static::_getQuery($entity_type), $old_phone) <= 2 && PhoneDuplicate::exists($old_phone, $entity_type)) {
+            PhoneDuplicate::remove($old_phone, $entity_type);
+        }
 
-    public static function add($phone, $entity_type)
-    {
-        if (! static::exists($phone, $entity_type)) {
-            static::create(compact('phone', 'entity_type'));
+        if (! $new_phone) {
+            return;
+        }
+
+        // условие добавления в таблицу дублей:
+        // номера $new_phone есть в таблице дублей (т.к. запуск идет в static::saving,
+        // то нового номера еще нет в базе, поэтому если есть хотя бы один, то дубль)
+        if (PhoneDuplicate::countByPhone(static::_getQuery($entity_type), $new_phone)) {
+            PhoneDuplicate::add($new_phone, $entity_type);
         }
     }
 
-    public function scopeDuplicates($query, $phone, $entity_type)
+    private static function _getQuery($entity_type)
     {
-        return $query->where('phone', $phone)->where('entity_type', $entity_type);
+	    return $entity_type == 'client' ? Client::query() : Tutor::query();
     }
 
     /**
-     * Кол-во номеров телефона в БД
+     * Get the channels the event should be broadcast on.
+     *
+     * @return array
      */
-    public static function countByPhone($query, $phone)
+    public function broadcastOn()
     {
-        $count = 0;
-        foreach(\App\Traits\Person::$phone_fields as $phone_field) {
-            $count += $query->where($phone_field, $phone)->count();
-        }
-        return $count;
+        return [];
     }
 }
