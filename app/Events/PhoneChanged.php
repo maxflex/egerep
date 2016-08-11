@@ -25,12 +25,10 @@ class PhoneChanged extends Event
 
     private function _updateDuplicatesTable($old_phone, $new_phone, $entity_type)
     {
-        $query = $entity_type == 'client' ? Client::query() : Tutor::query();
-
         // условие удаления из таблицы дублей:
         // таких номеров <= 2 И номер находится в таблице дублей
         // ВАЖНО: цифра 2 превратится в цифру 1 после сохранения
-        if (! empty($old_phone) && PhoneDuplicate::countByPhone($query, $old_phone) <= 2 && PhoneDuplicate::exists($old_phone, $entity_type)) {
+        if (! empty($old_phone) && PhoneDuplicate::countByPhone(static::_getQuery($entity_type), $old_phone) <= 2 && PhoneDuplicate::exists($old_phone, $entity_type)) {
             PhoneDuplicate::remove($old_phone, $entity_type);
         }
 
@@ -41,9 +39,14 @@ class PhoneChanged extends Event
         // условие добавления в таблицу дублей:
         // номера $new_phone есть в таблице дублей (т.к. запуск идет в static::saving,
         // то нового номера еще нет в базе, поэтому если есть хотя бы один, то дубль)
-        if (PhoneDuplicate::countByPhone($query, $new_phone)) {
+        if (PhoneDuplicate::countByPhone(static::_getQuery($entity_type), $new_phone)) {
             PhoneDuplicate::add($new_phone, $entity_type);
         }
+    }
+
+    private static function _getQuery($entity_type)
+    {
+	    return $entity_type == 'client' ? Client::query() : Tutor::query();
     }
 
     /**
