@@ -45,7 +45,9 @@ class Archive extends Model
                 $model->user_id = User::fromSession()->id;
             }
         });
-
+        static::saved(function($model) {
+            DB::table('attachments')->where('id', $model->attachment_id)->update(['errors' => \App\Models\Helpers\Attachment::errors($model->attachment)]);
+        });
         static::created(function ($model) {
             event(new DebtRecalc($model->attachment->tutor_id));
         });

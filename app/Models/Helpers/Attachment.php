@@ -27,8 +27,11 @@ class Attachment
             $errors[] = 3;
         }
 
-        if ($attachment->hide && $attachment->total_lessons_missing) {
+        if ($attachment->forecast < 90) {
             $errors[] = 16;
+        } else
+        if ($attachment->forecast > 3000) {
+            $errors[] = 17;
         }
 
         if ($archive) {

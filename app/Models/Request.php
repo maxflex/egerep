@@ -82,11 +82,13 @@ class Request extends Model
                 }
             }
         });
-        // нужно удалить после решения @todo выше
         static::created(function($model) {
             if ($model->state == 'new') {
                 event(new IncomingRequest($model->id));
             }
+        });
+        static::deleted(function($model) {
+            event(new IncomingRequest($model->id, true));
         });
     }
 
