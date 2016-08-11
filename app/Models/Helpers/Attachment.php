@@ -28,7 +28,7 @@ class Attachment
             $errors[] = 3;
         }
 
-        if ($attachment->forecast < 90) {
+        if ($attachment->forecast && $attachment->forecast < 90) {
             $errors[] = 16;
         } else
         if ($attachment->forecast > 3000) {
