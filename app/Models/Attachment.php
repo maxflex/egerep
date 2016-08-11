@@ -24,6 +24,7 @@ class Attachment extends Model
         'comment',
         'forecast',
         'hide',
+        'called',
     ];
     protected $casts = [
         'grade' => 'int',
