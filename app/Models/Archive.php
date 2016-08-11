@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Events\DebtRecalc;
+use DB;
 
 class Archive extends Model
 {
