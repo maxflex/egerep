@@ -32,7 +32,7 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
             console.log 'INCOMING REQUEST', data
             request_count = $('#request-count')
             request_counter = $('#request-counter')
-            animate_speed = 1500
+            animate_speed = 5000
             request_counter.removeClass('text-success').removeClass('text-danger').css('opacity', 1)
             if data.delete
                 request_count.text(parseInt(request_count.text()) - 1)
