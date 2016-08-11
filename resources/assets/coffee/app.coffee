@@ -29,19 +29,18 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
         $rootScope.laroute = laroute
 
         PusherService.init 'IncomingRequest', (data) ->
-            console.log 'INCOMING REQUEST', data
             request_count = $('#request-count')
             request_counter = $('#request-counter')
-            animate_speed = 5000
+            animate_speed = 7000
             request_counter.removeClass('text-success').removeClass('text-danger').css('opacity', 1)
             if data.delete
                 request_count.text(parseInt(request_count.text()) - 1)
-                request_count.animate({'background-color': '#A94442'}, animate_speed / 2).animate({'background-color': '#777'}, animate_speed / 2)
-                request_counter.text('-1').addClass('text-danger').animate({opacity: 0}, animate_speed)
+                request_count.animate({'background-color': '#158E51'}, animate_speed / 2).animate({'background-color': '#777'}, animate_speed / 2)
+                request_counter.text('-1').addClass('text-success').animate({opacity: 0}, animate_speed)
             else
                 request_count.text(parseInt(request_count.text()) + 1)
-                request_count.animate({'background-color': '#158E51'}, animate_speed / 2).animate({'background-color': '#777'}, animate_speed / 2)
-                request_counter.text('+1').addClass('text-success').animate({opacity: 0}, animate_speed)
+                request_count.animate({'background-color': '#A94442'}, animate_speed / 2).animate({'background-color': '#777'}, animate_speed / 2)
+                request_counter.text('+1').addClass('text-danger').animate({opacity: 0}, animate_speed)
             # new_request = data.request
             # $scope.request_state_counts[new_request.state]++
             # $scope.requests.unshift(new_request) if $scope.chosen_state_id is new_request.state
