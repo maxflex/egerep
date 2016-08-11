@@ -374,6 +374,10 @@ class Attachment extends Model
             $query->whereRaw("FIND_IN_SET({$search->error}, attachments.errors)");
         }
 
+        if (isset($search->called)) {
+            $query->where('called', $search->called);
+        }
+
         return $query->orderBy('attachments.created_at', 'desc');
     }
 
