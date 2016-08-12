@@ -13,7 +13,7 @@
 @if (\App\Models\User::fromSession()->show_debt)
     <a href="debt/map" class="list-group-item">Дебет</a>
 @endif
-<a class="list-group-item active">Финансы</a>
+<a class="list-group-item active">Административное</a>
 <a href="summary" class="list-group-item">Итоги</a>
 <a href="logs" class="list-group-item">Логи</a>
 <a href="logout" class="list-group-item">Выход</a>
