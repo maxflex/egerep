@@ -84,7 +84,7 @@ class Attachment
                     $errors[] = 12;
                 }
 
-                if ($last_meeting_date && $archive->getClean('date') > $last_meeting_date) {
+                if ($last_meeting_date && $archive->getClean('date') > $last_meeting_date && ($x || $attachment->forecast)) {
                     $errors[] = 15;
                 }
             }
