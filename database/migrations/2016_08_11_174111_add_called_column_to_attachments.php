@@ -13,7 +13,7 @@ class AddCalledColumnToAttachments extends Migration
     public function up()
     {
         Schema::table('attachments', function (Blueprint $table) {
-            $table->boolean('called')->default(0);
+            $table->boolean('called')->default(false);
         });
     }
 
