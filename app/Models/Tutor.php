@@ -477,7 +477,7 @@ class Tutor extends Model
 
     private static function addErrorsCondition($query, $errors_state)
     {
-        if ($errors_state !== '' && $errors_state !== null && in_array($errors_state, range(1,2))) {
+        if ($errors_state !== '' && $errors_state !== null && in_array($errors_state, range(1, 3))) {
             $query->whereRaw("find_in_set({$errors_state}, errors)");
         }
         return $query;
@@ -553,7 +553,7 @@ class Tutor extends Model
     public static function errorsCounts($state, $user_id, $published_state)
     {
         $return = [];
-        foreach (range(1,2) as $error_code) {
+        foreach (range(1, 3) as $error_code) {
             $query = self::addErrorsCondition(self::query(), $error_code);
 
             self::addPublishedCondition($query, $published_state);

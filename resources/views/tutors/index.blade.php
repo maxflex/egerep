@@ -72,7 +72,7 @@
 <table id="tutorList" class="table table-divlike" style="position: relative">
 	<tr ng-repeat="tutor in tutors"
 		data-id="@{{tutor.id}}">
-		<td width='20'><span ng-show="tutor.has_photo_cropped" class="glyphicon glyphicon-camera"></span></td>
+		<td width='20'><span ng-show="tutor.has_photo_original" class="glyphicon glyphicon-camera" ng-class="{'half-opacity': ! tutor.has_photo_cropped}"></span></td>
 		<td style="width:300px"><a href='tutors/@{{ tutor.id }}/edit'>@{{ tutor.full_name }}</a></td>
 		<td style="width:100px">
             <span class="label tutor-state-@{{ tutor.state }}">@{{ TutorStates[tutor.state] }}</span>
