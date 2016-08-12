@@ -30865,4 +30865,8 @@ table.summary-table.left-align tr td {
   vertical-align: middle;
   float: none; }
 
+.bootstrap-select.btn-group .btn .filter-option {
+  white-space: initial;
+  height: 20px; }
+
 /*# sourceMappingURL=app.css.map */
