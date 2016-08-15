@@ -69,6 +69,13 @@ angular
             .then (response) ->
                 $scope.data = response.data
                 $scope.requests = $scope.data.data
+
+                # сортировка станций маркеров по близоcти
+                $scope.requests.forEach (request) ->
+                    request.client.markers.forEach (marker) ->
+                        marker.metros = _.sortBy marker.metros, (s) ->
+                            s.minutes
+
                 $rootScope.frontend_loading = false if not $scope.requests.length
 
             $http.post "api/requests/counts",

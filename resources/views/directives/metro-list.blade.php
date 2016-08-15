@@ -1,6 +1,6 @@
 <span ng-init='transport_distance = {{ App\Models\Metro::TRANSPORT_DISTANCE }}'></span>
-<div ng-repeat='marker in markers' style="display: @{{ inline ? 'inline-block' : 'block' }}">
-    <span ng-repeat='metro in marker.metros'>
+<div ng-repeat='marker in markers' style="display: @{{ inline ? 'inline-block' : 'block' }}" ng-init="stations = one_station ? [marker.metros[0]] : marker.metros">
+    <span ng-repeat='metro in stations'>
         <span class="label label-metro-short"
             style="background: @{{ metro.station.color }}; margin-right: 3px">
             @{{ short(metro.station.title) }}
