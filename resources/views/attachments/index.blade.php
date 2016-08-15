@@ -10,7 +10,7 @@
 
 @section('content')
 
-<div class="row flex-list">
+<div class="row flex-list attachment-filters">
     <div>
         <select class="form-control selectpicker" ng-model='search.user_id' ng-change="filter()" id='change-user'>
             <option value="" data-subtext="@{{ counts.user[''] || '' }}">пользователь</option>
