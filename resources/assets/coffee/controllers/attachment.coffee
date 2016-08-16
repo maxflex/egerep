@@ -20,7 +20,7 @@ angular
                 $('.selectpicker').selectpicker 'refresh'
 
                 $('.attachment-filters button').css 'background', 'none'
-                $('.attachment-filters select > option[value!=""]:selected').parent('select').siblings('button').css('background', '#eee')
+                $('.attachment-filters select > option[value!=""]:selected').parent('select').siblings('button').css('background', '#dceee5')
             , 100
 
         $scope.filter = ->
