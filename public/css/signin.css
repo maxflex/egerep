@@ -14,6 +14,7 @@ body {
     margin: 0 auto;
     /*background-color: rgba(226, 226, 226, 0.75);*/
     /*background-color: #E3ECF1;*/
+    background-size: 250px 250px;
     background-color: #fafafa;
     border-radius: 10px;
     margin-top: 140px;
