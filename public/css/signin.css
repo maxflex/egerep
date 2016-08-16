@@ -4,7 +4,8 @@ body {
   background-color: #eee;
   margin-top: 0 !important;
   /*background-image: url('http://www.a-perspektiva.ru/images/bg3.gif');*/
-  background-image: url("../img/background/geometry.png");
+  background-image: url("../img/background/geometry-75.png");
+  background-size: 250px 250px;
   background-repeat: repeat;
 }
 
@@ -14,7 +15,6 @@ body {
     margin: 0 auto;
     /*background-color: rgba(226, 226, 226, 0.75);*/
     /*background-color: #E3ECF1;*/
-    background-size: 250px 250px;
     background-color: #fafafa;
     border-radius: 10px;
     margin-top: 140px;
