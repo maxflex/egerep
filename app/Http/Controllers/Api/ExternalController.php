@@ -53,7 +53,8 @@ class ExternalController extends Controller
 
 		// находим клиента, если клиент уже существует, прикрепляем его к заявке
 		try {
-			$client = Client::findByPhone($phone)->firstOrFail();
+			// orderBy('id', 'desc') – обязательно (обдумано)
+			$client = Client::findByPhone($phone)->orderBy('id', 'desc')->firstOrFail();
 			// Если в заявке номер телефона совпадает с номером телефона,
 			// указанным в другой невыполненной заявке, то такие заявки нужно сливать
 			$new_request = $client->requests()->where('state', 'new')->orderBy('created_at', 'desc')->firstOrFail();
