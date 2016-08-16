@@ -28786,7 +28786,8 @@ body {
   padding-top: 20px !important;
   overflow-x: hidden;
   background-image: url("../img/background/geometry.png");
-  background-repeat: repeat; }
+  background-repeat: repeat;
+  height: auto !important; }
 
 .badge-danger {
   background-color: #A94442; }
