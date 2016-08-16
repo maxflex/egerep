@@ -28784,7 +28784,9 @@ md-input-container label {
 
 body {
   padding-top: 20px !important;
-  overflow-x: hidden; }
+  overflow-x: hidden;
+  background-image: url("../img/background/geometry.png");
+  background-repeat: repeat; }
 
 .badge-danger {
   background-color: #A94442; }

@@ -3,7 +3,8 @@ body {
   padding-bottom: 40px;
   background-color: #eee;
   margin-top: 0 !important;
-  background-image: url('http://www.a-perspektiva.ru/images/bg3.gif');
+  /*background-image: url('http://www.a-perspektiva.ru/images/bg3.gif');*/
+  background-image: url("../img/background/geometry.png");
   background-repeat: repeat;
 }
 
