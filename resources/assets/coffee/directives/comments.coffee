@@ -7,7 +7,19 @@ angular.module('Egerep').directive 'comments', ->
         trackLoading: '='
         entityType: '@'
     controller: ($rootScope, $scope, $timeout, Comment) ->
-        
+        $scope.show_max = 4                 # сколько комментов показывать в свернутом режиме
+        $scope.show_all_comments = false    # показать все комментарии?
+
+        $timeout ->
+            $scope.comments.forEach (comment) ->
+                $("#comment-#{comment.id}").draggable
+                    # containment: 'window'
+                    revert: 'invalid'
+        , 1000
+
+        $scope.getComments = ->
+            if $scope.show_all_comments then $scope.comments else _.last($scope.comments, $scope.show_max)
+
         # перезагружаем комменты, если меняется entity_id
         $scope.$watch 'entityId', (newVal, oldVal) ->
             $scope.comments = Comment.query

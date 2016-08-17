@@ -30873,4 +30873,8 @@ table.summary-table.left-align tr td {
   white-space: initial;
   height: 20px; }
 
+.comment-time {
+  color: #999999;
+  margin-left: 5px; }
+
 /*# sourceMappingURL=app.css.map */

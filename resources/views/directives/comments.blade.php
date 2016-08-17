@@ -1,10 +1,12 @@
 <div class="comment-block">
+    <div ng-show='comments.length > show_max && !show_all_comments'>
+        <span class='comment-add pointer' ng-click='show_all_comments = true'>все комментарии (@{{ comments.length }})</span>
+    </div>
     <div>
-		<div ng-repeat="comment in comments | orderBy:'created_at'">
+		<div ng-repeat="comment in getComments() | orderBy:'created_at'" id='comment-@{{ comment.id }}'>
 			<div class='comment-div'>
-				<span style="color: @{{comment.user.color}}" class="comment-login">@{{comment.user.login}}: </span>
+				<span style="color: @{{comment.user.color}}" class="comment-login">@{{comment.user.login}} <span class='comment-time'>@{{ formatDateTime(comment.created_at) }}:</span></span>
 				<div class='comment-line' ng-click="edit(comment, $event)">@{{comment.comment}}</div>
-				<span class="save-coordinates">@{{ formatDateTime(comment.created_at) }}</span>
 				<span class="glyphicon opacity-pointer text-danger glyphicon-remove glyphicon-2px" ng-click="remove(comment)"></span>
 			</div>
 		</div>
