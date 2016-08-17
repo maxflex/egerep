@@ -28703,7 +28703,7 @@ md-input-container label {
   text-align: center; }
 
 .comment-login {
-  opacity: .6; }
+  opacity: 1; }
 
 [ng-app="Promo"] {
   color: #3A6487; }
