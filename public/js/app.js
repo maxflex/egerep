@@ -2924,7 +2924,9 @@
               new_comment.user = $scope.user;
               new_comment.id = response.id;
               $scope.comments.push(new_comment);
-              return bindDraggable(new_comment.id);
+              return $timeout(function() {
+                return bindDraggable(new_comment.id);
+              });
             });
             $scope.endCommenting();
           }

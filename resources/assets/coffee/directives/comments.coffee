@@ -95,7 +95,8 @@ angular.module('Egerep').directive 'comments', ->
                         new_comment.user = $scope.user
                         new_comment.id = response.id
                         $scope.comments.push new_comment
-                        bindDraggable(new_comment.id)
+                        $timeout ->
+                            bindDraggable(new_comment.id)
                 $scope.endCommenting()
 
             if event.keyCode is 27
