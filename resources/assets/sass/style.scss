@@ -3738,3 +3738,14 @@ table.summary-table.left-align tr td {
 	color: $placeholder_gray;
 	margin-left: 5px;
 }
+.drop-delete-pad {
+	padding: 0px 4px;
+	border-radius: 5px;
+	background: transparent;
+	color: #A94442;
+	display: inline-block;
+	&.hovered {
+		background: #A94442;
+		color: white;
+	}
+}

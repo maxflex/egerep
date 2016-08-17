@@ -9,12 +9,27 @@ angular.module('Egerep').directive 'comments', ->
     controller: ($rootScope, $scope, $timeout, Comment) ->
         $scope.show_max = 4                 # сколько комментов показывать в свернутом режиме
         $scope.show_all_comments = false    # показать все комментарии?
+        $scope.is_dragging = false          # комментарий перетаскивается
+
+        bindDraggable = (comment_id) ->
+            $("#comment-#{comment_id}").draggable
+                revert: 'invalid'
+                activeClass: 'drag-active'
+                start: (e, ui) ->
+                    $scope.is_dragging = true
+                    $scope.$apply()
+                stop: (e, ui) ->
+                    $scope.is_dragging = false
+                    $scope.$apply()
 
         $timeout ->
             $scope.comments.forEach (comment) ->
-                $("#comment-#{comment.id}").draggable
-                    # containment: 'window'
-                    revert: 'invalid'
+                bindDraggable(comment.id)
+            $("#comment-delete-#{$scope.entityType}-#{$scope.entityId}").droppable
+                tolerance: 'pointer'
+                hoverClass: 'hovered'
+                drop: (e, ui) ->
+                    $scope.remove($(ui.draggable).data('comment-id'))
         , 1000
 
         $scope.getComments = ->
@@ -40,9 +55,9 @@ angular.module('Egerep').directive 'comments', ->
             $scope.comment = ''
             $scope.start_commenting = false
 
-        $scope.remove = (comment) ->
-            $scope.comments = _.without($scope.comments, _.findWhere($scope.comments, {id: comment.id}))
-            comment.$remove()
+        $scope.remove = (comment_id) ->
+            _.find($scope.comments, {id: comment_id}).$remove()
+            $scope.comments = _.without($scope.comments, _.findWhere($scope.comments, {id: comment_id}))
 
         $scope.edit = (comment, event) ->
             old_text    = comment.comment
@@ -80,6 +95,7 @@ angular.module('Egerep').directive 'comments', ->
                         new_comment.user = $scope.user
                         new_comment.id = response.id
                         $scope.comments.push new_comment
+                        bindDraggable(new_comment.id)
                 $scope.endCommenting()
 
             if event.keyCode is 27

@@ -3145,13 +3145,34 @@
         entityType: '@'
       },
       controller: function($rootScope, $scope, $timeout, Comment) {
+        var bindDraggable;
         $scope.show_max = 4;
         $scope.show_all_comments = false;
+        $scope.is_dragging = false;
+        bindDraggable = function(comment_id) {
+          return $("#comment-" + comment_id).draggable({
+            revert: 'invalid',
+            activeClass: 'drag-active',
+            start: function(e, ui) {
+              $scope.is_dragging = true;
+              return $scope.$apply();
+            },
+            stop: function(e, ui) {
+              $scope.is_dragging = false;
+              return $scope.$apply();
+            }
+          });
+        };
         $timeout(function() {
-          return $scope.comments.forEach(function(comment) {
-            return $("#comment-" + comment.id).draggable({
-              revert: 'invalid'
-            });
+          $scope.comments.forEach(function(comment) {
+            return bindDraggable(comment.id);
+          });
+          return $("#comment-delete-" + $scope.entityType + "-" + $scope.entityId).droppable({
+            tolerance: 'pointer',
+            hoverClass: 'hovered',
+            drop: function(e, ui) {
+              return $scope.remove($(ui.draggable).data('comment-id'));
+            }
           });
         }, 1000);
         $scope.getComments = function() {
@@ -3184,11 +3205,13 @@
           $scope.comment = '';
           return $scope.start_commenting = false;
         };
-        $scope.remove = function(comment) {
-          $scope.comments = _.without($scope.comments, _.findWhere($scope.comments, {
-            id: comment.id
+        $scope.remove = function(comment_id) {
+          _.find($scope.comments, {
+            id: comment_id
+          }).$remove();
+          return $scope.comments = _.without($scope.comments, _.findWhere($scope.comments, {
+            id: comment_id
           }));
-          return comment.$remove();
         };
         $scope.edit = function(comment, event) {
           var element, old_text;
@@ -3225,7 +3248,8 @@
               console.log(response);
               new_comment.user = $scope.user;
               new_comment.id = response.id;
-              return $scope.comments.push(new_comment);
+              $scope.comments.push(new_comment);
+              return bindDraggable(new_comment.id);
             });
             $scope.endCommenting();
           }
