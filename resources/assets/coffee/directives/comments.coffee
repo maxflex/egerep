@@ -30,7 +30,7 @@ angular.module('Egerep').directive 'comments', ->
                 hoverClass: 'hovered'
                 drop: (e, ui) ->
                     $scope.remove($(ui.draggable).data('comment-id'))
-        , 1000
+        , 2000
 
         $scope.getComments = ->
             if $scope.show_all_comments then $scope.comments else _.last($scope.comments, $scope.show_max)
