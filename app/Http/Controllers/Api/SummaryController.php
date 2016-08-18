@@ -211,8 +211,8 @@ class SummaryController extends Controller
                         ->count();
 
         $archives = DB::table('archives')
-                        ->whereRaw("date >= '{$start}'")
-                        ->whereRaw("date <= '{$end}'")
+                        ->whereRaw("DATE(created_at) >= '{$start}'")
+                        ->whereRaw("DATE(created_at) <= '{$end}'")
                         ->count();
 
         $received = DB::table('accounts')
