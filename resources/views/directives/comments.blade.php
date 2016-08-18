@@ -1,6 +1,6 @@
 <div class="comment-block">
     <div ng-show='comments.length > show_max && !show_all_comments'>
-        <span class='comment-add pointer' ng-click='show_all_comments = true'>все комментарии (@{{ comments.length }})</span>
+        <span class='comment-add pointer' ng-click='showAllComments()'>все комментарии (@{{ comments.length - show_max + 1 }})</span>
     </div>
     <div>
 		<div ng-repeat="comment in getComments() | orderBy:'created_at'" id='comment-@{{ comment.id }}' data-comment-id='@{{ comment.id }}'>

@@ -32,8 +32,14 @@ angular.module('Egerep').directive 'comments', ->
                     $scope.remove($(ui.draggable).data('comment-id'))
         , 2000
 
+        $scope.showAllComments = ->
+            $scope.show_all_comments = true
+            $timeout ->
+                $scope.comments.forEach (comment) ->
+                    bindDraggable(comment.id)
+
         $scope.getComments = ->
-            if $scope.show_all_comments then $scope.comments else _.last($scope.comments, $scope.show_max)
+            if ($scope.show_all_comments or $scope.comments.length <= $scope.show_max) then $scope.comments else _.last($scope.comments, $scope.show_max - 1)
 
         # перезагружаем комменты, если меняется entity_id
         $scope.$watch 'entityId', (newVal, oldVal) ->
