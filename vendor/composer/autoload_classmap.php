@@ -47,6 +47,7 @@ return array(
     'AddNullableToTimestamps' => $baseDir . '/database/migrations/2016_05_30_175647_add_nullable_to_timestamps.php',
     'AddPhone4ToClients' => $baseDir . '/database/migrations/2016_03_10_160148_add_phone4_to_clients.php',
     'AddPhotoToTutors' => $baseDir . '/database/migrations/2016_02_29_140442_add_photo_to_tutors.php',
+    'AddQniqueToAttachmentsArchivesReviews' => $baseDir . '/database/migrations/2016_08_18_170943_add_qnique_to_attachments_archives_reviews.php',
     'AddReadyToWorkToTeachers' => $baseDir . '/database/migrations/2016_03_16_171801_add_ready_to_work_to_teachers.php',
     'AddRemoveRequestsToUsers' => $baseDir . '/database/migrations/2016_06_07_135003_add_remove_requests_to_users.php',
     'AddReviewUpdatedToSettings' => $baseDir . '/database/migrations/2016_08_05_122900_add_review_updated_to_settings.php',
