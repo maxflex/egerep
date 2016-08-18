@@ -18,7 +18,7 @@ class CreateStudentsFreetimeTable extends Migration
             $table->index('id_student');
             $table->integer('day');
             $table->integer('time_id');
-            $table->unique(['id_student', 'day', 'time']);
+            $table->unique(['id_student', 'day', 'time_id']);
         });
     }
 
