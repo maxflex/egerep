@@ -10,6 +10,9 @@
                 <td>
                     стыковок
                 </td>
+                <td>
+                    архиваций
+                </td>
                 <td ng-show="user.show_summary">
                     получено
                 </td>
@@ -40,6 +43,9 @@
                 </td>
                 <td>
                     @{{ summary.attachments.cnt | hideZero }}
+                </td>
+                <td>
+                    @{{ summary.archives.cnt | hideZero }}
                 </td>
                 <td ng-show="user.show_summary">
                     <span title="@{{ summary.received.sum | number }} + @{{ (summary.mutual_debts.sum ? summary.mutual_debts.sum : 0) | number }}">

@@ -16,6 +16,7 @@ class SummaryController extends Controller
     private $columns = [
         'requests',
         'attachments',
+        'archives',
         'received',
         'commission',
         'forecast',
@@ -209,6 +210,11 @@ class SummaryController extends Controller
                         ->whereRaw("date <= '{$end}'")
                         ->count();
 
+        $archives = DB::table('archives')
+                        ->whereRaw("date >= '{$start}'")
+                        ->whereRaw("date <= '{$end}'")
+                        ->count();
+
         $received = DB::table('accounts')
                     ->whereRaw("date_end >= '{$start}'")
                     ->whereRaw("date_end <= '{$end}'")
@@ -232,6 +238,9 @@ class SummaryController extends Controller
             ],
             'attachments' => [
                 'cnt' => $attachments
+            ],
+            'archives' => [
+                'cnt' => $archives
             ],
             'received' => [
                 'sum' => $received
