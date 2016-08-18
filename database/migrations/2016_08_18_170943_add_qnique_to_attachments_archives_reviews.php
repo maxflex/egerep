@@ -12,15 +12,15 @@ class AddQniqueToAttachmentsArchivesReviews extends Migration
      */
     public function up()
     {
-        Schema::table('reviews', function (Blueprint $table) {
-            $table->unique('attachment_id');
-        });
-        Schema::table('archives', function (Blueprint $table) {
-            $table->unique('attachment_id');
-        });
-        Schema::table('attachments', function (Blueprint $table) {
-            $table->unique(['tutor_id','client_id']);
-        });
+        // Schema::table('reviews', function (Blueprint $table) {
+        //     $table->unique('attachment_id');
+        // });
+        // Schema::table('archives', function (Blueprint $table) {
+        //     $table->unique('attachment_id');
+        // });
+        // Schema::table('attachments', function (Blueprint $table) {
+        //     $table->unique(['tutor_id','client_id']);
+        // });
     }
 
     /**

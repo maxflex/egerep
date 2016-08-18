@@ -12,10 +12,9 @@ class EgecrmAddUniqueToContractSubjects extends Migration
      */
     public function up()
     {
-        Schema::connection('egecrm')->table('contract_subjects', function (Blueprint $table) {
-            $table->unique(['id_contract', 'id_subject']);
-        });
-
+        // Schema::connection('egecrm')->table('contract_subjects', function (Blueprint $table) {
+        //     $table->unique(['id_contract', 'id_subject']);
+        // });
     }
 
     /**
