@@ -25,6 +25,7 @@
                 <div class="form-group">
                     <div ng-if='client !== undefined'>
                         <phones entity="client"></phones>
+                        <email entity='client'></email>
                     </div>
                 </div>
             </div>

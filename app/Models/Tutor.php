@@ -26,8 +26,6 @@ class Tutor extends Model
         'first_name',
         'last_name',
         'middle_name',
-        'email',
-        'email_comment',
         'gender',
         'birth_year',
         'start_career_year',

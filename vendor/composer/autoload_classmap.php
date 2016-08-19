@@ -19,6 +19,7 @@ return array(
     'AddDenyReasonToRequests' => $baseDir . '/database/migrations/2016_06_17_110936_add_deny_reason_to_requests.php',
     'AddDeparturePriceToTeachers' => $baseDir . '/database/migrations/2016_02_17_121119_add_departure_price_to_teachers.php',
     'AddDoubledToClients' => $baseDir . '/database/migrations/2016_06_02_191234_add_doubled_to_clients.php',
+    'AddEmailToRequests' => $baseDir . '/database/migrations/2016_08_19_185243_add_email_to_requests.php',
     'AddErrorsColumnToTutors' => $baseDir . '/database/migrations/2016_08_05_125934_add_errors_column_to_tutors.php',
     'AddErrorsToReviews' => $baseDir . '/database/migrations/2016_08_05_113757_add_errors_to_reviews.php',
     'AddFieldToSettingsTable' => $baseDir . '/database/migrations/2016_08_04_184253_add_field_to_settings_table.php',

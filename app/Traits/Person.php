@@ -12,6 +12,7 @@
     trait Person
     {
         public static $phone_fields = ['phone', 'phone2', 'phone3', 'phone4'];
+        public static $append_fillable = ['email', 'email_comment'];
 
         public function __construct(array $options = [])
         {
@@ -24,6 +25,8 @@
                 $this->fillable[] = $phone_field . '_comment';
                 $this->appends[]  = $phone_field . '_duplicate';
             }
+
+            $this->fillable = array_merge($this->fillable, static::$append_fillable);
 
             parent::__construct($options);
         }
