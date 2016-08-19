@@ -247,11 +247,9 @@ class Attachment extends Model
             DB::table('attachments')->where('id', $model->id)->update(['errors' => \App\Models\Helpers\Attachment::errors($model)]);
         });
         static::created(function ($model) {
-            Tutor::where('id', $model->tutor_id)->update(['attachments_count' => \DB::raw('attachments_count + 1')]);
             event(new DebtRecalc($model->tutor_id));
         });
         static::deleted(function ($model) {
-            Tutor::where('id', $model->tutor_id)->update(['attachments_count' => \DB::raw('attachments_count - 1')]);
             AccountData::where('tutor_id', $model->tutor_id)->where('client_id', $model->client_id)->delete();
             event(new DebtRecalc($model->tutor_id));
         });
