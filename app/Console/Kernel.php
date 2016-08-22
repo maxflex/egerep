@@ -38,6 +38,7 @@ class Kernel extends ConsoleKernel
         Commands\Tutors::class,
         Commands\ModelErrors::class,
         Commands\CalcTutorMargin::class,
+        Commands\SendSMSToOldClients::class,
     ];
 
     /**
