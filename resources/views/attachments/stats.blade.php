@@ -30,12 +30,13 @@
                 </td>
                 <td ng-repeat='day in getDays()' style="text-align: center">
                     <span ng-class="{
-                        'text-success': dayExtremum(day, year, getValue(day, year, user_id), 'max'),
-                        'text-danger': dayExtremum(day, year, getValue(day, year, user_id), 'min'),
+                        'bold text-success': dayExtremum(day, year, getValue(day, year, user_id), 'max'),
                     }">@{{ getValue(day, year, user_id) }}</span>
                 </td>
                 <td style="text-align: center">
-                    @{{ getUserTotal(year, user_id) }}
+                    <span ng-class="{
+                        'bold text-success': dayExtremum(null, year, getUserTotal(year, user_id), 'max'),
+                    }">@{{ getUserTotal(year, user_id) }}</span>
                 </td>
             </tr>
             <tr>

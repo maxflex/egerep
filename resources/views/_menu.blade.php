@@ -16,8 +16,6 @@
 @endif
 <a class="list-group-item active">Административное</a>
 <a href="summary" class="list-group-item">Итоги</a>
-@if (\App\Models\User::fromSession()->show_stats)
-    <a href="attachments/stats" class="list-group-item">Статистика</a>
-@endif
+<a href="attachments/stats" class="list-group-item">Статистика</a>
 <a href="logs" class="list-group-item">Логи</a>
 <a href="logout" class="list-group-item">Выход</a>
