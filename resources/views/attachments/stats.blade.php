@@ -31,7 +31,7 @@
                 <td ng-repeat='day in getDays()' style="text-align: center">
                     <span ng-class="{
                         'text-success': dayExtremum(day, year, getValue(day, year, user_id), 'max'),
-                        'text-success': dayExtremum(day, year, getValue(day, year, user_id), 'min'),
+                        'text-danger': dayExtremum(day, year, getValue(day, year, user_id), 'min'),
                     }">@{{ getValue(day, year, user_id) }}</span>
                 </td>
                 <td style="text-align: center">
