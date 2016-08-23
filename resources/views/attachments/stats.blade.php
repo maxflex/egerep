@@ -1,5 +1,5 @@
 @extends('app')
-@section('title', 'Итоги по стыковкам')
+@section('title', 'Статистика по стыковкам')
 @section('controller', 'AttachmentsStats')
 
 @section('content')
