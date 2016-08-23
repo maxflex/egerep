@@ -137,7 +137,7 @@ return array(
     'EgecrmCreateTestsTable' => $baseDir . '/database/migrations/2016_07_11_113618_egecrm_create_tests_table.php',
     'EgecrmDropScoreFromCs' => $baseDir . '/database/migrations/2016_08_19_112858_egecrm_drop_score_from_cs.php',
     'EgecrmRefactor' => $baseDir . '/database/migrations/2016_08_01_152313_egecrm_refactor.php',
-    'EgecrmRenameShowAttachmentsToUsers' => $baseDir . '/database/migrations/2016_08_23_155416_egecrm_rename_show_attachments_to_users.php',
+    'EgecrmRemoveShowStatsFromUsers' => $baseDir . '/database/migrations/2016_08_23_174508_egecrm_remove_show_stats_from_users.php',
     'EgecrmRenameStudentFreetimeTable' => $baseDir . '/database/migrations/2016_08_18_195625_egecrm_rename_student_freetime_table.php',
     'File_Iterator' => $vendorDir . '/phpunit/php-file-iterator/src/Iterator.php',
     'File_Iterator_Facade' => $vendorDir . '/phpunit/php-file-iterator/src/Facade.php',
