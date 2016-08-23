@@ -95,7 +95,7 @@
                 <ng-multi none-text='статус' model='search.state' object='TutorStates'></ng-multi>
             </div>
             <div class="form-group">
-                <select ng-model='search.markers' class='selectpicker'>
+                <select ng-model='search.markers' class='sp'>
                     <option value="">метки</option>
                     <option disabled>──────────────</option>
                     <option ng-repeat="name in ['метка есть', 'меток нет']"
@@ -103,7 +103,7 @@
                 </select>
             </div>
             <div class="form-group">
-                <select ng-model='search.ready' class='selectpicker'>
+                <select ng-model='search.ready' class='sp'>
                     <option value="">заполненность поля «готовность»</option>
                     <option disabled>──────────────</option>
                     <option ng-repeat="(id, name) in YesNo"
