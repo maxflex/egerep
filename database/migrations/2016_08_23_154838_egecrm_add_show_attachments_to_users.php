@@ -13,7 +13,7 @@ class EgecrmAddShowAttachmentsToUsers extends Migration
     public function up()
     {
         Schema::connection('egecrm')->table('users', function (Blueprint $table) {
-            $table->boolean('show_attachments')->default(false);
+            $table->boolean('show_stats')->default(false);
         });
     }
 
