@@ -69,4 +69,9 @@ class TutorsController extends Controller
             'request_id'    => $list->request->id,
         ]));
     }
+
+    public function select()
+    {
+        return view('tutors.select.index');
+    }
 }

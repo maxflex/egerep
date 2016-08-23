@@ -82,6 +82,9 @@ angular.module 'Egerep'
         this.getFiltered = (search_data) ->
             $http.post 'api/tutors/filtered', search_data
 
+        this.select = (search_data) ->
+            $http.post 'api/tutors/select', search_data
+
         this.getDebtMap = (search_data) ->
             $http.post 'api/debt/map', search_data
 

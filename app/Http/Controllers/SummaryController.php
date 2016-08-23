@@ -69,4 +69,9 @@ class SummaryController extends Controller
                         ])
                     );
     }
+
+    public function attachments(Request $request, $month = 1)
+    {
+
+    }
 }

@@ -399,4 +399,12 @@ class Attachment extends Model
                  ->on('attachments.client_id', '=', 'ad.client_id');
             })->where('id', $attachment_id)->value('last_lesson_date');
     }
+
+    /**
+     * Получить по месяцам для статистики
+     */
+    public function getStatsByMonth($month)
+    {
+        // @todo
+    }
 }

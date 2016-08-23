@@ -26,6 +26,7 @@ Route::group(['middleware' => ['web']], function () {
         return redirect()->to("https://lk.ege-repetitor.ru/tutors/{$tutor->id}/edit");
     });
     Route::get('/', 'TutorsController@index');
+    Route::get('tutors/select', 'TutorsController@select');
     Route::resource('tutors', 'TutorsController');
     Route::resource('logs', 'LogsController');
     Route::resource('requests', 'RequestsController', ['except' => ['index', 'show']]);
@@ -38,6 +39,7 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::get('summary/payments/{filter?}', 'SummaryController@payments');
     Route::get('summary/debtors/{filter?}', 'SummaryController@debtors');
+    Route::get('summary/attachments/{month?}', 'SummaryController@attachments');
     Route::get('summary/{filter?}', 'SummaryController@index');
 
     Route::controllers([
@@ -60,6 +62,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('logs', 'LogsController');
         Route::get('tutors/list', 'TutorsController@lists');
         Route::post('tutors/filtered', 'TutorsController@filtered');
+        Route::post('tutors/select', 'TutorsController@select');
         Route::post('tutors/counts', 'TutorsController@counts');
         Route::post('tutors/merge', 'TutorsController@merge');
         Route::delete('tutors/photo/{id}', 'TutorsController@deletePhoto');

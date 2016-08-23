@@ -226,4 +226,118 @@ class TutorsController extends Controller
 
          return $tutors;
      }
+
+     public function select(Request $request)
+     {
+         @extract(array_filter($request->search));
+
+         $query = Tutor::with('markers');
+
+         if (isset($markers)) {
+             if ($markers == 1) {
+                $query->has('markers');
+            } else {
+                $query->doesntHave('markers');
+            }
+         }
+
+         if (isset($ready)) {
+             if ($ready == 1) {
+                $query->where('ready_to_work', '');
+            } else {
+                $query->where('ready_to_work', '<>', '');
+            }
+         }
+
+         if (isset($id)) {
+             $query->where('id', $id);
+         }
+
+         if (isset($last_name)) {
+             $query->where('last_name', 'like', "%{$last_name}%");
+         }
+
+         if (isset($first_name)) {
+             $query->where('first_name', 'like', "%{$first_name}%");
+         }
+
+         if (isset($middle_name)) {
+             $query->where('middle_name', 'like', "%{$middle_name}%");
+         }
+
+         if (isset($gender)) {
+             $query->whereIn('gender', $gender);
+         }
+
+         if (isset($age_from)) {
+             $query->where('birth_year', '<', Tutor::getAge($age_from));
+         }
+
+         if (isset($age_to)) {
+             $query->where('birth_year', '>', Tutor::getAge($age_to));
+         }
+
+         if (isset($grades)) {
+             $rawSql = '';
+             foreach ($grades as $k => $grade) {
+                 $rawSql .= ($k ? ' OR ' : '')." FIND_IN_SET('$grade',grades) ";
+             }
+             $rawSql = ' ('.$rawSql.') ';
+             $query->whereRaw($rawSql);
+         }
+
+         if (isset($subjects)) {
+             $rawSql = '';
+             foreach ($subjects as $k => $subject) {
+                 $rawSql .= ($k ? ' OR ' : '')." FIND_IN_SET('$subject',subjects) ";
+             }
+             $rawSql = ' ('.$rawSql.') ';
+             $query->whereRaw($rawSql);
+         }
+
+         if (isset($tb_from)) {
+             $query->where('tb', '>=', $tb_from);
+         }
+
+         if (isset($lk_from)) {
+             $query->where('lk', '>=', $lk_from);
+         }
+
+         if (isset($js_from)) {
+             $query->where('js', '>=', $js_from);
+         }
+
+         if (isset($lesson_price_to)) {
+             $query->where('public_price', '<=', $lesson_price_to);
+         }
+
+         if (isset($state)) {
+             $query->whereIn('state', $state);
+         }
+
+         # выбираем только нужные поля для ускорения запроса
+         $tutors = $query->get([
+             'id',
+             'first_name',
+             'last_name',
+             'middle_name',
+             'svg_map',
+             'photo_extension',
+             'birth_year',
+             'subjects',
+             'tb',
+             'lk',
+             'js',
+             'state',
+             'ready_to_work',
+             'list_comment'
+         ] + Tutor::$phone_fields);
+
+         foreach($tutors as $tutor) {
+            # Количество учеников, Количество встреч
+            $tutor->append(['clients_count', 'meeting_count']);
+         }
+
+         return $tutors;
+     }
 }
