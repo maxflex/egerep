@@ -27,7 +27,7 @@ angular
             condition.day = parseInt(day) if day isnt null
 
             data = _.where $scope.data, condition
-            
+
             max = -999
             min = 999
 
@@ -36,8 +36,22 @@ angular
                 min = d.count if d.count < min
 
             extremum = if mode is 'max' then max else min
-
+            console.log(extremum, val, year) if day is null
             val == extremum
+
+        $scope.totalExtremum = (year, val) ->
+            return false if not val
+
+            user_ids = $scope.getUsersByYear(year)
+            return false if not user_ids.length
+
+            max = -9999
+
+            user_ids.forEach (user_id) ->
+                v = $scope.getUserTotal(year, user_id)
+                max = v if v > max
+
+            val == max
 
         $scope.getUserTotal = (year, user_id) ->
             data = _.where $scope.data,

@@ -28,14 +28,18 @@
                 <td style="text-align: left">
                     @{{ UserService.getLogin(user_id) }}
                 </td>
-                <td ng-repeat='day in getDays()' style="text-align: center">
+                <td ng-repeat='day in getDays()' style="text-align: center" ng-class="{
+                    'light-green': dayExtremum(day, year, getValue(day, year, user_id), 'max'),
+                }">
                     <span ng-class="{
                         'bold text-success': dayExtremum(day, year, getValue(day, year, user_id), 'max'),
                     }">@{{ getValue(day, year, user_id) }}</span>
                 </td>
-                <td style="text-align: center">
+                <td style="text-align: center" ng-class="{
+                    'light-green': totalExtremum(year, getUserTotal(year, user_id)),
+                }">
                     <span ng-class="{
-                        'bold text-success': dayExtremum(null, year, getUserTotal(year, user_id), 'max'),
+                        'bold text-success': totalExtremum(year, getUserTotal(year, user_id)),
                     }">@{{ getUserTotal(year, user_id) }}</span>
                 </td>
             </tr>
