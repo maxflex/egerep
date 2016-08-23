@@ -329,8 +329,7 @@ class TutorsController extends Controller
              'lk',
              'js',
              'state',
-             'ready_to_work',
-             'list_comment'
+             'ready_to_work'
          ] + Tutor::$phone_fields);
 
          foreach($tutors as $tutor) {
