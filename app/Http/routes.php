@@ -34,12 +34,12 @@ Route::group(['middleware' => ['web']], function () {
     Route::resource('clients', 'ClientsController');
     Route::resource('periods', 'PeriodsController');
     Route::get('attachments', 'AttachmentsController@index');
+    Route::get('attachments/stats/{month?}', 'AttachmentsController@stats');
     // Route::resource('debt', 'DebtController', ['only' => 'index']);
     Route::get('debt/map', 'DebtController@map');
 
     Route::get('summary/payments/{filter?}', 'SummaryController@payments');
     Route::get('summary/debtors/{filter?}', 'SummaryController@debtors');
-    Route::get('summary/attachments/{month?}', 'SummaryController@attachments');
     Route::get('summary/{filter?}', 'SummaryController@index');
 
     Route::controllers([
@@ -72,6 +72,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('requests/transfer/{id}', 'RequestsController@transfer');
         Route::resource('requests', 'RequestsController');
         Route::resource('lists', 'RequestListsController');
+        Route::post('attachments/stats', 'AttachmentsController@stats');
         Route::resource('attachments', 'AttachmentsController');
         Route::post('debt/map', 'DebtController@map');
         Route::resource('debt', 'DebtController');

@@ -791,6 +791,33 @@
         method: 'PUT'
       }
     });
+  }).controller('AttachmentsStats', function($scope, $rootScope, $http, $timeout, Months) {
+    $scope.getYears = function() {
+      var count, i, years;
+      count = 4;
+      i = 0;
+      years = [];
+      while (i < count) {
+        years.push(moment().subtract('year', i).format('YYYY'));
+        i++;
+      }
+      return years;
+    };
+    $scope.getUsersByYear = function(year) {
+      return _.chain(scope.data).where({
+        year: year
+      }).pluck('user_id').uniq().value();
+    };
+    $scope.$watch('month', function(newVal, oldVal) {
+      $rootScope.frontend_loading = true;
+      return $http.post('api/attachments/stats', {
+        month: newVal
+      }).then(function(response) {
+        $rootScope.frontend_loading = false;
+        return $scope.data = response.data;
+      });
+    });
+    return bindArguments($scope, arguments);
   }).controller('AttachmentsIndex', function($rootScope, $scope, $timeout, $http, AttachmentStates, AttachmentService, UserService, PhoneService, Subjects, Grades, Presence, YesNo, AttachmentVisibility, AttachmentErrors) {
     var loadAttachments, refreshCounts;
     bindArguments($scope, arguments);
@@ -2274,15 +2301,15 @@
     });
     $scope.blurComment = function(tutor) {
       tutor.is_being_commented = false;
-      return tutor.list_comment = tutor.old_list_comment;
+      return tutor.ready_to_work = tutor.old_ready_to_work;
     };
     $scope.focusComment = function(tutor) {
       tutor.is_being_commented = true;
-      return tutor.old_list_comment = tutor.list_comment;
+      return tutor.old_ready_to_work = tutor.ready_to_work;
     };
     $scope.startComment = function(tutor) {
       tutor.is_being_commented = true;
-      tutor.old_list_comment = tutor.list_comment;
+      tutor.old_ready_to_work = tutor.ready_to_work;
       return $timeout(function() {
         return $("#list-comment-" + tutor.id).focus();
       });
@@ -2291,9 +2318,9 @@
       if (event.keyCode === 13) {
         return Tutor.update({
           id: tutor.id,
-          list_comment: tutor.list_comment
+          ready_to_work: tutor.ready_to_work
         }, function(response) {
-          tutor.old_list_comment = tutor.list_comment;
+          tutor.old_ready_to_work = tutor.ready_to_work;
           return $(event.target).blur();
         });
       }
@@ -3524,99 +3551,20 @@
 }).call(this);
 
 (function() {
-  var apiPath, updateMethod;
-
-  angular.module('Egerep').factory('Marker', function($resource) {
-    return $resource(apiPath('markers'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Account', function($resource) {
-    return $resource(apiPath('accounts'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Review', function($resource) {
-    return $resource(apiPath('reviews'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Archive', function($resource) {
-    return $resource(apiPath('archives'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Attachment', function($resource) {
-    return $resource(apiPath('attachments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('RequestList', function($resource) {
-    return $resource(apiPath('lists'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Request', function($resource) {
-    return $resource(apiPath('requests'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      transfer: {
-        method: 'POST',
-        url: apiPath('requests', 'transfer')
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  }).factory('Sms', function($resource) {
-    return $resource(apiPath('sms'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Comment', function($resource) {
-    return $resource(apiPath('comments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Client', function($resource) {
-    return $resource(apiPath('clients'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('User', function($resource) {
-    return $resource(apiPath('users'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Tutor', function($resource) {
-    return $resource(apiPath('tutors'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      deletePhoto: {
-        url: apiPath('tutors', 'photo'),
-        method: 'DELETE'
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  });
-
-  apiPath = function(entity, additional) {
-    if (additional == null) {
-      additional = '';
-    }
-    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
-  };
-
-  updateMethod = function() {
-    return {
-      update: {
-        method: 'PUT'
-      }
-    };
-  };
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').value('AttachmentErrors', {
+  angular.module('Egerep').value('Months', {
+    1: 'январь',
+    2: 'февраль',
+    3: 'март',
+    4: 'апрель',
+    5: 'май',
+    6: 'июнь',
+    7: 'июль',
+    8: 'август',
+    9: 'сентябрь',
+    10: 'октябрь',
+    11: 'ноябрь',
+    12: 'декабрь'
+  }).value('AttachmentErrors', {
     1: 'в стыковке не указан класс',
     2: 'в стыковке не указан предмет',
     3: 'не указаны условия стыковки',
@@ -3937,6 +3885,98 @@
       color: '#ACADAF'
     }
   });
+
+}).call(this);
+
+(function() {
+  var apiPath, updateMethod;
+
+  angular.module('Egerep').factory('Marker', function($resource) {
+    return $resource(apiPath('markers'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Account', function($resource) {
+    return $resource(apiPath('accounts'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Review', function($resource) {
+    return $resource(apiPath('reviews'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Archive', function($resource) {
+    return $resource(apiPath('archives'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Attachment', function($resource) {
+    return $resource(apiPath('attachments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('RequestList', function($resource) {
+    return $resource(apiPath('lists'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Request', function($resource) {
+    return $resource(apiPath('requests'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      transfer: {
+        method: 'POST',
+        url: apiPath('requests', 'transfer')
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  }).factory('Sms', function($resource) {
+    return $resource(apiPath('sms'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Comment', function($resource) {
+    return $resource(apiPath('comments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Client', function($resource) {
+    return $resource(apiPath('clients'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('User', function($resource) {
+    return $resource(apiPath('users'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Tutor', function($resource) {
+    return $resource(apiPath('tutors'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      deletePhoto: {
+        url: apiPath('tutors', 'photo'),
+        method: 'DELETE'
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  });
+
+  apiPath = function(entity, additional) {
+    if (additional == null) {
+      additional = '';
+    }
+    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
+  };
+
+  updateMethod = function() {
+    return {
+      update: {
+        method: 'PUT'
+      }
+    };
+  };
 
 }).call(this);
 

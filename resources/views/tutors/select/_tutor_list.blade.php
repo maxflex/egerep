@@ -22,14 +22,11 @@
 <td width='150'>
     <plural count='tutor.clients_count' type='client' hide-zero></plural>
 </td>
-<td>
-    @{{ tutor.ready_to_work | cut:true:50}}
-</td>
 <td width='300'>
-    <span ng-click="startComment(tutor)" class="glyphicon glyphicon-pencil opacity-pointer" ng-hide="tutor.list_comment || tutor.is_being_commented"></span>
+    <span ng-click="startComment(tutor)" class="glyphicon glyphicon-pencil opacity-pointer" ng-hide="tutor.ready_to_work || tutor.is_being_commented"></span>
     <input type="text" class='no-border-outline tutor-list-comment' id='list-comment-@{{ tutor.id }}' maxlength="64" placeholder="введите комментарий..."
-        ng-model='tutor.list_comment'
-        ng-show='tutor.list_comment || tutor.is_being_commented'
+        ng-model='tutor.ready_to_work'
+        ng-show='tutor.ready_to_work || tutor.is_being_commented'
         ng-blur='blurComment(tutor)'
         ng-focus='focusComment(tutor)'
         ng-keyup='saveComment($event, tutor)'

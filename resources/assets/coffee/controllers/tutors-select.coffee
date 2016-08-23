@@ -26,15 +26,15 @@ angular.module 'Egerep'
 
         $scope.blurComment = (tutor) ->
             tutor.is_being_commented = false
-            tutor.list_comment = tutor.old_list_comment
+            tutor.ready_to_work = tutor.old_ready_to_work
 
         $scope.focusComment = (tutor) ->
             tutor.is_being_commented = true
-            tutor.old_list_comment = tutor.list_comment
+            tutor.old_ready_to_work = tutor.ready_to_work
 
         $scope.startComment = (tutor) ->
             tutor.is_being_commented = true
-            tutor.old_list_comment = tutor.list_comment
+            tutor.old_ready_to_work = tutor.ready_to_work
             $timeout ->
                 $("#list-comment-#{tutor.id}").focus()
 
@@ -42,9 +42,9 @@ angular.module 'Egerep'
             if event.keyCode is 13
                 Tutor.update
                     id: tutor.id
-                    list_comment: tutor.list_comment
+                    ready_to_work: tutor.ready_to_work
                 , (response) ->
-                    tutor.old_list_comment = tutor.list_comment
+                    tutor.old_ready_to_work = tutor.ready_to_work
                     $(event.target).blur()
 
         $scope.getHours = (minutes) ->

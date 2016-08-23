@@ -94,4 +94,9 @@ class AttachmentsController extends Controller
     {
         return Attachment::destroy($id);
     }
+
+    public function stats(Request $request)
+    {
+        return Attachment::getStatsByMonth($request->month);
+    }
 }

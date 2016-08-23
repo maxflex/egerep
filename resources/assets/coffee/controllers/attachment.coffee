@@ -4,6 +4,26 @@ angular
         $resource 'api/attachments/:id', {},
             update:
                 method: 'PUT'
+    .controller 'AttachmentsStats', ($scope, $rootScope, $http, $timeout, Months) ->
+        $scope.getYears = ->
+            count = 4
+            i = 0
+            years = []
+            while i < count
+                years.push moment().subtract('year', i).format('YYYY')
+                i++
+            years
+
+        $scope.getUsersByYear = (year) ->
+            _.chain(scope.data).where({year: year}).pluck('user_id').uniq().value()
+
+        $scope.$watch 'month', (newVal, oldVal) ->
+            $rootScope.frontend_loading = true
+            $http.post 'api/attachments/stats', {month: newVal}
+            .then (response) ->
+                $rootScope.frontend_loading = false
+                $scope.data = response.data
+        bindArguments($scope, arguments)
     .controller 'AttachmentsIndex', ($rootScope, $scope, $timeout, $http, AttachmentStates, AttachmentService, UserService, PhoneService, Subjects, Grades, Presence, YesNo, AttachmentVisibility, AttachmentErrors) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true

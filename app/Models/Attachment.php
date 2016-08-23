@@ -403,8 +403,22 @@ class Attachment extends Model
     /**
      * Получить по месяцам для статистики
      */
-    public function getStatsByMonth($month)
+    public static function getStatsByMonth($month)
     {
-        // @todo
+        $current_year = date('Y');
+        $year_from = $current_year - 4;
+
+        return DB::table('attachments')
+            ->select(DB::raw('user_id, DAY(date) as day, YEAR(date) as year, COUNT(*) as count'))
+            ->whereRaw("(YEAR(date) <= $current_year AND YEAR(date) >= $year_from) AND MONTH(date) = $month")
+            ->groupBy(DB::raw('user_id, DAY(date), YEAR(date)'))
+            ->get();
+
+        // $return = [];
+        // foreach(range($year_from, $year) as $year) {
+        //     foreach(range(1, 31) as $day) {
+        //         // $return[$day][$year] =
+        //     }
+        // }
     }
 }
