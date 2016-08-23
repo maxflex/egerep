@@ -791,7 +791,7 @@
         method: 'PUT'
       }
     });
-  }).controller('AttachmentsStats', function($scope, $rootScope, $http, $timeout, Months) {
+  }).controller('AttachmentsStats', function($scope, $rootScope, $http, $timeout, Months, UserService) {
     $scope.getYears = function() {
       var count, i, years;
       count = 4;
@@ -804,9 +804,55 @@
       return years;
     };
     $scope.getUsersByYear = function(year) {
-      return _.chain(scope.data).where({
-        year: year
+      return _.chain($scope.data).where({
+        year: parseInt(year)
       }).pluck('user_id').uniq().value();
+    };
+    $scope.getDays = function() {
+      return _.range(1, 32);
+    };
+    $scope.getUserTotal = function(year, user_id) {
+      var data, sum;
+      data = _.where($scope.data, {
+        year: parseInt(year),
+        user_id: parseInt(user_id)
+      });
+      sum = 0;
+      data.forEach(function(d) {
+        return sum += d.count;
+      });
+      return sum || '';
+    };
+    $scope.getDayTotal = function(year, day) {
+      var condition, data, sum;
+      if (day == null) {
+        day = null;
+      }
+      condition = {
+        year: parseInt(year)
+      };
+      if (day !== null) {
+        condition.day = parseInt(day);
+      }
+      data = _.where($scope.data, condition);
+      sum = 0;
+      data.forEach(function(d) {
+        return sum += d.count;
+      });
+      return sum || '';
+    };
+    $scope.getValue = function(day, year, user_id) {
+      var d;
+      d = _.find(scope.data, {
+        day: parseInt(day),
+        year: parseInt(year),
+        user_id: parseInt(user_id)
+      });
+      if (d !== void 0) {
+        return d.count;
+      } else {
+        return '';
+      }
     };
     $scope.$watch('month', function(newVal, oldVal) {
       $rootScope.frontend_loading = true;

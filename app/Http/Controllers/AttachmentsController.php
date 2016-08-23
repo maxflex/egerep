@@ -35,9 +35,7 @@ class AttachmentsController extends Controller
         }
         return view('attachments.stats')->with(
             ngInit([
-                'month'                      => $month,
-                'attachment_errors_updated'  => Settings::get('attachment_errors_updated'),
-                'attachment_errors_updating' => Settings::get('attachment_errors_updating'),
+                'month' => $month,
             ])
         );
     }

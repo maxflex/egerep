@@ -4,7 +4,7 @@ angular
         $resource 'api/attachments/:id', {},
             update:
                 method: 'PUT'
-    .controller 'AttachmentsStats', ($scope, $rootScope, $http, $timeout, Months) ->
+    .controller 'AttachmentsStats', ($scope, $rootScope, $http, $timeout, Months, UserService) ->
         $scope.getYears = ->
             count = 4
             i = 0
@@ -15,7 +15,35 @@ angular
             years
 
         $scope.getUsersByYear = (year) ->
-            _.chain(scope.data).where({year: year}).pluck('user_id').uniq().value()
+            _.chain($scope.data).where({year: parseInt(year)}).pluck('user_id').uniq().value()
+
+        $scope.getDays = ->
+            _.range(1, 32)
+
+        $scope.getUserTotal = (year, user_id) ->
+            data = _.where $scope.data,
+                year: parseInt(year)
+                user_id: parseInt(user_id)
+            sum = 0
+            data.forEach (d) ->
+                sum += d.count
+            sum or ''
+
+        $scope.getDayTotal = (year, day = null) ->
+            condition = {year: parseInt(year)}
+            condition.day = parseInt(day) if day isnt null
+            data = _.where $scope.data, condition
+            sum = 0
+            data.forEach (d) ->
+                sum += d.count
+            sum or ''
+
+        $scope.getValue = (day, year, user_id) ->
+            d = _.find scope.data,
+                day: parseInt(day)
+                year: parseInt(year)
+                user_id: parseInt(user_id)
+            if d isnt undefined then d.count else ''
 
         $scope.$watch 'month', (newVal, oldVal) ->
             $rootScope.frontend_loading = true
