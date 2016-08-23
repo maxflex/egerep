@@ -29,7 +29,10 @@
                     @{{ UserService.getLogin(user_id) }}
                 </td>
                 <td ng-repeat='day in getDays()' style="text-align: center">
-                    @{{ getValue(day, year, user_id) }}
+                    <span ng-class="{
+                        'text-success': dayExtremum(day, year, getValue(day, year, user_id), 'max'),
+                        'text-success': dayExtremum(day, year, getValue(day, year, user_id), 'min'),
+                    }">@{{ getValue(day, year, user_id) }}</span>
                 </td>
                 <td style="text-align: center">
                     @{{ getUserTotal(year, user_id) }}

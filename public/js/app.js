@@ -811,6 +811,28 @@
     $scope.getDays = function() {
       return _.range(1, 32);
     };
+    $scope.dayExtremum = function(day, year, val, mode) {
+      var data, extremum, max, min;
+      if (!val) {
+        return false;
+      }
+      data = _.where($scope.data, {
+        year: parseInt(year),
+        day: parseInt(day)
+      });
+      max = -999;
+      min = 999;
+      data.forEach(function(d) {
+        if (d.count > max) {
+          max = d.count;
+        }
+        if (d.count < min) {
+          return min = d.count;
+        }
+      });
+      extremum = mode === 'max' ? max : min;
+      return val === extremum;
+    };
     $scope.getUserTotal = function(year, user_id) {
       var data, sum;
       data = _.where($scope.data, {
