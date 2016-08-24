@@ -39,7 +39,7 @@ class SmsController extends Controller
     public function store(Request $request)
     {
         extract($request->input());
-        Sms::send($to, $message, $mass);
+        return Sms::send($to, $message, $mass)->toJson();
     }
 
     /**
