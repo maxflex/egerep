@@ -14,12 +14,17 @@ angular.module('Egerep').directive 'sms', ->
         # отправить
         $scope.send = ->
             if $scope.message
+                $scope.sms_sending = true
+                ajaxStart()
                 sms = new Sms
                     message: $scope.message
                     to: $scope.number
                     mass: $scope.mass
                 sms.$save()
                     .then (data) ->
+                        ajaxEnd()
+                        $scope.sms_sending = false
+                        $scope.message = ''
                         $scope.history.push(data)
                         scrollDown()
 
