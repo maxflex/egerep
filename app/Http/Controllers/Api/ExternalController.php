@@ -177,4 +177,29 @@ class ExternalController extends Controller
 		}
 		return implode(',', $new_subjects);
 	}
+
+
+    /**
+     * Обновить статусы СМС. На самом деле запускается не кроном, а сервисом sms.ru
+     *
+     */
+    public function updateSmsStatus($request)
+    {
+        foreach ($request->data as $entry) {
+            $lines = explode("\n",$entry);
+            if ($lines[0] == "sms_status") {
+
+                $sms_id 	= $lines[1];
+                $sms_status = $lines[2];
+
+                \App\Models\SMS::where('id_smsru', $sms_id)->update([
+                    'id_status' => $sms_status
+                ]);
+
+                // "Изменение статуса. Сообщение: $sms_id. Новый статус: $sms_status";
+                // Здесь вы можете уже выполнять любые действия над этими данными.
+            }
+        }
+        exit("100"); /* Важно наличие этого блока, иначе наша система посчитает, что в вашем обработчике сбой */
+    }
 }
