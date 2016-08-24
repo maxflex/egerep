@@ -31,7 +31,7 @@
             			</div>
 
             			<div style="clear: both">
-            				<button class="btn btn-primary" ng-click="send()" style="margin-bottom: 7px">Отправить</button>
+            				<button class="btn btn-primary" ng-disabled="!message.length|| sms_sending" ng-click="send()" style="margin-bottom: 7px">Отправить</button>
             			</div>
             		</div>
             	</div>
