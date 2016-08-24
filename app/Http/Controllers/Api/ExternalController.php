@@ -192,7 +192,7 @@ class ExternalController extends Controller
                 $sms_id 	= $lines[1];
                 $sms_status = $lines[2];
 
-                \App\Models\SMS::where('id_smsru', $sms_id)->update([
+                \App\Models\Sms::where('id_smsru', $sms_id)->update([
                     'id_status' => $sms_status
                 ]);
 
