@@ -31,7 +31,7 @@ class RequestUserChanged extends Event implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return [];
+        return ['egerep'];
     }
 
     public function broadcastWith()
