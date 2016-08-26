@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Events\IncomingRequest;
+use App\Events\RequestUserChanged;
 
 class Request extends Model
 {
@@ -79,6 +80,9 @@ class Request extends Model
                 }
                 if ($model->getOriginal('state') == 'new' && $model->state != 'new') {
                     event(new IncomingRequest($model->id, true));
+                }
+                if ($model->changed('user_id')) {
+                    event(new RequestUserChanged($model->id, $model->user_id));
                 }
             }
         });

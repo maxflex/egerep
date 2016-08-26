@@ -14,6 +14,7 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         'App\Events\ResponsibleUserChanged' => [],
+        'App\Events\RequestUserChanged' => [],
         'App\Events\IncomingRequest' => [],
         'App\Events\PhoneChanged' => [],
         'App\Events\DebtRecalc' => [],

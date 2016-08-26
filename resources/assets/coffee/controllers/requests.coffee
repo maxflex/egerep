@@ -5,13 +5,12 @@ angular
         _.extend RequestStates, { all : 'все' }
         $rootScope.frontend_loading = true
 
-        $scope.user_id          = localStorage.getItem('requests_index_user_id')
+        $scope.user_id = localStorage.getItem('requests_index_user_id')
 
-        PusherService.init 'IncomingRequest', (data) ->
-            new_request = data.request
-            $scope.request_state_counts[new_request.state]++
-            $scope.requests.unshift(new_request) if $scope.chosen_state_id is new_request.state
-            $scope.$apply()
+        PusherService.init 'RequestUserChanged', (data) ->
+            if request = findById($scope.requests, data.request_id)
+                request.user_id = data.new_user_id
+                $scope.$apply()
 
         # track comment loading.
         $rootScope.loaded_comments = 0
