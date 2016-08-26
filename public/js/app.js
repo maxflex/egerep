@@ -2149,14 +2149,12 @@
     });
     $rootScope.frontend_loading = true;
     $scope.user_id = localStorage.getItem('requests_index_user_id');
-    PusherService.init('IncomingRequest', function(data) {
-      var new_request;
-      new_request = data.request;
-      $scope.request_state_counts[new_request.state]++;
-      if ($scope.chosen_state_id === new_request.state) {
-        $scope.requests.unshift(new_request);
+    PusherService.init('RequestUserChanged', function(data) {
+      var request;
+      if (request = findById($scope.requests, data.request_id)) {
+        request.user_id = data.new_user_id;
+        return $scope.$apply();
       }
-      return $scope.$apply();
     });
     $rootScope.loaded_comments = 0;
     $scope.$watch(function() {
