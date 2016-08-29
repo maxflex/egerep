@@ -4,12 +4,8 @@
     <span id='request-counter' class='pull-right' style="margin-right: 3px; opacity: 0; font-size: 13px; font-weight: bold">+1</span>
 </a>
 <a href="attachments" class="list-group-item">Стыковки
-    @if($attachment_count_plus)
-        <span class="badge pull-right badge-success">+{{ $attachment_count_plus }}</span>
-    @endif
-    @if($attachment_count_minus)
-        <span class="badge pull-right badge-danger">-{{ $attachment_count_minus }}</span>
-    @endif
+    <span class="badge pull-right" id='attachment-count'>{{ \App\Models\Attachment::countToday() }}</span>
+    <span id='attachment-counter' class='pull-right' style="margin-right: 3px; opacity: 0; font-size: 13px; font-weight: bold">+1</span>
 </a>
 <a href="tutors" class="list-group-item">Преподаватели</a>
 <a href="reviews" class="list-group-item">Отзывы</a>

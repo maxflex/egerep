@@ -7,7 +7,7 @@ angular
 
         $scope.user_id = localStorage.getItem('requests_index_user_id')
 
-        PusherService.init 'RequestUserChanged', (data) ->
+        PusherService.bind 'RequestUserChanged', (data) ->
             if request = findById($scope.requests, data.request_id)
                 request.user_id = data.new_user_id
                 $scope.$apply()

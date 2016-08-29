@@ -17,7 +17,7 @@ angular
         $scope.published_state  = localStorage.getItem('tutors_index_published_state')
         $scope.errors_state     = localStorage.getItem('tutors_index_errors_state')
 
-        PusherService.init 'ResponsibleUserChanged', (data) ->
+        PusherService.bind 'ResponsibleUserChanged', (data) ->
             if tutor = findById($scope.tutors, data.tutor_id)
                 tutor.responsible_user_id = data.responsible_user_id
                 $scope.$apply()

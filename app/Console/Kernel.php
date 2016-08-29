@@ -39,7 +39,6 @@ class Kernel extends ConsoleKernel
         Commands\ModelErrors::class,
         Commands\CalcTutorMargin::class,
         Commands\SendSMSToOldClients::class,
-        Commands\ResetAttachmentsCount::class,
     ];
 
     /**

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use App\Events\DebtRecalc;
+use App\Events\AttachmentCountChanged;
 use DB;
 use Storage;
 
@@ -249,10 +250,12 @@ class Attachment extends Model
         });
         static::created(function ($model) {
             event(new DebtRecalc($model->tutor_id));
+            event(new AttachmentCountChanged());
         });
         static::deleted(function ($model) {
             AccountData::where('tutor_id', $model->tutor_id)->where('client_id', $model->client_id)->delete();
             event(new DebtRecalc($model->tutor_id));
+            event(new AttachmentCountChanged(true));
         });
     }
 
@@ -414,12 +417,13 @@ class Attachment extends Model
             ->whereRaw("(YEAR(date) <= $current_year AND YEAR(date) >= $year_from) AND MONTH(date) = $month")
             ->groupBy(DB::raw('user_id, DAY(date), YEAR(date)'))
             ->get();
+    }
 
-        // $return = [];
-        // foreach(range($year_from, $year) as $year) {
-        //     foreach(range(1, 31) as $day) {
-        //         // $return[$day][$year] =
-        //     }
-        // }
+    /**
+     * Кол-во стыковок сегодня
+     */
+    public static function countToday()
+    {
+        return static::whereRaw('DATE(NOW()) = DATE(created_at)')->count();
     }
 }
