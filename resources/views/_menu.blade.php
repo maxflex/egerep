@@ -7,6 +7,7 @@
     <span class="badge pull-right" id='attachment-count'>{{ \App\Models\Attachment::countToday() }}</span>
     <span id='attachment-counter' class='pull-right' style="margin-right: 3px; opacity: 0; font-size: 13px; font-weight: bold">+1</span>
 </a>
+<a href="archives" class="list-group-item">Архивации</a>
 <a href="tutors" class="list-group-item">Преподаватели</a>
 <a href="reviews" class="list-group-item">Отзывы</a>
 <a href="tutors/select" class="list-group-item">Подбор без клиента</a>

@@ -33,6 +33,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('requests/{state_id?}', 'RequestsController@index');
     Route::resource('clients', 'ClientsController');
     Route::resource('periods', 'PeriodsController');
+    Route::get('archives', 'ArchivesController@index');
     Route::get('attachments', 'AttachmentsController@index');
     Route::get('attachments/stats/{month?}', 'AttachmentsController@stats');
     // Route::resource('debt', 'DebtController', ['only' => 'index']);

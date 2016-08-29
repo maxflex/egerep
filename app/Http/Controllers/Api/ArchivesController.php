@@ -17,7 +17,12 @@ class ArchivesController extends Controller
      */
     public function index()
     {
-        //
+        $search = isset($_COOKIE['archives']) ? json_decode($_COOKIE['archives']) : (object)[];
+
+        return [
+            'counts' => Archive::counts($search),
+            'data'   => Archive::search($search)->paginate(30)
+        ];
     }
 
     /**
