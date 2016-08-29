@@ -413,9 +413,9 @@ class Attachment extends Model
         $year_from = $current_year - 4;
 
         return DB::table('attachments')
-            ->select(DB::raw('user_id, DAY(date) as day, YEAR(date) as year, COUNT(*) as count'))
-            ->whereRaw("(YEAR(date) <= $current_year AND YEAR(date) >= $year_from) AND MONTH(date) = $month")
-            ->groupBy(DB::raw('user_id, DAY(date), YEAR(date)'))
+            ->select(DB::raw('user_id, DAY(created_at) as day, YEAR(created_at) as year, COUNT(*) as count'))
+            ->whereRaw("(YEAR(created_at) <= $current_year AND YEAR(created_at) >= $year_from) AND MONTH(created_at) = $month")
+            ->groupBy(DB::raw('user_id, DAY(created_at), YEAR(created_at)'))
             ->get();
     }
 
