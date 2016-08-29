@@ -51,28 +51,29 @@ class ExternalController extends Controller
     {
 		$phone = cleanNumber($data->phone, true);
 
-		// находим клиента, если клиент уже существует, прикрепляем его к заявке
-		try {
-			// orderBy('id', 'desc') – обязательно (обдумано)
-			$client = Client::findByPhone($phone)->orderBy('id', 'desc')->firstOrFail();
-			// Если в заявке номер телефона совпадает с номером телефона,
-			// указанным в другой невыполненной заявке, то такие заявки нужно сливать
-			$new_request = $client->requests()->where('state', 'new')->orderBy('created_at', 'desc')->firstOrFail();
-			$duplicate = true;
-		}
-		catch (\Exception $e) {
+		// Если в заявке номер телефона совпадает с номером телефона,
+		// указанным в другой невыполненной заявке, то такие заявки нужно сливать
+		$client = Client::findByPhone($phone);
+
+		// ID преподавателя в новой базе
+		$new_tutor_id = Tutor::newTutorId($data->repetitor_id);
+
+		if (! $client->exists) {
 			// создаем нового клиента
 	        $client = Client::create([
 	            'name'  => $data->name,
 	            'phone' => $phone,
 	        ]);
-	        $duplicate = false;
+		} else {
+			$client = $client->orderBy('id', 'desc')->first();
 		}
 
-		// ID преподавателя в новой базе
-		$new_tutor_id = Tutor::newTutorId($data->repetitor_id);
+		// @todo: нужно сделать поиск среди всех заявок в списке "невыполненные"
+		//		  а не только по заявкам клиента
+		$new_request = $client->requests()->where('state', 'new');
 
-		if ($duplicate && $new_tutor_id) {
+		if ($new_request->exists()) {
+			$new_request = $new_request->orderBy('created_at', 'desc')->first();
 			$new_request->comment = "Репетитор " . $new_tutor_id . " " . $new_request->comment;
 			$new_request->save();
 		} else {
