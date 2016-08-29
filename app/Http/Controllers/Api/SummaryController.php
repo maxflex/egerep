@@ -206,8 +206,8 @@ class SummaryController extends Controller
                     ->count();
 
         $attachments = DB::table('attachments')
-                        ->whereRaw("date >= '{$start}'")
-                        ->whereRaw("date <= '{$end}'")
+                        ->whereRaw("DATE(created_at) >= '{$start}'")
+                        ->whereRaw("DATE(created_at) <= '{$end}'")
                         ->count();
 
         $archives = DB::table('archives')
