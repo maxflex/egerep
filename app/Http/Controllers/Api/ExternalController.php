@@ -58,7 +58,7 @@ class ExternalController extends Controller
 		// ID преподавателя в новой базе
 		$new_tutor_id = Tutor::newTutorId($data->repetitor_id);
 
-		if (! $client->exists) {
+		if (! $client->exists()) {
 			// создаем нового клиента
 	        $client = Client::create([
 	            'name'  => $data->name,
