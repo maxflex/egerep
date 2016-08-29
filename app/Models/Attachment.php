@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use App\Events\DebtRecalc;
 use DB;
+use Storage;
 
 class Attachment extends Model
 {

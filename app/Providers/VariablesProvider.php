@@ -33,6 +33,8 @@ class VariablesProvider extends ServiceProvider
             foreach (self::VARIABLES as $var_name => $var_value) {
                 $view->with($var_name, $var_value);
             }
+            $view->with('attachment_count_plus',  \Storage::get('attachment_count_plus'));
+            $view->with('attachment_count_minus', \Storage::get('attachment_count_minus'));
         });
     }
 
