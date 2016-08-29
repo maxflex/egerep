@@ -10,8 +10,6 @@
         style="height: 500px; width: 100%"
     >
         <transit-layer></transit-layer>
-        <custom-control position="TOP_RIGHT" index="1">
-        </custom-control>
     </map>
 
     <div class="map-tutor-list">

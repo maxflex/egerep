@@ -1063,17 +1063,19 @@
       });
     };
     bindDroppable = function() {
-      return $('.teacher-remove-droppable').droppable({
-        tolerance: 'pointer',
-        hoverClass: 'drop-hover',
-        drop: function(e, ui) {
-          var tutor_id;
-          tutor_id = $(ui.draggable).data('id');
-          return $timeout(function() {
-            $scope.selected_list.tutor_ids = _.without($scope.selected_list.tutor_ids, tutor_id.toString());
-            return saveSelectedList();
-          });
-        }
+      return $timeout(function() {
+        return $('.teacher-remove-droppable').droppable({
+          tolerance: 'pointer',
+          hoverClass: 'drop-hover',
+          drop: function(e, ui) {
+            var tutor_id;
+            tutor_id = $(ui.draggable).data('id');
+            return $timeout(function() {
+              $scope.selected_list.tutor_ids = _.without($scope.selected_list.tutor_ids, tutor_id.toString());
+              return saveSelectedList();
+            });
+          }
+        });
       });
     };
     $timeout(function() {

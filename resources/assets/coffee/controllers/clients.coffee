@@ -69,14 +69,15 @@ angular
                 window.location = "requests/#{response.id}/edit"
 
         bindDroppable = ->
-            $('.teacher-remove-droppable').droppable
-                tolerance: 'pointer'
-                hoverClass: 'drop-hover'
-                drop: (e, ui) ->
-                    tutor_id = $(ui.draggable).data 'id'
-                    $timeout ->
-                        $scope.selected_list.tutor_ids = _.without($scope.selected_list.tutor_ids, tutor_id.toString())
-                        saveSelectedList()
+            $timeout ->
+                $('.teacher-remove-droppable').droppable
+                    tolerance: 'pointer'
+                    hoverClass: 'drop-hover'
+                    drop: (e, ui) ->
+                        tutor_id = $(ui.draggable).data 'id'
+                        $timeout ->
+                            $scope.selected_list.tutor_ids = _.without($scope.selected_list.tutor_ids, tutor_id.toString())
+                            saveSelectedList()
 
         # get teacher
         $timeout ->
