@@ -108,7 +108,7 @@
         <tbody>
         <tr ng-repeat="archive in archives">
             <td align="left" width="9%">
-                <a href="requests/@{{ archive.request_id }}/edit#@{{ archive.request_list_id }}#@{{ archive.attachment_id }}">архивация @{{ archive.id }}</a>
+                <a href="requests/@{{ archive.request_id }}/edit#@{{ archive.request_list_id }}#@{{ archive.attachment_id }}">архивация @{{ archive.archive_id }}</a>
             </td>
             <td align="left" width="23%">
                 <a href="tutors/@{{ archive.tutor_id }}/edit">@{{ archive.tutor.full_name}}</a>

@@ -138,7 +138,7 @@ class Archive extends Model
         $query->join('request_lists as r', 'attachments.request_list_id', '=', 'r.id');             /* request_id нужен чтобы генерить правильную ссылку для редактирования */
 
         $query->select(
-            \DB::raw('archives.*, attachments.*, r.request_id, archives.created_at as archive_date, archives.user_id as archive_user_id'),
+            \DB::raw('archives.*, attachments.*, r.request_id, archives.created_at as archive_date, archives.user_id as archive_user_id, archives.id as archive_id'),
             'attachments.created_at AS attachment_date', 'total_lessons_missing',
             \DB::raw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) as lesson_count')
         );
