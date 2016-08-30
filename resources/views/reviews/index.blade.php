@@ -85,14 +85,14 @@
             <thead>
                 <td></td>
                 <td>ФИО РЕПЕТИТОРА</td>
-                <td class="center">СТЫКОВКА</td>
-                <td class="center">ЗАНЯТИЙ</td>
-                <td class="center">АРХИВАЦИЯ</td>
+                <td>СТЫКОВКА</td>
+                <td>ЗАНЯТИЙ</td>
+                <td>АРХИВАЦИЯ</td>
                 <td></td>
                 <td>РЕКВИЗИТЫ</td>
-                <td class="center">ПОДПИСЬ</td>
-                <td class="center">ТЕКСТ ОТЗЫВА</td>
-                <td class="center">ОЦЕНКА</td>
+                <td>ПОДПИСЬ</td>
+                <td>ТЕКСТ ОТЗЫВА</td>
+                <td>ОЦЕНКА</td>
             </thead>
             <tbody>
                 <tr ng-repeat='attachment in attachments'>
@@ -107,30 +107,30 @@
                     <td>
                         <a href='tutors/@{{ attachment.tutor.id }}/edit'>@{{ attachment.tutor.full_name }}</a>
                     </td>
-                    <td class="center">
+                    <td>
                         @{{ attachment.date }}
                     </td>
-                    <td class="center">
+                    <td>
                         @{{ attachment.account_data_count | hideZero }}<plus previous='attachment.account_data_count' count='attachment.archive.total_lessons_missing'></plus>
                     </td>
-                    <td class="center">
+                    <td>
                         @{{ attachment.archive.date }}
                     </td>
-                    <td class="center">
+                    <td>
                         <span ng-if='attachment.review'>@{{ ReviewStates[attachment.review.state] }}</span>
                     </td>
                     <td>
                         @{{ UserService.getLogin(attachment.review.user_id) }}: @{{ formatDateTime(attachment.review.created_at) }}
                     </td>
-                    <td class="center">
+                    <td>
                         <span ng-show='attachment.review && attachment.review.signature'
                             aria-label='@{{ attachment.review.signature }}' class='cursor-default hint--bottom'>есть</span>
                     </td>
-                    <td class="center">
+                    <td>
                         <span ng-show='attachment.review && attachment.review.comment'
                             aria-label='@{{ attachment.review.comment }}' class='cursor-default hint--bottom'>есть</span>
                     </td>
-                    <td class="center">
+                    <td>
                         <span ng-if='attachment.review'>@{{ ReviewScores[attachment.review.score] }}</span>
                     </td>
                     <td style="width: 5%; text-align: center">
