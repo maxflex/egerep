@@ -120,7 +120,9 @@
                         <span ng-if='attachment.review'>@{{ ReviewStates[attachment.review.state] }}</span>
                     </td>
                     <td>
-                        @{{ UserService.getLogin(attachment.review.user_id) }}: @{{ formatDateTime(attachment.review.created_at) }}
+                        <span ng-if='attachment.review'>
+                            @{{ UserService.getLogin(attachment.review.user_id) }}: @{{ formatDateTime(attachment.review.created_at) }}
+                        </span>
                     </td>
                     <td>
                         <span ng-show='attachment.review && attachment.review.signature'
