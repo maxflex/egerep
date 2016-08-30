@@ -126,7 +126,7 @@
                 @{{ formatDate(archive.created_at) }}
             </td>
             <td width='20%'>
-                @{{ UserService.getLogin(archive.user_id) }}: @{{ formatDateTime(archive.created_at) }}
+                @{{ UserService.getLogin(archive.archive_user_id) }}: @{{ formatDateTime(archive.archive_date) }}
             </td>
             <td width='10%'>
                 <span ng-repeat='code in archive.errors.split(",")' ng-attr-aria-label="@{{ AttachmentErrors[code] }}" class='hint--bottom-left'>@{{ code }}@{{ $last ? '' : ',  ' }}</span>
