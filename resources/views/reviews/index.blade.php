@@ -81,7 +81,7 @@
 
 <div class="row">
     <div class="col-sm-12">
-        <table class="table">
+        <table class="table" style="font-size: 0.8em;">
             <thead>
                 <td></td>
                 <td>ФИО РЕПЕТИТОРА</td>
@@ -89,6 +89,7 @@
                 <td class="center">ЗАНЯТИЙ</td>
                 <td class="center">АРХИВАЦИЯ</td>
                 <td></td>
+                <td>РЕКВИЗИТЫ</td>
                 <td class="center">ПОДПИСЬ</td>
                 <td class="center">ТЕКСТ ОТЗЫВА</td>
                 <td class="center">ОЦЕНКА</td>
@@ -117,6 +118,9 @@
                     </td>
                     <td class="center">
                         <span ng-if='attachment.review'>@{{ ReviewStates[attachment.review.state] }}</span>
+                    </td>
+                    <td>
+                        @{{ UserService.getLogin(attachment.review.user_id) }}: @{{ formatDateTime(attachment.review.created_at) }}
                     </td>
                     <td class="center">
                         <span ng-show='attachment.review && attachment.review.signature'

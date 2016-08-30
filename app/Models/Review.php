@@ -120,6 +120,6 @@ class Review extends Model
             });
         }
 
-        return $query->orderBy('date', 'desc');
+        return $query->orderBy('created_at', 'desc');
     }
 }
