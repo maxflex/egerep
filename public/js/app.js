@@ -813,6 +813,69 @@
 }).call(this);
 
 (function() {
+  angular.module('Egerep').factory('Archives', function($resource) {
+    return $resource('api/archives/:id', {}, {
+      update: {
+        method: 'PUT'
+      }
+    });
+  }).controller('ArchivesIndex', function($rootScope, $scope, $timeout, $http, AttachmentService, UserService, PhoneService, Subjects, Grades, Presence, YesNo, AttachmentVisibility, AttachmentErrors) {
+    var loadArchives, refreshCounts;
+    bindArguments($scope, arguments);
+    $rootScope.frontend_loading = true;
+    refreshCounts = function() {
+      return $timeout(function() {
+        $('.selectpicker option').each(function(index, el) {
+          $(el).data('subtext', $(el).attr('data-subtext'));
+          return $(el).data('content', $(el).attr('data-content'));
+        });
+        $('.selectpicker').selectpicker('refresh');
+        $('.archive-filters button').css('background', 'none');
+        return $('.archive-filters select > option[value!=""]:selected').parent('select').siblings('button').css('background', '#dceee5');
+      }, 100);
+    };
+    $scope.filter = function() {
+      $.cookie('archives', JSON.stringify($scope.search), {
+        expires: 365,
+        path: '/'
+      });
+      $scope.current_page = 1;
+      return $scope.pageChanged();
+    };
+    $scope.changeState = function(state_id) {
+      $rootScope.frontend_loading = true;
+      $scope.archives = [];
+      $scope.current_page = 1;
+      loadArchives($scope.current_page);
+      return window.history.pushState(state_id, '', 'archives/' + state_id.toLowerCase());
+    };
+    $timeout(function() {
+      $scope.search = $.cookie('archives') ? JSON.parse($.cookie('archives')) : {};
+      loadArchives($scope.page);
+      return $scope.current_page = $scope.page;
+    });
+    $scope.pageChanged = function() {
+      $rootScope.frontend_loading = true;
+      $rootScope.archives = [];
+      loadArchives($scope.current_page);
+      return paginate('archives', $scope.current_page);
+    };
+    return loadArchives = function(page) {
+      var params;
+      params = '?page=' + page;
+      return $http.get("api/archives" + params).then(function(response) {
+        $scope.data = response.data.data;
+        $scope.archives = response.data.data.data;
+        $scope.counts = response.data.counts;
+        $rootScope.frontend_loading = false;
+        return refreshCounts();
+      });
+    };
+  });
+
+}).call(this);
+
+(function() {
   angular.module('Egerep').factory('Attachment', function($resource) {
     return $resource('api/attachments/:id', {}, {
       update: {
