@@ -38,7 +38,12 @@ class Notification extends Model
                         ->whereRaw('date <= DATE(NOW())')
                         ->count();
         $virtual = Attachment::where('user_id', User::fromSession()->id)
+                        ->leftJoin('notifications as n', function($join) use ($query) {
+                            $join->on('n.entity_id', '=', 'attachments.id')
+                                 ->where('n.entity_type', '=','attachment');
+                        })
                         ->whereRaw('date <= DATE(NOW())')
+                        ->whereNull('n.id')
                         ->count();
         return $existing + $virtual;
     }
