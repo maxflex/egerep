@@ -74,6 +74,7 @@
             @{{ attachment.notification_comment ? attachment.notification_comment : 'комментарий отсутствует' }}
         </td>
         <td width="10%">
+            @{{ AttachmentService.getStatus(attachment) }}
             <span ng-show='attachment.notification_date' ng-class="{
                 'phone-duplicate-new' : !attachment.notification_approved && pastDate(attachment.notification_date)
             }">

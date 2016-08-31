@@ -33,11 +33,17 @@ class Notification extends Model
 
     public static function countUnapproved()
     {
-        $existing = static::where('user_id', User::fromSession()->id)
-                        ->where('approved', 0)
-                        ->whereRaw('date <= DATE(NOW())')
+        $existing = static::where('a.user_id', User::fromSession()->id)
+                        ->join('attachments as a', function($join) {
+                            $join->on('a.id', '=', 'notifications.entity_id')
+                                ->where('notifications.entity_type', '=', 'attachments');
+                        })
+                        ->whereNullOrZero('a.forecast')
+                        ->whereRaw('NOT EXISTS (SELECT id FROM archives WHERE archives.attachment_id = a.id)')
+                        ->where('notifications.approved', 0)
+                        ->whereRaw('notifications.date <= DATE(NOW())')
                         ->count();
-        $virtual = Attachment::where('attachments.user_id', User::fromSession()->id)
+        $virtual = Attachment::newest()->where('attachments.user_id', User::fromSession()->id)
                         ->leftJoin('notifications as n', function($join) {
                             $join->on('n.entity_id', '=', 'attachments.id')
                                  ->where('n.entity_type', '=','attachment');
