@@ -37,18 +37,22 @@ class CallTwoDays extends Command
      */
     public function handle()
     {
+	    \DB::table('notifications')->truncate();
         $attachments = \DB::table('attachments')->where('called', 1)->get();
 
+		$bar = $this->output->createProgressBar(count($attachments));
+
         foreach ($attachments as $attachment) {
-            $d = new \DateTime(strtotime($attachment->date));
+            $d = new \DateTime($attachment->date);
             $d->modify('+2 days');
             \App\Models\Notification::create([
                 'entity_id'   => $attachment->id,
                 'entity_type' => 'attachment',
                 'comment'     => 'узнать как идет процесс',
-                'approved'    => true,
-                'date'        => $d->format('Y-m-d')
+                'approved'    => 1,
+                'date'        => $d->format('d.m.y')
             ]);
+            $bar->advance();
         }
     }
 }

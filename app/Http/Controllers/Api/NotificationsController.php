@@ -18,12 +18,9 @@ class NotificationsController extends Controller
      */
     public function index(Request $request)
     {
-        $search = isset($_COOKIE['notifications']) ? json_decode($_COOKIE['notifications']) : (object)[];
-        $search->notifications = true;
-        return [
-            'counts' => Attachment::counts($search),
-            'data'   => Attachment::search($search)->paginate(30)
-        ];
+        return Notification::where('entity_type', $request->input('entity_type'))
+                        ->where('entity_id', $request->input('entity_id'))
+                        ->get();
     }
 
     /**
