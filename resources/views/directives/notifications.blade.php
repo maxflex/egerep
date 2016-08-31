@@ -5,7 +5,7 @@
     <div>
 		<div ng-repeat="notification in getNotifications() | orderBy:'created_at'" id='notification-@{{ notification.id }}' data-notification-id='@{{ notification.id }}'>
 			<div class='comment-div'>
-				<span style="color: @{{notification.user.color}}" class="comment-login">@{{notification.user.login}} <span class='comment-time'>@{{ formatDateTime(notification.created_at) }}:</span></span>
+				<span style="color: @{{notification.user.color}}" class="comment-login">@{{ notification.user.login || 'system' }} <span class='comment-time'>@{{ formatDateTime(notification.created_at) }}:</span></span>
 				<div class='new-notification' placeholder="текст напоминания" contenteditable="true" ng-keydown="editNotification(notification, $event)" ng-click='hack($event)'>@{{notification.comment}}</div>
                 <span>–</span>
                 <input class="notification-date-add" type="text" placeholder="дата" ng-keydown='editNotification(notification, $event)' ng-model='notification.date'>
