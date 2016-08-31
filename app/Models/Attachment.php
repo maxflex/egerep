@@ -435,9 +435,9 @@ class Attachment extends Model
             );
         });
 
-        if (isset($search->count)) {
-            $query->whereNotNull('n.id');
-        }
+        // if (isset($search->count)) {
+        //     $query->whereNotNull('n.id');
+        // }
 
         if (isset($search->approved)) {
             $query->where('n.approved', $search->approved);
