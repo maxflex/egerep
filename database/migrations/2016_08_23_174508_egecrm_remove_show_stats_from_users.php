@@ -13,7 +13,7 @@ class EgecrmRemoveShowStatsFromUsers extends Migration
     public function up()
     {
         Schema::connection('egecrm')->table('users', function (Blueprint $table) {
-            $table->dropColumn('show_stats');
+            // $table->dropColumn('show_stats');
         });
     }
 

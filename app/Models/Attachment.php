@@ -68,6 +68,11 @@ class Attachment extends Model
         return $this->hasMany('App\Models\Account', 'tutor_id', 'tutor_id');
     }
 
+    public function notifications()
+    {
+        return $this->morphMany('App\Models\Notification', 'notifiable');
+    }
+
     // ------------------------------------------------------------------------
 
     public function getUserLoginAttribute()

@@ -30044,13 +30044,13 @@ md-input-container textarea {
 .comment-block {
   font-size: 12px; }
 
+.comment-line {
+  display: initial;
+  outline: none; }
+
 .comment-div .save-coordinates, .comment-div .glyphicon-remove {
   -webkit-transition: all linear .25s;
   opacity: 0; }
-
-.comment-div .comment-line {
-  display: initial;
-  outline: none; }
 
 .comment-div:hover .save-coordinates, .comment-div:hover .glyphicon-remove {
   opacity: 1; }

@@ -2,6 +2,9 @@ angular.module('Egerep')
     .factory 'Marker', ($resource) ->
         $resource apiPath('markers'), {id: '@id'}, updateMethod()
 
+    .factory 'Notification', ($resource) ->
+        $resource apiPath('notifications'), {id: '@id'}, updateMethod()
+
     .factory 'Account', ($resource) ->
         $resource apiPath('accounts'), {id: '@id'}, updateMethod()
 

@@ -86,6 +86,7 @@ return array(
     'CreateLogsTable' => $baseDir . '/database/migrations/2016_07_06_133957_create_logs_table.php',
     'CreateMarkersTable' => $baseDir . '/database/migrations/2016_01_20_083340_create_markers_table.php',
     'CreateMetrosTable' => $baseDir . '/database/migrations/2016_02_24_105830_create_metros_table.php',
+    'CreateNotificationsTable' => $baseDir . '/database/migrations/2016_08_31_104913_create_notifications_table.php',
     'CreatePhoneDuplicatesTable' => $baseDir . '/database/migrations/2016_06_05_103425_create_phone_duplicates_table.php',
     'CreateRequestListsTable' => $baseDir . '/database/migrations/2016_02_19_113148_create_lists_table.php',
     'CreateRequestsTable' => $baseDir . '/database/migrations/2016_01_21_085227_create_requests_table.php',

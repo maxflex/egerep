@@ -2654,15 +2654,15 @@ white-space: nowrap;
 	font-size: 12px;
 }
 
+.comment-line {
+	display: initial;
+	outline: none;
+}
+
 .comment-div {
 	& .save-coordinates, & .glyphicon-remove {
 		-webkit-transition: all linear .25s;
 		opacity: 0;
-	}
-
-	& .comment-line {
-		display: initial;
-		outline: none;
 	}
 
 	&:hover {

@@ -60,6 +60,7 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
         Route::resource('markers', 'MarkersController');
+        Route::resource('notifications', 'NotificationsController');
         Route::resource('logs', 'LogsController');
         Route::get('tutors/list', 'TutorsController@lists');
         Route::post('tutors/filtered', 'TutorsController@filtered');

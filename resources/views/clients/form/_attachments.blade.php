@@ -14,6 +14,11 @@
 
         <div class="row mb">
             <div class="col-sm-12">
+                <notifications entity-type='attachment' entity-id='selected_attachment.id' user='{{ $user }}'></notifications>
+            </div>
+        </div>
+        <div class="row mb">
+            <div class="col-sm-12">
                 <comments entity-type='attachment' entity-id='selected_attachment.id' user='{{ $user }}'></comments>
             </div>
         </div>
