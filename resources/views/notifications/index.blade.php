@@ -71,8 +71,15 @@
             @{{ attachment.notification_comment ? attachment.notification_comment : 'комментарий отсутствует' }}
         </td>
         <td width="10%">
-            <span ng-class="{'phone-duplicate-new' : !attachment.notification_approved && pastDate(attachment.notification_date) }">
-                @{{ attachment.notification_date ? formatDate(attachment.notification_date) : formatDate(addDays(attachment.original_date, 2)) }}
+            <span ng-show='attachment.notification_date' ng-class="{
+                'phone-duplicate-new' : !attachment.notification_approved && pastDate(attachment.notification_date)
+            }">
+                @{{ formatDate(attachment.notification_date) }}
+            </span>
+            <span ng-show='!attachment.notification_date' ng-class="{
+                'phone-duplicate-new' : pastDate(addDays(attachment.original_date, 2))
+            }">
+                @{{ formatDate(addDays(attachment.original_date, 2)) }}
             </span>
         </td>
         <td width='10%'>
