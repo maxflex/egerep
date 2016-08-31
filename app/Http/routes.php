@@ -39,6 +39,8 @@ Route::group(['middleware' => ['web']], function () {
     // Route::resource('debt', 'DebtController', ['only' => 'index']);
     Route::get('debt/map', 'DebtController@map');
 
+    Route::get('notifications', 'NotificationsController@index');
+
     Route::get('summary/payments/{filter?}', 'SummaryController@payments');
     Route::get('summary/debtors/{filter?}', 'SummaryController@debtors');
     Route::get('summary/{filter?}', 'SummaryController@index');

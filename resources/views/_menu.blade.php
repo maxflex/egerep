@@ -11,6 +11,7 @@
 <a href="tutors" class="list-group-item">Преподаватели</a>
 <a href="reviews" class="list-group-item">Отзывы</a>
 <a href="tutors/select" class="list-group-item">Подбор без клиента</a>
+<a href="notifications" class="list-group-item">Напоминания</a>
 <a class="list-group-item active">Финансы</a>
 @if (\App\Models\User::fromSession()->show_accounts)
     <a href="periods" class="list-group-item">Расчеты</a>

@@ -62,15 +62,6 @@
             </select>
         </div>
         <div>
-            <select ng-model='search.called' class='selectpicker' ng-change='filter()'>
-                <option value="" data-subtext="@{{ counts.called[''] || '' }}">прозвонен через 2 дня</option>
-                <option disabled>──────────────</option>
-                <option ng-repeat='(id, name) in YesNo'
-                        data-subtext="@{{ counts.called[id] || '' }}"
-                        value="@{{id}}">@{{ name }}</option>
-            </select>
-        </div>
-        <div>
             <select ng-model='search.error' class='selectpicker fix-viewport' ng-change='filter()'>
                 <option value="" data-subtext="@{{ counts.error[''] || '' }}">все</option>
                 <option disabled>──────────────</option>
@@ -102,7 +93,6 @@
             </td>
             <td>Реквизиты</td>
             <td>Ошибки</td>
-            <td>2 дня</td>
         </tr>
         </thead>
         <tbody>
@@ -130,9 +120,6 @@
             </td>
             <td width='10%'>
                 <span ng-repeat='code in archive.errors.split(",")' ng-attr-aria-label="@{{ AttachmentErrors[code] }}" class='hint--bottom-left'>@{{ code }}@{{ $last ? '' : ',  ' }}</span>
-            </td>
-            <td width='4%'>
-                <span ng-show="archive.called">да</span>
             </td>
         </tr>
         </tbody>
