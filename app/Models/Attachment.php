@@ -70,7 +70,7 @@ class Attachment extends Model
 
     public function notifications()
     {
-        return $this->morphMany('App\Models\Notification', 'notifiable');
+        return $this->morphMany('App\Models\Notification', 'entity');
     }
 
     // ------------------------------------------------------------------------
@@ -326,6 +326,21 @@ class Attachment extends Model
             $new_search->error = $error;
             $counts['error'][$error] = static::search($new_search)->count();
         }
+
+        if (isset($search->notifications)) {
+            foreach(['', 0, 1] as $approved) {
+                $new_search = clone $search;
+                $new_search->notification_approved = $called;
+                $counts['notification_approved'][$approved] = static::search($new_search)->count();
+            }
+
+            foreach(array_merge(['', 0], User::active()->pluck('id')->all()) as $user_id) {
+                $new_search = clone $search;
+                $new_search->notification_user_id = $user_id;
+                $counts['notification_user_id'][$user_id] = static::search($new_search)->count();
+            }
+        }
+
         return $counts;
     }
 
@@ -350,6 +365,30 @@ class Attachment extends Model
             'a.created_at AS archive_date', 'a.total_lessons_missing',
             \DB::raw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) as lesson_count')
         );
+
+        if (isset($search->notifications)) {
+            $query->leftJoin('notifications as n', function($join) use ($query) {
+                $join->on('n.entity_id', '=', 'attachments.id')
+                    ->where('n.entity_type', '=','attachment');
+                $query->addSelect(
+                    'attachments.date AS original_date',
+                    'n.id AS notification_id',
+                    'n.user_id AS notification_user_id',
+                    'n.date as notification_date',
+                    'n.approved as notification_approved',
+                    'n.comment as notification_comment',
+                    'n.created_at as notification_created_at'
+                );
+            });
+            if (isset($search->notification_approved)) {
+                $query->where('n.approved', $search->notification_approved);
+            }
+
+            if (isset($search->notification_user_id)) {
+                $query->where('n.user_id', $search->notification_user_id);
+            }
+        }
+
 
         if (isset($search->account_data)) {
            $query->whereRaw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) ' . ($search->account_data ? '=' : '>') . 0);

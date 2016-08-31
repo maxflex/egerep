@@ -6,7 +6,8 @@ angular.module('Egerep').directive 'comments', ->
         entityId: '='
         trackLoading: '='
         entityType: '@'
-    controller: ($rootScope, $scope, $timeout, Comment) ->
+    controller: ($rootScope, $scope, $timeout, Comment, UserService) ->
+        $scope.UserService = UserService
         $scope.show_max = 4                 # сколько комментов показывать в свернутом режиме
         $scope.show_all_comments = false    # показать все комментарии?
         $scope.is_dragging = false          # комментарий перетаскивается

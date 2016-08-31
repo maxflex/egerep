@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Attachment;
 use Illuminate\Http\Request;
 
 use App\Models\Notification;
@@ -17,9 +18,12 @@ class NotificationsController extends Controller
      */
     public function index(Request $request)
     {
-        return Notification::where('entity_type', $request->input('entity_type'))
-                        ->where('entity_id', $request->input('entity_id'))
-                        ->get();
+        $search = isset($_COOKIE['notifications']) ? json_decode($_COOKIE['notifications']) : (object)[];
+        $search->notifications = true;
+        return [
+            'counts' => Attachment::counts($search),
+            'data'   => Attachment::search($search)->paginate(30)
+        ];
     }
 
     /**

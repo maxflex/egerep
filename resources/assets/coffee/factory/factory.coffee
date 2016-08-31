@@ -1,4 +1,7 @@
 angular.module('Egerep')
+    .value 'Approved',
+        0: 'не подтвержден'
+        1: 'подтвержден'
     .value 'Months',
         1: 'январь'
         2: 'февраль'
