@@ -66,6 +66,9 @@
             <span ng-if="attachment.notification_created_at">
                 @{{ UserService.getLogin(attachment.notification_user_id) }}: @{{ formatDateTime(attachment.notification_created_at) }}
             </span>
+            <span ng-if="!attachment.notification_created_at">
+                @{{ UserService.getLogin(attachment.user_id) }}: @{{ formatDateTime(attachment.created_at) }}
+            </span>
         </td>
         <td width="30%">
             @{{ attachment.notification_comment ? attachment.notification_comment : 'комментарий отсутствует' }}
