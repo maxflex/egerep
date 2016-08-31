@@ -450,7 +450,7 @@ class Attachment extends Model
         }
 
         if (isset($search->user_id)) {
-            $query->where('n.user_id', $search->user_id);
+            $query->where('attachments.user_id', $search->user_id);
         }
 
         return $query->orderBy('attachments.created_at', 'desc');
