@@ -30,4 +30,12 @@ class Notification extends Model
     {
         $this->attributes['date'] = fromDotDate($value, '20');
     }
+
+    public static function countUnapproved()
+    {
+        return static::where('user_id', \App\Models\User::fromSession()->id)
+                        ->where('approved', 0)
+                        ->whereRaw('date <= DATE(NOW())')
+                        ->count();
+    }
 }
