@@ -439,7 +439,7 @@ class Attachment extends Model
         //     $query->whereNotNull('n.id');
         // }
 
-        if ($search->approved) {
+        if (isset($search->approved) && $search->approved) {
             $query->where('n.approved', $search->approved);
         }
 
