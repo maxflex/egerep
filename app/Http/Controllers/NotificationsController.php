@@ -19,7 +19,7 @@ class NotificationsController extends Controller
     {
         return view('notifications.index')->with(
             ngInit([
-                'page'                       => $request->input('page'),
+                'page' => $request->input('page'),
             ])
         );
     }

@@ -47,7 +47,7 @@ angular
 	loadAttachments = (page) ->
 		params = '?page=' + page
 
-		$http.get "api/notifications#{ params }"
+		$http.get "api/notifications/get#{ params }"
 		.then (response) ->
 			$scope.data = response.data.data
 			$scope.attachments = response.data.data.data

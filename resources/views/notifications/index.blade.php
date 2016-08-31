@@ -6,11 +6,11 @@
 
 <div class="row flex-list attachment-filters" style="width: 50%">
     <div>
-        <select ng-model='search.notification_approved' class='selectpicker' ng-change='filter()'>
-            <option value="" data-subtext="@{{ counts.notification_approved[''] || '' }}">все</option>
+        <select ng-model='search.approved' class='selectpicker' ng-change='filter()'>
+            <option value="" data-subtext="@{{ counts.approved[''] || '' }}">все</option>
             <option disabled>──────────────</option>
             <option ng-repeat='(id, name) in Approved'
-                    data-subtext="@{{ counts.notification_approved[id] || '' }}"
+                    data-subtext="@{{ counts.approved[id] || '' }}"
                     value="@{{id}}">@{{ name }}</option>
         </select>
     </div>
@@ -27,13 +27,13 @@
     </div>
 
     <div>
-        <select class="form-control selectpicker" ng-model='search.notification_user_id' ng-change="filter()" id='change-user'>
-            <option value="" data-subtext="@{{ counts.notification_user_id[''] || '' }}">пользователь</option>
+        <select class="form-control selectpicker" ng-model='search.user_id' ng-change="filter()" id='change-user'>
+            <option value="" data-subtext="@{{ counts.user_id[''] || '' }}">пользователь</option>
             <option disabled>──────────────</option>
             <option
                     ng-repeat="user in UserService.getWithSystem()"
                     value="@{{ user.id }}"
-                    data-content="<span style='color: @{{ user.color || 'black' }}'>@{{ user.login }}</span><small class='text-muted'>@{{ counts.notification_user_id[user.id] || '' }}</small>"
+                    data-content="<span style='color: @{{ user.color || 'black' }}'>@{{ user.login }}</span><small class='text-muted'>@{{ counts.user_id[user.id] || '' }}</small>"
             ></option>
         </select>
     </div>
