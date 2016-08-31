@@ -26287,6 +26287,9 @@ input[type="radio"][disabled], input[type="checkbox"][disabled], input[type="rad
 .half-opacity {
   opacity: .5; }
 
+.quater-opacity {
+  opacity: .25; }
+
 .half-opacity-color {
   color: rgba(51, 122, 184, 0.5); }
   .half-opacity-color:hover {

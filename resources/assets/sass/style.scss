@@ -2120,6 +2120,9 @@ input[type="radio"][disabled], input[type="checkbox"][disabled], input[type="rad
 .half-opacity {
 	opacity: .5;
 }
+.quater-opacity {
+	opacity: .25;
+}
 
 .half-opacity-color {
 	color: rgba(51, 122, 184, 0.5);
@@ -3002,6 +3005,9 @@ a.link-white {
 
 .o3 {
 	opacity: .3 !important;
+}
+.o75 {
+	opacity: .75 !important;
 }
 
 h4 {
