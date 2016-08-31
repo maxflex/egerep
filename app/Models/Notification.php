@@ -33,9 +33,13 @@ class Notification extends Model
 
     public static function countUnapproved()
     {
-        return static::where('user_id', \App\Models\User::fromSession()->id)
+        $existing = static::where('user_id', User::fromSession()->id)
                         ->where('approved', 0)
                         ->whereRaw('date <= DATE(NOW())')
                         ->count();
+        $virtual = Attachment::where('user_id', User::fromSession()->id)
+                        ->whereRaw('date <= DATE(NOW())')
+                        ->count();
+        return $existing + $virtual;
     }
 }
