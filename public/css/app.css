@@ -30051,9 +30051,11 @@ md-input-container textarea {
   display: initial;
   outline: none; }
 
-.new-notification[contenteditable=true]:empty:before {
-  content: attr(placeholder);
-  color: #999999; }
+.new-notification {
+  display: inline-block; }
+  .new-notification[contenteditable=true]:empty:before {
+    content: attr(placeholder);
+    color: #999999; }
 
 .comment-div .save-coordinates, .comment-div .glyphicon-remove {
   -webkit-transition: all linear .25s;

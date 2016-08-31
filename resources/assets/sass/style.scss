@@ -2664,6 +2664,7 @@ white-space: nowrap;
 
 .new-notification {
 	@extend .comment-line;
+	display: inline-block;
 	&[contenteditable=true]:empty:before{
 	  content: attr(placeholder);
 	  color: $placeholder_gray;
