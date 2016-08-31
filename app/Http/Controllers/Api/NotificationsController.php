@@ -16,13 +16,13 @@ class NotificationsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function get()
     {
         $search = isset($_COOKIE['notifications']) ? json_decode($_COOKIE['notifications']) : (object)[];
-        $search->notifications = true;
+
         return [
-            'counts' => Attachment::counts($search),
-            'data'   => Attachment::search($search)->paginate(30)
+            'data'   => Attachment::notificationSearch($search)->paginate(30),
+            'counts' => Attachment::notificationCounts($search),
         ];
     }
 

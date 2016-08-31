@@ -327,68 +327,17 @@ class Attachment extends Model
             $counts['error'][$error] = static::search($new_search)->count();
         }
 
-        if (isset($search->notifications)) {
-            foreach(['', 0, 1] as $approved) {
-                $new_search = clone $search;
-                $new_search->notification_approved = $called;
-                $counts['notification_approved'][$approved] = static::search($new_search)->count();
-            }
-
-            foreach(array_merge(['', 0], User::active()->pluck('id')->all()) as $user_id) {
-                $new_search = clone $search;
-                $new_search->notification_user_id = $user_id;
-                $counts['notification_user_id'][$user_id] = static::search($new_search)->count();
-            }
-        }
-
         return $counts;
     }
 
     public static function search($search)
     {
-        $search = filterParams($search);
-
-        /**
-         * сделал с join чтобы сортировать
-         */
-        $query = static::with(['tutor', 'client']);
-
-        if (isset($search->state)) {
-            $query->searchByState($search->state);
-        }
-
-        $query->join('request_lists as r', 'request_list_id', '=', 'r.id');             /* request_id нужен чтобы генерить правильную ссылку для редактирования */
+        $query = static::commonSearch($search);
         $query->leftJoin('archives as a', 'a.attachment_id', '=', 'attachments.id');
-
-        $query->select(
-            'attachments.*', 'r.request_id',
+        $query->addSelect(
             'a.created_at AS archive_date', 'a.total_lessons_missing',
             \DB::raw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) as lesson_count')
         );
-
-        if (isset($search->notifications)) {
-            $query->leftJoin('notifications as n', function($join) use ($query) {
-                $join->on('n.entity_id', '=', 'attachments.id')
-                    ->where('n.entity_type', '=','attachment');
-                $query->addSelect(
-                    'attachments.date AS original_date',
-                    'n.id AS notification_id',
-                    'n.user_id AS notification_user_id',
-                    'n.date as notification_date',
-                    'n.approved as notification_approved',
-                    'n.comment as notification_comment',
-                    'n.created_at as notification_created_at'
-                );
-            });
-            if (isset($search->notification_approved)) {
-                $query->where('n.approved', $search->notification_approved);
-            }
-
-            if (isset($search->notification_user_id)) {
-                $query->where('n.user_id', $search->notification_user_id);
-            }
-        }
-
 
         if (isset($search->account_data)) {
            $query->whereRaw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) ' . ($search->account_data ? '=' : '>') . 0);
@@ -428,6 +377,85 @@ class Attachment extends Model
 
         if (isset($search->called)) {
             $query->where('called', $search->called);
+        }
+
+        return $query->orderBy('attachments.created_at', 'desc');
+    }
+
+    public static function commonSearch(&$search)
+    {
+        $search = filterParams($search);
+
+        /**
+         * сделал с join чтобы сортировать
+         */
+        $query = static::with(['tutor']);
+
+        if (isset($search->state)) {
+            $query->searchByState($search->state);
+        }
+
+        $query->join('request_lists as r', 'request_list_id', '=', 'r.id');/* request_id нужен чтобы генерить правильную ссылку для редактирования */
+        $query->select('attachments.*', 'r.request_id');
+
+        if (isset($search->state)) {
+            $query->searchByState($search->state);
+        }
+
+        return $query;
+    }
+
+    public static function notificationCounts($search)
+    {
+        foreach(array_merge(['', 0], User::active()->pluck('id')->all()) as $user_id) {
+            $new_search = clone $search;
+            $new_search->count  = true;
+            $new_search->user_id = $user_id;
+            $counts['user_id'][$user_id] = static::notificationSearch($new_search)->count();
+        }
+        foreach(['', 'new', 'inprogress', 'ended'] as $state) {
+            $new_search = clone $search;
+            $new_search->count  = true;
+            $new_search->state = $state;
+            $counts['state'][$state] = static::notificationSearch($new_search)->count();
+        }
+
+        foreach(['', 0, 1] as $approved) {
+            $new_search = clone $search;
+            $new_search->count  = true;
+            $new_search->approved = $approved;
+            $counts['approved'][$approved] = static::notificationSearch($new_search)->count();
+        }
+        return $counts;
+    }
+
+    public static function notificationSearch($search)
+    {
+        $query = static::commonSearch($search);
+        $query->leftJoin('notifications as n', function($join) use ($query) {
+            $join->on('n.entity_id', '=', 'attachments.id')
+                 ->where('n.entity_type', '=','attachment');
+            $query->addSelect(
+                'attachments.date AS original_date',
+                'n.id AS notification_id',
+                'n.user_id AS notification_user_id',
+                'n.date as notification_date',
+                'n.approved as notification_approved',
+                'n.comment as notification_comment',
+                'n.created_at as notification_created_at'
+            );
+        });
+
+        if (isset($search->count)) {
+            $query->whereNotNull('n.id');
+        }
+
+        if (isset($search->approved)) {
+            $query->where('n.approved', $search->approved);
+        }
+
+        if (isset($search->user_id)) {
+            $query->where('n.user_id', $search->user_id);
         }
 
         return $query->orderBy('attachments.created_at', 'desc');
