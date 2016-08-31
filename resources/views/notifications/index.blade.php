@@ -52,7 +52,7 @@
         </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="attachment in attachments" ng-class="{'label-transparent': !attachment.notification_id}">
+    <tr ng-repeat="attachment in attachments" ng-class="{'quater-opacity': !attachment.notification_id}">
         <td align="left" width="9%">
             <a href="requests/@{{ attachment.request_id }}/edit#@{{ attachment.request_list_id }}#@{{ attachment.id }}">стыковка @{{ attachment.id }}</a>
         </td>
@@ -71,7 +71,7 @@
             @{{ attachment.notification_comment ? attachment.notification_comment : 'комментарий отсутствует' }}
         </td>
         <td width="10%">
-            <span ng-class="{'phone-duplicate-new' : pastDate(attachment.notification_date) }">
+            <span ng-class="{'phone-duplicate-new' : !attachment.notification_approved && pastDate(attachment.notification_date) }">
                 @{{ attachment.notification_date ? formatDate(attachment.notification_date) : formatDate(addDays(attachment.original_date, 2)) }}
             </span>
         </td>
