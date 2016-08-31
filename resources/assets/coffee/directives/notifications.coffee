@@ -106,6 +106,7 @@ angular.module('Egerep').directive 'notifications', ->
                 window.getSelection().removeAllRanges()
                 saveEdit(notification, event)
             if event.keyCode is 27
+                window.getSelection().removeAllRanges()
                 $(event.target).blur()
 
         notificate = (event) ->
@@ -144,4 +145,5 @@ angular.module('Egerep').directive 'notifications', ->
                 event.preventDefault()
                 notificate(event)
             if event.keyCode is 27
+                window.getSelection().removeAllRanges()
                 $(event.target).blur()
