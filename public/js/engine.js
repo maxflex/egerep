@@ -189,6 +189,8 @@
 		    $.mask.definitions['h'] = "[0-9]";
 		    $.mask.definitions['M'] = "[0-5]";
 		    $.mask.definitions['m'] = "[0-9]";
+			$.mask.definitions['y'] = "[0-1]";
+			$.mask.definitions['d'] = "[0-3]";
 			$(".timemask").mask("Hh:Mm", {clearIfNotMatch: true});
 
 			// Маска телефонов

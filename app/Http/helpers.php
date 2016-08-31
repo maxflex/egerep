@@ -43,9 +43,12 @@
     /**
      * Деформатировать дату
      */
-    function fromDotDate($date)
+    function fromDotDate($date, $add_year = null)
     {
         $parts = explode('.', $date);
+        if ($add_year !== null) {
+            $parts[2] = $add_year . $parts[2];
+        }
         return implode('-', array_reverse($parts));
     }
 

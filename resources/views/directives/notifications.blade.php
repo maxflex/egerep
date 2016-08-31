@@ -1,12 +1,21 @@
 <div class="comment-block">
     <div ng-show='notifications.length > show_max && !show_all_notifications'>
-        <span class='comment-add pointer' ng-click='showAllNotifications()'>все комментарии (@{{ notifications.length - show_max + 1 }})</span>
+        <span class='comment-add pointer' ng-click='showAllNotifications()'>все напоминания (@{{ notifications.length - show_max + 1 }})</span>
     </div>
     <div>
 		<div ng-repeat="notification in getNotifications() | orderBy:'created_at'" id='notification-@{{ notification.id }}' data-notification-id='@{{ notification.id }}'>
 			<div class='comment-div'>
 				<span style="color: @{{notification.user.color}}" class="comment-login">@{{notification.user.login}} <span class='comment-time'>@{{ formatDateTime(notification.created_at) }}:</span></span>
-				<div class='comment-line' ng-click="edit(notification, $event)">@{{notification.comment}}</div>
+				<div class='new-notification' placeholder="текст напоминания" contenteditable="true" ng-keydown="editNotification(notification, $event)" ng-click='hack($event)'>@{{notification.comment}}</div>
+                <span>–</span>
+                <input class="notification-date-add" type="text" placeholder="дата" ng-keydown='editNotification(notification, $event)' ng-model='notification.date'>
+                <span
+                    class='link-like-no-color'
+                    ng-click="toggle(notification)"
+                    ng-class="{
+                    'text-danger': notification.approved == 0,
+                    'text-success': notification.approved != 0
+                }">@{{ Approved[notification.approved] }}</span>
 			</div>
 		</div>
 	</div>
@@ -17,12 +26,14 @@
 		<span class="comment-add-hidden" ng-show='start_notificationing'>
 			<span class="comment-add-login notification-login" style="color: @{{ user.color }}">
 			@{{ user.login }}: </span>
-			<div style='border: 1px solid black' type="text" placeholder="введите комментарий..."
-                ng-blur='start_notificationing = false'
+			<div placeholder="текст напоминания"
                 ng-model='comment'
-                class='comment-line'
+                class='new-notification'
                 contenteditable="true"
-                ng-keydown='submitNotification($event)'>@{{ comment }}</div>
+                ng-keydown='submitNotification($event)'></div>
+            <span class='text-gray'>–</span>
+            <input class="notification-date-add" type="text" placeholder="дата" ng-keydown='submitNotification($event)'>
+            @{{ date }}
 		</span>
 	</div>
 </div>

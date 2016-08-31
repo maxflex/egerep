@@ -30044,9 +30044,13 @@ md-input-container textarea {
 .comment-block {
   font-size: 12px; }
 
-.comment-line {
+.comment-line, .new-notification {
   display: initial;
   outline: none; }
+
+.new-notification[contenteditable=true]:empty:before {
+  content: attr(placeholder);
+  color: #999999; }
 
 .comment-div .save-coordinates, .comment-div .glyphicon-remove {
   -webkit-transition: all linear .25s;
@@ -30192,11 +30196,14 @@ md-input-container textarea {
 .link-like.text-danger {
   color: #A94442; }
 
-.comment-add-field {
+.comment-add-field, .notification-date-add {
   outline: none;
   border: 0;
   width: 50%;
   background-color: transparent; }
+
+.notification-date-add {
+  width: 50px; }
 
 .comment-add {
   color: #999999;
