@@ -48,6 +48,7 @@ angular.module('Egerep').directive 'notifications', ->
         # передобавляет contenteditable, хотя он есть всегда
         $scope.hack = (event) ->
             $(event.target).attr('contenteditable', true).focus()
+            return
 
         $scope.toggle = (notification) ->
             $rootScope.toggleEnumServer(notification, 'approved', Approved, Notification)
@@ -100,6 +101,8 @@ angular.module('Egerep').directive 'notifications', ->
                 date: date
 
         $scope.editNotification = (notification, event) ->
+            handleDateKeycodes event
+
             if event.keyCode is 13
                 event.preventDefault()
                 $(event.target).blur()
@@ -140,7 +143,21 @@ angular.module('Egerep').directive 'notifications', ->
             $scope.endNotificationing(comment_element, date_element)
 
 
+        handleDateKeycodes = (event) ->
+            return if $(event.target).prop('tagName') is 'DIV'
+            if event.keyCode in [38, 40]
+                date_node = $(event.target).parent().find('input')
+                date = date_node.val()
+                if date.match /_/
+                    date_node.val $rootScope.formatDate moment()
+                else
+                    add_days = if event.keyCode == 38 then 1 else -1
+                    new_date = $rootScope.formatDate moment('20' + convertDate date).add {day : add_days} # '20' чтобы  16 => 2016
+                    date_node.val new_date
+
         $scope.submitNotification = (event) ->
+            handleDateKeycodes event
+
             if event.keyCode is 13
                 event.preventDefault()
                 notificate(event)
