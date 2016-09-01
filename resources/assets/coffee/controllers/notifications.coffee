@@ -39,7 +39,7 @@ angular
 		if attachment.notification_id
 			attachment.notification_approved is 0 and attachment.notification_date <= today
 		else
- 			$scope.addDays(attachment.original_date, 2) <= today
+ 			$scope.addDays(attachment.original_date, 2).format('YYYY-MM-DD') <= today
 
 
 	$timeout ->

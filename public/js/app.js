@@ -2235,7 +2235,7 @@
       if (attachment.notification_id) {
         return attachment.notification_approved === 0 && attachment.notification_date <= today;
       } else {
-        return $scope.addDays(attachment.original_date, 2) <= today;
+        return $scope.addDays(attachment.original_date, 2).format('YYYY-MM-DD') <= today;
       }
     };
     $timeout(function() {
