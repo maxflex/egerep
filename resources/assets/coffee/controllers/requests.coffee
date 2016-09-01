@@ -12,16 +12,6 @@ angular
                 request.user_id = data.new_user_id
                 $scope.$apply()
 
-        # track comment loading.
-        $rootScope.loaded_comments = 0
-        $scope.$watch () ->
-            console.log $rootScope.loaded_comments
-            $rootScope.loaded_comments
-        , (val) ->
-            console.log val
-            $rootScope.frontend_loading = false if $scope.requests and $scope.requests.length == val
-        # /track comment loading.
-
         $scope.howLongAgo = (created_at) ->
             now = moment(Date.now())
             created_at = moment(new Date(created_at).getTime())
@@ -75,7 +65,7 @@ angular
                         marker.metros = _.sortBy marker.metros, (s) ->
                             s.minutes
 
-                $rootScope.frontend_loading = false if not $scope.requests.length
+                $rootScope.frontend_loading = false
 
             $http.post "api/requests/counts",
                 state: $scope.chosen_state_id

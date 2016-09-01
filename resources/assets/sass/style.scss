@@ -2662,6 +2662,15 @@ white-space: nowrap;
 	outline: none;
 }
 
+.new-notification {
+	@extend .comment-line;
+	display: inline-block;
+	&[contenteditable=true]:empty:before{
+	  content: attr(placeholder);
+	  color: $placeholder_gray;
+	}
+}
+
 .comment-div {
 	& .save-coordinates, & .glyphicon-remove {
 		-webkit-transition: all linear .25s;
@@ -2850,6 +2859,11 @@ white-space: nowrap;
   // width: calc(100% - 20px);
   width: 50%;
   background-color: transparent;
+}
+
+.notification-date-add {
+	@extend .comment-add-field;
+	width: 50px;
 }
 
 .comment-add {

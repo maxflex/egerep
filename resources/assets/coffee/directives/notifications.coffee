@@ -6,13 +6,16 @@ angular.module('Egerep').directive 'notifications', ->
         entityId: '='
         trackLoading: '='
         entityType: '@'
-    controller: ($rootScope, $scope, $timeout, Notification) ->
+    controller: ($rootScope, $scope, $timeout, Notification, Approved) ->
         $scope.show_max = 4                         # сколько комментов показывать в свернутом режиме
         $scope.show_all_notifications = false       # показать все напоминания?
         $scope.is_dragging = false                  # комментарий перетаскивается
+        $scope.Notification = Notification
+        $scope.Approved = Approved
 
-        bindDraggable = (notification_id) ->
-            $("#notification-#{notification_id}").draggable
+        bindDraggableAndMask = (notification_id) ->
+            element = $("#notification-#{notification_id}")
+            element.draggable
                 revert: 'invalid'
                 activeClass: 'drag-active'
                 start: (e, ui) ->
@@ -21,10 +24,11 @@ angular.module('Egerep').directive 'notifications', ->
                 stop: (e, ui) ->
                     $scope.is_dragging = false
                     $scope.$apply()
+            element.find('.notification-date-add').mask 'd9.y9.y9', {clearIfNotMatch: true}
 
         $timeout ->
             $scope.notifications.forEach (notification) ->
-                bindDraggable(notification.id)
+                bindDraggableAndMask(notification.id)
             $("#notification-delete-#{$scope.entityType}-#{$scope.entityId}").droppable
                 tolerance: 'pointer'
                 hoverClass: 'hovered'
@@ -36,10 +40,17 @@ angular.module('Egerep').directive 'notifications', ->
             $scope.show_all_notifications = true
             $timeout ->
                 $scope.notifications.forEach (notification) ->
-                    bindDraggable(notification.id)
+                    bindDraggableAndMask(notification.id)
 
         $scope.getNotifications = ->
             if ($scope.show_all_notifications or $scope.notifications.length <= $scope.show_max) then $scope.notifications else _.last($scope.notifications, $scope.show_max - 1)
+
+        # передобавляет contenteditable, хотя он есть всегда
+        $scope.hack = (event) ->
+            $(event.target).attr('contenteditable', true).focus()
+
+        $scope.toggle = (notification) ->
+            $rootScope.toggleEnumServer(notification, 'approved', Approved, Notification)
 
         # перезагружаем комменты, если меняется entity_id
         $scope.$watch 'entityId', (newVal, oldVal) ->
@@ -56,60 +67,83 @@ angular.module('Egerep').directive 'notifications', ->
             $scope.start_notificationing = true
             $timeout ->
                 $(event.target).parent().find('div').focus()
+                $(event.target).parent().find('input').mask 'd9.y9.y9', {clearIfNotMatch: true}
 
-        $scope.endNotificationing = ->
-            $scope.comment = ''
+        $scope.endNotificationing = (comment_element, date_element)->
+            comment_element.html('')
+            date_element.val('')
             $scope.start_notificationing = false
 
         $scope.remove = (notification_id) ->
             _.find($scope.notifications, {id: notification_id}).$remove()
             $scope.notifications = _.without($scope.notifications, _.findWhere($scope.notifications, {id: notification_id}))
 
-        $scope.edit = (notification, event) ->
-            old_text    = notification.notification
-            element     = $(event.target)
+        saveEdit = (notification, event) ->
+            event.preventDefault()
+            parent          = $(event.target).parent()
+            comment_element = parent.find('div')
+            date_element    = parent.find('input')
+            comment         = comment_element.text()
+            date            = date_element.val()
 
-            element.unbind('keydown').unbind('blur')
+            if date is '' or date.match /_/
+                console.log 'no date', date, date_element
+                date_element.blur().focus()
+                return
+            if comment is ''
+                console.log 'no comment', comment, comment_element
+                comment_element.focus()
+                return
 
-            element.attr('contenteditable', 'true').focus()
-                .on 'keydown', (e) ->
-                    console.log old_text
-                    if e.keyCode is 13
-                        $(@).removeAttr('contenteditable').blur()
-                        notification.notification = $(@).text()
-                        notification.$update()
-                    if e.keyCode is 27
-                        $(@).blur()
+            Notification.update {id: notification.id},
+                comment: comment
+                date: date
 
-                .on 'blur', (e) ->
-                    if element.attr 'contenteditable'
-                        console.log old_text
-                        element.removeAttr('contenteditable').html old_text
-            return
-            # setEndOfContenteditable(event.target)
+        $scope.editNotification = (notification, event) ->
+            if event.keyCode is 13
+                event.preventDefault()
+                $(event.target).blur()
+                window.getSelection().removeAllRanges()
+                saveEdit(notification, event)
+            if event.keyCode is 27
+                window.getSelection().removeAllRanges()
+                $(event.target).blur()
 
-        $scope.resizeInput = (event) ->
-            $(event.target).attr('size', $(event.target).val().length)
+        notificate = (event) ->
+            parent          = $(event.target).parent()
+            comment_element = parent.find('div')
+            date_element    = parent.find('input')
+            comment         = comment_element.text()
+            date            = date_element.val()
+
+            if date is '' or date.match /_/
+                date_element.blur().focus()
+                return
+            if comment is ''
+                comment_element.focus()
+                return
+            new_notification = new Notification
+                comment: comment
+                user_id: $scope.user.id
+                entity_id: $scope.entityId
+                date: date
+                entity_type: $scope.entityType
+            new_notification.$save()
+                .then (response)->
+                    console.log response
+                    new_notification.user = $scope.user
+                    new_notification.id = response.id
+                    new_notification.approved = 0
+                    $scope.notifications.push new_notification
+                    $timeout ->
+                        bindDraggableAndMask(new_notification.id)
+            $scope.endNotificationing(comment_element, date_element)
+
 
         $scope.submitNotification = (event) ->
             if event.keyCode is 13
-                date = $scope.comment.match /[\d]{2}\.[\d]{2}\.[\d]{4}/
-                return if date is null
-                new_notification = new Notification
-                    comment: $scope.comment
-                    user_id: $scope.user.id
-                    entity_id: $scope.entityId
-                    date: date[0]
-                    entity_type: $scope.entityType
-                new_notification.$save()
-                    .then (response)->
-                        console.log response
-                        new_notification.user = $scope.user
-                        new_notification.id = response.id
-                        $scope.notifications.push new_notification
-                        $timeout ->
-                            bindDraggable(new_notification.id)
-                $scope.endNotificationing()
-
+                event.preventDefault()
+                notificate(event)
             if event.keyCode is 27
+                window.getSelection().removeAllRanges()
                 $(event.target).blur()

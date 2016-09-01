@@ -99,6 +99,7 @@ return array(
     'DatabaseSeeder' => $baseDir . '/database/seeds/DatabaseSeeder.php',
     'DropAttachmentColumns' => $baseDir . '/database/migrations/2016_02_19_133212_drop_attachment_columns.php',
     'DropAttachmentErrorsTable' => $baseDir . '/database/migrations/2016_08_04_185649_drop_attachment_errors_table.php',
+    'DropCalledFromAttachments' => $baseDir . '/database/migrations/2016_08_31_155417_drop_called_from_attachments.php',
     'DropCheckedFromAttachments' => $baseDir . '/database/migrations/2016_07_15_133620_drop_checked_from_attachments.php',
     'DropClientSubjectList' => $baseDir . '/database/migrations/2016_02_19_112701_drop_client_subject_list.php',
     'DropColumnClientsCountFromTutors' => $baseDir . '/database/migrations/2016_08_08_132249_drop_column_clients_count_from_tutors.php',

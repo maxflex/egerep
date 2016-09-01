@@ -25,8 +25,7 @@ class Attachment extends Model
         'review',
         'comment',
         'forecast',
-        'hide',
-        'called',
+        'hide'
     ];
     protected $casts = [
         'grade' => 'int',
@@ -316,17 +315,11 @@ class Attachment extends Model
             $new_search->hide = $hide;
             $counts['hide'][$hide] = static::search($new_search)->count();
         }
-        foreach(['', 0, 1] as $called) {
-            $new_search = clone $search;
-            $new_search->called = $called;
-            $counts['called'][$called] = static::search($new_search)->count();
-        }
         foreach(array_merge([''], range(1, 15)) as $error) {
             $new_search = clone $search;
             $new_search->error = $error;
             $counts['error'][$error] = static::search($new_search)->count();
         }
-
         return $counts;
     }
 
@@ -373,10 +366,6 @@ class Attachment extends Model
 
         if (isset($search->error)) {
             $query->whereRaw("FIND_IN_SET({$search->error}, attachments.errors)");
-        }
-
-        if (isset($search->called)) {
-            $query->where('called', $search->called);
         }
 
         return $query->orderBy('attachments.created_at', 'desc');
@@ -446,16 +435,22 @@ class Attachment extends Model
             );
         });
 
-        if (isset($search->count)) {
-            $query->whereNotNull('n.id');
-        }
+        // if (isset($search->count)) {
+        //     $query->whereNotNull('n.id');
+        // }
 
         if (isset($search->approved)) {
-            $query->where('n.approved', $search->approved);
+            if ($search->approved) {
+                $query->where('n.approved', 1);
+            } else {
+                $query->where(function($query) {
+                    $query->whereNull('n.id')->orWhere('n.approved', 0);
+                });
+            }
         }
 
         if (isset($search->user_id)) {
-            $query->where('n.user_id', $search->user_id);
+            $query->where('attachments.user_id', $search->user_id);
         }
 
         return $query->orderBy('attachments.created_at', 'desc');

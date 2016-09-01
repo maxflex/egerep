@@ -11,6 +11,13 @@ use App\Http\Controllers\Controller;
 
 class NotificationsController extends Controller
 {
+    public function index(Request $request)
+    {
+        return Notification::where('entity_type', $request->input('entity_type'))
+                        ->where('entity_id', $request->input('entity_id'))
+                        ->get();
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -19,7 +26,6 @@ class NotificationsController extends Controller
     public function get()
     {
         $search = isset($_COOKIE['notifications']) ? json_decode($_COOKIE['notifications']) : (object)[];
-
         return [
             'data'   => Attachment::notificationSearch($search)->paginate(30),
             'counts' => Attachment::notificationCounts($search),
