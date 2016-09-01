@@ -83,7 +83,7 @@
         <td ng-class="{'quater-opacity': !attachment.notification_id}" width='10%'>
             @{{ Approved[attachment.notification_approved || 0] }}
         </td>
-        <td>
+        <td ng-class="{'quater-opacity': !attachment.notification_id}">
             <span class='text-danger' ng-show='needsCall(attachment)'>требует звонка</span>
         </td>
     </tr>
