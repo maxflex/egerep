@@ -84,7 +84,6 @@ angular
             _.filter(UserService.getBannedUsers(), (u) ->
                 scope.user_counts[u.id] > 0).length
 
-
         $scope.changeState = ->
             localStorage.setItem('requests_index_state', $scope.state)
             $scope.changeList($scope.state)
