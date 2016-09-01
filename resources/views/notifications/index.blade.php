@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="row flex-list attachment-filters" style="width: 50%">
+<div class="row flex-list attachment-filters" style="width: 100%">
     <div>
         <select ng-model='search.approved' class='selectpicker' ng-change='filter()'>
             <option value="" data-subtext="@{{ counts.approved[''] || '' }}">все</option>
@@ -37,6 +37,14 @@
             ></option>
         </select>
     </div>
+    <div>
+        <select class="form-control selectpicker" ng-model='search.type' ng-change="filter()" id='change-type'>
+            <option value="" data-subtext="@{{ counts.type[''] || '' }}">все</option>
+            <option disabled>──────────────</option>
+            <option data-subtext="@{{ counts.type[0] || '' }}" value="0">требующие звонка</option>
+            <option data-subtext="@{{ counts.type[1] || '' }}" value="1">не требующие звонка</option>
+        </select>
+    </div>
 </div>
 
 <table class="table" style="font-size: 0.8em;">
@@ -45,50 +53,39 @@
             <td></td>
             <td align="left">ПРЕПОДАВАТЕЛЬ</td>
             <td align="left">СТЫКОВКА</td>
-            <td>РЕКВИЗИТЫ НАПОМИНАНИЯ</td>
             <td align="left">КОММЕНТАРИЙ</td>
             <td>ДАТА НАПОМИНАНИЯ</td>
             <td>СТАТУС</td>
         </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="attachment in attachments" ng-class="{'quater-opacity': !attachment.notification_id}">
+    <tr ng-repeat="attachment in attachments">
         <td align="left" width="9%">
             <a href="requests/@{{ attachment.request_id }}/edit#@{{ attachment.request_list_id }}#@{{ attachment.id }}">стыковка @{{ attachment.id }}</a>
         </td>
-        <td align="left" width="15%">
+        <td align="left" width="20%">
             <a href="tutors/@{{ attachment.tutor_id }}/edit">@{{ attachment.tutor.full_name}}</a>
         </td>
         <td width="6%">
             @{{ attachment.date }}
         </td>
-        <td width='15%'>
-            <span ng-if="attachment.notification_created_at">
-                @{{ UserService.getLogin(attachment.notification_user_id) }}: @{{ formatDateTime(attachment.notification_created_at) }}
-            </span>
-            <span ng-if="!attachment.notification_created_at">
-                @{{ UserService.getLogin(attachment.user_id) }}: @{{ formatDateTime(attachment.created_at) }}
-            </span>
-        </td>
-        <td width="30%">
+        <td ng-class="{'quater-opacity': !attachment.notification_id}" width="30%">
             @{{ attachment.notification_comment ? attachment.notification_comment : 'комментарий отсутствует' }}
         </td>
-        <td width="10%">
-            <span ng-show='attachment.notification_date' ng-class="{
-                'phone-duplicate-new' : !attachment.notification_approved && pastDate(attachment.notification_date) && AttachmentService.getStatus(attachment) == 'новые'
-            }">
+        <td ng-class="{'quater-opacity': !attachment.notification_id}" width="10%">
+            <span ng-show='attachment.notification_date'>
                 @{{ formatDate(attachment.notification_date) }}
             </span>
-            <span ng-show='!attachment.notification_date' ng-class="{
-                'phone-duplicate-new' : pastDate(addDays(attachment.original_date, 2)) && AttachmentService.getStatus(attachment) == 'новые'
-            }">
+            <span ng-show='!attachment.notification_date'>
                 @{{ formatDate(addDays(attachment.original_date, 2)) }}
             </span>
         </td>
-        <td width='10%'>
+        <td ng-class="{'quater-opacity': !attachment.notification_id}" width='10%'>
             @{{ Approved[attachment.notification_approved || 0] }}
         </td>
-
+        <td ng-class="{'quater-opacity': !attachment.notification_id}">
+            <span class='text-danger' ng-show='needsCall(attachment)'>требует звонка</span>
+        </td>
     </tr>
     </tbody>
 </table>

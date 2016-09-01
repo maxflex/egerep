@@ -182,6 +182,14 @@ class Attachment extends Model
     }
 
     /**
+     * Заархивированные или рабочие
+     */
+    public function scopeArchivedOrActive($query)
+    {
+        return $query->whereRaw("(EXISTS (SELECT 1 FROM archives WHERE archives.attachment_id = attachments.id) OR (forecast > 0))");
+    }
+
+    /**
      * Рабочие стыковки
      */
     public function scopeActive($query)
@@ -398,22 +406,24 @@ class Attachment extends Model
     {
         foreach(array_merge(['', 0], User::active()->pluck('id')->all()) as $user_id) {
             $new_search = clone $search;
-            $new_search->count  = true;
             $new_search->user_id = $user_id;
             $counts['user_id'][$user_id] = static::notificationSearch($new_search)->count();
         }
         foreach(['', 'new', 'inprogress', 'ended'] as $state) {
             $new_search = clone $search;
-            $new_search->count  = true;
             $new_search->state = $state;
             $counts['state'][$state] = static::notificationSearch($new_search)->count();
         }
 
         foreach(['', 0, 1] as $approved) {
             $new_search = clone $search;
-            $new_search->count  = true;
             $new_search->approved = $approved;
             $counts['approved'][$approved] = static::notificationSearch($new_search)->count();
+        }
+        foreach(['', 0, 1] as $type) {
+            $new_search = clone $search;
+            $new_search->type = $type;
+            $counts['type'][$type] = static::notificationSearch($new_search)->count();
         }
         return $counts;
     }
@@ -435,10 +445,6 @@ class Attachment extends Model
             );
         });
 
-        // if (isset($search->count)) {
-        //     $query->whereNotNull('n.id');
-        // }
-
         if (isset($search->approved)) {
             if ($search->approved) {
                 $query->where('n.approved', 1);
@@ -449,11 +455,20 @@ class Attachment extends Model
             }
         }
 
+        if (isset($search->type)) {
+            // требующие звонка
+            if ($search->type) {
+                $query->whereRaw("((n.id IS NULL AND ((EXISTS (SELECT 1 FROM archives WHERE archives.attachment_id = attachments.id) OR (attachments.forecast > 0)) OR attachments.date > DATE(NOW()))) OR (n.id > 0 AND (n.approved = 1 OR n.date > DATE(NOW()))))");
+            } else {
+                $query->newest()->whereRaw("((n.id IS NULL AND attachments.date <= DATE(NOW())) OR (n.id > 0 AND n.approved = 0 AND n.date <= DATE(NOW())))");
+            }
+        }
+
         if (isset($search->user_id)) {
             $query->where('attachments.user_id', $search->user_id);
         }
 
-        return $query->orderBy('attachments.created_at', 'desc');
+        return $query->orderBy(DB::raw('IF(n.id IS NULL, DATE_ADD(attachments.created_at, INTERVAL 2 DAY), n.created_at)'), 'desc');
     }
 
     /**

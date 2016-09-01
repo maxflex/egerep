@@ -2,12 +2,16 @@ angular.module 'Egerep'
     .service 'AttachmentService', (AttachmentStates) ->
         this.AttachmentStates = AttachmentStates
 
-        this.getStatus = (attachment) ->
+        this.getState = (attachment) ->
             if attachment.archive
-                this.AttachmentStates['ended']
+                'ended'
             else
                 if attachment.forecast
-                    this.AttachmentStates['inprogress']
+                    'inprogress'
                 else
-                    this.AttachmentStates['new']
+                    'new'
+
+        this.getStatus = (attachment) ->
+            this.AttachmentStates[this.getState(attachment)]
+            
         this

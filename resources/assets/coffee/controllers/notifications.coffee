@@ -31,7 +31,15 @@ angular
 		$scope.attachments = []
 		$scope.current_page = 1
 		loadAttachments($scope.current_page)
-		window.history.pushState(state_id, '', 'notifications/' + state_id.toLowerCase());
+		window.history.pushState(state_id, '', 'notifications/' + state_id.toLowerCase())
+
+	$scope.needsCall = (attachment) ->
+		return false if AttachmentService.getState(attachment) isnt 'new'
+		if attachment.notification_id
+			attachment.notification_approved is 0
+		else
+			true
+
 
 	$timeout ->
 		$scope.search = if $.cookie("notifications") then JSON.parse($.cookie("notifications")) else {}
