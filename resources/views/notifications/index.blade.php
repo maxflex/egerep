@@ -45,6 +45,14 @@
             <option data-subtext="@{{ counts.type[1] || '' }}" value="1">не требующие звонка</option>
         </select>
     </div>
+    <div>
+        <select class="form-control selectpicker" ng-model='search.created' ng-change="filter()" id='change-created'>
+            <option value="" data-subtext="@{{ counts.created[''] || '' }}">все</option>
+            <option disabled>──────────────</option>
+            <option data-subtext="@{{ counts.created[1] || '' }}" value="1">созданные</option>
+            <option data-subtext="@{{ counts.created[0] || '' }}" value="0">автоматические</option>
+        </select>
+    </div>
 </div>
 
 <table class="table" style="font-size: 0.8em;">
