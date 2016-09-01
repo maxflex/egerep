@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Redis;
+
 use Illuminate\Database\Eloquent\Model;
 use App\Events\IncomingRequest;
 use App\Events\RequestUserChanged;
@@ -135,7 +137,14 @@ class Request extends Model
      */
     public static function userCounts($state)
     {
-        $user_ids = static::where('user_id', '>', 0)->groupBy('user_id')->pluck('user_id');
+        if ($user_ids = Redis::get('user_ids')) {
+            $user_ids = explode(',', $user_ids);     // @todo вставить/получить массив как массив.
+        } else {
+            $user_ids = static::where('user_id', '>', 0)->groupBy('user_id')->pluck('user_id');
+            Redis::set('user_ids', implode(',', $user_ids));
+        }
+
+//        $user_ids = static::where('user_id', '>', 0)->groupBy('user_id')->pluck('user_id');
         $user_ids[] = 0;
         $return = [];
         foreach ($user_ids as $user_id) {
