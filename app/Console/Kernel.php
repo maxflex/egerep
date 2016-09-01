@@ -40,6 +40,7 @@ class Kernel extends ConsoleKernel
         Commands\CalcTutorMargin::class,
         Commands\SendSMSToOldClients::class,
         Commands\CallTwoDays::class,
+        Commands\DeleteNotifications::class,
     ];
 
     /**
