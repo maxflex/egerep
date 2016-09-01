@@ -458,9 +458,9 @@ class Attachment extends Model
         if (isset($search->type)) {
             // требующие звонка
             if ($search->type) {
-                $query->whereRaw("((n.id IS NULL AND ((EXISTS (SELECT 1 FROM archives WHERE archives.attachment_id = attachments.id) OR (attachments.forecast > 0)) OR attachments.date > DATE(NOW()))) OR (n.id > 0 AND (n.approved = 1 OR n.date > DATE(NOW()))))");
+                $query->whereRaw("((n.id IS NULL AND ((EXISTS (SELECT 1 FROM archives WHERE archives.attachment_id = attachments.id) OR (attachments.forecast > 0)) OR DATE_ADD(attachments.date, INTERVAL 2 DAY) > DATE(NOW()))) OR (n.id > 0 AND (n.approved = 1 OR n.date > DATE(NOW()))))");
             } else {
-                $query->newest()->whereRaw("((n.id IS NULL AND attachments.date <= DATE(NOW())) OR (n.id > 0 AND n.approved = 0 AND n.date <= DATE(NOW())))");
+                $query->newest()->whereRaw("((n.id IS NULL AND DATE_ADD(attachments.date, INTERVAL 2 DAY) <= DATE(NOW())) OR (n.id > 0 AND n.approved = 0 AND n.date <= DATE(NOW())))");
             }
         }
 
