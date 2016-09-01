@@ -5,7 +5,7 @@
     <div>
 		<div ng-repeat="comment in getComments() | orderBy:'created_at'" id='comment-@{{ comment.id }}' data-comment-id='@{{ comment.id }}'>
 			<div class='comment-div'>
-				<span style="color: @{{ UserService.getLogin(comment.user_id) }}" class="comment-login">@{{ UserService.getLogin(comment.user_id) }} <span class='comment-time'>@{{ formatDateTime(comment.created_at) }}:</span></span>
+				<span style="color: @{{ UserService.getColor(comment.user_id) }}" class="comment-login">@{{ UserService.getLogin(comment.user_id) }} <span class='comment-time'>@{{ formatDateTime(comment.created_at) }}:</span></span>
 				<div class='comment-line' ng-click="edit(comment, $event)">@{{comment.comment}}</div>
 			</div>
 		</div>
