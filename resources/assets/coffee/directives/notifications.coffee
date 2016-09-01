@@ -101,10 +101,9 @@ angular.module('Egerep').directive 'notifications', ->
                 date: date
 
         $scope.editNotification = (notification, event) ->
+            event.preventDefault()
             handleDateKeycodes event
-
             if event.keyCode is 13
-                event.preventDefault()
                 $(event.target).blur()
                 window.getSelection().removeAllRanges()
                 saveEdit(notification, event)
@@ -156,10 +155,9 @@ angular.module('Egerep').directive 'notifications', ->
                     date_node.val new_date
 
         $scope.submitNotification = (event) ->
+            event.preventDefault()
             handleDateKeycodes event
-
             if event.keyCode is 13
-                event.preventDefault()
                 notificate(event)
             if event.keyCode is 27
                 window.getSelection().removeAllRanges()
