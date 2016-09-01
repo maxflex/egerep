@@ -21,7 +21,7 @@ class Request extends Model
     protected $attributes = [
         'state' => 'new',
     ];
-    protected $with = ['user', 'lists'];
+    protected $with = ['lists'];
     protected $fillable = [
         'comment',
         'state',

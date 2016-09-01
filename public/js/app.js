@@ -2408,7 +2408,7 @@
     };
     $scope.hasBannedUsers = function() {
       return _.filter(UserService.getBannedUsers(), function(u) {
-        return scope.user_counts[u.id] > 0;
+        return scope.user_counts[u.id] !== void 0 && scope.user_counts[u.id] > 0;
       }).length;
     };
     $scope.changeState = function() {
