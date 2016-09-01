@@ -11,10 +11,10 @@
     <plural count='tutor.age' type='age'></plural>
 </td>
 <td width='50'>
-    @{{ tutor.lk }}
+    @{{ tutor.tb }}
 </td>
 <td width='50'>
-    @{{ tutor.tb }}
+    @{{ tutor.lk }}
 </td>
 <td width='50'>
     @{{ tutor.js }}
