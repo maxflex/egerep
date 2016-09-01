@@ -468,7 +468,8 @@ class Attachment extends Model
             $query->where('attachments.user_id', $search->user_id);
         }
 
-        return $query->orderBy(DB::raw('IF(n.id IS NULL, DATE(DATE_ADD(attachments.date, INTERVAL 2 DAY)), n.date)'), 'desc');
+        return $query->orderBy(DB::raw('IF(n.id IS NULL, DATE(DATE_ADD(attachments.date, INTERVAL 2 DAY)), n.date)'), 'desc')
+                orderBy('attachments.id', 'desc');
     }
 
     /**
