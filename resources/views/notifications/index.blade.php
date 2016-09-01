@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="row flex-list attachment-filters" style="width: 50%">
+<div class="row flex-list attachment-filters" style="width: 75%">
     <div>
         <select ng-model='search.approved' class='selectpicker' ng-change='filter()'>
             <option value="" data-subtext="@{{ counts.approved[''] || '' }}">все</option>
