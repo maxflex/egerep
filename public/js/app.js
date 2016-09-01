@@ -2227,13 +2227,15 @@
       return window.history.pushState(state_id, '', 'notifications/' + state_id.toLowerCase());
     };
     $scope.needsCall = function(attachment) {
+      var today;
       if (AttachmentService.getState(attachment) !== 'new') {
         return false;
       }
+      today = moment().format("YYYY-MM-DD");
       if (attachment.notification_id) {
-        return attachment.notification_approved === 0;
+        return attachment.notification_approved === 0 && attachment.notification_date <= today;
       } else {
-        return true;
+        return $scope.addDays(attachment.original_date, 2) <= today;
       }
     };
     $timeout(function() {

@@ -35,10 +35,11 @@ angular
 
 	$scope.needsCall = (attachment) ->
 		return false if AttachmentService.getState(attachment) isnt 'new'
+		today = moment().format("YYYY-MM-DD")
 		if attachment.notification_id
-			attachment.notification_approved is 0
+			attachment.notification_approved is 0 and attachment.notification_date <= today
 		else
-			true
+ 			$scope.addDays(attachment.original_date, 2) <= today
 
 
 	$timeout ->

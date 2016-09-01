@@ -38,7 +38,7 @@ class Notification extends Model
                         $join->on('n.entity_id', '=', 'attachments.id')
                              ->where('n.entity_type', '=','attachment');
                     })
-                    ->whereRaw("(n.id IS NULL AND attachments.date <= DATE(NOW())) OR (n.id > 0 AND n.approved = 0 AND n.date <= DATE(NOW()))")
+                    ->whereRaw("(n.id IS NULL AND DATE_ADD(attachments.date, INTERVAL 2 DAY) <= DATE(NOW())) OR (n.id > 0 AND n.approved = 0 AND n.date <= DATE(NOW()))")
                     ->count();
     }
 }
