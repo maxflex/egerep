@@ -469,7 +469,7 @@ class Attachment extends Model
         }
 
         return $query->orderBy(DB::raw('IF(n.id IS NULL, DATE(DATE_ADD(attachments.date, INTERVAL 2 DAY)), n.date)'), 'desc')
-                orderBy('attachments.id', 'desc');
+                     ->orderBy('attachments.id', 'desc');
     }
 
     /**
