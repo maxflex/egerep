@@ -22,8 +22,7 @@ class Vocation extends Model
     public function getDataAttribute($value)
     {
         if (count($value)) {
-            // all data to be displayed
-            return static::allEvents();
+            return json_decode($value);
         } else {
             return $value;
         }
