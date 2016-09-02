@@ -1,9 +1,9 @@
 {{-- ВЫБОР ВРЕМЕНИ --}}
 <div id="choose-time" class="modal" role="dialog" tabindex="-1">
-  <div class="modal-dialog">
+  <div class="modal-dialog" style='width: 300px'>
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Редактировать время</h4>
+        <h4 class="modal-title center">Редактировать время</h4>
       </div>
       <div class="modal-body">
           <div style='display: flex; justify-content: center; align-items: center'>

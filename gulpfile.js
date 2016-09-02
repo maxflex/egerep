@@ -59,5 +59,9 @@ elixir(function(mix) {
             '../bower/moment/locale/ru.js',
             '../bower/angular-bootstrap-calendar/dist/js/angular-bootstrap-calendar-tpls.js',
             '../bower/jquery-color-animation/jquery.animate-colors-min.js',
+            '../bower/ace-builds/src/ace.js',
+            '../bower/ace-builds/src/mode-html.js',
+            '../bower/ace-builds/src/mode-json.js',
+            '../bower/ace/lib/ace/commands/default_commands.js',
         ], 'public/js/vendor.js');
 });

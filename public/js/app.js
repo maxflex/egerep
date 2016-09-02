@@ -1722,6 +1722,33 @@
 }).call(this);
 
 (function() {
+  angular.module('Egerep').controller('ContractIndex', function($scope, $http, UserService) {
+    return bindArguments($scope, arguments);
+  }).controller('ContractEdit', function($scope, $http, $timeout, UserService) {
+    bindArguments($scope, arguments);
+    $scope.save = function() {
+      ajaxStart();
+      this.saving = true;
+      $scope.contract_html = $scope.editor.getValue();
+      return $http.post("contract", {
+        contract_html: $scope.contract_html,
+        contract_date: $scope.contract_date
+      }).then(function(response) {
+        ajaxEnd();
+        return this.saving = false;
+      });
+    };
+    return angular.element(document).ready(function() {
+      return $timeout(function() {
+        $scope.editor = ace.edit('editor');
+        return $scope.editor.getSession().setMode('ace/mode/html');
+      }, 300);
+    });
+  });
+
+}).call(this);
+
+(function() {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   angular.module('Egerep').controller('DebtMap', function($scope, $timeout, TutorService, Tutor, Subjects, YesNo) {

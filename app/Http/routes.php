@@ -61,6 +61,9 @@ Route::group(['middleware' => ['web']], function () {
 	# Поиск по преподам
 	Route::post('search', 'TutorsController@index');
 
+    Route::get('contract/edit', 'ContractController@edit');
+    Route::resource('contract', 'ContractController');
+
     Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
         Route::resource('vocations', 'VocationsController');
         Route::resource('markers', 'MarkersController');
