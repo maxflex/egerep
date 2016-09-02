@@ -7,3 +7,4 @@ Envoy.blade.php
 .env
 vendor/composer/*
 /.idea
+.DS_Store
