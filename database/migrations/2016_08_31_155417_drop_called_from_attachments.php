@@ -13,7 +13,7 @@ class DropCalledFromAttachments extends Migration
     public function up()
     {
         Schema::table('attachments', function (Blueprint $table) {
-            $table->dropColumn('called');
+            // $table->dropColumn('called');
         });
     }
 

@@ -14,6 +14,9 @@ angular.module 'Egerep'
             id: 0
             banned: 0
 
+        this.get = (user_id) ->
+            this.getUser(user_id)
+            
         this.getUser = (user_id) ->
             _.findWhere(this.users, {id: parseInt(user_id)}) or system_user
 

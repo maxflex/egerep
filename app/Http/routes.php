@@ -11,6 +11,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
 });
 
 Route::group(['middleware' => ['web']], function () {
+    Route::resource('vocations', 'VocationsController');
     Route::resource('reviews', 'ReviewsController', ['only' => 'index']);
 
     Route::get('client/{id}', function($id) {
@@ -61,6 +62,7 @@ Route::group(['middleware' => ['web']], function () {
 	Route::post('search', 'TutorsController@index');
 
     Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
+        Route::resource('vocations', 'VocationsController');
         Route::resource('markers', 'MarkersController');
         Route::get('notifications/get', 'NotificationsController@get');
         Route::resource('notifications', 'NotificationsController');

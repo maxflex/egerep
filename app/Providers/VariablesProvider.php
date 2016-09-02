@@ -9,7 +9,6 @@ class VariablesProvider extends ServiceProvider
 
     const VARIABLES = [
         'js' => [
-            'moment.min',
             'bootbox',
             'inputmask',
             'mask',

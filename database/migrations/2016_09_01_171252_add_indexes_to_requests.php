@@ -13,8 +13,8 @@ class AddIndexesToRequests extends Migration
     public function up()
     {
         Schema::table('requests', function (Blueprint $table) {
-            $table->index('user_id');
-            $table->index('state');
+            // $table->index('user_id');
+            // $table->index('state');
         });
     }
 

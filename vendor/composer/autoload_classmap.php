@@ -97,6 +97,7 @@ return array(
     'CreateStudentsFreetimeTable' => $baseDir . '/database/migrations/2016_08_18_133932_create_students_freetime_table.php',
     'CreateSummariesTable' => $baseDir . '/database/migrations/2016_06_06_143359_create_summaries_table.php',
     'CreateTutorStateChangeTable' => $baseDir . '/database/migrations/2016_04_29_103710_create_tutor_state_change_table.php',
+    'CreateVocationsTable' => $baseDir . '/database/migrations/2016_09_02_120308_create_vocations_table.php',
     'DatabaseSeeder' => $baseDir . '/database/seeds/DatabaseSeeder.php',
     'DropAttachmentColumns' => $baseDir . '/database/migrations/2016_02_19_133212_drop_attachment_columns.php',
     'DropAttachmentErrorsTable' => $baseDir . '/database/migrations/2016_08_04_185649_drop_attachment_errors_table.php',

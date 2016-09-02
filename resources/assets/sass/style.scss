@@ -3783,3 +3783,18 @@ table.summary-table.left-align tr td {
 .badge-success {
 	background-color: #158E51;
 }
+
+.cal-month-day, ng-include, .cal-cell {
+	outline: none;
+}
+.cal-day-tick {
+	display: none;
+}
+
+.cal-arrow {
+	font-size: 30px;
+    margin-top: 5px;
+}
+.cal-events-num.badge {
+	display: none !important;
+}
