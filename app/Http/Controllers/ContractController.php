@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Models\User;
 use App\Http\Requests;
 use App\Models\Service\Settings;
 use App\Http\Controllers\Controller;
@@ -66,7 +66,7 @@ class ContractController extends Controller
      */
     public function edit()
     {
-        if (in_array(\App\Models\User::fromSession()->id, [1, 56, 65, 69])) {
+        if (User::isDev() || User::isRoot()) {
             return view('contract.edit')->with(
                 ngInit([
                     'contract_html'  => Settings::get('contract_html'),

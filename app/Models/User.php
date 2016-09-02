@@ -143,4 +143,13 @@ class User extends Model
     {
         return $query->where('type', static::USER_TYPE)->where('banned_egerep', 0);
     }
+
+    public static function isDev() {
+        return User::fromSession()->is_dev == 1;
+    }
+
+    public static function isRoot() {
+        return User::fromSession()->id == 1;
+
+    }
 }
