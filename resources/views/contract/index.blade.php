@@ -2,7 +2,7 @@
 @section('title', 'Договор')
 @section('controller', 'ContractIndex')
 
-@if (in_array(\App\Models\User::fromSession()->id, [1, 56, 65, 69]))
+@if (\App\Models\User::isDev() || \App\Models\User::isRoot())
     @section('title-right')
         {{ link_to('contract/edit', 'изменить договор') }}
     @endsection
