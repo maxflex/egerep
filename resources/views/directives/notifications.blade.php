@@ -15,7 +15,7 @@
                     ng-class="{
                     'text-danger': notification.approved == 0,
                     'text-success': notification.approved != 0
-                }">@{{ Approved[notification.approved] }}</span>
+                }">@{{ Notify[notification.approved] }}</span>
 			</div>
 		</div>
 	</div>

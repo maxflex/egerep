@@ -17,6 +17,7 @@ angular.module('Egerep')
         12: 'декабрь'
 
     .value 'Approved', ['не подтверждено', 'подтверждено']
+    .value 'Notify', ['не напоминать', 'напомнить']
 
     .value 'AttachmentErrors',
         1: 'в стыковке не указан класс'

@@ -6,12 +6,12 @@ angular.module('Egerep').directive 'notifications', ->
         entityId: '='
         trackLoading: '='
         entityType: '@'
-    controller: ($rootScope, $scope, $timeout, Notification, Approved) ->
+    controller: ($rootScope, $scope, $timeout, Notification, Notify) ->
         $scope.show_max = 4                         # сколько комментов показывать в свернутом режиме
         $scope.show_all_notifications = false       # показать все напоминания?
         $scope.is_dragging = false                  # комментарий перетаскивается
         $scope.Notification = Notification
-        $scope.Approved = Approved
+        $scope.Notify = Notify
 
         bindDraggableAndMask = (notification_id) ->
             element = $("#notification-#{notification_id}")
@@ -51,7 +51,7 @@ angular.module('Egerep').directive 'notifications', ->
             return
 
         $scope.toggle = (notification) ->
-            $rootScope.toggleEnumServer(notification, 'approved', Approved, Notification)
+            $rootScope.toggleEnumServer(notification, 'approved', Notify, Notification)
 
         # перезагружаем комменты, если меняется entity_id
         $scope.$watch 'entityId', (newVal, oldVal) ->

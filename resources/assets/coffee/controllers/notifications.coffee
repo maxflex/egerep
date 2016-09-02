@@ -1,6 +1,6 @@
 angular
 .module 'Egerep'
-.controller 'NotificationsIndex', ($rootScope, $scope, $timeout, $http, AttachmentStates, AttachmentService, UserService, Approved) ->
+.controller 'NotificationsIndex', ($rootScope, $scope, $timeout, $http, AttachmentStates, AttachmentService, UserService, Notify) ->
 	bindArguments($scope, arguments)
 	$rootScope.frontend_loading = true
 

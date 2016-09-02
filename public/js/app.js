@@ -2184,7 +2184,7 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').controller('NotificationsIndex', function($rootScope, $scope, $timeout, $http, AttachmentStates, AttachmentService, UserService, Approved) {
+  angular.module('Egerep').controller('NotificationsIndex', function($rootScope, $scope, $timeout, $http, AttachmentStates, AttachmentService, UserService, Notify) {
     var loadAttachments, refreshCounts;
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
@@ -3643,13 +3643,13 @@
         trackLoading: '=',
         entityType: '@'
       },
-      controller: function($rootScope, $scope, $timeout, Notification, Approved) {
+      controller: function($rootScope, $scope, $timeout, Notification, Notify) {
         var bindDraggableAndMask, handleDateKeycodes, notificate, saveEdit;
         $scope.show_max = 4;
         $scope.show_all_notifications = false;
         $scope.is_dragging = false;
         $scope.Notification = Notification;
-        $scope.Approved = Approved;
+        $scope.Notify = Notify;
         bindDraggableAndMask = function(notification_id) {
           var element;
           element = $("#notification-" + notification_id);
@@ -3700,7 +3700,7 @@
           $(event.target).attr('contenteditable', true).focus();
         };
         $scope.toggle = function(notification) {
-          return $rootScope.toggleEnumServer(notification, 'approved', Approved, Notification);
+          return $rootScope.toggleEnumServer(notification, 'approved', Notify, Notification);
         };
         $scope.$watch('entityId', function(newVal, oldVal) {
           return $scope.notifications = Notification.query({
@@ -4163,7 +4163,7 @@
     10: 'октябрь',
     11: 'ноябрь',
     12: 'декабрь'
-  }).value('Approved', ['не подтверждено', 'подтверждено']).value('AttachmentErrors', {
+  }).value('Approved', ['не подтверждено', 'подтверждено']).value('Notify', ['не напоминать', 'напомнить']).value('AttachmentErrors', {
     1: 'в стыковке не указан класс',
     2: 'в стыковке не указан предмет',
     3: 'не указаны условия стыковки',

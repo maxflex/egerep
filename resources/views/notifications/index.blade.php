@@ -9,7 +9,7 @@
         <select ng-model='search.approved' class='selectpicker' ng-change='filter()'>
             <option value="" data-subtext="@{{ counts.approved[''] || '' }}">все</option>
             <option disabled>──────────────</option>
-            <option ng-repeat='(id, name) in Approved'
+            <option ng-repeat='(id, name) in Notify'
                     data-subtext="@{{ counts.approved[id] || '' }}"
                     value="@{{id}}">@{{ name }}</option>
         </select>
@@ -61,8 +61,9 @@
             <td></td>
             <td align="left">ПРЕПОДАВАТЕЛЬ</td>
             <td align="left">СТЫКОВКА</td>
+            <td align="left">РЕКВИЗИТЫ СТЫКОВКИ</td>
             <td align="left">КОММЕНТАРИЙ</td>
-            <td>ДАТА НАПОМИНАНИЯ</td>
+            <td>НАПОМИНАНИЕ</td>
             <td>СТАТУС</td>
         </tr>
     </thead>
@@ -77,7 +78,10 @@
         <td width="6%">
             @{{ attachment.date }}
         </td>
-        <td ng-class="{'quater-opacity': !attachment.notification_id}" width="30%">
+        <td width='20%'>
+            @{{ UserService.getLogin(attachment.user_id) }}: @{{ formatDateTime(attachment.created_at) }}
+        </td>
+        <td ng-class="{'quater-opacity': !attachment.notification_id}" width="20%">
             @{{ attachment.notification_comment ? attachment.notification_comment : 'комментарий отсутствует' }}
         </td>
         <td ng-class="{'quater-opacity': !attachment.notification_id}" width="10%">
@@ -89,7 +93,7 @@
             </span>
         </td>
         <td ng-class="{'quater-opacity': !attachment.notification_id}" width='10%'>
-            @{{ Approved[attachment.notification_approved || 0] }}
+            @{{ Notify[attachment.notification_approved || 0] }}
         </td>
         <td>
             <span class='text-danger' ng-show='needsCall(attachment)'>требует звонка</span>
