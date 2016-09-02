@@ -26,5 +26,8 @@
 <a class="list-group-item active">Административное</a>
 <a href="summary" class="list-group-item">Итоги</a>
 <a href="attachments/stats" class="list-group-item">Статистика</a>
+@if (\App\Models\User::fromSession()->show_user_contract)
+    <a href="contract" class="list-group-item">Договор</a>
+@endif
 <a href="logs" class="list-group-item">Логи</a>
 <a href="logout" class="list-group-item">Выход</a>

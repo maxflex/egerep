@@ -55,5 +55,9 @@ elixir(function(mix) {
             '../bower/jquery.floatThead/dist/jquery.floatThead.min.js',
             '../bower/jsSHA/src/sha256.js',
             '../bower/jquery.cookie/jquery.cookie.js',
+            '../bower/ace-builds/src/ace.js',
+            '../bower/ace-builds/src/mode-html.js',
+            '../bower/ace-builds/src/mode-json.js',
+            '../bower/ace/lib/ace/commands/default_commands.js',
         ], 'public/js/vendor.js');
 });

@@ -53,6 +53,8 @@
     "jquery.floatThead": "floatThead#^1.4.1",
     "hint.css": "^2.3.1",
     "jsSHA": "^2.1.0",
-    "jquery.cookie": "jquery-cookie#^1.4.1"
+    "jquery.cookie": "jquery-cookie#^1.4.1",
+    "ace-builds": "ace-build#^1.2.4",
+    "ace": "^1.2.5"
   }
 }
