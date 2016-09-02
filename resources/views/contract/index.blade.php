@@ -15,8 +15,6 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-12">
-            @{{ contract_html }}
-        </div>
+        <div class="col-sm-12 contract-content" ng-bind-html="contract_html"></div>
     </div>
 @stop

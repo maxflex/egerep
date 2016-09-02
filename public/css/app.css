@@ -31457,6 +31457,9 @@ table.summary-table.left-align tr td {
   bottom: 10px;
   right: 10px; }
 
+.contract-content {
+  text-indent: 20px; }
+
 .ios7-switch {
   display: inline-block;
   position: relative;

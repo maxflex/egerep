@@ -8,14 +8,14 @@ angular
 
 	$scope.save = ->
 		ajaxStart()
-		this.saving = true
+		$scope.saving = true
 		$scope.contract_html = $scope.editor.getValue()
 		$http.post "contract",
 			contract_html: $scope.contract_html
 			contract_date: $scope.contract_date
 		.then (response) ->
 			ajaxEnd()
-			this.saving = false
+			$scope.saving = false
 
 	angular.element(document).ready ->
 		$timeout ->

@@ -13,8 +13,7 @@
                     class='link-like-no-color'
                     ng-click="toggle(notification)"
                     ng-class="{
-                    'text-danger': notification.approved == 0,
-                    'text-success': notification.approved != 0
+                    'text-danger': notification.approved == 0
                 }">@{{ Notify[notification.approved] }}</span>
 			</div>
 		</div>
