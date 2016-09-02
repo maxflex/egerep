@@ -9,7 +9,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mb">
         <div class="col-sm-12 ">
             <div id='editor' style="height: 500px">@{{ contract_html }}</div>
         </div>
