@@ -57,8 +57,9 @@ class VocationsController extends Controller
     public function show($id)
     {
         return view('vocations.show')->with(ngInit([
-            'vocation' => Vocation::find($id),
-            'show'     => true
+            'vocation'  => Vocation::find($id),
+            'show'      => true,
+            'jump_date' => true,
         ]));
     }
 
@@ -75,7 +76,8 @@ class VocationsController extends Controller
             return redirect()->action('VocationsController@show', compact('id'));
         }
         return view('vocations.edit')->with(ngInit([
-            'vocation' => Vocation::find($id),
+            'vocation'  => Vocation::find($id),
+            'jump_date' => true // отображение в календаре должно начинаться с первой даты отпуска (прыгать на нужный месяц)
         ]));
     }
 

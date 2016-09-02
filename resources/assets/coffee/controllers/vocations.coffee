@@ -4,8 +4,12 @@ angular
 	calendarConfig.i18nStrings.weekNumber = ''
 .controller 'VocationsIndex', ($rootScope, $scope, $timeout, $http, Vocation, UserService) ->
 	bindArguments($scope, arguments)
-	$scope.calendarView = 'month'
-	$scope.calendarDate = moment().toDate()
+	$rootScope.frontend_loading = true
+
+	$timeout ->
+		$scope.calendarView = 'month'
+		$scope.calendarDate = if ($scope.jump_date) then moment($scope.vocation.data[0].startsAt).toDate() else moment().toDate()
+		$rootScope.frontend_loading = false
 
 	$scope.getTitle = ->
 		moment($scope.calendarDate).format 'MMMM YYYY'
