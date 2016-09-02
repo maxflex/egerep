@@ -16,15 +16,22 @@
         </span>
     </div>
 </div>
-<mwl-calendar
-    view="calendarView"
-    view-date="calendarDate"
-    events="vocation.data"
-    view-title="calendarTitle"
-    on-event-click='chooseTime(calendarEvent)'
-    on-timespan-click="toggleVocation(calendarDate, calendarCell)"
-    cell-is-open="true">
-</mwl-calendar>
+
+
+<div style='position: relative'>
+    <mwl-calendar
+        view="calendarView"
+        view-date="calendarDate"
+        events="vocation.data"
+        view-title="calendarTitle"
+        on-event-click='chooseTime(calendarEvent)'
+        on-timespan-click="toggleVocation(calendarDate, calendarCell)"
+        cell-is-open="true">
+    </mwl-calendar>
+    <div class='text-gray badge badge-vocation-days' ng-if='counter && vocation.data.length'>
+        <plural count='vocation.data.length' type='day'></plural>
+    </div>
+</div>
 
 <div ng-if='!index' class="row" style="margin-top: 15px; position: relative">
     <div class="blocker-div" ng-show='show'></div>
