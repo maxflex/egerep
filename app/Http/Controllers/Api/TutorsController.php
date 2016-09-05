@@ -160,7 +160,7 @@ class TutorsController extends Controller
          if (isset($subjects)) {
              $rawSql = '';
              foreach ($subjects as $k => $subject) {
-                 $rawSql .= ($k ? ' OR ' : '')." FIND_IN_SET('$subject',subjects) ";
+                 $rawSql .= ($k ? ' AND ' : '')." FIND_IN_SET('$subject',subjects) ";
              }
              $rawSql = ' ('.$rawSql.') ';
              $query->whereRaw($rawSql);
