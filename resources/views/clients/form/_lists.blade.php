@@ -59,7 +59,7 @@
                         </td>
                         <td style='width: 15%'>
                             <span ng-hide="attachmentExists(tutor.id)"
-                            class="link-like link-gray" style="margin-left: 10px"
+                            class="link-like link-gray"
                             ng-click="newAttachment(tutor.id)">создать стыковку</span>
                         </td>
                     </tr>
