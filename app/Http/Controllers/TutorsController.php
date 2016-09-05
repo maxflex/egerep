@@ -69,7 +69,7 @@ class TutorsController extends Controller
         ];
 
         if ($client->grade) {
-            $search['grade'] = [(string)$client->grade];
+            $search['grades'] = [(string)$client->grade];
         }
 
         return view('tutors.add-to-list.index')->with(ngInit([
