@@ -22,14 +22,7 @@
             return $this->markers()->where('type', $type)->get();
         }
 
-        public function save(array $options = [])
-        {
-            $this->_saveMarkers();
-            parent::save($options);
-        }
-
-
-        private function _saveMarkers()
+        public function saveMarkers()
         {
             // Пересохраняем маркеры лишь в том случае, если они были изменены
             if (is_object($this->markers)) {

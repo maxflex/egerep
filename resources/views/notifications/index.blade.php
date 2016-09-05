@@ -55,7 +55,7 @@
     </div>
 </div>
 
-<table class="table" style="font-size: 0.8em;">
+<table class="table">
     <thead class="bold">
         <tr>
             <td></td>
@@ -72,19 +72,19 @@
         <td align="left" width="9%">
             <a href="requests/@{{ attachment.request_id }}/edit#@{{ attachment.request_list_id }}#@{{ attachment.id }}">стыковка @{{ attachment.id }}</a>
         </td>
-        <td align="left" width="20%">
+        <td align="left" width="17%">
             <a href="tutors/@{{ attachment.tutor_id }}/edit">@{{ attachment.tutor.full_name}}</a>
         </td>
         <td width="6%">
             @{{ attachment.date }}
         </td>
-        <td width='20%'>
+        <td width='18%'>
             @{{ UserService.getLogin(attachment.user_id) }}: @{{ formatDateTime(attachment.created_at) }}
         </td>
         <td ng-class="{'quater-opacity': !attachment.notification_id}" width="20%">
             @{{ attachment.notification_comment ? attachment.notification_comment : 'комментарий отсутствует' }}
         </td>
-        <td ng-class="{'quater-opacity': !attachment.notification_id}" width="10%">
+        <td ng-class="{'quater-opacity': !attachment.notification_id}" width="9%">
             <span ng-show='attachment.notification_date'>
                 @{{ formatDate(attachment.notification_date) }}
             </span>
