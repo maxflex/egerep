@@ -41,6 +41,7 @@ class Kernel extends ConsoleKernel
         Commands\SendSMSToOldClients::class,
         Commands\CallTwoDays::class,
         Commands\DeleteNotifications::class,
+        Commands\UpdateArchivesChecked::class,
     ];
 
     /**
