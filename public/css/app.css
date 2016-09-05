@@ -31376,7 +31376,10 @@ table.summary-table.left-align tr td {
     -webkit-flex: 1;
     -ms-flex: 1;
     flex: 1;
-    margin-right: 10px; }
+    margin-right: 10px;
+    width: 0; }
+    .row.flex-list > div:last-child {
+      margin-right: 0; }
 
 .fix-viewport > .dropdown-menu {
   left: -100px; }
@@ -31411,10 +31414,6 @@ table.summary-table.left-align tr td {
   display: inline-block;
   vertical-align: middle;
   float: none; }
-
-.bootstrap-select.btn-group .btn .filter-option {
-  white-space: initial;
-  height: 20px; }
 
 .comment-time {
   color: #999999; }
@@ -31462,20 +31461,6 @@ table.summary-table.left-align tr td {
 
 .contract-content {
   text-indent: 20px; }
-
-.table, .dropdown-menu.open, .dropdown-toggle {
-  -webkit-font-smoothing: antialiased !important; }
-
-.bootstrap-select .btn .filter-option {
-  white-space: initial;
-  height: 20px;
-  display: inline-block;
-  overflow: hidden;
-  width: 100%;
-  text-align: left; }
-
-.dropdown-menu > li > a {
-  padding: 3px 45px 3px 20px; }
 
 .ios7-switch {
   display: inline-block;
