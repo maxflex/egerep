@@ -3813,3 +3813,18 @@ table.summary-table.left-align tr td {
 .contract-content {
 	text-indent: 20px;
 }
+
+.table, .dropdown-menu.open, .dropdown-toggle {
+  -webkit-font-smoothing: antialiased!important;
+}
+.bootstrap-select .btn .filter-option {
+  white-space: initial;
+  height: 20px;
+  display: inline-block;
+  overflow: hidden;
+  width: 100%;
+  text-align: left;
+}
+.dropdown-menu > li > a {
+  padding: 3px 45px 3px 20px;
+}
