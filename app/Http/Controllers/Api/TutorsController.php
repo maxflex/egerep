@@ -118,7 +118,7 @@ class TutorsController extends Controller
          extract(array_filter($request->search));
 
          // анализируем только не закрытых преподавателей с метками
-         $query = Tutor::has('markers')->where('state', '<>', 3);
+         $query = Tutor::has('markers');
 
          if (isset($id)) {
              $query->where('id', $id);
