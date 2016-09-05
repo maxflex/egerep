@@ -20,6 +20,12 @@
                         <td style='width: 22%'>
                             <a href="tutors/@{{ tutor.id }}/edit">@{{ tutor.full_name }}</a>
                         </td>
+                        {{-- <td>
+                            @{{ tutor.public_price }} руб.
+                            <span ng-show='tutor.departure_possible'>
+                                @{{   }}
+                            </span>
+                        </td> --}}
                         <td style='width: 10%'>
                             @include('modules.subjects-list', ['subjects' => 'tutor.subjects', 'type' => 'three_letters'])
                         </td>

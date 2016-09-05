@@ -14,7 +14,7 @@
 </div>
 <div class="info-line">
     <plural count='_tutor.clients_count' type='student' none-text='учеников нет'></plural>
-    <span class='remove-space'>, M@{{_tutor.margin}}</span>
+    <span class='remove-space' ng-show='_tutor.margin'>, M@{{_tutor.margin}}</span>
     <span class='remove-space'>
         , <plural count='_tutor.meeting_count' type='meeting' none-text='встреч нет'></plural>
     </span>
