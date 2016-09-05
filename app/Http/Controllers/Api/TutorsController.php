@@ -214,6 +214,7 @@ class TutorsController extends Controller
              'tb',
              'lk',
              'js',
+             'margin'
          ] + Tutor::$phone_fields);
 
          foreach($tutors as $tutor) {
