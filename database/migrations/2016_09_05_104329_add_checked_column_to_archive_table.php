@@ -13,7 +13,7 @@ class AddCheckedColumnToArchiveTable extends Migration
     public function up()
     {
         Schema::table('archives', function (Blueprint $table) {
-            $table->boolean('checked')->default(false);
+            $table->boolean('checked')->default(true);
             $table->index('checked');
         });
     }
