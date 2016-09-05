@@ -27,7 +27,7 @@
                                 <span ng-show='tutor.departure_price'>выезд от @{{ tutor.departure_price }} руб.</span>
                                 <span ng-show='!tutor.departure_price'>бесплатный выезд</span>
                             </span>
-                            <span ng-show='!tutor.departure_possible'>выезд невозможен</span>
+                            <span ng-show='!tutor.departure_possible'>(выезд невозможен)</span>
                         </td>
                         <td style='width: 10%'>
                             @include('modules.subjects-list', ['subjects' => 'tutor.subjects', 'type' => 'three_letters'])
