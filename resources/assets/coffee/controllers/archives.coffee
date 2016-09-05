@@ -4,7 +4,7 @@ angular
 	$resource 'api/archives/:id', {},
 		update:
 			method: 'PUT'
-.controller 'ArchivesIndex', ($rootScope, $scope, $timeout, $http, AttachmentService, UserService, PhoneService, Subjects, Grades, Presence, YesNo, AttachmentVisibility, AttachmentErrors) ->
+.controller 'ArchivesIndex', ($rootScope, $scope, $timeout, $http, AttachmentService, UserService, PhoneService, Subjects, Grades, Presence, YesNo, AttachmentVisibility, AttachmentErrors, ArchiveStates, Checked) ->
 	bindArguments($scope, arguments)
 	$rootScope.frontend_loading = true
 

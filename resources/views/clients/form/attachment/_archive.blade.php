@@ -39,8 +39,12 @@
             <b>Процесс заархивирован:</b> @{{ selected_attachment.archive.user_login }} @{{ formatDateTime(selected_attachment.archive.created_at) }}
         </div>
         <div class='mbs'>
-            <b>Разархивация и продолжение:</b> <span class="link-like"
-                ng-click="toggleEnum(selected_attachment.archive, 'state', ArchiveStates)">@{{ ArchiveStates[selected_attachment.archive.state] }}</span>
+            <b>Разархивация и продолжение:</b>
+                <span class="link-like"
+                      ng-click="toggleEnum(selected_attachment.archive, 'state', ArchiveStates)">@{{ ArchiveStates[selected_attachment.archive.state] }}</span>
+
+                <span class="link-like"
+                      ng-click="toggleEnum(selected_attachment.archive, 'checked', Checked)" ng-class="+selected_attachment.archive.checked ? 'text-raw' : 'text-danger'">@{{ Checked[selected_attachment.archive.checked] }}</span>
         </div>
     </div>
 

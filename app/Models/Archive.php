@@ -13,6 +13,7 @@ class Archive extends Model
         'date',
         'comment',
         'state',
+        'checked',
     ];
     protected $appends = ['user_login'];
     protected static $dotDates = ['date'];
@@ -116,6 +117,21 @@ class Archive extends Model
             $new_search->error = $error;
             $counts['error'][$error] = static::search($new_search)->count();
         }
+        foreach(array_merge([''], range(1, 13)) as $grade) {
+            $new_search = clone $search;
+            $new_search->grade = $grade;
+            $counts['grade'][$grade] = static::search($new_search)->count();
+        }
+        foreach(['', 'impossible', 'possible'] as $state) {
+            $new_search = clone $search;
+            $new_search->state = $state;
+            $counts['state'][$state] = static::search($new_search)->count();
+        }
+        foreach(['', 0, 1] as $checked) {
+            $new_search = clone $search;
+            $new_search->checked = $checked;
+            $counts['checked'][$checked] = static::search($new_search)->count();
+        }
         return $counts;
     }
 
@@ -131,9 +147,10 @@ class Archive extends Model
 
         $query->join('attachments', 'attachments.id', '=', 'archives.attachment_id');
         $query->join('request_lists as r', 'attachments.request_list_id', '=', 'r.id');             /* request_id нужен чтобы генерить правильную ссылку для редактирования */
+        $query->join('clients as c', 'attachments.client_id', '=', 'c.id');
 
         $query->select(
-            \DB::raw('archives.*, attachments.*, r.request_id, archives.created_at as archive_date, archives.user_id as archive_user_id, archives.id as archive_id'),
+            \DB::raw('archives.*, attachments.*, r.request_id, archives.created_at as archive_date, archives.user_id as archive_user_id, archives.id as archive_id, c.grade as client_grade'),
             'attachments.created_at AS attachment_date', 'total_lessons_missing',
             \DB::raw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) as lesson_count')
         );
@@ -172,6 +189,18 @@ class Archive extends Model
 
         if (isset($search->error)) {
             $query->whereRaw("FIND_IN_SET({$search->error}, attachments.errors)");
+        }
+
+        if (isset($search->grade)) {
+            $query->where('c.grade', $search->grade);
+        }
+
+        if (isset($search->state)) {
+            $query->where('archives.state', $search->state);
+        }
+
+        if (isset($search->checked)) {
+            $query->where('archives.checked', $search->checked);
         }
 
         return $query->orderBy('archives.created_at', 'desc');

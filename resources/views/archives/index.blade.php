@@ -70,6 +70,33 @@
                         value="@{{id}}">@{{ id }}</option>
             </select>
         </div>
+        <div>
+            <select ng-model='search.grade' class='selectpicker fix-viewport' ng-change='filter()'>
+                <option value="" data-subtext="@{{ counts.grade[''] || '' }}">текущий класс</option>
+                <option disabled>──────────────</option>
+                <option ng-repeat='(id, name) in Grades'
+                        data-subtext="@{{ counts.grade[id] || '' }}"
+                        value="@{{id}}">@{{ name }}</option>
+            </select>
+        </div>
+        <div>
+            <select ng-model='search.state' class='selectpicker fix-viewport' ng-change='filter()'>
+                <option value="" data-subtext="@{{ counts.state[''] || '' }}">разархивация</option>
+                <option disabled>──────────────</option>
+                <option ng-repeat='(id, name) in ArchiveStates'
+                        data-subtext="@{{ counts.state[id] || '' }}"
+                        value="@{{id}}">@{{ name }}</option>
+            </select>
+        </div>
+        <div>
+            <select ng-model='search.checked' class='selectpicker fix-viewport' ng-change='filter()'>
+                <option value="" data-subtext="@{{ counts.checked[''] || '' }}">статус проверки</option>
+                <option disabled>──────────────</option>
+                <option ng-repeat='(id, name) in Checked'
+                        data-subtext="@{{ counts.checked[id] || '' }}"
+                        value="@{{id}}">@{{ name }}</option>
+            </select>
+        </div>
     </div>
 
     <table class="table" style="font-size: 0.8em;">
@@ -93,6 +120,9 @@
             </td>
             <td>Реквизиты</td>
             <td>Ошибки</td>
+            <td>Текущий класс</td>
+            <td>Разархивация</td>
+            <td>Статус проверки</td>
         </tr>
         </thead>
         <tbody>
@@ -118,8 +148,17 @@
             <td width='20%'>
                 @{{ UserService.getLogin(archive.archive_user_id) }}: @{{ formatDateTime(archive.archive_date) }}
             </td>
-            <td width='10%'>
+            <td width='8%'>
                 <span ng-repeat='code in archive.errors.split(",")' ng-attr-aria-label="@{{ AttachmentErrors[code] }}" class='hint--bottom-left'>@{{ code }}@{{ $last ? '' : ',  ' }}</span>
+            </td>
+            <td width='6%'>
+                @{{ Grades[archive.client_grade] }}
+            </td>
+            <td width='8%'>
+                @{{ ArchiveStates[archive.state] }}
+            </td>
+            <td width='12%'>
+                @{{ Checked[archive.checked] }}
             </td>
         </tr>
         </tbody>
