@@ -61,16 +61,21 @@ class TutorsController extends Controller
 
     public function addToList($id)
     {
-        $list = RequestList::find($id);
+        $list   = RequestList::find($id);
+        $client = $list->request->client;
+        $search = [
+            'state'    => ["5"],
+            'subjects' => $list->subjects,
+        ];
+
+        if ($client->grade) {
+            $search['grade'] = (string)$client->grade;
+        }
 
         return view('tutors.add-to-list.index')->with(ngInit([
-            'search'       => [
-                'state'    => ["5"],
-                'grades'   => [(string)$list->request->client->grade],
-                'subjects' => $list->subjects,
-            ],
+            'search'       => $search,
             'list'         => $list,
-            'client'       => $list->request->client,
+            'client'       => $client,
             'request_id'   => $list->request->id,
         ]));
     }
