@@ -6,7 +6,7 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
 	]
     .filter 'cut', ->
       (value, wordwise, max, nothing = '', tail) ->
-        if !value
+        if !value or value is ''
           return nothing
         max = parseInt(max, 10)
         if !max
