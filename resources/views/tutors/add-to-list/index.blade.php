@@ -49,7 +49,7 @@
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
-                    <ng-multi object='Genders' model='search.gender' none-text='пол'></ng-multi>
+                    <ng-multi object='Genders' model='search.gender' none-text='пол' highlight></ng-multi>
                 </div>
                 <div class="form-group">
                     <div class="double-input">
@@ -98,7 +98,7 @@
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
-                    <ng-multi none-text='статус' model='search.state' object='TutorStates'></ng-multi>
+                    <ng-multi none-text='статус' model='search.state' object='TutorStates' highlight></ng-multi>
                 </div>
                 <div class="form-group">
                     <ng-select model='search.destination' object='Destinations' class='is-selected'></ng-select>

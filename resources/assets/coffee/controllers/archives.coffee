@@ -14,9 +14,6 @@ angular
 				$(el).data 'subtext', $(el).attr 'data-subtext'
 				$(el).data 'content', $(el).attr 'data-content'
 			$('.selectpicker').selectpicker 'refresh'
-
-			$('.archive-filters button').css 'background', 'none'
-			$('.archive-filters select > option[value!=""]:selected').parent('select').siblings('button').css('background', '#dceee5')
 		, 100
 
 	$scope.filter = ->

@@ -4,9 +4,9 @@
 
 @section('content')
 
-<div class="row flex-list attachment-filters" style="width: 100%">
+<div class="row flex-list" style="width: 100%">
     <div>
-        <select ng-model='search.approved' class='selectpicker' ng-change='filter()'>
+        <select ng-highlight ng-model='search.approved' class='selectpicker' ng-change='filter()'>
             <option value="" data-subtext="@{{ counts.approved[''] || '' }}">все</option>
             <option disabled>──────────────</option>
             <option ng-repeat='(id, name) in Notify'
@@ -17,7 +17,7 @@
 
 
     <div>
-        <select ng-model='search.state' class='selectpicker' ng-change='filter()'>
+        <select ng-highlight ng-model='search.state' class='selectpicker' ng-change='filter()'>
             <option value="" data-subtext="@{{ counts.state[''] || '' }}">все статусы</option>
             <option disabled>──────────────</option>
             <option ng-repeat='(id, name) in AttachmentStates'
@@ -27,7 +27,7 @@
     </div>
 
     <div>
-        <select class="form-control selectpicker" ng-model='search.user_id' ng-change="filter()" id='change-user'>
+        <select ng-highlight class="form-control selectpicker" ng-model='search.user_id' ng-change="filter()" id='change-user'>
             <option value="" data-subtext="@{{ counts.user_id[''] || '' }}">пользователь</option>
             <option disabled>──────────────</option>
             <option
@@ -38,7 +38,7 @@
         </select>
     </div>
     <div>
-        <select class="form-control selectpicker" ng-model='search.type' ng-change="filter()" id='change-type'>
+        <select ng-highlight class="form-control selectpicker" ng-model='search.type' ng-change="filter()" id='change-type'>
             <option value="" data-subtext="@{{ counts.type[''] || '' }}">все</option>
             <option disabled>──────────────</option>
             <option data-subtext="@{{ counts.type[0] || '' }}" value="0">требующие звонка</option>
@@ -46,7 +46,7 @@
         </select>
     </div>
     <div>
-        <select class="form-control selectpicker" ng-model='search.created' ng-change="filter()" id='change-created'>
+        <select ng-highlight class="form-control selectpicker" ng-model='search.created' ng-change="filter()" id='change-created'>
             <option value="" data-subtext="@{{ counts.created[''] || '' }}">все</option>
             <option disabled>──────────────</option>
             <option data-subtext="@{{ counts.created[1] || '' }}" value="1">созданные</option>
