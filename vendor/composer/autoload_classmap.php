@@ -663,4 +663,5 @@ return array(
     'TeacherProfileUpdate' => $baseDir . '/database/migrations/2016_03_09_142848_teacher_profile_update.php',
     'TestCase' => $baseDir . '/tests/TestCase.php',
     'Text_Template' => $vendorDir . '/phpunit/php-text-template/src/Template.php',
+    'TutorMarginNullable' => $baseDir . '/database/migrations/2016_09_06_161828_tutor_margin_nullable.php',
 );
