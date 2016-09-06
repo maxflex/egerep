@@ -28984,7 +28984,7 @@ span {
   margin: 0 auto; }
 
 .input-group.custom .input-group-addon {
-  background-color: white !important;
+  background-color: white;
   color: #999999;
   padding-right: 0; }
 
@@ -31464,6 +31464,9 @@ table.summary-table.left-align tr td {
 
 .table tr td:first-child {
   padding-left: 0 !important; }
+
+.is-selected {
+  background-color: #dceee5 !important; }
 
 .ios7-switch {
   display: inline-block;

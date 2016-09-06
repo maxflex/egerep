@@ -671,7 +671,7 @@
 	}
 
 	& .input-group-addon {
-		background-color: white !important;
+		background-color: white;
 		color: $placeholder_gray;
 		padding-right: 0;
 	}
@@ -3817,4 +3817,8 @@ table.summary-table.left-align tr td {
 
 .table tr td:first-child {
 	padding-left: 0 !important;
+}
+
+.is-selected {
+	background-color: #dceee5 !important;
 }
