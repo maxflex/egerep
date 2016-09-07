@@ -87,6 +87,7 @@ return array(
     'CreateCommentsTable' => $baseDir . '/database/migrations/2016_02_15_004853_create_comments_table.php',
     'CreateEmailsTable' => $baseDir . '/database/migrations/2016_02_16_173835_create_emails_table.php',
     'CreateJobsTable' => $baseDir . '/database/migrations/2016_08_04_154730_create_jobs_table.php',
+    'CreateLastCallDataTable' => $baseDir . '/database/migrations/2016_09_07_122913_create_last_call_data_table.php',
     'CreateLogsTable' => $baseDir . '/database/migrations/2016_07_06_133957_create_logs_table.php',
     'CreateMarkersTable' => $baseDir . '/database/migrations/2016_01_20_083340_create_markers_table.php',
     'CreateMetrosTable' => $baseDir . '/database/migrations/2016_02_24_105830_create_metros_table.php',
@@ -663,5 +664,4 @@ return array(
     'TeacherProfileUpdate' => $baseDir . '/database/migrations/2016_03_09_142848_teacher_profile_update.php',
     'TestCase' => $baseDir . '/tests/TestCase.php',
     'Text_Template' => $vendorDir . '/phpunit/php-text-template/src/Template.php',
-    'TutorMarginNullable' => $baseDir . '/database/migrations/2016_09_06_161828_tutor_margin_nullable.php',
 );

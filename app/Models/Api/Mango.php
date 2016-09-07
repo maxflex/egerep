@@ -3,6 +3,8 @@
 namespace App\Models\Api;
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Service\Settings;
+use DB;
 
 class Mango {
 	const API_URL		= 'https://app.mango-office.ru/vpbx/';
@@ -161,4 +163,59 @@ class Mango {
 	{
 		return static::API_URL . 'commands/' . $command;
 	}
+
+
+	/**
+	* Запрос на генерацию статистики по номеру (для консоли)
+	*/
+   public static function generateStats()
+   {
+	   $key = static::_generateStatsTmp();
+
+	   $trial = 1; // первая попытка
+	   while ($trial <= static::TRIALS) {
+		   $data = static::_run(static::COMMAND_GET_STATS, compact('key'), false, true);
+		   if ($data['code'] == 200) {
+			   // return $data['response'];
+			   $response_lines = explode(PHP_EOL, $data['response']);
+			   // return $response_lines;
+			   $return = [];
+			   foreach ($response_lines as $index => $response_line) {
+				   // echo $index;
+				   $info = explode(';', $response_line);
+				   if (count($info) > 1) {
+						DB::table('mango')->insert([
+							'recording_id'		=> trim($info[0], '[]'),
+							'start'             => $info[1],
+							'finish'            => $info[2],
+							'answer'			=> trim($info[8], "\r"),
+							'from_extension'    => $info[3],
+							'from_number'       => $info[4],
+							'to_extension'      => $info[5],
+							'to_number'         => $info[6],
+							'disconnect_reason' => $info[7],
+						]);
+				   }
+			   }
+			   return;
+		   }
+		   $trial++;
+		   sleep(static::SLEEP);
+	   }
+   }
+
+	/**
+     * Запрос на генерацию статистики
+     */
+    private static function _generateStatsTmp()
+    {
+		$mango_sync_time = Settings::get('mango_sync_time');
+		$mango_sync_time = $mango_sync_time ?: strtotime('-1 day', time());
+
+        return static::_run(static::COMMAND_REQUEST_STATS, [
+            'date_from'  => $mango_sync_time,
+            'date_to'    => time(),
+            'fields'     => 'records, start, finish, from_extension, from_number, to_extension, to_number, disconnect_reason, answer',
+        ])->key;
+    }
 }
