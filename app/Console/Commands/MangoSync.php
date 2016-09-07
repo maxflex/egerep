@@ -42,6 +42,6 @@ class MangoSync extends Command
     {
         $t = microtime(true);
         Mango::sync();
-        $this->line('Mango sync time' . (microtime(true) - $t) . 's');
+        \Log::info('Mango sync time' . (microtime(true) - $t) . 's');
     }
 }
