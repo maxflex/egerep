@@ -40,6 +40,8 @@ class MangoSync extends Command
      */
     public function handle()
     {
+        $t = microtime(true);
         Mango::sync();
+        $this->line('Mango sync time' . (microtime(true) - $t) . 's');
     }
 }
