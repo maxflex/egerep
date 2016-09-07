@@ -39,6 +39,10 @@ class CalcTutorMargin extends Command
      */
     public function handle()
     {
+        DB::table('tutors')->update([
+            'margin' => null
+        ]);
+        
         // выбираем только тех репетиторов, у которых есть хотя бы минимум 4 скрытых клиента
         $tutor_ids = DB::table('tutors')->whereRaw("(SELECT COUNT(*) FROM attachments WHERE tutor_id = tutors.id AND hide=1) >= 4")->pluck('id');
 
@@ -52,7 +56,7 @@ class CalcTutorMargin extends Command
             $total_commission = ($b * 0.25) + $a;
 
             $m = round($total_commission / count($hidden_client_ids));
-            
+
             $margin = 0;
             if ($m >= 3000 && $m < 5000) {
                 $margin = 1;

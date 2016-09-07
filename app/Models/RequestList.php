@@ -59,6 +59,9 @@ class RequestList extends Model
             'debt_comment',
             'photo_extension',
             'margin',
+            'public_price',
+            'departure_price',
+            DB::raw("if(svg_map='', 0, 1) as departure_possible")
         ])->append(['clients_count', 'meeting_count', 'active_clients_count', 'last_account_info']);
         $client_marker_id = DB::table('request_lists')
             ->join('requests', 'request_lists.request_id', '=', 'requests.id')

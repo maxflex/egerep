@@ -17,25 +17,34 @@
             <table class="table reverse-borders">
                 <tbody ui-sortable='sortableOptions' ng-model="selected_list.tutor_ids" ng-if="selected_list">
                     <tr ng-repeat="tutor in getTutorList()" data-id='@{{tutor.id}}'>
-                        <td style='width: 22%'>
+                        <td style='width: 20%'>
                             <a href="tutors/@{{ tutor.id }}/edit">@{{ tutor.full_name }}</a>
                         </td>
-                        <td style='width: 10%'>
+                        <td style='width: 17%'>
+                            @{{ tutor.public_price }} руб.
+                            <span ng-show='tutor.departure_possible'>
+                                +
+                                <span ng-show='tutor.departure_price'>выезд от @{{ tutor.departure_price }} руб.</span>
+                                <span ng-show='!tutor.departure_price'>бесплатный выезд</span>
+                            </span>
+                            <span ng-show='!tutor.departure_possible'>(выезд невозможен)</span>
+                        </td>
+                        <td style='width: 7%'>
                             @include('modules.subjects-list', ['subjects' => 'tutor.subjects', 'type' => 'three_letters'])
                         </td>
                         <td style='width: 7%'>
                             <plural count='tutor.age' type='age'></plural>
                         </td>
-                        <td  style='width: 3%'>
+                        <td  style='width: 2%'>
                             @{{ tutor.tb }}
                         </td>
-                        <td  style='width: 3%'>
+                        <td  style='width: 2%'>
                             @{{ tutor.lk }}
                         </td>
-                        <td  style='width: 3%'>
+                        <td  style='width: 2%'>
                             @{{ tutor.js }}
                         </td>
-                        <td style='width: 16%' ng-init='recommendation = RecommendationService.get(tutor, client.grade)'>
+                        <td style='width: 15%' ng-init='recommendation = RecommendationService.get(tutor, client.grade)'>
                             <span aria-label='@{{ recommendation.text }}' class='hint--bottom-right cursor-default' ng-class="{
                                 'text-success': recommendation.type == 0,
                                 'text-warning': recommendation.type == 1,
@@ -44,13 +53,13 @@
                                 @{{ recommendation.type_text }}
                             </span>
                         </td>
-                        <td style='width: 13%'>
+                        <td style='width: 10%'>
                             <plural count='tutor.clients_count' type='client' none-text='клиентов нет' hide-zero></plural>
-                            <span ng-show="tutor.margin">(M@{{ tutor.margin }})</span>
+                            <span ng-hide="tutor.margin === null">(M@{{ tutor.margin }})</span>
                         </td>
-                        <td style='width: 15%'>
+                        <td style='width: 10%'>
                             <span ng-hide="attachmentExists(tutor.id)"
-                            class="link-like link-gray" style="margin-left: 10px"
+                            class="link-like link-gray"
                             ng-click="newAttachment(tutor.id)">создать стыковку</span>
                         </td>
                     </tr>

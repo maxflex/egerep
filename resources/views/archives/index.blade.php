@@ -4,9 +4,9 @@
 
 @section('content')
 
-    <div class="row flex-list archive-filters">
+    <div class="row flex-list">
         <div>
-            <select class="form-control selectpicker" ng-model='search.user_id' ng-change="filter()" id='change-user'>
+            <select ng-highlight class="form-control selectpicker" ng-model='search.user_id' ng-change="filter()" id='change-user'>
                 <option value="" data-subtext="@{{ counts.user[''] || '' }}">пользователь</option>
                 <option disabled>──────────────</option>
                 <option
@@ -17,7 +17,7 @@
             </select>
         </div>
         <div>
-            <select ng-model='search.account_data' class='selectpicker' ng-change='filter()'>
+            <select ng-highlight ng-model='search.account_data' class='selectpicker' ng-change='filter()'>
                 <option value="" data-subtext="@{{ counts.account_data[''] || '' }}">занятия в отчетности</option>
                 <option disabled>──────────────</option>
                 <option ng-repeat='(id, name) in Presence[1]'
@@ -26,7 +26,7 @@
             </select>
         </div>
         <div>
-            <select ng-model='search.total_lessons_missing' class='selectpicker' ng-change='filter()'>
+            <select ng-highlight ng-model='search.total_lessons_missing' class='selectpicker' ng-change='filter()'>
                 <option value="" data-subtext="@{{ counts.total_lessons_missing[''] || '' }}">занятия к проводке</option>
                 <option disabled>──────────────</option>
                 <option ng-repeat='(id, name) in Presence[1]'
@@ -35,7 +35,7 @@
             </select>
         </div>
         <div>
-            <select ng-model='search.forecast' class='selectpicker' ng-change='filter()'>
+            <select ng-highlight ng-model='search.forecast' class='selectpicker' ng-change='filter()'>
                 <option value="" data-subtext="@{{ counts.forecast[''] || '' }}">прогноз</option>
                 <option disabled>──────────────</option>
                 <option ng-repeat='(id, name) in Presence[1]'
@@ -44,7 +44,7 @@
             </select>
         </div>
         <div>
-            <select ng-model='search.debtor' class='selectpicker' ng-change='filter()'>
+            <select ng-highlight ng-model='search.debtor' class='selectpicker' ng-change='filter()'>
                 <option value="" data-subtext="@{{ counts.debtor[''] || '' }}">вечный должник</option>
                 <option disabled>──────────────</option>
                 <option ng-repeat='(id, name) in YesNo'
@@ -53,7 +53,7 @@
             </select>
         </div>
         <div>
-            <select ng-model='search.hide' class='selectpicker' ng-change='filter()'>
+            <select ng-highlight ng-model='search.hide' class='selectpicker' ng-change='filter()'>
                 <option value="" data-subtext="@{{ counts.hide[''] || '' }}">все</option>
                 <option disabled>──────────────</option>
                 <option ng-repeat='(id, name) in AttachmentVisibility'
@@ -62,7 +62,7 @@
             </select>
         </div>
         <div>
-            <select ng-model='search.error' class='selectpicker fix-viewport' ng-change='filter()'>
+            <select ng-highlight ng-model='search.error' class='selectpicker fix-viewport' ng-change='filter()'>
                 <option value="" data-subtext="@{{ counts.error[''] || '' }}">все</option>
                 <option disabled>──────────────</option>
                 <option ng-repeat='(id, name) in AttachmentErrors'
@@ -71,7 +71,7 @@
             </select>
         </div>
         <div>
-            <select ng-model='search.grade' class='selectpicker fix-viewport' ng-change='filter()'>
+            <select ng-highlight ng-model='search.grade' class='selectpicker fix-viewport' ng-change='filter()'>
                 <option value="" data-subtext="@{{ counts.grade[''] || '' }}">текущий класс</option>
                 <option disabled>──────────────</option>
                 <option ng-repeat='(id, name) in Grades'
@@ -80,7 +80,7 @@
             </select>
         </div>
         <div>
-            <select ng-model='search.state' class='selectpicker fix-viewport' ng-change='filter()'>
+            <select ng-highlight ng-model='search.state' class='selectpicker fix-viewport' ng-change='filter()'>
                 <option value="" data-subtext="@{{ counts.state[''] || '' }}">разархивация</option>
                 <option disabled>──────────────</option>
                 <option ng-repeat='(id, name) in ArchiveStates'
@@ -89,7 +89,7 @@
             </select>
         </div>
         <div>
-            <select ng-model='search.checked' class='selectpicker fix-viewport' ng-change='filter()'>
+            <select ng-highlight ng-model='search.checked' class='selectpicker fix-viewport' ng-change='filter()'>
                 <option value="" data-subtext="@{{ counts.checked[''] || '' }}">статус проверки</option>
                 <option disabled>──────────────</option>
                 <option ng-repeat='(id, name) in Checked'

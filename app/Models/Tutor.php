@@ -4,20 +4,13 @@ namespace App\Models;
 
 use DB;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Marker;
 use App\Models\Metro;
 use App\Models\Request;
 use App\Models\Account;
-use App\Traits\Markerable;
-use App\Traits\Person;
 use App\Events\ResponsibleUserChanged;
-use App\Events\PhoneChanged;
 
-class Tutor extends Model
+class Tutor extends Service\Person
 {
-    use Markerable;
-    use Person;
-
     const ENTITY_TYPE = 'tutor';
 
     public $timestamps = false;
@@ -380,15 +373,8 @@ class Tutor extends Model
     protected static function boot()
     {
         static::saving(function($tutor) {
-            cleanNumbers($tutor);
-
             if ($tutor->changed(['login', 'password', 'banned'])) {
                 $tutor->updateUser();
-            }
-
-            // запускаем функцию проверки дубликатов на измененные номера
-            foreach($tutor->changedPhones() as $phone_field) {
-                event(new PhoneChanged($tutor->getOriginal($phone_field), $tutor->{$phone_field}, static::ENTITY_TYPE));
             }
         });
 
@@ -396,13 +382,6 @@ class Tutor extends Model
             # if responsible user changed
             if ($tutor->changed('responsible_user_id')) {
                 event(new ResponsibleUserChanged($tutor));
-            }
-        });
-
-        static::deleted(function($tutor) {
-            // запускаем функцию проверки дубликатов на измененные номера
-            foreach($tutor->phones as $phone) {
-                event(new PhoneChanged($phone, null, static::ENTITY_TYPE));
             }
         });
 

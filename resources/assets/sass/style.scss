@@ -671,7 +671,7 @@
 	}
 
 	& .input-group-addon {
-		background-color: white !important;
+		background-color: white;
 		color: $placeholder_gray;
 		padding-right: 0;
 	}
@@ -3702,6 +3702,10 @@ table.summary-table.left-align tr td {
 	& > div {
 		flex: 1;
 		margin-right: 10px;
+		width: 0;
+		&:last-child {
+			margin-right: 0;
+		}
 	}
 }
 
@@ -3755,10 +3759,7 @@ table.summary-table.left-align tr td {
     vertical-align: middle;
     float: none;
 }
-.bootstrap-select.btn-group .btn .filter-option {
-  white-space: initial;
-  height: 20px;
-}
+
 .comment-time {
 	color: $placeholder_gray;
 }
@@ -3814,17 +3815,10 @@ table.summary-table.left-align tr td {
 	text-indent: 20px;
 }
 
-.table, .dropdown-menu.open, .dropdown-toggle {
-  -webkit-font-smoothing: antialiased!important;
+.table tr td:first-child {
+	padding-left: 0 !important;
 }
-.bootstrap-select .btn .filter-option {
-  white-space: initial;
-  height: 20px;
-  display: inline-block;
-  overflow: hidden;
-  width: 100%;
-  text-align: left;
-}
-.dropdown-menu > li > a {
-  padding: 3px 45px 3px 20px;
+
+.is-selected {
+	background-color: #dceee5 !important;
 }

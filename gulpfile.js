@@ -18,6 +18,7 @@ elixir(function(mix) {
         })
         .sass('app.scss')
         .coffee(['resources/assets/coffee/*.coffee', 'resources/assets/coffee/*/*.coffee'])
+        .version(['css/app.css', 'js/app.js'])
         .scripts([
             '../bower/jquery/dist/jquery.js',
             '../bower/bootstrap/dist/js/bootstrap.min.js',

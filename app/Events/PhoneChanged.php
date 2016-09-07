@@ -37,9 +37,8 @@ class PhoneChanged extends Event
         }
 
         // условие добавления в таблицу дублей:
-        // номера $new_phone есть в таблице дублей (т.к. запуск идет в static::saving,
-        // то нового номера еще нет в базе, поэтому если есть хотя бы один, то дубль)
-        if (PhoneDuplicate::countByPhone(static::_getQuery($entity_type), $new_phone)) {
+        // номеров $new_phone после сохранения модели >= 2
+        if (PhoneDuplicate::countByPhone(static::_getQuery($entity_type), $new_phone) >= 2) {
             PhoneDuplicate::add($new_phone, $entity_type);
         }
     }

@@ -60,10 +60,7 @@ class ExternalController extends Controller
 
 		if (! $client->exists()) {
 			// создаем нового клиента
-	        $client = Client::create([
-	            'name'  => $data->name,
-	            'phone' => $phone,
-	        ]);
+	        $client = Client::create(compact('phone'));
 		} else {
 			$client = $client->orderBy('id', 'desc')->first();
 		}
@@ -77,7 +74,7 @@ class ExternalController extends Controller
 			$new_request->comment = "Репетитор " . $new_tutor_id . " " . $new_request->comment;
 			$new_request->save();
 		} else {
-			$comment = breakLines([($new_tutor_id ? "Репетитор " . $new_tutor_id : null), $data->message, "Метро: " . $data->metro_name]);
+			$comment = breakLines([($new_tutor_id ? "Репетитор " . $new_tutor_id : null), $data->message, "Метро: " . $data->metro_name, "Имя: " . $data->name]);
 			// создаем заявку клиента
 	        $client->requests()->create([
 	            'comment' 	=> $comment,
