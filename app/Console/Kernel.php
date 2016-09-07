@@ -42,7 +42,7 @@ class Kernel extends ConsoleKernel
         Commands\CallTwoDays::class,
         Commands\DeleteNotifications::class,
         Commands\UpdateArchivesChecked::class,
-        Commands\FillMangoTable::class,
+        Commands\MangoSync::class,
     ];
 
     /**

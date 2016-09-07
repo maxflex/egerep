@@ -7,7 +7,7 @@ use DB;
 use App\Models\Api\Mango;
 use App\Models\Service\Settings;
 
-class FillMangoTable extends Command
+class MangoSync extends Command
 {
     /**
      * The name and signature of the console command.
@@ -40,7 +40,6 @@ class FillMangoTable extends Command
      */
     public function handle()
     {
-        Mango::generateStats();
-        Settings::set('mango_sync_time', time());
+        Mango::sync();
     }
 }

@@ -166,11 +166,11 @@ class Mango {
 
 
 	/**
-	* Запрос на генерацию статистики по номеру (для консоли)
+	* Генерация статистики и синхронизация базы
 	*/
-   public static function generateStats()
+   public static function sync()
    {
-	   $key = static::_generateStatsTmp();
+	   $key = static::_regenerateTodayStats();
 
 	   $trial = 1; // первая попытка
 	   while ($trial <= static::TRIALS) {
@@ -205,15 +205,14 @@ class Mango {
    }
 
 	/**
-     * Запрос на генерацию статистики
+     * Удаляет 
      */
-    private static function _generateStatsTmp()
+    private static function _regenerateTodayStats()
     {
-		$mango_sync_time = Settings::get('mango_sync_time');
-		$mango_sync_time = $mango_sync_time ?: strtotime('-1 month', time());
+		DB::table('mango')->whereRaw('DATE(FROM_UNIXTIME(start)) = DATE(NOW())')->delete();
 
         return static::_run(static::COMMAND_REQUEST_STATS, [
-            'date_from'  => $mango_sync_time,
+            'date_from'  => strtotime('today'),
             'date_to'    => time(),
             'fields'     => 'records, start, finish, from_extension, from_number, to_extension, to_number, disconnect_reason, answer',
         ])->key;
