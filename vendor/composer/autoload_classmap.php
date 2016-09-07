@@ -121,6 +121,7 @@ return array(
     'EgecrmAddCodeToReviews' => $baseDir . '/database/migrations/2016_06_28_113029_egecrm_add_code_to_reviews.php',
     'EgecrmAddColsToUsers' => $baseDir . '/database/migrations/2016_09_02_123345_egecrm_add_cols_to_users.php',
     'EgecrmAddColumnsToTestsTable' => $baseDir . '/database/migrations/2016_08_12_105507_egecrm_add_columns_to_tests_table.php',
+    'EgecrmAddDateLengthLimitToPayments' => $baseDir . '/database/migrations/2016_09_07_113950_egecrm_add_date_length_limit_to_payments.php',
     'EgecrmAddDocumentNumberToPayments' => $baseDir . '/database/migrations/2016_08_16_190349_egecrm_add_document_number_to_payments.php',
     'EgecrmAddExternalToContracts' => $baseDir . '/database/migrations/2016_08_19_174345_egecrm_add_external_to_contracts.php',
     'EgecrmAddIndexesToContracts' => $baseDir . '/database/migrations/2016_07_04_145729_egecrm_add_indexes_to_contracts.php',
