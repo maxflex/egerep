@@ -210,7 +210,7 @@ class Mango {
     private static function _generateStatsTmp()
     {
 		$mango_sync_time = Settings::get('mango_sync_time');
-		$mango_sync_time = $mango_sync_time ?: strtotime('-1 day', time());
+		$mango_sync_time = $mango_sync_time ?: strtotime('-1 month', time());
 
         return static::_run(static::COMMAND_REQUEST_STATS, [
             'date_from'  => $mango_sync_time,
