@@ -14,14 +14,14 @@ class FillMangoTable extends Command
      *
      * @var string
      */
-    protected $signature = 'once:mango_table';
+    protected $signature = 'mango:sync';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Sync mango table with MANGO API';
 
     /**
      * Create a new command instance.
@@ -40,8 +40,6 @@ class FillMangoTable extends Command
      */
     public function handle()
     {
-        $this->line('Starting....');
-        // DB::table('mango')->truncate();
         Mango::generateStats();
         Settings::set('mango_sync_time', time());
     }
