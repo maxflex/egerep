@@ -143,6 +143,7 @@ return array(
     'EgecrmCreateSettingsTable' => $baseDir . '/database/migrations/2016_06_17_121558_egecrm_create_settings_table.php',
     'EgecrmCreateTestStudents' => $baseDir . '/database/migrations/2016_07_12_160324_egecrm_create_test_students.php',
     'EgecrmCreateTestsTable' => $baseDir . '/database/migrations/2016_07_11_113618_egecrm_create_tests_table.php',
+    'EgecrmDropColYearFromGroupSms' => $baseDir . '/database/migrations/2016_09_07_111028_egecrm_drop_col_year_from_group_sms.php',
     'EgecrmDropNotifyFromGroupSms' => $baseDir . '/database/migrations/2016_09_06_150349_egecrm_drop_notify_from_group_sms.php',
     'EgecrmDropScoreFromCs' => $baseDir . '/database/migrations/2016_08_19_112858_egecrm_drop_score_from_cs.php',
     'EgecrmRefactor' => $baseDir . '/database/migrations/2016_08_01_152313_egecrm_refactor.php',
@@ -663,5 +664,4 @@ return array(
     'TeacherProfileUpdate' => $baseDir . '/database/migrations/2016_03_09_142848_teacher_profile_update.php',
     'TestCase' => $baseDir . '/tests/TestCase.php',
     'Text_Template' => $vendorDir . '/phpunit/php-text-template/src/Template.php',
-    'TutorMarginNullable' => $baseDir . '/database/migrations/2016_09_06_161828_tutor_margin_nullable.php',
 );
