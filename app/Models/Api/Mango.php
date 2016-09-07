@@ -180,6 +180,8 @@ class Mango {
 			   $response_lines = explode(PHP_EOL, $data['response']);
 			   // return $response_lines;
 			   $return = [];
+
+			   DB::table('mango')->whereRaw('DATE(FROM_UNIXTIME(start)) = DATE(NOW())')->delete();
 			   foreach ($response_lines as $index => $response_line) {
 				   // echo $index;
 				   $info = explode(';', $response_line);
@@ -205,12 +207,10 @@ class Mango {
    }
 
 	/**
-     * Удаляет 
+     * Удаляет
      */
     private static function _regenerateTodayStats()
     {
-		DB::table('mango')->whereRaw('DATE(FROM_UNIXTIME(start)) = DATE(NOW())')->delete();
-
         return static::_run(static::COMMAND_REQUEST_STATS, [
             'date_from'  => strtotime('today'),
             'date_to'    => time(),
