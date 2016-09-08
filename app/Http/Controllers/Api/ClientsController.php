@@ -67,7 +67,14 @@ class ClientsController extends Controller
      */
     public function show($id)
     {
-        return Client::find($id)->toJson();
+        $client = Client::find($id);
+        $client->requests->map(function($request){
+            return $request->lists->map(function($list){
+                return $list->append('tutors');
+            });
+        });
+
+        return $client->toJson();
     }
 
     /**

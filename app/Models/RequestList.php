@@ -10,9 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 class RequestList extends Model
 {
     protected $with = ['attachments'];
-    protected $appends = [
-        'tutors'
-    ];
+//    protected $appends = [
+//        'tutors'
+//    ];
     protected $fillable = [
         'request_id',
         'tutor_ids',
