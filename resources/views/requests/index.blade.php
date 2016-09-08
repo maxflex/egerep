@@ -23,7 +23,7 @@
         </ul>
     </div>
     <div class="col-sm-2" style="width: 20%">
-        <select class="form-control fix-viewport" ng-model='user_id' ng-change="changeUser()" id='change-user'>
+        <select class="form-control" ng-model='user_id' ng-change="changeUser()" id='change-user'>
            <option value="">пользователь</option>
            <option disabled>──────────────</option>
            <option
