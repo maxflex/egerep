@@ -405,6 +405,9 @@ angular
             $scope.geocoder.geocode {
                 address: address + ', московская область'
                 bounds: $scope.RECOM_BOUNDS
+                componentRestrictions:
+                    country: 'RU'
+                    administrativeArea: 'Moscow'
             }, (results, status) ->
                 if status == google.maps.GeocoderStatus.OK
                     # максимальное кол-во результатов

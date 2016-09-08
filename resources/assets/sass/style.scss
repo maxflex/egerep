@@ -3822,3 +3822,15 @@ table.summary-table.left-align tr td {
 .is-selected {
 	background-color: #dceee5 !important;
 }
+.contract-table td {
+  padding:5px;
+  width:17%;
+  border: 1px solid black;
+  border-collapse: collapse;
+  &:first-child {
+	width:35%;
+  }
+}
+.contract-table .head td {
+  background:#63b2de;
+}
