@@ -82,7 +82,7 @@ angular
 
         $scope.hasBannedUsers = ->
             _.filter(UserService.getBannedUsers(), (u) ->
-                $scope.user_counts[u.id] isnt undefined and $scope.user_counts[u.id] > 0
+                $scope.user_counts and $scope.user_counts[u.id] isnt undefined and $scope.user_counts[u.id] > 0
             ).length
 
         $scope.changeState = ->
