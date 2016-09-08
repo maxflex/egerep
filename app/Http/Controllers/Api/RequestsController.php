@@ -66,7 +66,15 @@ class RequestsController extends Controller
     public function index(Request $request)
     {
         return \App\Models\Request::searchByState($request->state)->searchByUser($request->user_id)
-                                    ->with(['user', 'client'])
+                                    ->with([
+                                        'lists' => function ($query) {
+                                            $query->select('id', 'request_id', 'subjects');
+                                            $query->without(['attachments']);
+                                        },
+                                        'client' => function ($query) {
+                                            $query->without(['requests']);
+                                        },
+                                    ])
                                     ->orderBy('created_at', 'desc')
                                     ->paginate(20)->toJson();
     }
