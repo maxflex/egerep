@@ -11,6 +11,8 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
 });
 
 Route::group(['middleware' => ['web']], function () {
+    Route::get('/', 'RequestsController@index');
+
     Route::resource('vocations', 'VocationsController');
     Route::resource('reviews', 'ReviewsController', ['only' => 'index']);
 
@@ -26,7 +28,6 @@ Route::group(['middleware' => ['web']], function () {
         $tutor = \App\Models\Tutor::where('id_a_pers', $id)->first();
         return redirect()->to("https://lk.ege-repetitor.ru/tutors/{$tutor->id}/edit");
     });
-    Route::get('/', 'TutorsController@index');
     Route::get('tutors/select', 'TutorsController@select');
     Route::resource('tutors', 'TutorsController');
     Route::resource('logs', 'LogsController');
