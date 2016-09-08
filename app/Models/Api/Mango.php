@@ -187,15 +187,18 @@ class Mango {
 				   $info = explode(';', $response_line);
 				   if (count($info) > 1) {
 						DB::table('mango')->insert([
-							'recording_id'		=> trim($info[0], '[]'),
-							'start'             => $info[1],
-							'finish'            => $info[2],
-							'answer'			=> trim($info[8], "\r"),
-							'from_extension'    => $info[3],
-							'from_number'       => $info[4],
-							'to_extension'      => $info[5],
-							'to_number'         => $info[6],
-							'disconnect_reason' => $info[7],
+							'recording_id'		 => trim($info[0], '[]'),
+							'start'              => $info[1],
+							'finish'             => $info[2],
+							'answer'			 => trim($info[8], "\r"),
+							'from_extension'     => $info[3],
+							'from_number'        => $info[4],
+							'to_extension'       => $info[5],
+							'to_number'          => $info[6],
+							'disconnect_reason'  => $info[7],
+							'entry_id'           => $info[9],
+							'line_number'        => $info[10],
+							'location'           => $info[11],
 						]);
 				   }
 			   }
@@ -214,7 +217,7 @@ class Mango {
         return static::_run(static::COMMAND_REQUEST_STATS, [
             'date_from'  => strtotime('today'),
             'date_to'    => time(),
-            'fields'     => 'records, start, finish, from_extension, from_number, to_extension, to_number, disconnect_reason, answer',
+            'fields'     => 'records, start, finish, from_extension, from_number, to_extension, to_number, disconnect_reason, answer, entry_id, line_number, location',
         ])->key;
     }
 }
