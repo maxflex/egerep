@@ -134,6 +134,7 @@ return array(
     'EgecrmAddIndexesToVj' => $baseDir . '/database/migrations/2016_06_22_111633_egecrm_add_indexes_to_vj.php',
     'EgecrmAddNameToTests' => $baseDir . '/database/migrations/2016_07_15_144258_egecrm_add_name_to_tests.php',
     'EgecrmAddPhotoCroppedColumnToUsers' => $baseDir . '/database/migrations/2016_08_19_104147_egecrm_add_photo_cropped_column_to_users.php',
+    'EgecrmAddReadyToStartToGroups' => $baseDir . '/database/migrations/2016_09_09_185120_egecrm_add_ready_to_start_to_groups.php',
     'EgecrmAddReviewUserIdToStudents' => $baseDir . '/database/migrations/2016_06_27_160333_egecrm_add_review_user_id_to_students.php',
     'EgecrmAddShowAttachmentsToUsers' => $baseDir . '/database/migrations/2016_08_23_154838_egecrm_add_show_attachments_to_users.php',
     'EgecrmAddSignatureToReviews' => $baseDir . '/database/migrations/2016_06_28_131228_egecrm_add_signature_to_reviews.php',
