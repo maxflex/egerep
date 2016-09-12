@@ -39,6 +39,7 @@ return array(
     'AddIndexToAccountDatas' => $baseDir . '/database/migrations/2016_06_29_173145_add_index_to_account_datas.php',
     'AddIndexToAttachmentErrors' => $baseDir . '/database/migrations/2016_08_04_175524_add_index_to_attachment_errors.php',
     'AddIndexesToComments' => $baseDir . '/database/migrations/2016_06_29_181152_add_indexes_to_comments.php',
+    'AddIndexesToLogs' => $baseDir . '/database/migrations/2016_09_12_190342_add_indexes_to_logs.php',
     'AddIndexesToMarkers' => $baseDir . '/database/migrations/2016_03_23_120624_add_indexes_to_markers.php',
     'AddIndexesToPhones' => $baseDir . '/database/migrations/2016_06_05_122554_add_indexes_to_phones.php',
     'AddIndexesToRequests' => $baseDir . '/database/migrations/2016_09_01_171252_add_indexes_to_requests.php',
