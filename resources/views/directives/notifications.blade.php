@@ -19,8 +19,13 @@
 		</div>
 	</div>
     <div style="height: 25px">
-		<span ng-hide='start_notificationing' class="pointer no-margin-right comment-add"
-            ng-click='startNotificationing($event)'>добавить напоминание</span>
+        <span ng-hide='start_notificationing'>
+            <span class="pointer no-margin-right comment-add" ng-click='startNotificationing($event)'>добавить напоминание</span>
+            <span ng-hide='notifications.length'>
+                <span class='text-gray'>или</span>
+                <span class="pointer no-margin-right comment-add" ng-click='defaultNotification()'>стандартное напоминание</span>
+            </span>
+        </span>
         <div class="drop-delete-pad" id='notification-delete-@{{ entityType }}-@{{ entityId }}' ng-show='is_dragging' style="margin-left: 8px">удалить</div>
 		<span class="comment-add-hidden" ng-show='start_notificationing'>
 			<span class="comment-add-login notification-login" style="color: @{{ user.color }}">

@@ -67,8 +67,8 @@ angular.module('Egerep').directive 'notifications', ->
         $scope.startNotificationing = (event) ->
             $scope.start_notificationing = true
             $timeout ->
-                $(event.target).parent().find('div').focus()
-                $(event.target).parent().find('input').mask 'd9.y9.y9', {clearIfNotMatch: true}
+                $(event.target).closest('div').find('div').focus()
+                $(event.target).closest('div').find('input').mask 'd9.y9.y9', {clearIfNotMatch: true}
 
         $scope.endNotificationing = (comment_element, date_element)->
             comment_element.html('')
@@ -81,7 +81,7 @@ angular.module('Egerep').directive 'notifications', ->
 
         saveEdit = (notification, event) ->
             event.preventDefault()
-            parent          = $(event.target).parent()
+            parent          = $(event.target).closest('div')
             comment_element = parent.find('div')
             date_element    = parent.find('input')
             comment         = comment_element.text()
@@ -113,7 +113,7 @@ angular.module('Egerep').directive 'notifications', ->
                 $(event.target).blur()
 
         notificate = (event) ->
-            parent          = $(event.target).parent()
+            parent          = $(event.target).closest('div')
             comment_element = parent.find('div')
             date_element    = parent.find('input')
             comment         = comment_element.text()
@@ -147,7 +147,7 @@ angular.module('Egerep').directive 'notifications', ->
             return if $(event.target).prop('tagName') is 'DIV'
             if event.keyCode in [38, 40]
                 event.preventDefault()
-                date_node = $(event.target).parent().find('input')
+                date_node = $(event.target).closest('div').find('input')
                 date = date_node.val()
                 if date.match /_/
                     date_node.val $rootScope.formatDate moment()
@@ -165,3 +165,20 @@ angular.module('Egerep').directive 'notifications', ->
             if event.keyCode is 27
                 window.getSelection().removeAllRanges()
                 $(event.target).blur()
+
+        $scope.defaultNotification = ->
+            new_notification = new Notification
+                comment: 'стандартное напоминание'
+                user_id: $scope.user.id
+                entity_id: $scope.entityId
+                entity_type: $scope.entityType
+                approved: 1
+                date: moment(convertDate($scope.$parent.selected_attachment.date)).add(2, 'days').format('DD.MM.YY')
+            new_notification.$save()
+                .then (response)->
+                    new_notification.user = $scope.user
+                    new_notification.id = response.id
+                    new_notification.approved = 1
+                    $scope.notifications.push new_notification
+                    $timeout ->
+                        bindDraggableAndMask(new_notification.id)

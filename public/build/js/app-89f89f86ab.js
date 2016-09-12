@@ -3780,8 +3780,8 @@
         $scope.startNotificationing = function(event) {
           $scope.start_notificationing = true;
           return $timeout(function() {
-            $(event.target).parent().find('div').focus();
-            return $(event.target).parent().find('input').mask('d9.y9.y9', {
+            $(event.target).closest('div').find('div').focus();
+            return $(event.target).closest('div').find('input').mask('d9.y9.y9', {
               clearIfNotMatch: true
             });
           });
@@ -3802,7 +3802,7 @@
         saveEdit = function(notification, event) {
           var comment, comment_element, date, date_element, parent;
           event.preventDefault();
-          parent = $(event.target).parent();
+          parent = $(event.target).closest('div');
           comment_element = parent.find('div');
           date_element = parent.find('input');
           comment = comment_element.text();
@@ -3839,7 +3839,7 @@
         };
         notificate = function(event) {
           var comment, comment_element, date, date_element, new_notification, parent;
-          parent = $(event.target).parent();
+          parent = $(event.target).closest('div');
           comment_element = parent.find('div');
           date_element = parent.find('input');
           comment = comment_element.text();
@@ -3878,7 +3878,7 @@
           }
           if ((ref = event.keyCode) === 38 || ref === 40) {
             event.preventDefault();
-            date_node = $(event.target).parent().find('input');
+            date_node = $(event.target).closest('div').find('input');
             date = date_node.val();
             if (date.match(/_/)) {
               return date_node.val($rootScope.formatDate(moment()));
@@ -3891,7 +3891,7 @@
             }
           }
         };
-        return $scope.submitNotification = function(event) {
+        $scope.submitNotification = function(event) {
           handleDateKeycodes(event);
           if (event.keyCode === 13) {
             event.preventDefault();
@@ -3901,6 +3901,26 @@
             window.getSelection().removeAllRanges();
             return $(event.target).blur();
           }
+        };
+        return $scope.defaultNotification = function() {
+          var new_notification;
+          new_notification = new Notification({
+            comment: 'стандартное напоминание',
+            user_id: $scope.user.id,
+            entity_id: $scope.entityId,
+            entity_type: $scope.entityType,
+            approved: 1,
+            date: moment(convertDate($scope.$parent.selected_attachment.date)).add(2, 'days').format('DD.MM.YY')
+          });
+          return new_notification.$save().then(function(response) {
+            new_notification.user = $scope.user;
+            new_notification.id = response.id;
+            new_notification.approved = 1;
+            $scope.notifications.push(new_notification);
+            return $timeout(function() {
+              return bindDraggableAndMask(new_notification.id);
+            });
+          });
         };
       }
     };
