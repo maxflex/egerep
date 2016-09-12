@@ -45,7 +45,7 @@ angular.module('Egerep').directive 'phones', ->
             moment(date).format "DD.MM.YY в HH:mm"
 
         $scope.time = (seconds) ->
-            moment({}).seconds(seconds).format("mm:ss")
+            moment(0).seconds(seconds).format("mm:ss")
 
         $scope.getNumberTitle = (number) ->
             console.log number, $scope.api_number
@@ -75,7 +75,3 @@ angular.module('Egerep').directive 'phones', ->
         $scope.stop = (recording_id) ->
             $scope.is_playing = null
             $scope.audio.pause()
-
-        $scope.disconnectReason = (data) ->
-            # return 'НБТ' if data.to_extension is '' and data.disconnect_reason is '1100'
-            data.disconnect_reason
