@@ -2164,6 +2164,11 @@
       $scope.current_page = 1;
       return $scope.pageChanged();
     };
+    $scope.keyFilter = function(event) {
+      if (event.keyCode === 13) {
+        return $scope.filter();
+      }
+    };
     $timeout(function() {
       $scope.search = $.cookie("logs") ? JSON.parse($.cookie("logs")) : {};
       load($scope.page);

@@ -20,6 +20,9 @@ angular
             $scope.current_page = 1
             $scope.pageChanged()
 
+        $scope.keyFilter = (event) ->
+            $scope.filter() if event.keyCode is 13
+
         $timeout ->
             $scope.search = if $.cookie("logs") then JSON.parse($.cookie("logs")) else {}
             load $scope.page

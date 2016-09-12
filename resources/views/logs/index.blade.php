@@ -52,7 +52,7 @@
     <div>
         <div class="form-group">
             <div class="input-group custom">
-              <span class="input-group-addon">дата начала –</span>
+              <span class="input-group-addon">начало –</span>
               <input type="text" readonly ng-change='filter()'
                   class="form-control bs-date-clear pointer" ng-model="search.date_start">
             </div>
@@ -61,9 +61,17 @@
     <div>
         <div class="form-group">
             <div class="input-group custom">
-              <span class="input-group-addon">дата конца –</span>
+              <span class="input-group-addon">конец –</span>
               <input type="text" readonly ng-change='filter()'
                   class="form-control bs-date-clear pointer" ng-model="search.date_end">
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="form-group">
+            <div class="input-group custom">
+              <span class="input-group-addon">ID –</span>
+              <input type="text" ng-keyup='keyFilter($event)' class="form-control" ng-model="search.row_id">
             </div>
         </div>
     </div>
@@ -87,7 +95,8 @@
                         @{{ LogTypes[log.type] }}
                     </td>
                     <td>
-                        @{{ log.row_id }}
+                        <a target="_blank" ng-show="log.table == 'requests'" href="requests/@{{ log.row_id }}/edit">@{{ log.row_id }}</a>
+                        <span ng-show="log.table != 'requests'">@{{ log.row_id }}</span>
                     </td>
                     <td width="100">
                         <user model='log.user'></user>

@@ -103,6 +103,10 @@ class Log extends Model
             $query->where('data', 'like', "%{$search->column}%");
         }
 
+        if (isset($search->row_id)) {
+            $query->where('row_id', $search->row_id);
+        }
+
         return $query->orderBy('created_at', 'desc');
     }
 }
