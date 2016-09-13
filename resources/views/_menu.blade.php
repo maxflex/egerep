@@ -12,7 +12,7 @@
 <a href="reviews" class="list-group-item">Отзывы</a>
 <a href="tutors/select" class="list-group-item">Подбор без клиента</a>
 <a href="notifications" class="list-group-item">Напоминания
-    @if($notifications_count)
+    @if(@$notifications_count)
         <span class="badge badge-danger pull-right">{{ $notifications_count }}</span>
     @endif
 </a>
