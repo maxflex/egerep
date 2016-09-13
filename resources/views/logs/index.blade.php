@@ -95,8 +95,8 @@
                         @{{ LogTypes[log.type] }}
                     </td>
                     <td>
-                        <a target="_blank" ng-show="log.table == 'requests'" href="requests/@{{ log.row_id }}/edit">@{{ log.row_id }}</a>
-                        <span ng-show="log.table != 'requests'">@{{ log.row_id }}</span>
+                        <a target="_blank" ng-href="@{{ log.link }}" ng-show="log.link">@{{ log.row_id }}</a>
+                        <span ng-show="!log.link">@{{ log.row_id }}</span>
                     </td>
                     <td width="100">
                         <user model='log.user'></user>
