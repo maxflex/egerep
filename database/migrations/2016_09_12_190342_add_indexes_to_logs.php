@@ -12,12 +12,12 @@ class AddIndexesToLogs extends Migration
      */
     public function up()
     {
-        Schema::table('logs', function (Blueprint $table) {
-            $table->index('table');
-            $table->index('row_id');
-            $table->index('type');
-            $table->index('created_at');
-        });
+        // Schema::table('logs', function (Blueprint $table) {
+        //     $table->index('table');
+        //     $table->index('row_id');
+        //     $table->index('type');
+        //     $table->index('created_at');
+        // });
     }
 
     /**
