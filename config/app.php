@@ -110,6 +110,7 @@ return [
 
     'log' => env('APP_LOG', 'single'),
 
+    'pusher_key' => env('PUSHER_KEY'),
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
