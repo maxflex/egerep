@@ -23,7 +23,7 @@ class EgecrmUpdateGroupTime extends Migration
     public function up()
     {
         Schema::connection('egecrm')->table('group_time', function (Blueprint $table) {
-            // $table->integer('id_time')->unsigned();
+            // $table->integer('id_time')->unsigned()->index();
             $table->integer('id_cabinet')->unsigned()->index();
         });
 
