@@ -64,5 +64,7 @@ elixir(function(mix) {
             '../bower/ace-builds/src/mode-html.js',
             '../bower/ace-builds/src/mode-json.js',
             '../bower/ace/lib/ace/commands/default_commands.js',
+            '../bower/vue/dist/vue.min.js',
+            '../bower/phoneapi/dist/js/pusher.js'
         ], 'public/js/vendor.js');
 });
