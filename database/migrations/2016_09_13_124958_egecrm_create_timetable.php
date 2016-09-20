@@ -46,13 +46,13 @@ class EgecrmCreateTimetable extends Migration
 
             ['day' => 6, 'time' => '11:00'],
             ['day' => 6, 'time' => '13:30'],
-            ['day' => 6, 'time' => '16:15'],
-            ['day' => 6, 'time' => '18:40'],
+            ['day' => 6, 'time' => '16:00'],
+            ['day' => 6, 'time' => '18:30'],
 
             ['day' => 7, 'time' => '11:00'],
             ['day' => 7, 'time' => '13:30'],
-            ['day' => 7, 'time' => '16:15'],
-            ['day' => 7, 'time' => '18:40'],
+            ['day' => 7, 'time' => '16:00'],
+            ['day' => 7, 'time' => '18:30'],
         ]);
     }
 

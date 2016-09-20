@@ -23,29 +23,28 @@ class EgecrmUpdateGroupTime extends Migration
     public function up()
     {
         Schema::connection('egecrm')->table('group_time', function (Blueprint $table) {
-            // $table->integer('id_time')->unsigned()->index();
+            $table->integer('id_time')->unsigned()->index();
             $table->integer('id_cabinet')->unsigned()->index();
         });
 
-        // $data = \DB::connection('egecrm')->table('group_time')->get();
-        //
-        // foreach($data as $d) {
-        //     \DB::connection('egecrm')->table('group_time')->whereId($d->id)->update([
-        //         'id_time' => static::toTimeid($d->day, $d->time)
-        //     ]);
-        // }
-        //
-        // Schema::connection('egecrm')->table('group_time', function (Blueprint $table) {
-        //     $table->foreign('id_time')->references('id')->on('time');
-        //     $table->unique(['id_group', 'id_time']);
-        // });
+        $data = \DB::connection('egecrm')->table('group_time')->get();
 
-        // Schema::connection('egecrm')->table('group_time', function (Blueprint $table) {
-        //     $table->dropColumn('day');
-        //     $table->dropColumn('time');
-        //     $table->dropColumn('id');
-        // });
+        foreach($data as $d) {
+            \DB::connection('egecrm')->table('group_time')->whereId($d->id)->update([
+                'id_time' => static::toTimeid($d->day, $d->time)
+            ]);
+        }
 
+        Schema::connection('egecrm')->table('group_time', function (Blueprint $table) {
+            $table->foreign('id_time')->references('id')->on('time');
+            $table->unique(['id_group', 'id_time']);
+        });
+
+        Schema::connection('egecrm')->table('group_time', function (Blueprint $table) {
+            $table->dropColumn('day');
+            $table->dropColumn('time');
+            $table->dropColumn('id');
+        });
     }
 
     private static function toTimeid($day, $time)
