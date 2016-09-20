@@ -43,6 +43,7 @@ class Kernel extends ConsoleKernel
         Commands\DeleteNotifications::class,
         Commands\UpdateArchivesChecked::class,
         Commands\MangoSync::class,
+        Commands\EgecrmTransferCabinet::class,
     ];
 
     /**
