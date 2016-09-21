@@ -13,6 +13,9 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
 Route::group(['middleware' => ['web']], function () {
     Route::get('/', 'RequestsController@index');
 
+    Route::get('calls/missed', 'CallsController@missed');
+    Route::resource('calls', 'CallsController');
+
     Route::resource('vocations', 'VocationsController');
     Route::resource('reviews', 'ReviewsController', ['only' => 'index']);
 

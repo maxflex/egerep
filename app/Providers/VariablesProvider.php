@@ -32,7 +32,10 @@ class VariablesProvider extends ServiceProvider
             foreach (self::VARIABLES as $var_name => $var_value) {
                 $view->with($var_name, $var_value);
             }
-            $view->with('notifications_count', \App\Models\Notification::countUnapproved());
+            $view->with([
+                'notifications_count' => \App\Models\Notification::countUnapproved(),
+                'missed_calls_count'  => \App\Models\Service\Call::countMissed()
+            ]);
         });
     }
 
