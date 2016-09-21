@@ -60,6 +60,7 @@
     "jquery-color-animation": "^1.6.0",
     "ace-builds": "ace-build#^1.2.4",
     "ace": "^1.2.5",
-    "phoneapi": "*"
+    "phoneapi": "*",
+    "vue": "^1.0.26"
   }
 }

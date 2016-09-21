@@ -143,10 +143,10 @@
                 @{{ archive.forecast | hideZero | number}}
             </td>
             <td width='6%'>
-                @{{ formatDate(archive.created_at) }}
+                @{{ formatDate(archive.archive_date) }}
             </td>
             <td width='20%'>
-                @{{ UserService.getLogin(archive.archive_user_id) }}: @{{ formatDateTime(archive.archive_date) }}
+                @{{ UserService.getLogin(archive.archive_user_id) }}: @{{ formatDateTime(archive.archive_created_at) }}
             </td>
             <td width='8%'>
                 <span ng-repeat='code in archive.errors.split(",")' ng-attr-aria-label="@{{ AttachmentErrors[code] }}" class='hint--bottom-left'>@{{ code }}@{{ $last ? '' : ',  ' }}</span>

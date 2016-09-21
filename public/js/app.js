@@ -3785,8 +3785,8 @@
         $scope.startNotificationing = function(event) {
           $scope.start_notificationing = true;
           return $timeout(function() {
-            $(event.target).closest('div').find('div').focus();
-            return $(event.target).closest('div').find('input').mask('d9.y9.y9', {
+            $(event.target).parents('div').first().find('div').focus();
+            return $(event.target).parents('div').first().find('input').mask('d9.y9.y9', {
               clearIfNotMatch: true
             });
           });
@@ -3807,8 +3807,8 @@
         saveEdit = function(notification, event) {
           var comment, comment_element, date, date_element, parent;
           event.preventDefault();
-          parent = $(event.target).closest('div');
-          comment_element = parent.find('div');
+          parent = $(event.target).parents('div').first();
+          comment_element = parent.find('div').last();
           date_element = parent.find('input');
           comment = comment_element.text();
           date = date_element.val();
@@ -3844,8 +3844,8 @@
         };
         notificate = function(event) {
           var comment, comment_element, date, date_element, new_notification, parent;
-          parent = $(event.target).closest('div');
-          comment_element = parent.find('div');
+          parent = $(event.target).parents('div').first();
+          comment_element = parent.find('div').last();
           date_element = parent.find('input');
           comment = comment_element.text();
           date = date_element.val();
@@ -3883,7 +3883,7 @@
           }
           if ((ref = event.keyCode) === 38 || ref === 40) {
             event.preventDefault();
-            date_node = $(event.target).closest('div').find('input');
+            date_node = $(event.target).parents('div').first().find('input');
             date = date_node.val();
             if (date.match(/_/)) {
               return date_node.val($rootScope.formatDate(moment()));

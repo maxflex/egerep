@@ -13,7 +13,7 @@ class EgecrmAddCardFirstNumToPayments extends Migration
     public function up()
     {
         Schema::connection('egecrm')->table('payments', function (Blueprint $table) {
-            $table->enum('card_first_number', [4, 5, 6])->default(4);
+        //    $table->enum('card_first_number', [4, 5, 6])->default(4);
         });
     }
 

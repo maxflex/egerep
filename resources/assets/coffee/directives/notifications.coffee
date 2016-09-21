@@ -67,8 +67,8 @@ angular.module('Egerep').directive 'notifications', ->
         $scope.startNotificationing = (event) ->
             $scope.start_notificationing = true
             $timeout ->
-                $(event.target).closest('div').find('div').focus()
-                $(event.target).closest('div').find('input').mask 'd9.y9.y9', {clearIfNotMatch: true}
+                $(event.target).parents('div').first().find('div').focus()
+                $(event.target).parents('div').first().find('input').mask 'd9.y9.y9', {clearIfNotMatch: true}
 
         $scope.endNotificationing = (comment_element, date_element)->
             comment_element.html('')
@@ -81,8 +81,8 @@ angular.module('Egerep').directive 'notifications', ->
 
         saveEdit = (notification, event) ->
             event.preventDefault()
-            parent          = $(event.target).closest('div')
-            comment_element = parent.find('div')
+            parent          = $(event.target).parents('div').first()
+            comment_element = parent.find('div').last()
             date_element    = parent.find('input')
             comment         = comment_element.text()
             date            = date_element.val()
@@ -113,8 +113,8 @@ angular.module('Egerep').directive 'notifications', ->
                 $(event.target).blur()
 
         notificate = (event) ->
-            parent          = $(event.target).closest('div')
-            comment_element = parent.find('div')
+            parent          = $(event.target).parents('div').first()
+            comment_element = parent.find('div').last()
             date_element    = parent.find('input')
             comment         = comment_element.text()
             date            = date_element.val()
@@ -147,7 +147,7 @@ angular.module('Egerep').directive 'notifications', ->
             return if $(event.target).prop('tagName') is 'DIV'
             if event.keyCode in [38, 40]
                 event.preventDefault()
-                date_node = $(event.target).closest('div').find('input')
+                date_node = $(event.target).parents('div').first().find('input')
                 date = date_node.val()
                 if date.match /_/
                     date_node.val $rootScope.formatDate moment()
