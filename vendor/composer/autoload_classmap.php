@@ -77,6 +77,7 @@ return array(
     'App\\Console\\Commands\\CheckFinishedRequests' => $baseDir . '/app/Console/Commands/CheckFinishedRequests.php',
     'App\\Console\\Commands\\ClientPhonesTransfer' => $baseDir . '/app/Console/Commands/ClientPhonesTransfer.php',
     'App\\Console\\Commands\\DeleteNotifications' => $baseDir . '/app/Console/Commands/DeleteNotifications.php',
+    'App\\Console\\Commands\\EgecrmTransferCabinet' => $baseDir . '/app/Console/Commands/EgecrmTransferCabinet.php',
     'App\\Console\\Commands\\ForecastCalc' => $baseDir . '/app/Console/Commands/ForecastCalc.php',
     'App\\Console\\Commands\\GraphRecalc' => $baseDir . '/app/Console/Commands/GraphRecalc.php',
     'App\\Console\\Commands\\InitDuplicatesTable' => $baseDir . '/app/Console/Commands/InitDuplicatesTable.php',

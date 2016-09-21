@@ -150,8 +150,8 @@ class Archive extends Model
         $query->join('clients as c', 'attachments.client_id', '=', 'c.id');
 
         $query->select(
-            \DB::raw('archives.*, attachments.*, r.request_id, archives.created_at as archive_date, archives.user_id as archive_user_id, archives.id as archive_id, c.grade as client_grade'),
-            'attachments.created_at AS attachment_date', 'total_lessons_missing',
+            \DB::raw('archives.*, attachments.*, r.request_id, archives.created_at as archive_created_at, archives.date as archive_date, archives.user_id as archive_user_id, archives.id as archive_id, c.grade as client_grade'),
+            'attachments.date AS attachment_date', 'total_lessons_missing',
             \DB::raw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) as lesson_count')
         );
 

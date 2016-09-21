@@ -129,7 +129,7 @@
             @{{ attachment.forecast | hideZero | number}}
         </td>
         <td width='6%'>
-            @{{ formatDate(attachment.archive.created_at) }}
+            @{{ attachment.archive.date }}
         </td>
         <td width='10%'>
             @{{ AttachmentService.getStatus(attachment) }}
