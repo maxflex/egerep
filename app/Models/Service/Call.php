@@ -2,6 +2,7 @@
 
 namespace App\Models\Service;
 
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Database\Eloquent\Model;
 
 class Call extends Model
@@ -27,7 +28,7 @@ class Call extends Model
                         SELECT entry_id, from_number, start
                         FROM `mango`
                         WHERE DATE(NOW()) = DATE(FROM_UNIXTIME(start)) and from_extension=0 "
-                        . (! empty($excluded = \Cache::get("excluded_missed")) ? " and entry_id not in (" . implode(",", array_map('wrapString', $excluded)) . ") " : "") . "
+                        . (! empty($excluded = Redis::command('smembers', ['laravel:excluded_missed'])) ? " and entry_id not in (" . implode(",", array_map('wrapString', $excluded)) . ") " : "") . "
                         GROUP BY entry_id
                         HAVING sum(answer) = 0
                     ) missed 
@@ -96,10 +97,7 @@ class Call extends Model
 
     public static function excludeFromMissed($entry_id)
     {
-        $excluded = \Cache::remember('excluded_missed', minutesTillNextDay(), function() { return []; });
-        $excluded[] = $entry_id;
-
-        \Cache::put('excluded_missed', $excluded, minutesTillNextDay());
+        Redis::command('sadd', ['laravel:excluded_missed', $entry_id]);
     }
 }
 
