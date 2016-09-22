@@ -98,6 +98,7 @@ class Call extends Model
     public static function excludeFromMissed($entry_id)
     {
         Redis::command('sadd', ['laravel:excluded_missed', $entry_id]);
+        Redis::command('expire', ['laravel:excluded_missed', secondsTillNextDay()]);
     }
 }
 

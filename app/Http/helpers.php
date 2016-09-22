@@ -179,6 +179,11 @@
         return (strtotime('tomorrow') - time()) / 60;
     }
 
+    function secondsTillNextDay()
+    {
+        return strtotime('tomorrow') - time();
+    }
+
     function wrapString($value)
     {
         return "'" . $value. "'";
