@@ -6,7 +6,7 @@
     <div ng-show="!calls.length" style="padding: 100px" class="small half-black center">
         нет пропущенных вызовов за сегодня
     </div>
-    <table class="table border-reverse">
+    <table class="table">
         <tr ng-repeat='call in calls'>
             <td width="200">
                 @{{ formatTimestamp(call.start) }}
@@ -14,7 +14,6 @@
             <td width="200">
                 <span class="underline-hover inline-block" ng-click="PhoneService.call(call.phone_formatted)">@{{ PhoneService.format(call.from_number) }}</span>
             </td>
-            <td>@{{ call.entry_id }}</td>
             <td>
                 <span ng-if="call.caller.type == 'tutor'">
                     преподаватель <a target='_blank' href='tutor/@{{ call.caller.id }}/edit'>@{{ call.caller.last_name }} @{{ call.caller.first_name }} @{{ call.caller.middle_name }}</a>
