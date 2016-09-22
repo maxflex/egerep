@@ -22,18 +22,12 @@ class Call extends Model
 
     private static function getMissedCallsSql()
     {
-        $excluded_sql = " and 1 ";
-        if (($excluded_entries = \Cache::get("excluded_missed")) && !empty($excluded_entries)) {
-            // in (string, string) => in ('string', 'string')
-            $excluded_entries = array_map(function($item){return "'".$item."'"; }, $excluded_entries);
-            $excluded_sql = " and entry_id not in (".implode(",", $excluded_entries).") ";
-        }
-
         return "
                     FROM (
                         SELECT entry_id, from_number, start
                         FROM `mango`
-                        WHERE DATE(NOW()) = DATE(FROM_UNIXTIME(start)) and from_extension=0 {$excluded_sql}
+                        WHERE DATE(NOW()) = DATE(FROM_UNIXTIME(start)) and from_extension=0 "
+                        . (! empty($excluded = \Cache::get("excluded_missed")) ? " and entry_id not in (" . implode(",", array_map('wrapString', $excluded)) . ") " : "") . "
                         GROUP BY entry_id
                         HAVING sum(answer) = 0
                     ) missed 
@@ -49,7 +43,7 @@ class Call extends Model
      */
     public static function missed($get_caller = true)
     {
-        $missed = \DB::select(\DB::raw("SELECT *" . self::getMissedCallsSql()));
+        $missed = \DB::select(\DB::raw("SELECT * " . self::getMissedCallsSql()));
         foreach($missed as &$call) {
             if ($get_caller) {
                 $call->caller = self::getCaller($call->from_number);

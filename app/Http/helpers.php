@@ -178,3 +178,8 @@
     {
         return (strtotime('tomorrow') - time()) / 60;
     }
+
+    function wrapString($value)
+    {
+        return "'" . $value. "'";
+    }

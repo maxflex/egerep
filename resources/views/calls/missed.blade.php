@@ -6,6 +6,11 @@
     <div ng-show="!calls.length" style="padding: 100px" class="small half-black center">
         нет пропущенных вызовов за сегодня
     </div>
+    <style>
+        tbody tr:first-child td {
+            border: none;
+        }
+    </style>
     <table class="table">
         <tr ng-repeat='call in calls'>
             <td width="200">
