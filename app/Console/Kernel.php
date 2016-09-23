@@ -44,6 +44,7 @@ class Kernel extends ConsoleKernel
         Commands\UpdateArchivesChecked::class,
         Commands\MangoSync::class,
         Commands\EgecrmTransferCabinet::class,
+        Commands\EgecrmContracts::class,
     ];
 
     /**
