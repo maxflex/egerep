@@ -3,7 +3,7 @@
 @section('controller', 'CallsMissed')
 
 @section('content')
-    <div ng-show="!calls.length" style="padding: 100px" class="small half-black center">
+    <div ng-show="!calls.length" style="padding: 260px" class="small half-black center">
         нет пропущенных вызовов за сегодня
     </div>
     <style>
