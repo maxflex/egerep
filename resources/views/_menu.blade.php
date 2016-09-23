@@ -16,6 +16,11 @@
         <span class="badge badge-danger pull-right">{{ $notifications_count }}</span>
     @endif
 </a>
+<a href="calls/missed" class="list-group-item">Пропущенные вызовы
+    @if(@$missed_calls_count)
+        <span class="badge badge-danger pull-right">{{ $missed_calls_count }}</span>
+    @endif
+</a>
 <a class="list-group-item active">Финансы</a>
 @if (\App\Models\User::fromSession()->show_accounts)
     <a href="periods" class="list-group-item">Расчеты</a>

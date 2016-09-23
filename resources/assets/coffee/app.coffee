@@ -106,6 +106,11 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
             return '' if not date
             moment(date).format "DD.MM.YY" + (if full_year then "YY" else "")
 
+        $rootScope.formatTimestamp = (timestamp, full_year = false) ->
+            timestamp = +(timestamp + '000') if typeof timestamp is 'string'
+            return '' if not timestamp
+            moment(timestamp).format "DD.MM.YY в HH:mm" + (if full_year then "YY" else "")
+
         $rootScope.dialog = (id) ->
             $("##{id}").modal 'show'
             return
