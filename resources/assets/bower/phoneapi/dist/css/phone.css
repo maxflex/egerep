@@ -26,10 +26,9 @@
   z-index: 999;
   background: rgba(255,255,255,0.8);
   padding: 12px 22px;
-  min-height: 55px;
-	border-radius: 23px 0 0 0;
-	-webkit-border-radius: 23px 0 0 0;
-	min-width: 250px;
+  height: 100px;
+  width: 400px;
+  border-radius: 23px 0 0 0;
 }
 
 .call-popup a {
