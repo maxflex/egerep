@@ -44,12 +44,20 @@ class EgecrmTransferCabinet extends Command
 
         foreach($data as $d) {
             $time = \DB::connection('egecrm')->table('time')->whereId($d->id_time)->first();
-            $query = \DB::connection('egecrm')->table('group_schedule')->whereRaw("DAYOFWEEK(date) = {$time->day} AND time='{$time->time}:00' AND cabinet > 0 AND id_group=" . $d->id_group);
+            $day = $time->day;
+            if ($day == 7) {
+	            $day = 1;
+            } else {
+	            $day++;
+            }
+            $query = \DB::connection('egecrm')->table('group_schedule')->whereRaw("DAYOFWEEK(date) = {$day} AND time='{$time->time}:00' AND cabinet > 0 AND id_group=" . $d->id_group);
             if ($query->exists()) {
                 \DB::connection('egecrm')->table('group_time')->where('id_group', $d->id_group)->where('id_time', $d->id_time)->update([
                     'id_cabinet' => $query->value('cabinet')
                 ]);
             }
+            $bar->advance();
         }
+        $bar->finish();
     }
 }
