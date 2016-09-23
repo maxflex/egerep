@@ -153,7 +153,7 @@
             <td width='6%'>
                 @{{ formatDate(archive.archive_date) }}
             </td>
-            <td width='20%'>
+            <td width='17%'>
                 @{{ UserService.getLogin(archive.archive_user_id) }}: @{{ formatDateTime(archive.archive_created_at) }}
             </td>
             <td width='4%'>
@@ -165,7 +165,7 @@
             <td width='8%'>
                 @{{ ArchiveStates[archive.state] }}
             </td>
-            <td width='14%'>
+            <td width='17%'>
                 @{{ Checked[archive.checked] }}
             </td>
         </tr>
