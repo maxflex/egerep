@@ -179,6 +179,10 @@ class Archive extends Model
             });
         }
 
+        if (isset($search->tutor_id)) {
+            $query->where('attachments.tutor_id', $search->tutor_id);
+        }
+
         if (isset($search->total_lessons_missing)) {
             if ($search->total_lessons_missing) {
                 $query->whereNullOrZero('total_lessons_missing');

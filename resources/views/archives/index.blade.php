@@ -97,6 +97,14 @@
                         value="@{{id}}">@{{ name }}</option>
             </select>
         </div>
+        <div>
+            <div class="form-group">
+                <div class="input-group custom">
+                  <span class="input-group-addon">ID –</span>
+                  <input type="text" ng-keyup='keyFilter($event)' class="form-control" ng-model="search.tutor_id">
+                </div>
+            </div>
+        </div>
     </div>
 
     <table class="table" style="font-size: 0.8em;">
