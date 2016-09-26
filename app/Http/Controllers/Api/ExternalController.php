@@ -44,8 +44,42 @@ class ExternalController extends Controller
         $this->$function($request);
     }
 
+    public function requestNew($data)
+    {
+        $phone = cleanNumber($data->phone, true);
+
+		// Если в заявке номер телефона совпадает с номером телефона,
+		// указанным в другой невыполненной заявке, то такие заявки нужно сливать
+		$client = Client::findByPhone($phone);
+
+		if (! $client->exists()) {
+			// создаем нового клиента
+	        $client = Client::create(compact('phone'));
+		} else {
+			$client = $client->orderBy('id', 'desc')->first();
+		}
+
+		// @todo: нужно сделать поиск среди всех заявок в списке "невыполненные"
+		//		  а не только по заявкам клиента
+		$new_request = $client->requests()->where('state', 'new');
+
+		if ($new_request->exists()) {
+			$new_request = $new_request->orderBy('created_at', 'desc')->first();
+			$new_request->comment = "Репетитор " . $data->tutor_id . " " . $new_request->comment;
+			$new_request->save();
+		} else {
+			$comment = breakLines([($data->tutor_id ? "Репетитор " . $data->tutor_id : null), $data->comment, "Имя: " . $data->name]);
+			// создаем заявку клиента
+	        $client->requests()->create([
+	            'comment' 	=> $comment,
+				'google_id'	=> $data->google_id,
+	        ]);
+		}
+    }
+
     /**
      * Входящая заявка
+     * удалить позже!!
      */
     public function request($data)
     {
