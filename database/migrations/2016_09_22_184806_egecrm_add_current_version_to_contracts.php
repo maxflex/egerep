@@ -12,9 +12,9 @@ class EgecrmAddCurrentVersionToContracts extends Migration
      */
     public function up()
     {
-        Schema::connection('egecrm')->table('contracts', function (Blueprint $table) {
-            $table->boolean('current_version')->default(false);
-        });
+        // Schema::connection('egecrm')->table('contracts', function (Blueprint $table) {
+        //     $table->boolean('current_version')->default(false);
+        // });
         // RUN THIS SQL:
         // update contracts c
         // join (SELECT *, MAX(id) as max_id FROM contracts GROUP BY id_contract) current_contract ON current_contract.max_id = c.id

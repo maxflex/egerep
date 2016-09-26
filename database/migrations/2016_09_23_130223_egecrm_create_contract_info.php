@@ -41,6 +41,6 @@ class EgecrmCreateContractInfo extends Migration
      */
     public function down()
     {
-        Schema::drop('contract_info');
+        // Schema::drop('contract_info');
     }
 }

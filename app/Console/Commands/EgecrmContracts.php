@@ -64,17 +64,17 @@ class EgecrmContracts extends Command
 
                 if (count($versions) > 1) {
                     foreach(range(1, count($versions) - 1) as $i) {
-                        $changes = [$versions[$i]->id => $version_ids[$i - 1]];
+                        $changes[$versions[$i]->id] = $version_ids[$i - 1];
                         $versions[$i]->id = $version_ids[$i - 1];
                         $versions[$i]->id_student = $contract->id_student;
                     }
                 }
 
-                $changes = [$versions[0]->id => $contract->id];
+                $changes[$versions[0]->id] = $contract->id;
                 $versions[0]->id = $contract->id;
                 $versions[0]->id_student = $contract->id_student;
 
-                $changes = [$contract->id => $last_version_id];
+                $changes[$contract->id] = $last_version_id;
                 $contract->id = $last_version_id;
 
                 foreach($versions as $version) {
@@ -89,10 +89,18 @@ class EgecrmContracts extends Command
                     foreach($changes as $oldId => $newId) {
                         $cs = $contract_subjects->where('id_contract', $oldId)->all();
                         foreach($cs as $c) {
+                            unset($c->id);
                             $c->id_contract = $newId;
-                            DB::connection('egecrm')->table('contract_subjects')->insert((array)$c);
+                            try {
+                                DB::connection('egecrm')->table('contract_subjects')->insert((array)$c);
+                            }
+                            catch (\Exception $e) {
+                                \Log::info('Error: ' . json_encode((array)$c));
+                                \Log::info('Message: ' . $e->getMessage());
+                            }
                         }
                     }
+                    // \Log::info('Changes: ' . json_encode($changes));
                 }
             }
             DB::connection('egecrm')->table('contracts')->insert((array)$contract);

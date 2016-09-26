@@ -12,9 +12,9 @@ class EgecrmDropIsSpecialFromVj extends Migration
      */
     public function up()
     {
-        Schema::connection('egecrm')->table('visit_journal', function (Blueprint $table) {
-            $table->dropColumn('is_special');
-        });
+        // Schema::connection('egecrm')->table('visit_journal', function (Blueprint $table) {
+        //     $table->dropColumn('is_special');
+        // });
     }
 
     /**
