@@ -85,22 +85,23 @@ class EgecrmContracts extends Command
                 // меняем contract_subjects
                 if (count($changes)) {
                     $contract_subjects = Collect(DB::connection('egecrm')->table('contract_subjects')->whereIn('id_contract', array_keys($changes))->get());
+                    $cnt = DB::connection('egecrm')->table('contract_subjects')->whereIn('id_contract', array_keys($changes))->count();
+                    $cnt2 = 0;
                     DB::connection('egecrm')->table('contract_subjects')->whereIn('id_contract', array_keys($changes))->delete();
                     foreach($changes as $oldId => $newId) {
                         $cs = $contract_subjects->where('id_contract', $oldId)->all();
                         foreach($cs as $c) {
-                            unset($c->id);
-                            $c->id_contract = $newId;
+                            $new_subject = clone $c;
+                            $new_subject->id_contract = $newId;
                             try {
-                                DB::connection('egecrm')->table('contract_subjects')->insert((array)$c);
+                                $cnt2++;
+                                DB::connection('egecrm')->table('contract_subjects')->insert((array)$new_subject);
                             }
                             catch (\Exception $e) {
                                 \Log::info('Error: ' . json_encode((array)$c));
                                 \Log::info('Message: ' . $e->getMessage());
                             }
                         }
-                    }
-                    // \Log::info('Changes: ' . json_encode($changes));
                 }
             }
             DB::connection('egecrm')->table('contracts')->insert((array)$contract);
