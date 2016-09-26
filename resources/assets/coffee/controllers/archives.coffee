@@ -15,7 +15,9 @@ angular
 				$(el).data 'content', $(el).attr 'data-content'
 			$('.selectpicker').selectpicker 'refresh'
 		, 100
-
+	$scope.keyFilter = (event) ->
+		$scope.filter() if event.keyCode is 13
+        
 	$scope.filter = ->
 		$.cookie('archives', JSON.stringify($scope.search), { expires: 365, path: '/' });
 		$scope.current_page = 1

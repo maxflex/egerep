@@ -97,6 +97,14 @@
                         value="@{{id}}">@{{ name }}</option>
             </select>
         </div>
+        <div>
+            <div class="form-group">
+                <div class="input-group custom">
+                  <span class="input-group-addon">ID –</span>
+                  <input type="text" ng-keyup='keyFilter($event)' class="form-control" ng-model="search.tutor_id">
+                </div>
+            </div>
+        </div>
     </div>
 
     <table class="table" style="font-size: 0.8em;">
@@ -145,19 +153,19 @@
             <td width='6%'>
                 @{{ formatDate(archive.archive_date) }}
             </td>
-            <td width='20%'>
+            <td width='17%'>
                 @{{ UserService.getLogin(archive.archive_user_id) }}: @{{ formatDateTime(archive.archive_created_at) }}
             </td>
-            <td width='8%'>
+            <td width='4%'>
                 <span ng-repeat='code in archive.errors.split(",")' ng-attr-aria-label="@{{ AttachmentErrors[code] }}" class='hint--bottom-left'>@{{ code }}@{{ $last ? '' : ',  ' }}</span>
             </td>
-            <td width='6%'>
+            <td width='8%'>
                 @{{ Grades[archive.client_grade] }}
             </td>
             <td width='8%'>
                 @{{ ArchiveStates[archive.state] }}
             </td>
-            <td width='12%'>
+            <td width='17%'>
                 @{{ Checked[archive.checked] }}
             </td>
         </tr>

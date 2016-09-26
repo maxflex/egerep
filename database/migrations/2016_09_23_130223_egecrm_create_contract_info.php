@@ -28,7 +28,6 @@ class EgecrmCreateContractInfo extends Migration
             ]);
         }
         Schema::connection('egecrm')->table('contracts', function (Blueprint $table) {
-            $table->dropColumn('id_contract');
             $table->dropColumn('grade');
             $table->dropColumn('id_student');
             $table->dropColumn('year');
