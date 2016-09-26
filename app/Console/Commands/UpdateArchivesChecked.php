@@ -41,13 +41,18 @@ class UpdateArchivesChecked extends Command
 
         $bar = $this->output->createProgressBar(count($archives));
 
+        $update_data = [
+            'state'   => 'impossible',
+            'checked' => 1,
+        ];
+
         foreach($archives as $archive) {
             $x = $archive->total_lessons_missing + $archive->attachment->account_data_count;
             if (! $x && $archive->getOriginal('date') <= '2016-01-01') {
-                \DB::table('archives')->whereId($archive->id)->update(['state' => 'impossible']);
+                \DB::table('archives')->whereId($archive->id)->update($update_data);
             }
             if ($x && $archive->getOriginal('date') <= '2015-01-01') {
-                \DB::table('archives')->whereId($archive->id)->update(['state' => 'impossible']);
+                \DB::table('archives')->whereId($archive->id)->update($update_data);
             }
             $bar->advance();
         }
