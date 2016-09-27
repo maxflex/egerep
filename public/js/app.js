@@ -290,22 +290,37 @@
           var client, client_id;
           client_id = $(ui.draggable).data('id');
           client = $scope.findById($scope.clients, client_id);
-          $scope.clients = removeById($scope.clients, client_id);
-          Attachment.update({
-            id: client.attachment_id,
-            hide: 0
-          });
-          $scope.visible_clients_count++;
+          if (client.archive_state !== 'possible') {
+            $scope.clients = removeById($scope.clients, client_id);
+            Attachment.update({
+              id: client.attachment_id,
+              hide: 0
+            });
+            $scope.visible_clients_count++;
+          }
           return $scope.$apply();
         }
       });
     };
-  }).controller('AccountsCtrl', function($rootScope, $scope, $http, $timeout, Account, PaymentMethods, Grades, Attachment, Weekdays, AttachmentStates, PhoneService, AttachmentVisibility, DebtTypes, YesNo, Tutor) {
+  }).controller('AccountsCtrl', function($rootScope, $scope, $http, $timeout, Account, PaymentMethods, Archive, Grades, Attachment, AttachmentState, AttachmentStates, Weekdays, PhoneService, AttachmentVisibility, DebtTypes, YesNo, Tutor, ArchiveStates, Checked) {
     var bindDraggable, getAccountEndDate, getAccountStartDate, getCalendarStartDate, getCommission, moveCursor, renderData;
     bindArguments($scope, arguments);
     $scope.current_scope = $scope;
     $scope.current_period = 0;
     $scope.all_displayed = false;
+    $scope.updateArchive = function(field, set) {
+      var archive, fillable, fillables, j, len;
+      fillables = ['id', 'state', 'checked'];
+      archive = {};
+      for (j = 0, len = fillables.length; j < len; j++) {
+        fillable = fillables[j];
+        archive[fillable] = $scope.popup_attachment.archive[fillable];
+      }
+      $rootScope.toggleEnum(archive, field, set);
+      return $scope.Archive.update(archive, function(response) {
+        return _.extendOwn($scope.popup_attachment.archive, archive);
+      });
+    };
     angular.element(document).ready(function() {
       return $scope.loadPage();
     });
@@ -608,12 +623,14 @@
           var client, client_id;
           client_id = $(ui.draggable).data('id');
           client = $scope.findById($scope.clients, client_id);
-          $scope.clients = removeById($scope.clients, client_id);
-          Attachment.update({
-            id: client.attachment_id,
-            hide: 1
-          });
-          $scope.hidden_clients_count++;
+          if (client.archive_state !== 'possible') {
+            $scope.clients = removeById($scope.clients, client_id);
+            Attachment.update({
+              id: client.attachment_id,
+              hide: 1
+            });
+            $scope.hidden_clients_count++;
+          }
           return $scope.$apply();
         }
       });
@@ -4142,7 +4159,8 @@
       scope: {
         count: '=',
         type: '@',
-        noneText: '@'
+        noneText: '@',
+        additional: '='
       },
       templateUrl: 'directives/plural',
       controller: function($scope, $element, $attrs, $timeout) {
@@ -4462,6 +4480,10 @@
     "new": 'новые',
     inprogress: 'рабочие',
     ended: 'завершенные'
+  }).value('AttachmentState', {
+    "new": 'новый',
+    inprogress: 'рабочий',
+    ended: 'завершенный'
   }).value('Checked', ['не проверено', 'проверено']).value('ReviewScores', {
     1: 1,
     2: 2,

@@ -23,19 +23,31 @@ angular.module('Egerep')
                     # ui.draggable.remove()
                     client_id      = $(ui.draggable).data('id')
                     client         = $scope.findById($scope.clients, client_id)
-                    $scope.clients = removeById($scope.clients, client_id)
+                    if client.archive_state isnt 'possible'
+                        $scope.clients = removeById($scope.clients, client_id)
 
-                    Attachment.update
-                        id: client.attachment_id
-                        hide: 0
+                        Attachment.update
+                            id: client.attachment_id
+                            hide: 0
 
-                    $scope.visible_clients_count++
+                        $scope.visible_clients_count++
                     $scope.$apply()
-    .controller 'AccountsCtrl', ($rootScope, $scope, $http, $timeout, Account, PaymentMethods, Grades, Attachment, Weekdays, AttachmentStates, PhoneService, AttachmentVisibility, DebtTypes, YesNo, Tutor) ->
+    .controller 'AccountsCtrl', ($rootScope, $scope, $http, $timeout, Account, PaymentMethods, Archive, Grades, Attachment, AttachmentState, AttachmentStates, Weekdays, PhoneService, AttachmentVisibility, DebtTypes, YesNo, Tutor, ArchiveStates, Checked) ->
         bindArguments($scope, arguments)
         $scope.current_scope  = $scope
         $scope.current_period = 0
         $scope.all_displayed  = false
+
+        $scope.updateArchive = (field, set) ->
+            # просто update выдавал ошибку field doesnt exists
+            fillables = ['id', 'state', 'checked']
+            archive = {}
+            for fillable in fillables
+                 archive[fillable] = $scope.popup_attachment.archive[fillable]
+            $rootScope.toggleEnum(archive, field, set)
+            $scope.Archive.update archive
+            , (response)->
+                _.extendOwn($scope.popup_attachment.archive, archive)
 
         angular.element(document).ready ->
             $scope.loadPage()
@@ -309,11 +321,12 @@ angular.module('Egerep')
                     # ui.draggable.remove()
                     client_id      = $(ui.draggable).data('id')
                     client         = $scope.findById($scope.clients, client_id)
-                    $scope.clients = removeById($scope.clients, client_id)
+                    if client.archive_state isnt 'possible'
+                        $scope.clients = removeById($scope.clients, client_id)
 
-                    Attachment.update
-                        id: client.attachment_id
-                        hide: 1
+                        Attachment.update
+                            id: client.attachment_id
+                            hide: 1
 
-                    $scope.hidden_clients_count++
+                        $scope.hidden_clients_count++
                     $scope.$apply()

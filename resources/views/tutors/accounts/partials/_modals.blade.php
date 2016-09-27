@@ -42,29 +42,31 @@
             </div>
             <div class="modal-body" style='overflow: scroll; max-height: 100%'>
                 <div class="mbs">
-                    Ученик: <a href='@{{ selected_client.link }}'>@{{ popup_attachment.client.name | cut:true:100:'имя не указано' }}</a>, @{{ popup_attachment.client.grade ? Grades[popup_attachment.client.grade] : 'класс не указан' }},
-                    <span ng-repeat="phone_field in ['phone', 'phone2', 'phone3', 'phone4']">
-                        <span ng-show="popup_attachment.client[phone_field]">
-                            <span class="underline-hover inline-block"
-                                  ng-click="PhoneService.call(popup_attachment.client[phone_field])"
-                                  ng-class="{'phone-duplicate-new': popup_attachment.client.duplicate}"
-                            >
-                                  @{{ PhoneService.format(popup_attachment.client[phone_field]) }}</span>
-                        </span>
-                    </span>
+                    Клиент: @{{ selected_client.address ? selected_client.address : 'Адрес не заполнен' }}<span ng-repeat="phone in selected_client.phones">,
+                        <span class="underline-hover inline-block"
+                            ng-click="PhoneService.call(popup_attachment.client[phone_field])"
+                            ng-class="{'phone-duplicate-new': popup_attachment.client.duplicate}"
+                        >@{{ PhoneService.format(phone) }}</span></span>
                 </div>
-                <div class="mbs">Дата стыковки: <span class="text-success bold">@{{ popup_attachment.date }}</span>, @{{ popup_attachment.comment }}</div>
                 <div class="mbs">
-                    Проведено занятий:
-                    @{{ selected_client.total_lessons > 0 ? selected_client.total_lessons : null }}<span style='text-gray'><span ng-show='selected_client.total_lessons > 0 && selected_client.total_lessons_missing > 0' class='text-gray'>+</span><span ng-show='selected_client.total_lessons_missing' class="text-gray">@{{ selected_client.total_lessons_missing }}</span></span>
+                    Ученик: <a href='@{{ selected_client.link }}'>@{{ popup_attachment.client.name | cut:true:100:'без имени' }}</a>, текущий класс - @{{ popup_attachment.client.grade ? Grades[popup_attachment.client.grade] : 'без класса' }}
+                </div>
+                <div class="mbs">Стыковка: <span class="text-success">@{{ popup_attachment.date }}</span>, @{{ popup_attachment.comment }}</div>
+                <div class="mbs">
+                    Проведено занятий: @{{ selected_client.total_lessons > 0 ? selected_client.total_lessons : (selected_client.total_lessons + selected_client.total_lessons_missing > 0 ? '' : 'занятий нет') }}<span style='text-gray'><span ng-show='selected_client.total_lessons > 0 && selected_client.total_lessons_missing > 0' class='text-gray'>+</span><span ng-show='selected_client.total_lessons_missing' class="text-gray">@{{ selected_client.total_lessons_missing }}</span></span>
                 </div>
                 <div class="mbs">Прогноз:
                     <span ng-show='selected_client.forecast'>@{{ selected_client.forecast | number }} руб./неделя</span>
-                    <span ng-hide='selected_client.forecast'>не указан</span>
+                    <span ng-hide='selected_client.forecast'>не установлен</span>
                 </div>
                 <div ng-if='popup_attachment.archive'>
-                    Дата архивации:
+                    Архивации:
                     <span class="text-danger bold">@{{ popup_attachment.archive.date }}</span>, @{{ popup_attachment.archive.comment }}
+                </div>
+                <div ng-if='popup_attachment.archive'>
+                    Разархивация:
+                    <span class='inline-fixed-width' ng-click="updateArchive('state', ArchiveStates)">@{{ ArchiveStates[popup_attachment.archive.state] }}</span>
+                    <span class='inline-fixed-width' ng-click="updateArchive('checked', Checked)" ng-class="+popup_attachment.archive.checked ? 'text-raw' : 'text-danger'">@{{ Checked[popup_attachment.archive.checked] }}</span>
                 </div>
 
                 <div style="margin-top: 30px">

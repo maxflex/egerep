@@ -28841,10 +28841,11 @@ a {
     padding: 2px 3px; }
     .accounts-table tr td:first-of-type {
       border-left: none;
-      text-align: center; }
+      text-align: left; }
     .accounts-table tr td:last-of-type {
       border-right: none; }
     .accounts-table tr td.empty-td {
+      height: 165px;
       border-right: 1px solid #999999; }
     .accounts-table tr td.date-td {
       padding: 3px 3px;
@@ -28856,14 +28857,27 @@ a {
     .accounts-table tr td.invisible-td {
       border: none;
       text-align: left; }
+    .accounts-table tr td.possible-archive {
+      background: #ffe5de; }
   .accounts-table thead tr td {
+    vertical-align: top;
     border-top: none;
-    height: 87px;
-    text-align: center;
+    height: 160px;
+    text-align: left;
     background: white; }
+  .accounts-table thead tr .info-row {
+    padding: 0px 3px; }
+  .accounts-table thead tr .space-row {
+    height: 8px; }
+  .accounts-table thead tr .double-space-row {
+    height: 15px; }
 
 .mbs {
   margin-bottom: 3px; }
+
+.inline-fixed-width {
+  width: 100px;
+  display: inline-block; }
 
 .drop-delete {
   display: inline-block;
@@ -31476,6 +31490,15 @@ table.summary-table.left-align tr td {
   margin: 0 6px 0 5px;
   top: -2px;
   position: relative; }
+
+.fa-ruble.filled {
+  background: #158E51;
+  padding: 4px 4px 1px;
+  border-radius: 10px;
+  color: white;
+  vertical-align: text-bottom; }
+  .fa-ruble.filled.half {
+    opacity: 0.5; }
 
 .angular-with-newlines {
   white-space: pre-wrap; }
