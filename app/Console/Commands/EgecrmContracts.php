@@ -89,10 +89,10 @@ class EgecrmContracts extends Command
                     foreach($changes as $oldId => $newId) {
                         $cs = $contract_subjects->where('id_contract', $oldId)->all();
                         foreach($cs as $c) {
-                            unset($c->id);
-                            $c->id_contract = $newId;
+                            $new_subject = clone $c;
+                            $new_subject->id_contract = $newId;
                             try {
-                                DB::connection('egecrm')->table('contract_subjects')->insert((array)$c);
+                                DB::connection('egecrm')->table('contract_subjects')->insert((array)$new_subject);
                             }
                             catch (\Exception $e) {
                                 \Log::info('Error: ' . json_encode((array)$c));
@@ -100,7 +100,6 @@ class EgecrmContracts extends Command
                             }
                         }
                     }
-                    // \Log::info('Changes: ' . json_encode($changes));
                 }
             }
             DB::connection('egecrm')->table('contracts')->insert((array)$contract);
