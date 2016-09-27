@@ -175,4 +175,4 @@ angular
                 $scope.counts = response.data.counts
                 $scope.data = response.data
                 $scope.attachments = response.data.data
-                $rootScope.frontend_loading = false
+                $rootScope.frontend_loading = false if not $scope.attachments.length

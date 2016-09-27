@@ -1116,7 +1116,9 @@
         $scope.counts = response.data.counts;
         $scope.data = response.data;
         $scope.attachments = response.data.data;
-        return $rootScope.frontend_loading = false;
+        if (!$scope.attachments.length) {
+          return $rootScope.frontend_loading = false;
+        }
       });
     };
   });
