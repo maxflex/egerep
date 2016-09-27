@@ -2,9 +2,10 @@ angular.module 'Egerep'
     .directive 'plural', ->
         restrict: 'E'
         scope:
-            count: '='      # кол-во
-            type: '@'       # тип plural age | student | ...
-            noneText: '@'   # текст, если кол-во равно нулю
+            count:      '='      # кол-во
+            type:       '@'      # тип plural age | student | ...
+            noneText:   '@'      # текст, если кол-во равно нулю
+            additional: '='      # кол-во
         templateUrl: 'directives/plural'
         controller: ($scope, $element, $attrs, $timeout) ->
             $scope.textOnly = $attrs.hasOwnProperty('textOnly')

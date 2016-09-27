@@ -91,11 +91,15 @@ class Tutor extends Service\Person
         // ->whereRaw("date_end > DATE_SUB((SELECT date_end FROM accounts WHERE tutor_id=" . $this->id . " ORDER BY date_end DESC LIMIT 1), INTERVAL 60 DAY)");
     }
 
-    public function attachments($hide = null)
+    public function attachments($hide = null, $get_possible_archives = false)
     {
         $query = $this->hasMany('App\Models\Attachment');
-        if ($hide !== null) {
-            $query->where('hide', $hide);
+        if(!$get_possible_archives) {
+            if ($hide !== null) {
+                $query->where('hide', $hide);
+            }
+        } else {
+            $query->whereRaw("(attachments.hide = 0 or exists (select 1 from archives where archives.attachment_id = attachments.id and  archives.state = 'possible'))");
         }
         return $query;
     }
@@ -253,14 +257,16 @@ class Tutor extends Service\Person
      * Получить ID всех клиентов преподавателя для создания списка отчетности
      * $hide – получать только не скрытых клиентов по умолчанию
      */
-    public function getAttachmenClients($hide = 0, $with_lessons_count = false)
+    public function getAttachmenClients($hide = 0, $with_lessons_count = false, $get_possible_archives = false)
     {
         $clients = [];
 
-        foreach ($this->attachments($hide)->get() as $attachment) {
+        foreach ($this->attachments($hide, $get_possible_archives)->get() as $attachment) {
             if ($attachment->requestList && $attachment->requestList->request) {
                 $client = [
                     'id'                    => $attachment->requestList->request->client_id,
+                    'address'               => $attachment->requestList->request->client->address,
+                    'phones'                => $attachment->requestList->request->client->phones,
                     # @todo: заменить на link_url
                     'link'                  => "requests/{$attachment->requestList->request->id}/edit#{$attachment->requestList->id}#{$attachment->id}",
                     'attachment_date'       => $attachment->getOriginal('date'),
@@ -270,6 +276,7 @@ class Tutor extends Service\Person
                     'name'                  => $attachment->requestList->request->client->name,
                     'grade'                 => $attachment->requestList->request->client->grade,
                     'total_lessons_missing' => $attachment->archive ? $attachment->archive->total_lessons_missing : null,
+                    'archive_state'         => $attachment->archive ? $attachment->archive->state : null,
                     'total_lessons'         => DB::table('account_datas')->where('tutor_id', $attachment->tutor_id)->where('client_id', $attachment->client_id)->count(),
                     'forecast'              => $attachment->forecast,
                     'state'                 => $attachment->getState(),

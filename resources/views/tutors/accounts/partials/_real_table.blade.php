@@ -3,7 +3,7 @@
     <table class='accounts-table'>
         <thead class="high-z-index small">
             <tr>
-                <td class='empty-td'>
+                <td class='empty-td centered'>
                     <span class='link-like' ng-hide='all_displayed' ng-click='loadPage()'>
                         @{{ left == 1 ? 'все время' : '+1 период'}}
                     </span>
@@ -34,16 +34,40 @@
         <table class='accounts-table'>
             <thead class='small' ng-repeat-start='account in tutor.last_accounts' ng-if='$index == 0'>
                 <tr>
-                    <td ng-repeat='client in clients' width='77' class="client-draggable" data-id='@{{ client.id }}'>
-                        <a href='@{{ client.link }}'>@{{ client.name | cut:false:10:'имя не указано' }}</a>
-                        <br>
-                        <span class='text-gray'>
+                    <td ng-repeat='client in clients' width='77' class="client-draggable" data-id='@{{ client.id }}' ng-class="{'possible-archive' : client.archive_state == 'possible'}">
+                        <div class='mbs'>
+                            <a href='@{{ client.link }}'>@{{ client.name | cut:false:10:'без имени' }}</a>
+                        </div>
+                        <div class='mbs'>
                             <span ng-show='client.grade'>@{{ Grades[client.grade] }}</span>
-                            <span ng-hide='client.grade'>класс не указан</span>
-                        </span>
-                        <div ng-click='accountInfo(client)' class='attachment-status @{{ client.state }}'></div>
-                        <div class="text-success" style="margin-top: 3px">@{{ formatDate(client.attachment_date) }}</div>
-                        <div class="text-danger">@{{ formatDate(client.archive_date) }}</div>
+                            <span ng-hide='client.grade'>без класса</span>
+                        </div>
+                        <div class='mbs'>
+                            @{{ AttachmentState[client.state] }}
+                        </div>
+                        <div class='space-row'></div>
+                        <div class='mbs'>
+                            с <span style='margin-top: 3px;'>@{{ formatDate(client.attachment_date) }}</span>
+                        </div>
+                        <div class='mbs'>
+                            <span ng-show='client.total_lessons'>
+                                <plural count='client.total_lessons' type='lesson' hide-zero additional='client.total_lessons_missing'></plural>
+                            </span>&nbsp;
+                        </div>
+                        <div class='mbs'>
+                            <span ng-show='client.forecast'>
+                                <i class='fa fa-ruble filled' ng-class='{"half" : client.archive_date}'></i> @{{ client.forecast }}
+                            </span>&nbsp;
+                        </div>
+                        <div class='mbs'>
+                            <span ng-show='client.archive_date'>
+                                по <span class="text-danger">@{{ formatDate(client.archive_date) }}</span>
+                            </span>&nbsp;
+                        </div>
+                        <div class='double-space-row'></div>
+                        <div class='mbs'>
+                            <span class='link-like' ng-click='accountInfo(client)'>подобнее</span>
+                        </div>
                     </td>
                 </tr>
             </thead>
@@ -69,7 +93,6 @@
                 <tr>
                     <td ng-if='!clients.length' class="fake-cell"></td>
                     <td ng-repeat='client in clients' class="invisible-td small" style='text-align: center'>
-                        @{{ client.total_lessons > 0 ? client.total_lessons : null }}<span style='text-gray'><span ng-show='client.total_lessons > 0 && client.total_lessons_missing > 0' class='text-gray'>+</span><span ng-show='client.total_lessons_missing' class="text-gray">@{{ client.total_lessons_missing }}</span></span>
                     </td>
                 </tr>
                 <tr>

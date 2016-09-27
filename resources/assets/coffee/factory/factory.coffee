@@ -164,6 +164,11 @@ angular.module('Egerep')
         inprogress: 'рабочие'
         ended: 'завершенные'
 
+    .value 'AttachmentState',
+        new: 'новый'
+        inprogress: 'рабочий'
+        ended: 'завершенный'
+
     .value 'Checked', ['не проверено', 'проверено']
 
     .value 'ReviewScores',

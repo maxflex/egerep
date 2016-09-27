@@ -14,7 +14,7 @@ class AccountsController extends Controller
     public function index($id)
     {
         $tutor = Tutor::find($id);
-        $clients = $tutor->getAttachmenClients();
+        $clients = $tutor->getAttachmenClients(0, false, true);
         $hidden_clients_count = $tutor->clientsCount(1);
 
         if (! count($clients) && !$hidden_clients_count) {

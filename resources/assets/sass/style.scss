@@ -463,14 +463,14 @@
 				padding: 2px 3px;
 				&:first-of-type {
 					border-left: none;
-					text-align: center;
+					text-align: left
 				}
 				&:last-of-type {
 					border-right: none;
 				}
 				&.empty-td {
 					// width: 61px;
-					// height: 70px;
+					 height: 165px;
 					border-right: 1px solid #999999;
 				}
 				&.date-td {
@@ -486,16 +486,29 @@
 					border: none;
 					text-align: left;
 				}
+			  	&.possible-archive {
+				  background: #ffe5de;
+				}
 			}
 		}
 		& thead {
 			& tr {
 				& td {
+					vertical-align: top;
 					border-top: none;
 					// padding-bottom: 50px;
-				    height: 87px;
-					text-align: center;
+					height: 160px;
+					text-align: left;
 					background: white;
+				}
+				& .info-row {
+					padding:0px 3px;
+				}
+				& .space-row {
+					height: 8px;
+				}
+			  	& .double-space-row {
+					height: 15px;
 				}
 			}
 		}
@@ -503,6 +516,10 @@
 
 	.mbs {
 		margin-bottom: 3px;
+	}
+	.inline-fixed-width {
+	  	width: 100px;
+	  	display: inline-block;
 	}
 
 	.drop-delete {
@@ -3749,6 +3766,16 @@ table.summary-table.left-align tr td {
 	margin: 0 6px 0 5px;
     top: -2px;
     position: relative;
+}
+.fa-ruble.filled {
+  background: $green_main;
+  padding: 4px 4px 1px;
+  border-radius: 10px;
+  color: white;
+  vertical-align: text-bottom;
+  &.half {
+	opacity: 0.5;
+  }
 }
 .angular-with-newlines {
     white-space: pre-wrap;
