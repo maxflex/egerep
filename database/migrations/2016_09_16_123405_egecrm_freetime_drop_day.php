@@ -25,20 +25,20 @@ class EgecrmFreetimeDropDay extends Migration
     public function up()
     {
         Schema::connection('egecrm')->table('freetime', function (Blueprint $table) {
-            $table->integer('id_time')->unsigned()->index();
+//            $table->integer('id_time')->unsigned()->index();
         });
 
         $data = \DB::connection('egecrm')->table('freetime')->get();
 
         foreach($data as $d) {
-            \DB::connection('egecrm')->table('freetime')->whereId($d->id)->update([
-                'id_time' => static::toTimeid($d->day, $d->time_id)
-            ]);
+//            \DB::connection('egecrm')->table('freetime')->whereId($d->id)->update([
+//                'id_time' => static::toTimeid($d->day, $d->time_id)
+//            ]);
         }
 
         Schema::connection('egecrm')->table('freetime', function (Blueprint $table) {
-            $table->dropColumn('day');
-            $table->dropColumn('time_id');
+//            $table->dropColumn('day');
+//            $table->dropColumn('time_id');
         });
     }
 

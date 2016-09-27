@@ -13,7 +13,7 @@ class EgecrmDropIdBranchFromGroupSchedule extends Migration
     public function up()
     {
         Schema::connection('egecrm')->table('group_schedule', function (Blueprint $table) {
-            $table->dropColumn('id_branch');
+//            $table->dropColumn('id_branch');
         });
     }
 

@@ -13,7 +13,7 @@ class AddIdAPersToClients extends Migration
     public function up()
     {
         Schema::table('clients', function (Blueprint $table) {
-            $table->integer('id_a_pers')->unsigned()->nullable();
+//            $table->integer('id_a_pers')->unsigned()->nullable();
         });
     }
 

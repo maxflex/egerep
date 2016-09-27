@@ -13,11 +13,11 @@ class EgecrmAnotherCabinetDrop extends Migration
     public function up()
     {
         Schema::connection('egecrm')->table('groups', function (Blueprint $table) {
-            $table->dropColumn('id_branch');
-            $table->dropColumn('cabinet');
+//            $table->dropColumn('id_branch');
+//            $table->dropColumn('cabinet');
         });
         Schema::connection('egecrm')->table('group_sms', function (Blueprint $table) {
-            $table->dropColumn('id_branch');
+//            $table->dropColumn('id_branch');
         });
 
         $data = \DB::connection('egecrm')->table('group_time')->get();
