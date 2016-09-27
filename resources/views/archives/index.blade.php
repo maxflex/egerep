@@ -145,7 +145,7 @@
                 @{{ formatDate(archive.attachment_date) }}
             </td>
             <td width="6%">
-                @{{ archive.lesson_count | hideZero }}<plus previous='attachment.lesson_count' count='attachment.archive.total_lessons_missing'></plus>
+                @{{ archive.lesson_count | hideZero }}<plus previous='archive.lesson_count' count='archive.total_lessons_missing'></plus>
             </td>
             <td width="6%">
                 @{{ archive.forecast | hideZero | number}}

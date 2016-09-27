@@ -39,4 +39,15 @@ class AttachmentsController extends Controller
             ])
         );
     }
+
+    // public function new(Request $request)
+    // {
+    //     return view('attachments.index')->with(
+    //         ngInit([
+    //             'page'                       => $request->input('page'),
+    //             'attachment_errors_updated'  => Settings::get('attachment_errors_updated'),
+    //             'attachment_errors_updating' => Settings::get('attachment_errors_updating'),
+    //         ])
+    //     );
+    // }
 }

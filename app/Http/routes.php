@@ -40,6 +40,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::resource('periods', 'PeriodsController');
     Route::get('archives', 'ArchivesController@index');
     Route::get('attachments', 'AttachmentsController@index');
+    // Route::get('attachments/new', 'AttachmentsController@new');
     Route::get('attachments/stats/{month?}', 'AttachmentsController@stats');
     // Route::resource('debt', 'DebtController', ['only' => 'index']);
     Route::get('debt/map', 'DebtController@map');

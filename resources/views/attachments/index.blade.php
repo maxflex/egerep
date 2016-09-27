@@ -10,6 +10,8 @@
 
 @section('content')
 
+{{-- @include('attachments._mode') --}}
+
 <div class="row flex-list attachment-filters">
     <div>
         <select class="form-control selectpicker" ng-model='search.user_id' ng-change="filter()" id='change-user'>
