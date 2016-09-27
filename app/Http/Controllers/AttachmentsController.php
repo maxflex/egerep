@@ -45,11 +45,7 @@ class AttachmentsController extends Controller
     {
         return view('attachments.new')->with(
             ngInit([
-                'attachments' => Attachment::with(['tutor', 'client'])->newest()->orderBy('date', 'desc')->get()->each(function($item) {
-                    $item->append('link');
-                    $item->append('account_data_count');
-                    $item->clean_date = $item->getClean('date') . ' 00:00:00';
-                }),
+                'page' => $request->page,
                 'attachment_errors_updated'  => Settings::get('attachment_errors_updated'),
                 'attachment_errors_updating' => Settings::get('attachment_errors_updating'),
             ])

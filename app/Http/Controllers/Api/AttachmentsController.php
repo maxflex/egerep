@@ -99,4 +99,16 @@ class AttachmentsController extends Controller
     {
         return Attachment::getStatsByMonth($request->month);
     }
+
+    public function newest()
+    {
+        $data = Attachment::with(['client', 'tutor'])->newest()->orderBy('date', 'desc')->paginate(10);
+        $data->getCollection()->map(function($item) {
+            $item->append('link');
+            $item->append('account_data_count');
+            $item->clean_date = $item->getClean('date') . ' 00:00:00';
+            return $item;
+        });
+        return $data;
+    }
 }

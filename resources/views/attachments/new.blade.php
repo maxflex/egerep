@@ -53,4 +53,5 @@
         <comments entity-type='attachment' entity-id='attachment.id' user='{{ $user }}'></comments>
     </div>
 </div>
+@include('modules.pagination')
 @stop

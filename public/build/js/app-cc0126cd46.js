@@ -1078,13 +1078,35 @@
         return refreshCounts();
       });
     };
-  }).controller('AttachmentsNew', function($scope, $timeout, $http, AttachmentStates, AttachmentService, UserService, PhoneService, Subjects, Grades, Presence, YesNo, AttachmentVisibility, AttachmentErrors) {
+  }).controller('AttachmentsNew', function($rootScope, $scope, $timeout, $http, AttachmentStates, AttachmentService, UserService, PhoneService, Subjects, Grades, Presence, YesNo, AttachmentVisibility, AttachmentErrors) {
+    var load;
     bindArguments($scope, arguments);
-    return $scope.daysAgo = function(date) {
+    $rootScope.frontend_loading = true;
+    $scope.daysAgo = function(date) {
       var now;
       now = moment(Date.now());
       date = moment(new Date(date).getTime());
       return now.diff(date, 'days');
+    };
+    $timeout(function() {
+      load($scope.page);
+      return $scope.current_page = $scope.page;
+    });
+    $scope.pageChanged = function() {
+      $rootScope.frontend_loading = true;
+      load($scope.current_page);
+      return paginate('attachments/new', $scope.current_page);
+    };
+    return load = function(page) {
+      var params;
+      params = '?page=' + page;
+      return $http.get("api/attachments/new" + params).then(function(response) {
+        console.log(response);
+        $scope.counts = response.data.counts;
+        $scope.data = response.data;
+        $scope.attachments = response.data.data;
+        return $rootScope.frontend_loading = false;
+      });
     };
   });
 

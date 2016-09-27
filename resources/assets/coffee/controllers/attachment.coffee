@@ -137,10 +137,31 @@ angular
                 $scope.counts = response.data.counts
                 $rootScope.frontend_loading = false
                 refreshCounts()
-    .controller 'AttachmentsNew', ($scope, $timeout, $http, AttachmentStates, AttachmentService, UserService, PhoneService, Subjects, Grades, Presence, YesNo, AttachmentVisibility, AttachmentErrors) ->
+    .controller 'AttachmentsNew', ($rootScope, $scope, $timeout, $http, AttachmentStates, AttachmentService, UserService, PhoneService, Subjects, Grades, Presence, YesNo, AttachmentVisibility, AttachmentErrors) ->
         bindArguments($scope, arguments)
+        $rootScope.frontend_loading = true
 
         $scope.daysAgo = (date) ->
             now = moment(Date.now())
             date = moment(new Date(date).getTime())
             now.diff(date, 'days')
+
+        $timeout ->
+            load $scope.page
+            $scope.current_page = $scope.page
+
+        $scope.pageChanged = ->
+            $rootScope.frontend_loading = true
+            load $scope.current_page
+            paginate('attachments/new', $scope.current_page)
+
+        load = (page) ->
+            params = '?page=' + page
+
+            $http.get "api/attachments/new#{ params }"
+            .then (response) ->
+                console.log response
+                $scope.counts = response.data.counts
+                $scope.data = response.data
+                $scope.attachments = response.data.data
+                $rootScope.frontend_loading = false
