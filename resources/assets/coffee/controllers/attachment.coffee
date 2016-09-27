@@ -141,6 +141,16 @@ angular
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
+        # track comment loading.
+        $rootScope.loaded_comments = 0
+        $scope.$watch () ->
+            console.log $rootScope.loaded_comments
+            $rootScope.loaded_comments
+        , (val) ->
+            console.log val
+            $rootScope.frontend_loading = false if $scope.attachments and $scope.attachments.length == val
+        # /track comment loading.
+
         $scope.daysAgo = (date) ->
             now = moment(Date.now())
             date = moment(new Date(date).getTime())
@@ -152,6 +162,7 @@ angular
 
         $scope.pageChanged = ->
             $rootScope.frontend_loading = true
+            $rootScope.loaded_comments = 0
             load $scope.current_page
             paginate('attachments/new', $scope.current_page)
 

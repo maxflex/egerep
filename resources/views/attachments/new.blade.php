@@ -50,7 +50,7 @@
         </div>
     </div>
     <div style="margin-top: 10px">
-        <comments entity-type='attachment' entity-id='attachment.id' user='{{ $user }}'></comments>
+        <comments entity-type='attachment' entity-id='attachment.id' user='{{ $user }}' track-loading='1'></comments>
     </div>
 </div>
 @include('modules.pagination')

@@ -1082,6 +1082,16 @@
     var load;
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
+    $rootScope.loaded_comments = 0;
+    $scope.$watch(function() {
+      console.log($rootScope.loaded_comments);
+      return $rootScope.loaded_comments;
+    }, function(val) {
+      console.log(val);
+      if ($scope.attachments && $scope.attachments.length === val) {
+        return $rootScope.frontend_loading = false;
+      }
+    });
     $scope.daysAgo = function(date) {
       var now;
       now = moment(Date.now());
@@ -1094,6 +1104,7 @@
     });
     $scope.pageChanged = function() {
       $rootScope.frontend_loading = true;
+      $rootScope.loaded_comments = 0;
       load($scope.current_page);
       return paginate('attachments/new', $scope.current_page);
     };
