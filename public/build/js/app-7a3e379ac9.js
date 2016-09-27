@@ -1078,6 +1078,14 @@
         return refreshCounts();
       });
     };
+  }).controller('AttachmentsNew', function($scope, $timeout, $http, AttachmentStates, AttachmentService, UserService, PhoneService, Subjects, Grades, Presence, YesNo, AttachmentVisibility, AttachmentErrors) {
+    bindArguments($scope, arguments);
+    return $scope.daysAgo = function(date) {
+      var now;
+      now = moment(Date.now());
+      date = moment(new Date(date).getTime());
+      return now.diff(date, 'days');
+    };
   });
 
 }).call(this);

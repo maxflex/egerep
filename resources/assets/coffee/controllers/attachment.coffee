@@ -137,3 +137,10 @@ angular
                 $scope.counts = response.data.counts
                 $rootScope.frontend_loading = false
                 refreshCounts()
+    .controller 'AttachmentsNew', ($scope, $timeout, $http, AttachmentStates, AttachmentService, UserService, PhoneService, Subjects, Grades, Presence, YesNo, AttachmentVisibility, AttachmentErrors) ->
+        bindArguments($scope, arguments)
+
+        $scope.daysAgo = (date) ->
+            now = moment(Date.now())
+            date = moment(new Date(date).getTime())
+            now.diff(date, 'days')

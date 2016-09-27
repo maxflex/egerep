@@ -10,7 +10,7 @@
 
 @section('content')
 
-{{-- @include('attachments._mode') --}}
+@include('attachments._mode')
 
 <div class="row flex-list attachment-filters">
     <div>
