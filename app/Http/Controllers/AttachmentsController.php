@@ -41,7 +41,7 @@ class AttachmentsController extends Controller
         );
     }
 
-    public function new(Request $request)
+    public function newest(Request $request)
     {
         return view('attachments.new')->with(
             ngInit([
