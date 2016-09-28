@@ -23,7 +23,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-8">
+        <div class="col-sm-8 vcenter">
             <div>
                 Клиент: @{{ attachment.client.name }}, @{{ attachment.client.address }}, <span ng-repeat="phone_field in ['phone', 'phone2', 'phone3', 'phone4']">
                     <span ng-show="attachment.client[phone_field]">
@@ -42,7 +42,7 @@
                 Проведено занятий: @{{ attachment.account_data_count }}
             </div>
         </div>
-        <div class="col-sm-4" style="text-align: right; font-size: 24px" ng-init="days_ago = daysAgo(attachment.clean_date)">
+        <div class="col-sm-4" style="width: 33%; text-align: right; font-size: 24px" ng-init="days_ago = daysAgo(attachment.clean_date)">
             <span ng-show="!days_ago">сегодня</span>
             <span ng-show="days_ago">
                 <plural count='days_ago' type='day'></plural>
