@@ -472,6 +472,7 @@
 					// width: 61px;
 					 height: 165px;
 					border-right: 1px solid #999999;
+					text-align: center;
 				}
 				&.date-td {
 					padding: 3px 3px;
@@ -497,7 +498,7 @@
 					vertical-align: top;
 					border-top: none;
 					// padding-bottom: 50px;
-					height: 160px;
+					height: 165px;
 					text-align: left;
 					background: white;
 				}
@@ -3769,7 +3770,7 @@ table.summary-table.left-align tr td {
 }
 .fa-ruble.filled {
   background: $green_main;
-  padding: 4px 4px 1px;
+  padding: 3px 3px 0px;
   border-radius: 10px;
   color: white;
   vertical-align: text-bottom;

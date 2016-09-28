@@ -25519,7 +25519,8 @@ a {
       border-right: none; }
     .accounts-table tr td.empty-td {
       height: 165px;
-      border-right: 1px solid #999999; }
+      border-right: 1px solid #999999;
+      text-align: center; }
     .accounts-table tr td.date-td {
       padding: 3px 3px;
       border-right: 1px solid #999999; }
@@ -25535,7 +25536,7 @@ a {
   .accounts-table thead tr td {
     vertical-align: top;
     border-top: none;
-    height: 160px;
+    height: 165px;
     text-align: left;
     background: white; }
   .accounts-table thead tr .info-row {
@@ -28112,7 +28113,7 @@ table.summary-table.left-align tr td {
 
 .fa-ruble.filled {
   background: #158E51;
-  padding: 4px 4px 1px;
+  padding: 3px 3px 0px;
   border-radius: 10px;
   color: white;
   vertical-align: text-bottom; }

@@ -4,6 +4,8 @@
         <thead class="high-z-index small">
             <tr>
                 <td class='empty-td centered'>
+                    <div class='mbs'>&nbsp;</div>
+                    <div class='mbs'>&nbsp;</div>
                     <span class='link-like' ng-hide='all_displayed' ng-click='loadPage()'>
                         @{{ left == 1 ? 'все время' : '+1 период'}}
                     </span>
@@ -16,9 +18,6 @@
                     @{{ formatDate(date) }}
                     <span class="text-gray small" style='margin: 0 5px'>@{{ Weekdays[getDay(date)] }}</span>
                 </td>
-            </tr>
-            <tr>
-                <td class='invisible-td small'>всего занятий</td>
             </tr>
             <tr>
                 <td class='invisible-td small'>в периоде</td>
@@ -34,7 +33,7 @@
         <table class='accounts-table'>
             <thead class='small' ng-repeat-start='account in tutor.last_accounts' ng-if='$index == 0'>
                 <tr>
-                    <td ng-repeat='client in clients' width='77' class="client-draggable" data-id='@{{ client.id }}' ng-class="{'possible-archive' : client.archive_state == 'possible'}">
+                    <td ng-repeat='client in clients' width='80' ng-class="{'client-draggable': client.archive_state != 'possible', 'possible-archive' : client.archive_state == 'possible'}" data-id='@{{ client.id }}'>
                         <div class='mbs'>
                             <a href='@{{ client.link }}'>@{{ client.name | cut:false:10:'без имени' }}</a>
                         </div>
@@ -92,8 +91,6 @@
                 </tr>
                 <tr>
                     <td ng-if='!clients.length' class="fake-cell"></td>
-                    <td ng-repeat='client in clients' class="invisible-td small" style='text-align: center'>
-                    </td>
                 </tr>
                 <tr>
                     <td ng-if='!clients.length' class="fake-cell"></td>
@@ -102,7 +99,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="period-end" width='77'>
+                    <td class="period-end" width='80'>
                         <div class='accounts-data' style="position: absolute; margin-top: -86px; width: 1000px">
                             <div class="mbs">
                                 <span>Передано (руб.):</span>
