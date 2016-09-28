@@ -167,10 +167,10 @@
 						var pb_diff = offset.left - base.panel_body_offset
 
 						if (pb_diff < 0) {
-							new_options.clip = 'rect(0, ' + (base.panel_body_width + Math.abs(pb_diff) + 1) + 'px, 165px, ' + Math.abs(pb_diff) + 'px)'
+							new_options.clip = 'rect(0, ' + (base.panel_body_width + Math.abs(pb_diff) + 1) + 'px, 166px, ' + Math.abs(pb_diff) + 'px)'
 						}
 						if (pb_diff > 0) {
-							new_options.clip = 'rect(0, ' + (base.panel_body_width - pb_diff + 1) + 'px, 165px, 0)'
+							new_options.clip = 'rect(0, ' + (base.panel_body_width - pb_diff + 1) + 'px, 166px, 0)'
 						}
 
 						// console.log(pb_diff, offset.left)
