@@ -301,9 +301,9 @@ class Tutor extends Service\Person
     /**
      * Получить кол-во  клиентов
      */
-    public function clientsCount($hide = null)
+    public function clientsCount($hide = null, $count_possible_archives = false)
     {
-        return $this->attachments($hide)->count();
+        return $this->attachments($hide, $count_possible_archives)->count();
     }
 
     /**

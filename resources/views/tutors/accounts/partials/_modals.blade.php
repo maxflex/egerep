@@ -61,7 +61,7 @@
                 </div>
                 <div ng-if='popup_attachment.archive'>
                     Архивации:
-                    <span class="text-danger bold">@{{ popup_attachment.archive.date }}</span>, @{{ popup_attachment.archive.comment }}
+                    <span class="text-danger">@{{ popup_attachment.archive.date }}</span>, @{{ popup_attachment.archive.comment }}
                 </div>
                 <div ng-if='popup_attachment.archive'>
                     Разархивация:

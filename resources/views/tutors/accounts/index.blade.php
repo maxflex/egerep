@@ -7,8 +7,9 @@
 @stop
 
 @section('title-right')
-    <a href='tutors/{{ $tutor->id }}/accounts/hidden' class="client-droppable" style="position: absolute; left: 28%; margin-top: -2px">скрытые ученики (@{{ hidden_clients_count }})</a>
-    <span style="position: absolute; left: 50%">вечный должник: <span class='link-white link-reverse link-like' ng-click="toggleEnumServer(tutor, 'debtor', YesNo, Tutor)">@{{ YesNo[tutor.debtor] }}</span></span>
+    <a href='tutors/{{ $tutor->id }}/accounts/hidden' ng-show="page != 'hidden'"class="client-droppable" style="position: absolute; left: 28%; margin-top: -2px">скрытые ученики (@{{ hidden_clients_count }})</a>
+    <a href='tutors/{{ $tutor->id }}/accounts'  ng-show="page == 'hidden'" class="client-droppable" style="position: absolute; left: 28%; margin-top: -2px">показанные в отчетности ученики (@{{ visible_clients_count }})</a>
+    <span ng-if='tutor.debtor' style="position: absolute; left: 50%">вечный должник: <span class='link-white link-reverse link-like' ng-click="toggleEnumServer(tutor, 'debtor', YesNo, Tutor)">@{{ YesNo[tutor.debtor] }}</span></span>
     <span ng-show='tutor.debt_calc !== null'>дебет на сегодня: @{{ tutor.debt_calc | number }} руб.</span>
     <span class="link-like link-reverse link-white" ng-click='addAccountDialog()'>добавить расчет</span>
 @stop
