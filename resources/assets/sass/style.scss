@@ -435,7 +435,7 @@
 	}
 	.accounts-table {
 		& input {
-			width: 75px;
+			width: 100px;
 		}
 		& .attachment-start {
 			background-color: #BBDEBB !important;
@@ -470,7 +470,7 @@
 				}
 				&.empty-td {
 					// width: 61px;
-					 height: 165px;
+				  	height: 165px;
 					border-right: 1px solid #999999;
 					text-align: center;
 				}

@@ -33,7 +33,7 @@
         <table class='accounts-table'>
             <thead class='small' ng-repeat-start='account in tutor.last_accounts' ng-if='$index == 0'>
                 <tr>
-                    <td ng-repeat='client in clients' width='80' ng-class="{'client-draggable': client.archive_state != 'possible', 'possible-archive' : client.archive_state == 'possible'}" data-id='@{{ client.id }}'>
+                    <td ng-repeat='client in clients' width='100' ng-class="{'client-draggable': client.archive_state != 'possible', 'possible-archive' : client.archive_state == 'possible'}" data-id='@{{ client.id }}'>
                         <div class='mbs'>
                             <a href='@{{ client.link }}'>@{{ client.name | cut:false:10:'без имени' }}</a>
                         </div>
@@ -99,7 +99,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="period-end" width='80'>
+                    <td class="period-end" width='100'>
                         <div class='accounts-data' style="position: absolute; margin-top: -86px; width: 1000px">
                             <div class="mbs">
                                 <span>Передано (руб.):</span>
