@@ -49,9 +49,7 @@
                             с <span style='margin-top: 3px;'>@{{ formatDate(client.attachment_date) }}</span>
                         </div>
                         <div class='mbs'>
-                            <span ng-show='client.total_lessons'>
-                                <plural count='client.total_lessons' type='lesson' hide-zero additional='client.total_lessons_missing'></plural>
-                            </span>&nbsp;
+                            <span ng-show='client.total_lessons'>@{{ client.total_lessons }}</span><span class='text-gray' ng-init='count = client.total_lessons_missing ? client.total_lessons_missing : client.total_lessons'><span ng-show='client.total_lessons > 0 && client.total_lessons_missing > 0'>+</span><span ng-show='client.total_lessons_missing'>@{{ client.total_lessons_missing }}</span></span> <plural count='count' type='lesson' text-only hide-zero></plural>&nbsp;
                         </div>
                         <div class='mbs'>
                             <span ng-show='client.forecast'>
