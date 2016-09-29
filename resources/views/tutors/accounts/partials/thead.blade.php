@@ -1,5 +1,5 @@
 <td ng-if='!clients.length' class="fake-cell"></td>
-<td ng-repeat='client in clients' width='80' class="client-draggable" data-id='@{{ client.id }}'>
+<td ng-repeat='client in clients' width='100' class="client-draggable" data-id='@{{ client.id }}'>
     <a href='@{{ client.link }}'>@{{ client.name | cut:false:10:'без имени' }}</a>
     <br>
     <span class='text-gray'>

@@ -3,7 +3,7 @@
     <table class='accounts-table'>
         <thead class="small">
             <tr>
-                <td width='75'></td>
+                <td width='100'></td>
                 @include('tutors.accounts.partials.thead')
             </tr>
         </thead>

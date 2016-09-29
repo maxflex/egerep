@@ -102,7 +102,7 @@ class AttachmentsController extends Controller
 
     public function newest()
     {
-        $data = Attachment::with(['client', 'tutor'])->newest()->orderBy('date', 'desc')->paginate(10);
+        $data = Attachment::with(['client', 'tutor'])->newest()->orderBy('date', 'asc')->paginate(10);
         $data->getCollection()->map(function($item) {
             $item->append('link');
             $item->append('account_data_count');
