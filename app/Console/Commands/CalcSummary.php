@@ -35,10 +35,12 @@ class CalcSummary extends Command
 
     public static function calcData()
     {
-        $forecast           = Attachment::newOrActive()->sum('forecast');
+        $forecast           = round(Attachment::newOrActive()->sum('forecast') * Attachment::P_COEF);
         $debt               = Tutor::where('debtor', 0)->sum('debt_calc');
         $new_clients        = Attachment::newest()->count();
         $active_attachments = Attachment::active()->count();
+
+
         // @todo: в этом случае newQuery() не работает
         // $no_archive_attachments = Attachment::doesntHave('archive');
         // $new_clients        = $no_archive_attachments->newQuery()->whereNullOrZero('forecast')->count();

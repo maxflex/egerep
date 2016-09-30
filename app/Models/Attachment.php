@@ -11,6 +11,8 @@ use Storage;
 
 class Attachment extends Model
 {
+    const P_COEF = 0.72; // писсимизирующий коэффициент
+
     public static $states = ['new', 'inprogress', 'ended'];
 
     protected $fillable = [

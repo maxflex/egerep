@@ -12,6 +12,11 @@ angular.module('Egerep').directive 'comments', ->
         $scope.show_all_comments = false    # показать все комментарии?
         $scope.is_dragging = false          # комментарий перетаскивается
 
+        bindDraggableAll = ->
+            $timeout ->
+                $scope.getComments().forEach (comment) ->
+                    bindDraggable(comment.id)
+
         bindDraggable = (comment_id) ->
             $("#comment-#{comment_id}").draggable
                 revert: 'invalid'
@@ -23,21 +28,16 @@ angular.module('Egerep').directive 'comments', ->
                     $scope.is_dragging = false
                     $scope.$apply()
 
-        $timeout ->
-            $scope.comments.forEach (comment) ->
-                bindDraggable(comment.id)
             $("#comment-delete-#{$scope.entityType}-#{$scope.entityId}").droppable
                 tolerance: 'pointer'
                 hoverClass: 'hovered'
                 drop: (e, ui) ->
                     $scope.remove($(ui.draggable).data('comment-id'))
-        , 2000
 
         $scope.showAllComments = ->
             $scope.show_all_comments = true
-            $timeout ->
-                $scope.comments.forEach (comment) ->
-                    bindDraggable(comment.id)
+            bindDraggableAll()
+            focusModal()
 
         $scope.getComments = ->
             if ($scope.show_all_comments or $scope.comments.length <= $scope.show_max) then $scope.comments else _.last($scope.comments, $scope.show_max - 1)
@@ -49,6 +49,7 @@ angular.module('Egerep').directive 'comments', ->
                 entity_id: newVal
             , ->
                 $rootScope.loaded_comments++ if $scope.trackLoading
+                bindDraggableAll()
 
         $scope.formatDateTime = (date) ->
             moment(date).format "DD.MM.YY в HH:mm"
@@ -65,6 +66,7 @@ angular.module('Egerep').directive 'comments', ->
         $scope.remove = (comment_id) ->
             _.find($scope.comments, {id: comment_id}).$remove()
             $scope.comments = _.without($scope.comments, _.findWhere($scope.comments, {id: comment_id}))
+            bindDraggableAll()
 
         $scope.edit = (comment, event) ->
             old_text    = comment.comment
@@ -105,6 +107,15 @@ angular.module('Egerep').directive 'comments', ->
                         $timeout ->
                             bindDraggable(new_comment.id)
                 $scope.endCommenting()
+                focusModal();
 
             if event.keyCode is 27
                 $(event.target).blur()
+
+        focusModal = ->
+            # @custom
+            # после сохранения коммента фокус устновим на .modul:visible если оно есть,
+            # иначе фокус теряется и с модуля и с инпута, и ESC не обрабатывается
+                        $('.modal:visible').focus() if $('.modal:visible').length
+                        return
+            # /@custom
