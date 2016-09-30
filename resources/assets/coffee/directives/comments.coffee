@@ -37,6 +37,7 @@ angular.module('Egerep').directive 'comments', ->
         $scope.showAllComments = ->
             $scope.show_all_comments = true
             bindDraggableAll()
+            focusModal()
 
         $scope.getComments = ->
             if ($scope.show_all_comments or $scope.comments.length <= $scope.show_max) then $scope.comments else _.last($scope.comments, $scope.show_max - 1)
@@ -106,6 +107,15 @@ angular.module('Egerep').directive 'comments', ->
                         $timeout ->
                             bindDraggable(new_comment.id)
                 $scope.endCommenting()
+                focusModal();
 
             if event.keyCode is 27
                 $(event.target).blur()
+
+        focusModal = ->
+            # @custom
+            # после сохранения коммента фокус устновим на .modul:visible если оно есть,
+            # иначе фокус теряется и с модуля и с инпута, и ESC не обрабатывается
+                        $('.modal:visible').focus() if $('.modal:visible').length
+                        return
+            # /@custom
