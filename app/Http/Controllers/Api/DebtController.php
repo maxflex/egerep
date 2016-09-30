@@ -74,7 +74,7 @@ class DebtController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Tutor::where('id', $id)->update($request->input());
+        Tutor::find($id)->update($request->input());
     }
 
     /**

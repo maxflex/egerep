@@ -77,7 +77,7 @@ class ArchivesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Archive::where('id', $id)->update($request->all());
+        Archive::find($id)->update($request->all());
     }
 
     /**
