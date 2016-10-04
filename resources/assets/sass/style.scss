@@ -518,6 +518,12 @@
 	.mbs {
 		margin-bottom: 3px;
 	}
+	.mbb {
+		margin-bottom: 10px;
+	}
+    .mb-xl {
+        margin-bottom: 20px;
+    }
 	.inline-fixed-width {
 	  	width: 100px;
 	  	display: inline-block;
@@ -1002,90 +1008,6 @@ md-input-container {
 	opacity: 1;
 }
 
-[ng-app="Promo"] {
-	color: $promo;
-	& h4 {
-		font-weight: normal;
-		margin-bottom: 50px;
-		line-height: 25px;
-	}
-	& h3 {
-		font-size: 20px;
-		text-align: center;
-		margin: 50px 0;
-	}
-	& .flip-clock-wrapper {
-		display: inline-block;
-	    width: 70px;
-	}
-	& .promo-images {
-		text-align: center;
-		& label {
-			display: block;
-		    margin-top: 15px;
-// 		    font-weight: normal;
-		}
-		& > div {
-			display: inline-block;
-			width: 300px;
-		}
-		& span {
-			font-size: 15px;
-			display: block;
-			font-weight: bold;
-			margin-bottom: 20px;
-		}
-		& img {
-			height: 200px;
-		}
-		& a {
-			font-size: 12px;
-			color: $placeholder_gray;
-			text-decoration: underline;
-			&:hover {
-				text-decoration: none;
-			}
-		}
-	}
-	& .promo-info {
-		width: 90%;
-		margin: 0 auto;
-		& p {
-			margin: 0;
-			white-space: nowrap;
-		}
-		& div.row {
-			&:first-child {
-				padding-right: 0;
-			}
-			&:nth-child(2) {
-				margin-right: 15px;
-			}
-			width: 49%;
-			display: inline-block;
-			& a {
-				color: $promo;
-				text-decoration: underline;
-				&:hover {
-					text-decoration: none;
-					color: $hover_blue;
-				}
-			}
-		}
-		& circle {
-			$size:  30px;
-			font-size: 26px;
-			background-color: #337AB7;
-			color: white;
-			height: $size;
-			width: $size;
-			line-height: $size;
-			display: block;
-			text-align: center;
-			border-radius: 50%;
-		}
-	}
-}
 
 .add-to-journal {
 	display: none;
@@ -3861,4 +3783,20 @@ table.summary-table.left-align tr td {
 }
 .contract-table .head td {
   background:#63b2de;
+}
+
+
+.circle-item {
+    width: 11px;
+    height: 11px;
+    display: inline-block;
+    background: rgba($red, .25);
+    border-radius: 50%;
+    cursor: pointer;
+    &:not(:last-child) {
+        margin-right: 4px;
+    }
+    &.selected {
+        background: $red;
+    }
 }

@@ -16,7 +16,6 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('calls/missed', 'CallsController@missed');
     Route::resource('calls', 'CallsController');
 
-    Route::resource('vocations', 'VocationsController');
     Route::resource('reviews', 'ReviewsController', ['only' => 'index']);
 
     Route::get('client/{id}', function($id) {
@@ -70,7 +69,6 @@ Route::group(['middleware' => ['web']], function () {
     Route::resource('contract', 'ContractController');
 
     Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
-        Route::resource('vocations', 'VocationsController');
         Route::resource('markers', 'MarkersController');
         Route::get('notifications/get', 'NotificationsController@get');
         Route::resource('notifications', 'NotificationsController');

@@ -61,6 +61,7 @@ class Tutor extends Service\Person
         'comment_extended',
         'debtor',
         'errors',
+        'security_notification'
     ];
 
     protected $appends = [
@@ -124,6 +125,18 @@ class Tutor extends Service\Person
      {
          return DB::table('accounts')->select('debt', 'debt_type', 'debt_calc', 'date_end')->where('tutor_id', $this->id)->orderBy('date_end', 'desc')->first();
      }
+
+     /**
+      * Оповещения в системе безопасности
+      */
+    public function getSecurityNotificationAttribute($value)
+    {
+        return empty($value) ? array_fill(0, 3, false) : json_decode($value);
+    }
+    public function setSecurityNotificationAttribute($value)
+    {
+        $this->attributes['security_notification'] = json_encode($value);
+    }
 
     /**
      * Данные по встречам в определенным периоде с момента последней встречи.

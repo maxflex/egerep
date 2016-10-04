@@ -13,6 +13,9 @@
                     <td>
                         <span ng-click="sortType = 'last_account_info.date_end'; sortReverse = !sortReverse">ПОСЛЕДНИЙ РАСЧЕТ</span>
                     </td>
+                    <td>
+                        ОПОВЕЩЕНИЯ СБ
+                    </td>
                     <td>КОММЕНТАРИЙ</td>
                 </tr>
             </thead>
@@ -34,6 +37,9 @@
                     </td>
                     <td>
                         @{{ formatDate(tutor.last_account_info.date_end) }}
+                    </td>
+                    <td>
+                        <security-notification tutor='tutor'></security-notification>
                     </td>
                     <td width='300'>
                         <span ng-click="startComment(tutor)" class="glyphicon glyphicon-pencil opacity-pointer" ng-hide="tutor.debt_comment || tutor.is_being_commented"></span>

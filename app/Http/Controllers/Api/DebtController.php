@@ -138,6 +138,7 @@ class DebtController extends Controller
             'tutors.birth_year',
             'tutors.debt_calc',
             'tutors.debt_comment',
+            'tutors.security_notification',
         ])->append('last_account_info');
 
         return $tutors;

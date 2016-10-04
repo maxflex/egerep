@@ -28876,6 +28876,12 @@ a {
 .mbs {
   margin-bottom: 3px; }
 
+.mbb {
+  margin-bottom: 10px; }
+
+.mb-xl {
+  margin-bottom: 20px; }
+
 .inline-fixed-width {
   width: 100px;
   display: inline-block; }
@@ -29314,70 +29320,6 @@ md-input-container label {
 
 .comment-login {
   opacity: 1; }
-
-[ng-app="Promo"] {
-  color: #3A6487; }
-  [ng-app="Promo"] h4 {
-    font-weight: normal;
-    margin-bottom: 50px;
-    line-height: 25px; }
-  [ng-app="Promo"] h3 {
-    font-size: 20px;
-    text-align: center;
-    margin: 50px 0; }
-  [ng-app="Promo"] .flip-clock-wrapper {
-    display: inline-block;
-    width: 70px; }
-  [ng-app="Promo"] .promo-images {
-    text-align: center; }
-    [ng-app="Promo"] .promo-images label {
-      display: block;
-      margin-top: 15px; }
-    [ng-app="Promo"] .promo-images > div {
-      display: inline-block;
-      width: 300px; }
-    [ng-app="Promo"] .promo-images span {
-      font-size: 15px;
-      display: block;
-      font-weight: bold;
-      margin-bottom: 20px; }
-    [ng-app="Promo"] .promo-images img {
-      height: 200px; }
-    [ng-app="Promo"] .promo-images a {
-      font-size: 12px;
-      color: #999999;
-      text-decoration: underline; }
-      [ng-app="Promo"] .promo-images a:hover {
-        text-decoration: none; }
-  [ng-app="Promo"] .promo-info {
-    width: 90%;
-    margin: 0 auto; }
-    [ng-app="Promo"] .promo-info p {
-      margin: 0;
-      white-space: nowrap; }
-    [ng-app="Promo"] .promo-info div.row {
-      width: 49%;
-      display: inline-block; }
-      [ng-app="Promo"] .promo-info div.row:first-child {
-        padding-right: 0; }
-      [ng-app="Promo"] .promo-info div.row:nth-child(2) {
-        margin-right: 15px; }
-      [ng-app="Promo"] .promo-info div.row a {
-        color: #3A6487;
-        text-decoration: underline; }
-        [ng-app="Promo"] .promo-info div.row a:hover {
-          text-decoration: none;
-          color: #23527c; }
-    [ng-app="Promo"] .promo-info circle {
-      font-size: 26px;
-      background-color: #337AB7;
-      color: white;
-      height: 30px;
-      width: 30px;
-      line-height: 30px;
-      display: block;
-      text-align: center;
-      border-radius: 50%; }
 
 .add-to-journal {
   display: none; }
@@ -31572,6 +31514,18 @@ table.summary-table.left-align tr td {
 
 .contract-table .head td {
   background: #63b2de; }
+
+.circle-item {
+  width: 11px;
+  height: 11px;
+  display: inline-block;
+  background: rgba(255, 0, 57, 0.25);
+  border-radius: 50%;
+  cursor: pointer; }
+  .circle-item:not(:last-child) {
+    margin-right: 4px; }
+  .circle-item.selected {
+    background: #ff0039; }
 
 .ios7-switch {
   display: inline-block;

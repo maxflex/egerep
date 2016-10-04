@@ -3388,117 +3388,6 @@
 }).call(this);
 
 (function() {
-  var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
-  angular.module('Egerep').config(function(calendarConfig) {
-    return calendarConfig.i18nStrings.weekNumber = '';
-  }).controller('VocationsIndex', function($rootScope, $scope, $timeout, $http, Vocation, UserService) {
-    bindArguments($scope, arguments);
-    $rootScope.frontend_loading = true;
-    $timeout(function() {
-      $scope.calendarView = 'month';
-      $scope.calendarDate = $scope.jump_date ? moment($scope.vocation.data[0].startsAt).toDate() : moment().toDate();
-      return $rootScope.frontend_loading = false;
-    });
-    $scope.getTitle = function() {
-      return moment($scope.calendarDate).format('MMMM YYYY');
-    };
-    $scope.toggleVocation = function(calendarDate, calendarCell) {
-      var endsAt, index, startsAt, vocation;
-      if ($scope.show) {
-        return;
-      }
-      endsAt = moment(calendarDate).add(10, 'hours').toDate();
-      startsAt = moment(calendarDate).add(19, 'hours').toDate();
-      index = false;
-      vocation = _.find($scope.vocation.data, function(e, i) {
-        index = i;
-        return (moment(calendarDate).format('YYYY-MM-DD') === moment(e.startsAt).format('YYYY-MM-DD')) && (e.user_id === $scope.user.id);
-      });
-      if (vocation !== void 0) {
-        return $scope.vocation.data.splice(index, 1);
-      } else {
-        return $scope.vocation.data.push({
-          title: $scope.user.login,
-          color: {
-            primary: $scope.user.color
-          },
-          startsAt: endsAt,
-          endsAt: startsAt,
-          user_id: $scope.user.id
-        });
-      }
-    };
-    $scope.chooseTime = function(calendarEvent) {
-      if ($scope.show) {
-        return;
-      }
-      if (calendarEvent.user_id !== $scope.user.id) {
-        return;
-      }
-      $scope.d = calendarEvent;
-      $('#choose-time').modal('show');
-      return false;
-    };
-    $scope.editTime = function() {
-      $('#choose-time').modal('hide');
-      return false;
-    };
-    $scope.create = function() {
-      ajaxStart();
-      $scope.saving = true;
-      return Vocation.save($scope.vocation, function(response) {
-        ajaxEnd();
-        return redirect("vocations/" + response.id);
-      });
-    };
-    $scope.edit = function() {
-      ajaxStart();
-      $scope.saving = true;
-      return Vocation.update({
-        id: $scope.vocation.id
-      }, $scope.vocation, function() {
-        ajaxEnd();
-        return $scope.saving = false;
-      });
-    };
-    $scope.getApprovedUsers = function(v) {
-      return v.approved_by.split(',').map(Number);
-    };
-    $scope.approved = function(user_id) {
-      var ref;
-      return ref = user_id.toString(), indexOf.call($scope.vocation.approved_by, ref) >= 0;
-    };
-    $scope.approve = function(user_id) {
-      if (user_id !== $scope.user.id) {
-        return;
-      }
-      user_id = user_id.toString();
-      if ($scope.approved(user_id)) {
-        return $scope.vocation.approved_by = _.reject($scope.vocation.approved_by, function(e) {
-          return e === user_id;
-        });
-      } else {
-        return $scope.vocation.approved_by.push(user_id);
-      }
-    };
-    return $scope.remove = function() {
-      return bootbox.confirm("Вы уверены, что хотите удалить заявку #" + $scope.vocation.id + "?", function(result) {
-        if (result === true) {
-          ajaxStart();
-          return Vocation["delete"]({
-            id: $scope.vocation.id
-          }, function() {
-            return redirect('vocations');
-          });
-        }
-      });
-    };
-  });
-
-}).call(this);
-
-(function() {
   angular.module('Egerep').directive('comments', function() {
     return {
       restrict: 'E',
@@ -4208,6 +4097,32 @@
 }).call(this);
 
 (function() {
+  angular.module('Egerep').directive('securityNotification', function() {
+    return {
+      restrict: 'E',
+      scope: {
+        tutor: '='
+      },
+      templateUrl: 'directives/security-notification',
+      controller: function($scope, Tutor) {
+        return $scope.toggleNotification = function(index) {
+          var security_notification;
+          security_notification = angular.copy($scope.tutor.security_notification);
+          security_notification[index] = !security_notification[index];
+          return Tutor.update({
+            id: $scope.tutor.id,
+            security_notification: security_notification
+          }, function() {
+            return $scope.tutor.security_notification = angular.copy(security_notification);
+          });
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
   angular.module('Egerep').directive('ngSelect', function() {
     return {
       restrict: 'E',
@@ -4679,10 +4594,6 @@
 
   angular.module('Egerep').factory('Marker', function($resource) {
     return $resource(apiPath('markers'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Vocation', function($resource) {
-    return $resource(apiPath('vocations'), {
       id: '@id'
     }, updateMethod());
   }).factory('Notification', function($resource) {

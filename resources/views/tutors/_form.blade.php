@@ -320,6 +320,10 @@
                 'many': 'оценок'
             }"></ng-pluralize>)</div>
         </div>
+        <div class="mb-xl">
+            <h4>ОПОВЕЩЕНИЯ О СИСТЕМЕ БЕЗОПАСНОСТИ</h4>
+            <security-notification tutor='tutor'></security-notifications>
+        </div>
         <div ng-if="tutor.id">
             <h4>КОММЕНТАРИИ</h4>
             <comments entity-type='tutor' entity-id='{{ isset($id) ? $id : 0 }}' user='{{ $user }}'></comments>

@@ -25,7 +25,7 @@
     <div class="col-sm-3">
         <div class="form-group">
             <textarea style="height: 75px" cols="40" class="form-control"
-                ng-model='selected_attachment.comment'></textarea>
+                ng-model='selected_attachment.comment' placeholder="не забывайте указывать условия для занятий 120 или более минут"></textarea>
         </div>
         <div class="form-group" id='forecast'>
             <input type="text" class="form-control digits-only" placeholder="прогноз в неделю" ng-model='selected_attachment.forecast'>
