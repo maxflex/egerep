@@ -14,7 +14,7 @@ class AccountsController extends Controller
     public function index($id)
     {
         $data = $this->getData($id, [0, false, true]); // params in array: hidden, with_lesson_count, get_possible_archives
-        if (! @count($data['clients']) && !$data['hidden_clients_count']) {
+        if (! @count($data['clients']) && !@$data['hidden_clients_count']) {
             return view('tutors.accounts.no_clients');
         }
         return view('tutors.accounts.index')->with(ngInit($data) + ['tutor' => $data['tutor']]);
