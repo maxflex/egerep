@@ -14,7 +14,7 @@ class AccountsController extends Controller
     public function index($id)
     {
         $data = $this->getData($id, [0, false, true]); // params in array: hidden, with_lesson_count, get_possible_archives
-        if (! @count($data['clients']) && !@$data['hidden_clients_count']) {
+        if ($data === false) {
             return view('tutors.accounts.no_clients');
         }
         return view('tutors.accounts.index')->with(ngInit($data) + ['tutor' => $data['tutor']]);
@@ -23,7 +23,7 @@ class AccountsController extends Controller
     public function hidden($id)
     {
         $data = $this->getData($id, [1, true, false]); // params in array: hidden, with_lesson_count, get_possible_archives
-        if (! @count($data['clients'])) {
+        if (! count($data['clients'])) {
             return view('shared.empty', [
                 'message' => 'у преподавателя нет скрытых клиентов'
             ]);
@@ -41,7 +41,7 @@ class AccountsController extends Controller
         $visible_clients_count = $tutor->clientsCount(0, true);
 
         if (! count($clients) && !$hidden_clients_count) {
-            return view('tutors.accounts.no_clients');
+            return false;
         }
         return [
                 'page'                 => ($hidden ? 'hidden' : 'visible'),
