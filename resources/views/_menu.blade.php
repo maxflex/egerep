@@ -32,7 +32,6 @@
 <a href="summary" class="list-group-item">Итоги</a>
 <a href="attachments/stats" class="list-group-item">Статистика</a>
 <a href="logs" class="list-group-item">Логи</a>
-<a href="vocations" class="list-group-item">Отпуски</a>
 @if (\App\Models\User::fromSession()->show_contract)
     <a href="contract" class="list-group-item">Договор</a>
 @endif
