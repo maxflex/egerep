@@ -3675,11 +3675,14 @@ table.summary-table.left-align tr td {
 
 .request-links {
 	& li {
-		margin-right: 25px !important;
+		margin-right: 30px !important;
 		& a {
 			display: inline-block !important;
 		    margin-right: 0 !important;
 			font-weight: normal !important;
+            &:hover {
+                color: $green_main;
+            }
 		}
 	}
 }
@@ -3799,4 +3802,10 @@ table.summary-table.left-align tr td {
     &.selected {
         background: $red;
     }
+}
+
+.small-count {
+    font-size: 10px;
+    margin-left: 3px;
+    color: #999999;
 }

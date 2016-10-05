@@ -18,7 +18,7 @@
                 <a class="list-link" href="#@{{status_id}}" ng-click="changeList(state_id)" data-toggle="tab" aria-expanded="@{{$index == 0}}">
                     @{{ state }}
                 </a>
-                (@{{ request_state_counts[state_id] }})
+                <span class='small-count'>@{{ request_state_counts[state_id] }}</span>
              </li>
         </ul>
     </div>

@@ -31422,11 +31422,13 @@ table.summary-table.left-align tr td {
   font-size: 12px; }
 
 .request-links li {
-  margin-right: 25px !important; }
+  margin-right: 30px !important; }
   .request-links li a {
     display: inline-block !important;
     margin-right: 0 !important;
     font-weight: normal !important; }
+    .request-links li a:hover {
+      color: #158E51; }
 
 .fa-circle {
   font-size: 8px;
@@ -31526,6 +31528,11 @@ table.summary-table.left-align tr td {
     margin-right: 4px; }
   .circle-item.selected {
     background: #ff0039; }
+
+.small-count {
+  font-size: 10px;
+  margin-left: 3px;
+  color: #999999; }
 
 .ios7-switch {
   display: inline-block;
