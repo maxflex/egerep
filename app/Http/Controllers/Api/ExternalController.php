@@ -108,9 +108,8 @@ class ExternalController extends Controller
 		if ($new_request->exists()) {
 			$new_request = $new_request->orderBy('created_at', 'desc')->first();
             if ($data->repetitor_id) {
-                $new_request->comment = "Репетитор {$new_tutor_id} ";
+                $new_request->comment = "Репетитор {$new_tutor_id} " . $new_request->comment;
             }
-			@$new_request->comment .= $new_request->comment;
 			$new_request->save();
 		} else {
 			$comment = breakLines([(@$new_tutor_id ? "Репетитор " . $new_tutor_id : null), $data->message, "Метро: " . $data->metro_name, "Имя: " . $data->name]);
