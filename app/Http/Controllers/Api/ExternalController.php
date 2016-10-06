@@ -90,7 +90,9 @@ class ExternalController extends Controller
 		$client = Client::findByPhone($phone);
 
 		// ID преподавателя в новой базе
-		$new_tutor_id = Tutor::newTutorId($data->repetitor_id);
+		if ($data->repetitor_id) {
+            $new_tutor_id = Tutor::newTutorId($data->repetitor_id);
+        }
 
 		if (! $client->exists()) {
 			// создаем нового клиента
@@ -105,10 +107,13 @@ class ExternalController extends Controller
 
 		if ($new_request->exists()) {
 			$new_request = $new_request->orderBy('created_at', 'desc')->first();
-			$new_request->comment = "Репетитор " . $new_tutor_id . " " . $new_request->comment;
+            if ($data->repetitor_id) {
+                $new_request->comment = "Репетитор {$new_tutor_id} ";
+            }
+			@$new_request->comment .= $new_request->comment;
 			$new_request->save();
 		} else {
-			$comment = breakLines([($new_tutor_id ? "Репетитор " . $new_tutor_id : null), $data->message, "Метро: " . $data->metro_name, "Имя: " . $data->name]);
+			$comment = breakLines([(@$new_tutor_id ? "Репетитор " . $new_tutor_id : null), $data->message, "Метро: " . $data->metro_name, "Имя: " . $data->name]);
 			// создаем заявку клиента
 	        $client->requests()->create([
 	            'comment' 	=> $comment,
