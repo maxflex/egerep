@@ -9,6 +9,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\Tutor;
+use Illuminate\Support\Facades\Redis;
 
 class ExternalController extends Controller
 {
@@ -75,6 +76,7 @@ class ExternalController extends Controller
 				'google_id'	=> $data->google_id,
 	        ]);
 		}
+        Redis::incr('request_count'); // кол-во заявок должно равняться значению на сервере
     }
 
     /**
