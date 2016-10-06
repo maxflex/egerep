@@ -76,7 +76,6 @@ class ExternalController extends Controller
 				'google_id'	=> $data->google_id,
 	        ]);
 		}
-        Redis::incr('request_count'); // кол-во заявок должно равняться значению на сервере
     }
 
     /**
@@ -121,6 +120,7 @@ class ExternalController extends Controller
 				'google_id'	=> $data->google_id,
 	        ]);
 		}
+        Redis::incr('request_count'); // кол-во заявок должно равняться значению на сервере
     }
 
     /**
