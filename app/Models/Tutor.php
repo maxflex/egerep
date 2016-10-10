@@ -463,6 +463,11 @@ class Tutor extends Service\Person
         return self::addPublishedCondition($query, $published_state);
     }
 
+    public function isPublished()
+    {
+        return $this->public_desc != '';
+    }
+
 
     private static function addErrorsCondition($query, $errors_state)
     {

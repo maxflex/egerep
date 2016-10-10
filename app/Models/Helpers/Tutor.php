@@ -24,9 +24,11 @@ class Tutor
                 $errors[] = 3;
             }
 
-            // если нет зеленых меток + выезд невозможен
-            if (! collect($tutor->markers)->where('type', 'green')->count() && ! $tutor->svg_map) {
-                $errors[] = 4;
+            if ($tutor->isPublished() || $tutor->state == 5) {
+                // если нет зеленых меток + выезд невозможен
+                if (! collect($tutor->markers)->where('type', 'green')->count() && ! $tutor->svg_map) {
+                    $errors[] = 4;
+                }
             }
         }
 
