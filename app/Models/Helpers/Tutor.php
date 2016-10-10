@@ -23,6 +23,11 @@ class Tutor
             if (! $tutor->public_price) {
                 $errors[] = 3;
             }
+
+            // если нет зеленых меток + выезд невозможен
+            if (! collect($tutor->markers)->where('type', 'green')->count() && ! $tutor->svg_map) {
+                $errors[] = 4;
+            }
         }
 
         sort($errors);
