@@ -163,7 +163,11 @@ class ExternalController extends Controller
     public function tutorNew($request)
     {
         $data = $request->input();
-        $data['start_career_year'] = date('Y') - $data['experience_years'];
+
+        if ($request->has('start_career_year')) {
+            $data['start_career_year'] = date('Y') - $data['experience_years'];
+        }
+        
         $new_tutor = Tutor::create($data);
 
         // загружаем фото
