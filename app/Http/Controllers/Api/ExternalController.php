@@ -155,6 +155,13 @@ class ExternalController extends Controller
 		}
     }
 
+    /**
+     * Входящий препод новый
+     */
+    public function tutorNew($request)
+    {
+        Tutor::create($request->input());
+    }
 
     /**
 	 * Соответствие между предметами

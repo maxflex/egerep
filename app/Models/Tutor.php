@@ -170,12 +170,17 @@ class Tutor extends Service\Person
         $review_score_sum = DB::table('reviews')->join('attachments', 'attachments.id', '=', 'attachment_id')->where('tutor_id', $this->id)->whereBetween('score', [1, 10])->select('reviews.score')->sum('reviews.score');
 
         switch($this->js) {
+            case 6:
             case 10: {
                 $js = 8;
                 break;
             }
             case 8: {
                 $js = 10;
+                break;
+            }
+            case 7: {
+                $js = 9;
                 break;
             }
             default: {
