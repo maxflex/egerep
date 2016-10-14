@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Redis;
 
 class ExternalController extends Controller
 {
-    const URL = "http://web.ege-repetitor.ru:8086/tutors/";
+    const URL = "http://web.ege-repetitor.ru:8086/uploads/";
 
     # Список предметов
 	const MATH 		= 1;
