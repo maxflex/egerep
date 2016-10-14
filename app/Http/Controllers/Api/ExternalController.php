@@ -167,14 +167,18 @@ class ExternalController extends Controller
         if ($request->has('start_career_year')) {
             $data['start_career_year'] = date('Y') - $data['experience_years'];
         }
-        
+
+        if ($request->has('filename')) {
+            $ext = @end(explode('.', $request->filename));
+            $data['photo_extension'] = $ext;
+        }
+
         $new_tutor = Tutor::create($data);
 
         // загружаем фото
         if ($request->has('filename')) {
-            $ext = @end(explode('.', $request->filename));
             $file = file_get_contents(self::URL . $request->filename);
-            file_put_contents(public_path() . Tutor::UPLOAD_DIR . $new_tutor->id . '.' . $ext, $file);
+            file_put_contents(public_path() . Tutor::UPLOAD_DIR . $new_tutor->id . '_original.' . $ext, $file);
         }
     }
 
