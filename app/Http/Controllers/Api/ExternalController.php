@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Redis;
 
 class ExternalController extends Controller
 {
+    const URL = "http://web.ege-repetitor.ru:8086/tutors/";
+
     # Список предметов
 	const MATH 		= 1;
 	const PHYSICS	= 2;
@@ -160,7 +162,16 @@ class ExternalController extends Controller
      */
     public function tutorNew($request)
     {
-        Tutor::create($request->input());
+        $data = $request->input();
+        $data['start_career_year'] = date('Y') - $data['experience_years'];
+        $new_tutor = Tutor::create($request->input());
+
+        // загружаем фото
+        if ($request->has('filename')) {
+            $ext = @end(explode('.', $request->filename));
+            $file = file_get_contents(self::URL . $request->filename);
+            file_put_contents(public_path() . Tutor::UPLOAD_DIR . $new_tutor->id . '.' . $ext, $file);
+        }
     }
 
     /**
