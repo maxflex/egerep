@@ -164,7 +164,7 @@ class ExternalController extends Controller
     {
         $data = $request->input();
 
-        if ($request->has('start_career_year')) {
+        if ($request->has('experience_years')) {
             $data['start_career_year'] = date('Y') - $data['experience_years'];
         }
 

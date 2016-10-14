@@ -61,7 +61,8 @@ class Tutor extends Service\Person
         'comment_extended',
         'debtor',
         'errors',
-        'security_notification'
+        'security_notification',
+        'photo_extension'
     ];
 
     protected $appends = [
