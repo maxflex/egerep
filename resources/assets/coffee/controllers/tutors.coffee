@@ -452,7 +452,11 @@ angular
                     console.log 'id', t.id, m.id
                     if m isnt undefined and t.id == m.id
                         # удаляем маркер с сервера, если нужно
-                        Marker.delete({id: m.server_id}) if m.server_id isnt undefined
+                        if m.server_id isnt undefined
+                            ajaxStart()
+                            Marker.delete {id: m.server_id}
+                            , ->
+                                ajaxEnd()
                         $scope.tutor.markers.splice index, 1
 
         $scope.bindMarkerChangeType = (marker) ->
@@ -463,7 +467,11 @@ angular
                 else
                     @type = 'green'
                     @setIcon ICON_GREEN
-                Marker.update({id: marker.server_id, type: @type}) if marker.server_id isnt undefined
+                if marker.server_id isnt undefined
+                    ajaxStart()
+                    Marker.update {id: marker.server_id, type: @type}
+                    , ->
+                        ajaxEnd()
 
         # Поиск по карте
         $scope.searchMap = (address) ->

@@ -45,8 +45,10 @@ angular.module('Egerep')
             for fillable in fillables
                  archive[fillable] = $scope.popup_attachment.archive[fillable]
             $rootScope.toggleEnum(archive, field, set)
+            ajaxStart()
             $scope.Archive.update archive
             , (response)->
+                ajaxEnd()
                 _.extendOwn($scope.popup_attachment.archive, archive)
 
         angular.element(document).ready ->
@@ -324,9 +326,12 @@ angular.module('Egerep')
                     if client.archive_state isnt 'possible'
                         $scope.clients = removeById($scope.clients, client_id)
 
+                        ajaxStart()
                         Attachment.update
                             id: client.attachment_id
                             hide: 1
+                        , ->
+                            ajaxEnd()
 
                         $scope.hidden_clients_count++
                     $scope.$apply()

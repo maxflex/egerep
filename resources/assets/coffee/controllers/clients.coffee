@@ -126,22 +126,30 @@ angular
 
         $scope.toggleArchive = ->
             if $scope.selected_attachment.archive
+                ajaxStart()
                 Archive.delete $scope.selected_attachment.archive, ->
+                    ajaxEnd()
                     delete $scope.selected_attachment.archive
             else
+                ajaxStart()
                 Archive.save
                     attachment_id: $scope.selected_attachment.id
                 , (response) ->
+                    ajaxEnd()
                     $scope.selected_attachment.archive = response
 
         $scope.toggleReview = ->
             if $scope.selected_attachment.review
+                ajaxStart()
                 Review.delete $scope.selected_attachment.review, ->
+                    ajaxEnd()
                     delete $scope.selected_attachment.review
             else
+                ajaxStart()
                 Review.save
                     attachment_id: $scope.selected_attachment.id
                 , (response) ->
+                    ajaxEnd()
                     $scope.selected_attachment.review = response
 
         $scope.attachmentExists = (tutor_id) ->
@@ -195,6 +203,7 @@ angular
                 $('#add-tutor').modal 'hide'
 
         $scope.newAttachment = (tutor_id) ->
+            ajaxStart()
             Attachment.save
                 grade: $scope.client.grade
                 tutor_id: tutor_id
@@ -202,6 +211,7 @@ angular
                 request_list_id: $scope.selected_list.id
                 client_id: $scope.client.id
             , (new_attachment) ->
+                ajaxEnd()
                 if new_attachment.id
                     $scope.selected_attachment = new_attachment
                     $scope.selected_list.attachments.push new_attachment
@@ -210,8 +220,10 @@ angular
             new_request = new Request
                 client_id: $scope.id
 
+            ajaxStart()
             new_request.$save()
                 .then (data) ->
+                    ajaxEnd()
                     $scope.client.requests.push(data)
                     $scope.selected_request = data
                     unsetSelected(false, true, true)
@@ -228,9 +240,11 @@ angular
 
         $scope.transferRequestGo = ->
             $('#transfer-request').modal 'hide'
+            ajaxStart()
             $http.post "api/requests/transfer/#{$scope.selected_request.id}",
                 client_id: $scope.transfer_client_id
             .then (response) ->
+                ajaxEnd()
                 console.log response
                 if response.data isnt '' then location.reload() else bootbox.alert('Клиент не существует')
 
@@ -384,7 +398,11 @@ angular
                 $.each $scope.client.markers, (index, m) ->
                     if m isnt undefined and t.id == m.id
                         # удаляем маркер с сервера, если нужно
-                        Marker.delete({id: m.server_id}) if m.server_id isnt undefined
+                        if m.server_id isnt undefined
+                            ajaxStart()
+                            Marker.delete {id: m.server_id}
+                            , ->
+                                ajaxEnd()
                         $scope.client.markers.splice index, 1
 
         $scope.bindMarkerChangeType = (marker) ->
@@ -398,7 +416,11 @@ angular
                 else
                     @type = 'green'
                     @setIcon ICON_GREEN
-                Marker.update({id: marker.server_id, type: @type}) if marker.server_id isnt undefined
+                if marker.server_id isnt undefined
+                    ajaxStart()
+                    Marker.update {id: marker.server_id, type: @type}
+                    , ->
+                        ajaxEnd()
 
         # Поиск по карте
         $scope.searchMap = (address) ->
