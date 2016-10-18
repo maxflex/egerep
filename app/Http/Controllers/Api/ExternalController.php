@@ -168,6 +168,9 @@ class ExternalController extends Controller
             $data['start_career_year'] = date('Y') - $data['experience_years'];
         }
 
+        // согласие размещать анкету в психпортрет
+        $data['impression'] = @$request->agree_to_publish ? ' я хотел бы получать учеников и даю согласие на публикацию анкеты на сайте ege-repetitor.ru' : 'я хотел бы получать учеников, но не хотел бы размещать анкету на сайте ege-repetitor.ru';
+
         if ($request->has('filename')) {
             $ext = @end(explode('.', $request->filename));
             $data['photo_extension'] = $ext;
