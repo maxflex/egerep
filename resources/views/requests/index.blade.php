@@ -66,6 +66,9 @@
                 <span ng-show="request.client.requests_count > 1"><i class="fa fa-circle"></i> <plural type='request' count='request.client.requests_count'></plural></span>
                 <span><i class="fa fa-circle"></i>ответственный:
                 <user-switch entity='request' user-id='user_id' resource='Request'></span>
+                <span class="pull-right link-like"
+                      ng-click="toggleEnumServer(request, 'state', RequestStates, Request, ['all'], [@if (! ($user->isDev() || $user->isRoot() || $user->id == 56)) 'checked_reasoned_deny' @endif], true)
+                ">@{{ RequestStates[request.state] }}</span>
             </div>
             <div class="row">
                 <div class="col-sm-10 vcenter" style="width: 80%">

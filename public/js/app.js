@@ -149,20 +149,38 @@
         return $rootScope.toggleEnum(ngModel, status, ngEnum, skip_values, allowed_user_ids, true);
       }
     };
-    $rootScope.toggleEnumServer = function(ngModel, status, ngEnum, Resource) {
-      var status_id, statuses, update_data;
+    $rootScope.toggleEnumServer = function(ngModel, status, ngEnum, Resource, skip_values, restricted_fields, freeze_restricted) {
+      var ref, status_id, statuses, update_data, value;
+      if (skip_values == null) {
+        skip_values = [];
+      }
+      if (restricted_fields == null) {
+        restricted_fields = [];
+      }
+      if (freeze_restricted == null) {
+        freeze_restricted = false;
+      }
+      if ((ref = ngModel[status], indexOf.call(restricted_fields, ref) >= 0) && freeze_restricted) {
+        return;
+      }
       statuses = Object.keys(ngEnum);
       status_id = statuses.indexOf(ngModel[status].toString());
-      status_id++;
-      if (status_id > (statuses.length - 1)) {
-        status_id = 0;
+      while (true) {
+        status_id++;
+        if (status_id > (statuses.length - 1)) {
+          status_id = 0;
+        }
+        value = isNaN(parseInt(ngModel[status])) ? statuses[status_id] : status_id;
+        if (!(indexOf.call(skip_values, value) >= 0 || indexOf.call(restricted_fields, value) >= 0)) {
+          break;
+        }
       }
       update_data = {
         id: ngModel.id
       };
-      update_data[status] = status_id;
+      update_data[status] = value;
       return Resource.update(update_data, function() {
-        return ngModel[status] = statuses[status_id];
+        return ngModel[status] = value;
       });
     };
     $rootScope.formatDateTime = function(date) {
@@ -243,27 +261,6 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').factory('Model', function($resource) {
-    return $resource('api/models/:id', {}, {
-      update: {
-        method: 'PUT'
-      }
-    });
-  }).controller("ModelsIndex", function($scope, $timeout, Model) {
-    return $scope.models = Model.query();
-  }).controller("ModelsForm", function($scope, $timeout, $interval, Model) {
-    return $timeout(function() {
-      if ($scope.id > 0) {
-        return $scope.model = Model.get({
-          id: $scope.id
-        });
-      }
-    });
-  });
-
-}).call(this);
-
-(function() {
   angular.module('Egerep').controller('AccountsHiddenCtrl', function($scope, Grades, Attachment) {
     var bindDraggable;
     bindArguments($scope, arguments);
@@ -317,7 +314,9 @@
         archive[fillable] = $scope.popup_attachment.archive[fillable];
       }
       $rootScope.toggleEnum(archive, field, set);
+      ajaxStart();
       return $scope.Archive.update(archive, function(response) {
+        ajaxEnd();
         return _.extendOwn($scope.popup_attachment.archive, archive);
       });
     };
@@ -625,9 +624,12 @@
           client = $scope.findById($scope.clients, client_id);
           if (client.archive_state !== 'possible') {
             $scope.clients = removeById($scope.clients, client_id);
+            ajaxStart();
             Attachment.update({
               id: client.attachment_id,
               hide: 1
+            }, function() {
+              return ajaxEnd();
             });
             $scope.hidden_clients_count++;
           }
@@ -1159,7 +1161,7 @@
 (function() {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  angular.module('Egerep').controller("ClientsIndex", function($scope, $rootScope, $timeout, $http, Client) {
+  angular.module('Egerep').controller("ClientsIndex", function($scope, $rootScope, $timeout, $http, Client, RequestStates, Request) {
     var load;
     $rootScope.frontend_loading = true;
     $scope.pageChanged = function() {
@@ -1282,26 +1284,34 @@
     };
     $scope.toggleArchive = function() {
       if ($scope.selected_attachment.archive) {
+        ajaxStart();
         return Archive["delete"]($scope.selected_attachment.archive, function() {
+          ajaxEnd();
           return delete $scope.selected_attachment.archive;
         });
       } else {
+        ajaxStart();
         return Archive.save({
           attachment_id: $scope.selected_attachment.id
         }, function(response) {
+          ajaxEnd();
           return $scope.selected_attachment.archive = response;
         });
       }
     };
     $scope.toggleReview = function() {
       if ($scope.selected_attachment.review) {
+        ajaxStart();
         return Review["delete"]($scope.selected_attachment.review, function() {
+          ajaxEnd();
           return delete $scope.selected_attachment.review;
         });
       } else {
+        ajaxStart();
         return Review.save({
           attachment_id: $scope.selected_attachment.id
         }, function(response) {
+          ajaxEnd();
           return $scope.selected_attachment.review = response;
         });
       }
@@ -1368,6 +1378,7 @@
       });
     };
     $scope.newAttachment = function(tutor_id) {
+      ajaxStart();
       return Attachment.save({
         grade: $scope.client.grade,
         tutor_id: tutor_id,
@@ -1375,6 +1386,7 @@
         request_list_id: $scope.selected_list.id,
         client_id: $scope.client.id
       }, function(new_attachment) {
+        ajaxEnd();
         if (new_attachment.id) {
           $scope.selected_attachment = new_attachment;
           return $scope.selected_list.attachments.push(new_attachment);
@@ -1386,7 +1398,9 @@
       new_request = new Request({
         client_id: $scope.id
       });
+      ajaxStart();
       return new_request.$save().then(function(data) {
+        ajaxEnd();
         $scope.client.requests.push(data);
         $scope.selected_request = data;
         return unsetSelected(false, true, true);
@@ -1409,9 +1423,11 @@
     };
     $scope.transferRequestGo = function() {
       $('#transfer-request').modal('hide');
+      ajaxStart();
       return $http.post("api/requests/transfer/" + $scope.selected_request.id, {
         client_id: $scope.transfer_client_id
       }).then(function(response) {
+        ajaxEnd();
         console.log(response);
         if (response.data !== '') {
           return location.reload();
@@ -1580,8 +1596,11 @@
         return $.each($scope.client.markers, function(index, m) {
           if (m !== void 0 && t.id === m.id) {
             if (m.server_id !== void 0) {
+              ajaxStart();
               Marker["delete"]({
                 id: m.server_id
+              }, function() {
+                return ajaxEnd();
               });
             }
             return $scope.client.markers.splice(index, 1);
@@ -1602,9 +1621,12 @@
           this.setIcon(ICON_GREEN);
         }
         if (marker.server_id !== void 0) {
+          ajaxStart();
           return Marker.update({
             id: marker.server_id,
             type: this.type
+          }, function() {
+            return ajaxEnd();
           });
         }
       });
@@ -3281,8 +3303,11 @@
           console.log('id', t.id, m.id);
           if (m !== void 0 && t.id === m.id) {
             if (m.server_id !== void 0) {
+              ajaxStart();
               Marker["delete"]({
                 id: m.server_id
+              }, function() {
+                return ajaxEnd();
               });
             }
             return $scope.tutor.markers.splice(index, 1);
@@ -3300,9 +3325,12 @@
           this.setIcon(ICON_GREEN);
         }
         if (marker.server_id !== void 0) {
+          ajaxStart();
           return Marker.update({
             id: marker.server_id,
             type: this.type
+          }, function() {
+            return ajaxEnd();
           });
         }
       });
@@ -3383,6 +3411,27 @@
       $scope.form_changed = true;
       return $('#gmap-modal').modal('hide');
     };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').factory('Model', function($resource) {
+    return $resource('api/models/:id', {}, {
+      update: {
+        method: 'PUT'
+      }
+    });
+  }).controller("ModelsIndex", function($scope, $timeout, Model) {
+    return $scope.models = Model.query();
+  }).controller("ModelsForm", function($scope, $timeout, $interval, Model) {
+    return $timeout(function() {
+      if ($scope.id > 0) {
+        return $scope.model = Model.get({
+          id: $scope.id
+        });
+      }
+    });
   });
 
 }).call(this);
@@ -4109,10 +4158,12 @@
           var security_notification;
           security_notification = angular.copy($scope.tutor.security_notification);
           security_notification[index] = !security_notification[index];
+          ajaxStart();
           return Tutor.update({
             id: $scope.tutor.id,
             security_notification: security_notification
           }, function() {
+            ajaxEnd();
             return $scope.tutor.security_notification = angular.copy(security_notification);
           });
         };
@@ -5130,6 +5181,7 @@
       }
       new_user_id = entity[user_id] ? 0 : this.current_user.id;
       if (Resource) {
+        ajaxStart();
         return Resource.update((
           obj = {
             id: entity.id
@@ -5137,6 +5189,7 @@
           obj["" + user_id] = new_user_id,
           obj
         ), function() {
+          ajaxEnd();
           return entity[user_id] = new_user_id;
         });
       } else {

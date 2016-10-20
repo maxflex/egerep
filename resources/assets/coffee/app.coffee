@@ -87,17 +87,24 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
             $rootScope.toggleEnum(ngModel, status, ngEnum, skip_values, allowed_user_ids, true) if status_id in skip_values and $rootScope.$$childHead.user.id not in allowed_user_ids
 
         # обновить + ждать ответа от сервера
-        $rootScope.toggleEnumServer = (ngModel, status, ngEnum, Resource) ->
+        $rootScope.toggleEnumServer = (ngModel, status, ngEnum, Resource, skip_values = [], restricted_fields = [], freeze_restricted = false) ->
+            return if ngModel[status] in restricted_fields and freeze_restricted #если запрешено менять значение
+
             statuses = Object.keys(ngEnum)
             status_id = statuses.indexOf ngModel[status].toString()
-            status_id++
-            status_id = 0 if status_id > (statuses.length - 1)
+
+            loop
+                status_id++
+                status_id = 0 if status_id > (statuses.length - 1)
+                value = if isNaN parseInt ngModel[status] then statuses[status_id] else status_id
+                unless value in skip_values or value in restricted_fields
+                    break
 
             update_data = {id: ngModel.id}
-            update_data[status] = status_id
+            update_data[status] = value
 
             Resource.update update_data, ->
-                ngModel[status] = statuses[status_id]
+                ngModel[status] = value
 
         $rootScope.formatDateTime = (date) ->
             moment(date).format "DD.MM.YY в HH:mm"
