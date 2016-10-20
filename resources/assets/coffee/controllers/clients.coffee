@@ -6,7 +6,7 @@ angular
     #
     #   LIST CONTROLLER
     #
-    .controller "ClientsIndex", ($scope, $rootScope, $timeout, $http, Client) ->
+    .controller "ClientsIndex", ($scope, $rootScope, $timeout, $http, Client, RequestStates, Request) ->
         $rootScope.frontend_loading = true
 
         $scope.pageChanged = ->

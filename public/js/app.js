@@ -149,20 +149,38 @@
         return $rootScope.toggleEnum(ngModel, status, ngEnum, skip_values, allowed_user_ids, true);
       }
     };
-    $rootScope.toggleEnumServer = function(ngModel, status, ngEnum, Resource) {
-      var status_id, statuses, update_data;
+    $rootScope.toggleEnumServer = function(ngModel, status, ngEnum, Resource, skip_values, restricted_fields, freeze_restricted) {
+      var ref, status_id, statuses, update_data, value;
+      if (skip_values == null) {
+        skip_values = [];
+      }
+      if (restricted_fields == null) {
+        restricted_fields = [];
+      }
+      if (freeze_restricted == null) {
+        freeze_restricted = false;
+      }
+      if ((ref = ngModel[status], indexOf.call(restricted_fields, ref) >= 0) && freeze_restricted) {
+        return;
+      }
       statuses = Object.keys(ngEnum);
       status_id = statuses.indexOf(ngModel[status].toString());
-      status_id++;
-      if (status_id > (statuses.length - 1)) {
-        status_id = 0;
+      while (true) {
+        status_id++;
+        if (status_id > (statuses.length - 1)) {
+          status_id = 0;
+        }
+        value = isNaN(parseInt(ngModel[status])) ? statuses[status_id] : status_id;
+        if (!(indexOf.call(skip_values, value) >= 0 || indexOf.call(restricted_fields, value) >= 0)) {
+          break;
+        }
       }
       update_data = {
         id: ngModel.id
       };
-      update_data[status] = status_id;
+      update_data[status] = value;
       return Resource.update(update_data, function() {
-        return ngModel[status] = statuses[status_id];
+        return ngModel[status] = value;
       });
     };
     $rootScope.formatDateTime = function(date) {
@@ -1143,7 +1161,7 @@
 (function() {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  angular.module('Egerep').controller("ClientsIndex", function($scope, $rootScope, $timeout, $http, Client) {
+  angular.module('Egerep').controller("ClientsIndex", function($scope, $rootScope, $timeout, $http, Client, RequestStates, Request) {
     var load;
     $rootScope.frontend_loading = true;
     $scope.pageChanged = function() {

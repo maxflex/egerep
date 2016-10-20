@@ -15,7 +15,8 @@ class Request extends Model
         'в ожидании'         => 'awaiting',
         'выполненные'        => 'finished',
         'отказы'             => 'deny',
-        'обоснованный отказ' => 'reasoned_deny'
+        'обоснованный отказ' => 'reasoned_deny',
+        'подтвержденный обоснованный отказ' => 'checked_reasoned_deny'
     ];
 
     protected $attributes = [

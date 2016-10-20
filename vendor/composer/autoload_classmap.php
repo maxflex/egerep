@@ -9,6 +9,7 @@ return array(
     'AddAttachmentsCntToTutors' => $baseDir . '/database/migrations/2016_07_22_143752_add_attachments_cnt_to_tutors.php',
     'AddCalledColumnToAttachments' => $baseDir . '/database/migrations/2016_08_11_174111_add_called_column_to_attachments.php',
     'AddCheckedColumnToArchiveTable' => $baseDir . '/database/migrations/2016_09_05_104329_add_checked_column_to_archive_table.php',
+    'AddCheckedReasonedDenyToRequests' => $baseDir . '/database/migrations/2016_10_20_131339_add_checked_reasoned_deny_to_requests.php',
     'AddCheckedToAttachments' => $baseDir . '/database/migrations/2016_06_29_132535_add_checked_to_attachments.php',
     'AddClientIdToAttachments' => $baseDir . '/database/migrations/2016_05_30_141049_add_client_id_to_attachments.php',
     'AddCommentExtendedToTutors' => $baseDir . '/database/migrations/2016_06_17_180812_add_comment_extended_to_tutors.php',
