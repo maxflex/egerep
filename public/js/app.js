@@ -314,9 +314,7 @@
         archive[fillable] = $scope.popup_attachment.archive[fillable];
       }
       $rootScope.toggleEnum(archive, field, set);
-      ajaxStart();
       return $scope.Archive.update(archive, function(response) {
-        ajaxEnd();
         return _.extendOwn($scope.popup_attachment.archive, archive);
       });
     };
@@ -1284,34 +1282,26 @@
     };
     $scope.toggleArchive = function() {
       if ($scope.selected_attachment.archive) {
-        ajaxStart();
         return Archive["delete"]($scope.selected_attachment.archive, function() {
-          ajaxEnd();
           return delete $scope.selected_attachment.archive;
         });
       } else {
-        ajaxStart();
         return Archive.save({
           attachment_id: $scope.selected_attachment.id
         }, function(response) {
-          ajaxEnd();
           return $scope.selected_attachment.archive = response;
         });
       }
     };
     $scope.toggleReview = function() {
       if ($scope.selected_attachment.review) {
-        ajaxStart();
         return Review["delete"]($scope.selected_attachment.review, function() {
-          ajaxEnd();
           return delete $scope.selected_attachment.review;
         });
       } else {
-        ajaxStart();
         return Review.save({
           attachment_id: $scope.selected_attachment.id
         }, function(response) {
-          ajaxEnd();
           return $scope.selected_attachment.review = response;
         });
       }
@@ -3303,35 +3293,38 @@
           console.log('id', t.id, m.id);
           if (m !== void 0 && t.id === m.id) {
             if (m.server_id !== void 0) {
-              ajaxStart();
-              Marker["delete"]({
+              return Marker["delete"]({
                 id: m.server_id
               }, function() {
-                return ajaxEnd();
+                return $scope.tutor.markers.splice(index, 1);
               });
+            } else {
+              return $scope.tutor.markers.splice(index, 1);
             }
-            return $scope.tutor.markers.splice(index, 1);
           }
         });
       });
     };
     $scope.bindMarkerChangeType = function(marker) {
       return google.maps.event.addListener(marker, 'click', function(event) {
+        var gmap, icon_to_set;
         if (this.type === 'green') {
           this.type = 'red';
-          this.setIcon(ICON_RED);
+          icon_to_set = ICON_RED;
         } else {
           this.type = 'green';
-          this.setIcon(ICON_GREEN);
+          icon_to_set = ICON_GREEN;
         }
+        gmap = this;
         if (marker.server_id !== void 0) {
-          ajaxStart();
           return Marker.update({
             id: marker.server_id,
             type: this.type
           }, function() {
-            return ajaxEnd();
+            return gmap.setIcon(icon_to_set);
           });
+        } else {
+          return gmap.setIcon(icon_to_set);
         }
       });
     };
@@ -4504,12 +4497,10 @@
           var security_notification;
           security_notification = angular.copy($scope.tutor.security_notification);
           security_notification[index] = !security_notification[index];
-          ajaxStart();
           return Tutor.update({
             id: $scope.tutor.id,
             security_notification: security_notification
           }, function() {
-            ajaxEnd();
             return $scope.tutor.security_notification = angular.copy(security_notification);
           });
         };
@@ -5181,7 +5172,6 @@
       }
       new_user_id = entity[user_id] ? 0 : this.current_user.id;
       if (Resource) {
-        ajaxStart();
         return Resource.update((
           obj = {
             id: entity.id
@@ -5189,7 +5179,6 @@
           obj["" + user_id] = new_user_id,
           obj
         ), function() {
-          ajaxEnd();
           return entity[user_id] = new_user_id;
         });
       } else {

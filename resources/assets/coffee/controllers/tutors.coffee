@@ -453,25 +453,27 @@ angular
                     if m isnt undefined and t.id == m.id
                         # удаляем маркер с сервера, если нужно
                         if m.server_id isnt undefined
-                            ajaxStart()
                             Marker.delete {id: m.server_id}
                             , ->
-                                ajaxEnd()
-                        $scope.tutor.markers.splice index, 1
+                                $scope.tutor.markers.splice index, 1
+                        else
+                            $scope.tutor.markers.splice index, 1
 
         $scope.bindMarkerChangeType = (marker) ->
             google.maps.event.addListener marker, 'click', (event) ->
                 if @type == 'green'
                     @type = 'red'
-                    @setIcon ICON_RED
+                    icon_to_set = ICON_RED
                 else
                     @type = 'green'
-                    @setIcon ICON_GREEN
+                    icon_to_set = ICON_GREEN
+                gmap = this
                 if marker.server_id isnt undefined
-                    ajaxStart()
                     Marker.update {id: marker.server_id, type: @type}
                     , ->
-                        ajaxEnd()
+                        gmap.setIcon icon_to_set
+                else
+                    gmap.setIcon icon_to_set
 
         # Поиск по карте
         $scope.searchMap = (address) ->

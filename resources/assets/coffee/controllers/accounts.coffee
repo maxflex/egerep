@@ -45,10 +45,8 @@ angular.module('Egerep')
             for fillable in fillables
                  archive[fillable] = $scope.popup_attachment.archive[fillable]
             $rootScope.toggleEnum(archive, field, set)
-            ajaxStart()
             $scope.Archive.update archive
             , (response)->
-                ajaxEnd()
                 _.extendOwn($scope.popup_attachment.archive, archive)
 
         angular.element(document).ready ->

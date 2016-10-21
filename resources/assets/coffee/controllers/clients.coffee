@@ -126,30 +126,22 @@ angular
 
         $scope.toggleArchive = ->
             if $scope.selected_attachment.archive
-                ajaxStart()
                 Archive.delete $scope.selected_attachment.archive, ->
-                    ajaxEnd()
                     delete $scope.selected_attachment.archive
             else
-                ajaxStart()
                 Archive.save
                     attachment_id: $scope.selected_attachment.id
                 , (response) ->
-                    ajaxEnd()
                     $scope.selected_attachment.archive = response
 
         $scope.toggleReview = ->
             if $scope.selected_attachment.review
-                ajaxStart()
                 Review.delete $scope.selected_attachment.review, ->
-                    ajaxEnd()
                     delete $scope.selected_attachment.review
             else
-                ajaxStart()
                 Review.save
                     attachment_id: $scope.selected_attachment.id
                 , (response) ->
-                    ajaxEnd()
                     $scope.selected_attachment.review = response
 
         $scope.attachmentExists = (tutor_id) ->

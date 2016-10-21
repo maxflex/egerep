@@ -38,12 +38,10 @@ angular.module 'Egerep'
             new_user_id = if entity[user_id] then 0 else this.current_user.id
 
             if Resource
-                ajaxStart()
                 Resource.update
                     id: entity.id
                     "#{user_id}": new_user_id
                 , ->
-                    ajaxEnd()
                     entity[user_id] = new_user_id
             else
                 entity[user_id] = new_user_id
