@@ -11,11 +11,11 @@ use App\Events\RequestUserChanged;
 class Request extends Model
 {
     public static $states = [
-        'невыполненные'      => 'new',
-        'в ожидании'         => 'awaiting',
-        'выполненные'        => 'finished',
-        'отказы'             => 'deny',
-        'обоснованный отказ' => 'reasoned_deny',
+        'невыполненные'                     => 'new',
+        'в ожидании'                        => 'awaiting',
+        'выполненные'                       => 'finished',
+        'отказы'                            => 'deny',
+        'обоснованный отказ'                => 'reasoned_deny',
         'подтвержденный обоснованный отказ' => 'checked_reasoned_deny'
     ];
 

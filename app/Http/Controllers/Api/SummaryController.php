@@ -326,4 +326,59 @@ class SummaryController extends Controller
             ->whereRaw("last_archive_date <= '{$end}'")
             ->select(DB::raw('count(*) as cnt, sum(debt_calc) as sum, sum(last_account_debt) as debt_sum'))->first();
     }
+
+    public function users(Request $request)
+    {
+        @extract(array_filter($request->all()));
+
+        $return = [];
+        $request_query = \App\Models\Request::query();
+        $attachments_query = Attachment::query();
+        $commission_query = \App\Models\AccountData::query();
+
+        if (isset($date_from)) {
+            $request_query->where('created_at', '>=', fromDotDate($date_from));
+            $attachments_query->where('created_at', '>=', fromDotDate($date_from));
+            $commission_query->where('date', '>=', fromDotDate($date_from));
+        }
+        if (isset($date_to)) {
+            $request_query->where('created_at', '<=', fromDotDate($date_to));
+            $attachments_query->where('created_at', '<=', fromDotDate($date_to));
+            $commission_query->where('date', '<=', fromDotDate($date_to));
+        }
+        if (isset($user_id)) {
+            $request_query->whereUserId($user_id);
+            $attachments_query->whereUserId($user_id);
+            $commission_query->join('attachments', function($join) {
+                $join->on('attachments.tutor_id', '=', 'account_datas.tutor_id')
+                    ->where('attachments.client_id', '=', 'account_datas.client_id');
+            })->where('attachments.user_id', $user_id);
+        }
+
+        foreach(\App\Models\Request::$states as $request_state) {
+            $q = clone $request_query;
+            $return['requests'][$request_state] = $q->searchByState($request_state)->count();
+        }
+
+        $return['requests']['total'] = $request_query->count();
+
+        $return['attachments'] = [
+            'total'    => $attachments_query->count(),
+            'newest'   => $attachments_query->newQuery()->newest()->count(),
+            'active'   => $attachments_query->newQuery()->active()->count(),
+            'archived' => [
+                'no_lessons'            => $attachments_query->newQuery()->archived()->noLessons()->count(),
+                'one_lesson'            => $attachments_query->newQuery()->archived()->hasLessons('=1')->count(),
+                'two_lessons'           => $attachments_query->newQuery()->archived()->hasLessons('=2')->count(),
+                'three_or_more_lessons' => $attachments_query->newQuery()->archived()->hasLessons('>=3')->count(),
+            ],
+        ];
+
+        $return['commissions'] = $commission_query->select(
+            'account_datas.date',
+            DB::raw('round(sum(if(commission > 0, commission, ' . Account::DEFAULT_COMMISSION . ' * sum))) as `sum`')
+        )->groupBy(DB::raw("DATE_FORMAT(account_datas.date, '%Y-%m')"))->get();
+
+        return $return;
+    }
 }

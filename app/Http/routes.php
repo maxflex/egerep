@@ -46,6 +46,7 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::get('notifications', 'NotificationsController@index');
 
+    Route::get('summary/users', 'SummaryController@users');
     Route::get('summary/payments/{filter?}', 'SummaryController@payments');
     Route::get('summary/debtors/{filter?}', 'SummaryController@debtors');
     Route::get('summary/{filter?}', 'SummaryController@index');
@@ -99,6 +100,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('sms', 'SmsController');
         Route::resource('periods', 'PeriodsController');
 
+        Route::post('summary/users', 'SummaryController@users');
         Route::post('summary/payments', 'SummaryController@payments');
         Route::post('summary/debtors', 'SummaryController@debtors');
         Route::post('summary', 'SummaryController@index');

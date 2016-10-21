@@ -218,9 +218,9 @@ class Attachment extends Model
     /**
      * Стыковка с занятиями
      */
-    public function scopeHasLessons($query)
+    public function scopeHasLessons($query, $lesson_count = '> 0')
     {
-        return $query->whereRaw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) > 0');
+        return $query->whereRaw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) ' . $lesson_count);
     }
 
     /**

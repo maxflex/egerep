@@ -16,7 +16,7 @@ angular.module 'Egerep'
 
         this.get = (user_id) ->
             this.getUser(user_id)
-            
+
         this.getUser = (user_id) ->
             _.findWhere(this.users, {id: parseInt(user_id)}) or system_user
 
@@ -27,12 +27,16 @@ angular.module 'Egerep'
             this.getUser(parseInt(user_id)).color
 
         this.getWithSystem = (only_active = true) ->
-            users = _.clone this.users
+            users = this.getAll(only_active)
             users.unshift system_user
+            users
+
+        this.getAll = (only_active = true) ->
+
             if only_active
-                _.where(users, {banned: 0})
+                _.where(this.users, {banned: 0})
             else
-                users
+                this.users
 
         this.toggle = (entity, user_id, Resource = false) ->
             new_user_id = if entity[user_id] then 0 else this.current_user.id

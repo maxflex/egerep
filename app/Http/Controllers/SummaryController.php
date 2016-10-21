@@ -69,4 +69,14 @@ class SummaryController extends Controller
                         ])
                     );
     }
+
+    public function users()
+    {
+        return view('summary.users')->with(
+            ngInit([
+                'total_debt'    => Tutor::totalDebt(),
+                'debt_updated'  => Settings::get('debt_updated'),
+            ])
+        );
+    }
 }

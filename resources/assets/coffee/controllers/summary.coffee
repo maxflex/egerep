@@ -1,5 +1,23 @@
 angular
     .module 'Egerep'
+    .controller 'SummaryUsers', ($scope, $rootScope, $timeout, $http, UserService, RequestStates) ->
+        bindArguments($scope, arguments)
+
+        $timeout ->
+            $('#change-user').selectpicker 'refresh'
+        , 500
+
+        $scope.update = ->
+            $rootScope.frontend_loading = true
+            $http.post 'api/summary/users', $scope.search
+            .then (response) ->
+                $rootScope.frontend_loading = false
+                $scope.stats = response.data
+                console.log response
+
+        $scope.monthYear = (date) ->
+            moment(date).format('MMMM YYYY')
+
     .controller 'SummaryIndex', ($rootScope, $scope, $http, $timeout, PaymentMethods) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
