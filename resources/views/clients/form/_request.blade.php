@@ -25,7 +25,7 @@
         </div>
         <div class='mbs'>
             <b>Статус заявки:</b> <span class="link-like"
-                ng-click="toggleEnum(selected_request, 'state', RequestStates)">@{{ RequestStates[selected_request.state] }}</span>
+`                ng-click="toggleEnum(selected_request, 'state', RequestStates, ['checked_reasoned_deny'], [@if ($user->id == 56 or $user->isDev() or $user->isRoot()){{ $user->id }}@endif])">@{{ RequestStates[selected_request.state] }}</span>
         </div>
         <div class='mbs' ng-show='request_tutor_ids.length > 0'>
             <b>Отмеченные репетиторы в заявке:</b>
