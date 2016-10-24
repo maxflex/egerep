@@ -35,7 +35,7 @@
                         ></option>
                     </select>
                 </div>
-                <div class="col-sm-12" style='margin-top: 5px'>
+                <div class="col-sm-12" style='margin-top: 8px'>
                     <button type="button" class="btn btn-primary full-width" ng-click='update()'>обновить</button>
                 </div>
             </div>
