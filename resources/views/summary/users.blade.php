@@ -27,9 +27,7 @@
                     </div>
                 </div>
                 <div class="col-sm-12">
-                    <select class="form-control selectpicker" id='change-user' ng-model='search.user_id' ng-change='update()'>
-                        <option value="">пользователь</option>
-                        <option disabled>──────────────</option>
+                    <select class="form-control selectpicker" multiple id='change-user' ng-model='search.user_ids' ng-change='update()' data-none-selected-text="пользователь">
                         <option
                             ng-repeat="user in UserService.getAll()"
                             value="@{{ user.id }}"
@@ -60,6 +58,13 @@
             <div ng-repeat='(user_id, count) in stats.attachments.users' ng-show='count'>
                 @{{ UserService.getLogin(user_id) }} – @{{ count }}
             </div>
+
+            <div class="result-line">Эффективность:</div>
+            <div>Общая конверсия заявок в покупающего клиента – @{{ stats.efficency.conversion | number }}</div>
+            <div>Средний прогноз – @{{ stats.efficency.forecast | number }} руб.</div>
+            <div>Средняя заявка – @{{ stats.efficency.request_avg | number }} руб.</div>
+            <div>Средняя стыковка – @{{ stats.efficency.attachment_avg | number }} руб.</div>
+            <div>Общая комиссия – @{{ stats.efficency.total_commission | number }} руб.</div>
 
             <div class="result-line">Распределение коммиссии по месяцам:</div>
             <div ng-repeat='commission in stats.commissions'>

@@ -346,13 +346,16 @@ class SummaryController extends Controller
             $attachments_query->where('created_at', '<=', fromDotDate($date_to));
             $commission_query->where('date', '<=', fromDotDate($date_to));
         }
-        if (isset($user_id)) {
-            $request_query->whereUserId($user_id);
-            $attachments_query->whereUserId($user_id);
+
+        $attachments_query_without_user = clone $attachments_query;
+
+        if (isset($user_ids)) {
+            $request_query->whereIn('user_id', $user_ids);
+            $attachments_query->whereIn('user_id', $user_ids);
             $commission_query->join('attachments', function($join) {
                 $join->on('attachments.tutor_id', '=', 'account_datas.tutor_id')
-                    ->where('attachments.client_id', '=', 'account_datas.client_id');
-            })->where('attachments.user_id', $user_id);
+                    ->on('attachments.client_id', '=', 'account_datas.client_id');
+            })->whereIn('attachments.user_id', $user_ids);
         }
 
         foreach(\App\Models\Request::$states as $request_state) {
@@ -376,10 +379,27 @@ class SummaryController extends Controller
             $return['attachments']['users'][$id] = (clone $attachments_query)->whereUserId($id)->count();
         }
 
-        $return['commissions'] = $commission_query->select(
+        $return['commissions'] = (clone $commission_query)->select(
             'account_datas.date',
             DB::raw('round(sum(if(commission > 0, commission, ' . Account::DEFAULT_COMMISSION . ' * sum))) as `sum`')
         )->groupBy(DB::raw("DATE_FORMAT(account_datas.date, '%Y-%m')"))->get();
+
+        //
+        // ЭФФЕКТИВНОСТЬ
+        //
+        $attachments_query_without_user_count = $attachments_query_without_user->count();
+        $numerator = $return['attachments']['active'] + $return['attachments']['archived']['three_or_more_lessons'] + 0.65 * ($return['attachments']['newest']);
+        $denominator = $attachments_query_without_user_count / $return['attachments']['total'];
+
+        $total_commission = (clone $commission_query)->sum(DB::raw('if(commission > 0, commission, ' . Account::DEFAULT_COMMISSION . ' * sum)'));
+
+        $return['efficency'] = [
+            'conversion'       => round($numerator / $denominator, 2),
+            'forecast'         => round((clone $attachments_query)->avg('forecast')),
+            'request_avg'      => round($total_commission / $attachments_query_without_user_count),
+            'attachment_avg'   => round($total_commission / $return['attachments']['total']),
+            'total_commission' => round($total_commission),
+        ];
 
         return $return;
     }
