@@ -409,6 +409,6 @@ class SummaryController extends Controller
     //
     private static function cloneQuery($query)
     {
-        return $query;
+        return clone $query;
     }
 }
