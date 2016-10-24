@@ -359,27 +359,27 @@ class SummaryController extends Controller
         }
 
         foreach(\App\Models\Request::$states as $request_state) {
-            $return['requests'][$request_state] = (clone $request_query)->searchByState($request_state)->count();
+            $return['requests'][$request_state] = self::cloneQuery($request_query)->searchByState($request_state)->count();
         }
 
         $return['requests']['total'] = $request_query->count();
 
         $return['attachments'] = [
-            'total'    => (clone $attachments_query)->count(),
-            'newest'   => (clone $attachments_query)->newest()->count(),
-            'active'   => (clone $attachments_query)->active()->count(),
+            'total'    => self::cloneQuery($attachments_query)->count(),
+            'newest'   => self::cloneQuery($attachments_query)->newest()->count(),
+            'active'   => self::cloneQuery($attachments_query)->active()->count(),
             'archived' => [
-                'no_lessons'            => (clone $attachments_query)->archived()->noLessons()->count(),
-                'one_lesson'            => (clone $attachments_query)->archived()->hasLessons('=1')->count(),
-                'two_lessons'           => (clone $attachments_query)->archived()->hasLessons('=2')->count(),
-                'three_or_more_lessons' => (clone $attachments_query)->archived()->hasLessons('>=3')->count(),
+                'no_lessons'            => self::cloneQuery($attachments_query)->archived()->noLessons()->count(),
+                'one_lesson'            => self::cloneQuery($attachments_query)->archived()->hasLessons('=1')->count(),
+                'two_lessons'           => self::cloneQuery($attachments_query)->archived()->hasLessons('=2')->count(),
+                'three_or_more_lessons' => self::cloneQuery($attachments_query)->archived()->hasLessons('>=3')->count(),
             ],
         ];
         foreach(\App\Models\User::real()->pluck('id')->all() as $id) {
-            $return['attachments']['users'][$id] = (clone $attachments_query)->whereUserId($id)->count();
+            $return['attachments']['users'][$id] = self::cloneQuery($attachments_query)->whereUserId($id)->count();
         }
 
-        $return['commissions'] = (clone $commission_query)->select(
+        $return['commissions'] = self::cloneQuery($commission_query)->select(
             'account_datas.date',
             DB::raw('round(sum(if(commission > 0, commission, ' . Account::DEFAULT_COMMISSION . ' * sum))) as `sum`')
         )->groupBy(DB::raw("DATE_FORMAT(account_datas.date, '%Y-%m')"))->get();
@@ -391,16 +391,24 @@ class SummaryController extends Controller
         $numerator = $return['attachments']['active'] + $return['attachments']['archived']['three_or_more_lessons'] + 0.65 * ($return['attachments']['newest']);
         $denominator = $attachments_query_without_user_count / $return['attachments']['total'];
 
-        $total_commission = (clone $commission_query)->sum(DB::raw('if(commission > 0, commission, ' . Account::DEFAULT_COMMISSION . ' * sum)'));
+        $total_commission = self::cloneQuery($commission_query)->sum(DB::raw('if(commission > 0, commission, ' . Account::DEFAULT_COMMISSION . ' * sum)'));
 
         $return['efficency'] = [
             'conversion'       => round($numerator / $denominator, 2),
-            'forecast'         => round((clone $attachments_query)->avg('forecast')),
+            'forecast'         => round(self::cloneQuery($attachments_query)->avg('forecast')),
             'request_avg'      => round($total_commission / $attachments_query_without_user_count),
             'attachment_avg'   => round($total_commission / $return['attachments']['total']),
             'total_commission' => round($total_commission),
         ];
 
         return $return;
+    }
+
+    //
+    // @todo: обновить на сервере до 7 и использовать self::cloneQuery($query)-> ...
+    //
+    private static function cloneQuery($query)
+    {
+        return $query;
     }
 }
