@@ -334,28 +334,26 @@ class SummaryController extends Controller
         $return = [];
         $request_query = \App\Models\Request::query();
         $attachments_query = Attachment::query();
-        $commission_query = \App\Models\AccountData::query();
 
         if (isset($date_from)) {
             $request_query->where('created_at', '>=', fromDotDate($date_from));
             $attachments_query->where('created_at', '>=', fromDotDate($date_from));
-            $commission_query->where('account_datas.date', '>=', fromDotDate($date_from));
         }
         if (isset($date_to)) {
             $request_query->where('created_at', '<=', fromDotDate($date_to) . ' 23:59:59');
             $attachments_query->where('created_at', '<=', fromDotDate($date_to) . ' 23:59:59');
-            $commission_query->where('account_datas.date', '<=', fromDotDate($date_to) . ' 23:59:59');
         }
 
         $attachments_query_without_user = clone $attachments_query;
+        $commission_query = self::cloneQuery($attachments_query)->join('account_datas', function($join) {
+            $join->on('attachments.tutor_id', '=', 'account_datas.tutor_id')
+                ->on('attachments.client_id', '=', 'account_datas.client_id');
+        });
 
         if (isset($user_ids)) {
             $request_query->whereIn('user_id', $user_ids);
             $attachments_query->whereIn('user_id', $user_ids);
-            $commission_query->join('attachments', function($join) {
-                $join->on('attachments.tutor_id', '=', 'account_datas.tutor_id')
-                    ->on('attachments.client_id', '=', 'account_datas.client_id');
-            })->whereIn('attachments.user_id', $user_ids);
+            $commission_query->whereIn('attachments.user_id', $user_ids);
         }
 
         foreach(\App\Models\Request::$states as $request_state) {
@@ -387,12 +385,10 @@ class SummaryController extends Controller
         //
         // ЭФФЕКТИВНОСТЬ
         //
-        // $attachments_query_without_user_count = self::cloneQuery($attachments_query_without_user)->count();
         $numerator = $return['attachments']['active'] + $return['attachments']['archived']['three_or_more_lessons']
                         + (0.65 * $return['attachments']['newest'])
                         + (0.1 * $return['attachments']['archived']['one_lesson'])
                         + (0.15 * $return['attachments']['archived']['two_lessons']);
-        // $denominator = $attachments_query_without_user_count;
 
         $denominator = 0;
         foreach(self::cloneQuery($attachments_query)->select('tutor_id', 'client_id')->groupBy('tutor_id', 'client_id')->get() as $a) {
@@ -405,7 +401,7 @@ class SummaryController extends Controller
         $return['efficency'] = [
             'conversion'       => round($numerator / $denominator, 2),
             'forecast'         => round(self::cloneQuery($attachments_query)->avg('forecast')),
-            'request_avg'      => round($total_commission / self::cloneQuery($attachments_query_without_user)->count()),
+            'request_avg'      => round($total_commission / ($denominator + $return['requests']['deny'])),
             'attachment_avg'   => round($total_commission / $return['attachments']['total']),
             'total_commission' => round($total_commission),
         ];
