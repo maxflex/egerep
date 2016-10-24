@@ -10,7 +10,7 @@ angular
         cnt = 0
         $scope.update = ->
             cnt++
-            return if cnt < 1
+            return if cnt < 3
             $rootScope.frontend_loading = true
             $http.post 'api/summary/users', $scope.search
             .then (response) ->

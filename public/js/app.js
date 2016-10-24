@@ -2634,7 +2634,7 @@
     cnt = 0;
     $scope.update = function() {
       cnt++;
-      if (cnt < 1) {
+      if (cnt < 3) {
         return;
       }
       $rootScope.frontend_loading = true;
