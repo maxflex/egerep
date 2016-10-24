@@ -16,8 +16,8 @@ angular
 
         $scope.monthYear = (date) ->
             date = date.split(".")
-    		date = date.reverse()
-    		date = date.join("-")
+            date = date.reverse()
+            date = date.join("-")
             moment(date).format('MMMM YYYY')
 
     .controller 'SummaryIndex', ($rootScope, $scope, $http, $timeout, PaymentMethods) ->
