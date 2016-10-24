@@ -27,15 +27,15 @@ class Call extends Model
                     FROM (
                         SELECT entry_id, from_number, start
                         FROM `mango`
-                        WHERE DATE(NOW()) = DATE(FROM_UNIXTIME(start)) and from_extension=0 "
+                        WHERE DATE(NOW()) = DATE(FROM_UNIXTIME(start)) and from_extension=0 and from_number=" . self::EGEREP_NUMBER
                         . (! empty($excluded = Redis::command('smembers', ['laravel:excluded_missed'])) ? " and entry_id not in (" . implode(",", array_map('wrapString', $excluded)) . ") " : "") . "
                         GROUP BY entry_id
                         HAVING sum(answer) = 0
-                    ) missed 
-                    WHERE NOT EXISTS (SELECT 1 FROM mango WHERE mango.start > missed.start and 
+                    ) missed
+                    WHERE NOT EXISTS (SELECT 1 FROM mango WHERE mango.start > missed.start and
                         (mango.to_number = missed.from_number or (mango.from_number = missed.from_number and mango.answer != 0))
                     )
-                    GROUP BY from_number 
+                    GROUP BY from_number
                     ORDER BY start DESC";
     }
 
@@ -69,7 +69,7 @@ class Call extends Model
         } else {
             # ищем ученика в ЕГЭ-РЕПЕТИТОРЕ с таким номером
             $client = \DB::select("
-                    select id, name from clients  
+                    select id, name from clients
                     WHERE phone='{$phone}' OR phone2='{$phone}' OR phone3='{$phone}' OR phone4='{$phone}'
                 ");
             // Если заявка с таким номером телефона уже есть, подхватываем ученика оттуда
@@ -101,7 +101,3 @@ class Call extends Model
         Redis::command('expire', ['laravel:excluded_missed', secondsTillNextDay()]);
     }
 }
-
-
-
-
