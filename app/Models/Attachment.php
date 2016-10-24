@@ -228,7 +228,7 @@ class Attachment extends Model
      */
     public function scopeHasLessonsWithMissing($query, $lesson_count = '> 0')
     {
-        return $query->whereRaw('((SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) + (SELECT total_commission FROM archives WHERE archives.attachment_id = attachments.id)) ' . $lesson_count);
+        return $query->whereRaw('((SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) + (SELECT total_lessons_missing FROM archives WHERE archives.attachment_id = attachments.id)) ' . $lesson_count);
     }
 
     /**
