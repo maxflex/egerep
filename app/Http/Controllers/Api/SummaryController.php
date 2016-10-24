@@ -387,19 +387,22 @@ class SummaryController extends Controller
         //
         // ЭФФЕКТИВНОСТЬ
         //
-        // $attachments_query_without_user_count = $attachments_query_without_user->count();
+        $attachments_query_without_user_count = self::cloneQuery($attachments_query_without_user)->count();
         $numerator = $return['attachments']['active'] + $return['attachments']['archived']['three_or_more_lessons']
                         + (0.65 * $return['attachments']['newest'])
                         + (0.1 * $return['attachments']['archived']['one_lesson'])
                         + (0.15 * $return['attachments']['archived']['two_lessons']);
         // $denominator = $attachments_query_without_user_count;
 
-        $denominator = 0;
-        foreach(self::cloneQuery($attachments_query)->select('tutor_id', 'client_id')->groupBy('tutor_id', 'client_id')->get() as $a) {
-            $denominator += (self::cloneQuery($attachments_query)->where('tutor_id', $a->tutor_id)->where('client_id', $a->client_id)->count()
-                            / self::cloneQuery($attachments_query_without_user)->where('tutor_id', $a->tutor_id)->where('client_id', $a->client_id)->count());
+        if (isset($user_ids)) {
+            $denominator = 0;
+            foreach(self::cloneQuery($attachments_query)->select('tutor_id', 'client_id')->groupBy('tutor_id', 'client_id')->get() as $a) {
+                $denominator += (self::cloneQuery($attachments_query)->where('tutor_id', $a->tutor_id)->where('client_id', $a->client_id)->count()
+                                / self::cloneQuery($attachments_query_without_user)->where('tutor_id', $a->tutor_id)->where('client_id', $a->client_id)->count());
+            }
+        } else {
+            $denominator = $attachments_query_without_user_count / $return['attachments']['total'];
         }
-        // $denominator = $attachments_query_without_user_count / $return['attachments']['total'];
 
         $total_commission = self::cloneQuery($commission_query)->sum(DB::raw('if(commission > 0, commission, ' . Account::DEFAULT_COMMISSION . ' * sum)'));
 
