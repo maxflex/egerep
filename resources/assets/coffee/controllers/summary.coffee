@@ -15,7 +15,7 @@ angular
                 $scope.stats = response.data
 
         $scope.monthYear = (date) ->
-            moment(date).format('MMMM YYYY')
+            moment(convertDate(date)).format('MMMM YYYY')
 
     .controller 'SummaryIndex', ($rootScope, $scope, $http, $timeout, PaymentMethods) ->
         bindArguments($scope, arguments)
