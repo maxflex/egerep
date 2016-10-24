@@ -370,9 +370,9 @@ class SummaryController extends Controller
             'active'   => self::cloneQuery($attachments_query)->active()->count(),
             'archived' => [
                 'no_lessons'            => self::cloneQuery($attachments_query)->archived()->noLessons()->count(),
-                'one_lesson'            => self::cloneQuery($attachments_query)->archived()->hasLessons('=1')->count(),
-                'two_lessons'           => self::cloneQuery($attachments_query)->archived()->hasLessons('=2')->count(),
-                'three_or_more_lessons' => self::cloneQuery($attachments_query)->archived()->hasLessons('>=3')->count(),
+                'one_lesson'            => self::cloneQuery($attachments_query)->archived()->hasLessonsWithMissing('=1')->count(),
+                'two_lessons'           => self::cloneQuery($attachments_query)->archived()->hasLessonsWithMissing('=2')->count(),
+                'three_or_more_lessons' => self::cloneQuery($attachments_query)->archived()->hasLessonsWithMissing('>=3')->count(),
             ],
         ];
         foreach(\App\Models\User::real()->pluck('id')->all() as $id) {
