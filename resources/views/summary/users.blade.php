@@ -29,7 +29,7 @@
                 <div class="col-sm-12">
                     <select class="form-control selectpicker" multiple id='change-user' ng-model='search.user_ids' data-none-selected-text="пользователь">
                         <option
-                            ng-repeat="user in UserService.getAll(false)"
+                            ng-repeat="user in UserService.getAll()"
                             value="@{{ user.id }}"
                             data-content="<span style='color: @{{ user.color || 'black' }}'>@{{ user.login }}</span>"
                         ></option>
