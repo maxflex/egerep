@@ -356,23 +356,25 @@ class SummaryController extends Controller
         }
 
         foreach(\App\Models\Request::$states as $request_state) {
-            $q = clone $request_query;
-            $return['requests'][$request_state] = $q->searchByState($request_state)->count();
+            $return['requests'][$request_state] = (clone $request_query)->searchByState($request_state)->count();
         }
 
         $return['requests']['total'] = $request_query->count();
 
         $return['attachments'] = [
-            'total'    => $attachments_query->count(),
-            'newest'   => $attachments_query->newQuery()->newest()->count(),
-            'active'   => $attachments_query->newQuery()->active()->count(),
+            'total'    => (clone $attachments_query)->count(),
+            'newest'   => (clone $attachments_query)->newest()->count(),
+            'active'   => (clone $attachments_query)->active()->count(),
             'archived' => [
-                'no_lessons'            => $attachments_query->newQuery()->archived()->noLessons()->count(),
-                'one_lesson'            => $attachments_query->newQuery()->archived()->hasLessons('=1')->count(),
-                'two_lessons'           => $attachments_query->newQuery()->archived()->hasLessons('=2')->count(),
-                'three_or_more_lessons' => $attachments_query->newQuery()->archived()->hasLessons('>=3')->count(),
+                'no_lessons'            => (clone $attachments_query)->archived()->noLessons()->count(),
+                'one_lesson'            => (clone $attachments_query)->archived()->hasLessons('=1')->count(),
+                'two_lessons'           => (clone $attachments_query)->archived()->hasLessons('=2')->count(),
+                'three_or_more_lessons' => (clone $attachments_query)->archived()->hasLessons('>=3')->count(),
             ],
         ];
+        foreach(\App\Models\User::real()->pluck('id')->all() as $id) {
+            $return['attachments']['users'][$id] = (clone $attachments_query)->whereUserId($id)->count();
+        }
 
         $return['commissions'] = $commission_query->select(
             'account_datas.date',

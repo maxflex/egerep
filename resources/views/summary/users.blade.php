@@ -56,6 +56,11 @@
             <div>завершенных (2 занятия) – @{{ stats.attachments.archived.two_lessons }}</div>
             <div>завершенных (3 и более занятий) – @{{ stats.attachments.archived.three_or_more_lessons }}</div>
 
+            <div class="result-line">Распределение стыковок по пользователям:</div>
+            <div ng-repeat='(user_id, count) in stats.attachments.users' ng-show='count'>
+                @{{ UserService.getLogin(user_id) }} – @{{ count }}
+            </div>
+
             <div class="result-line">Распределение коммиссии по месяцам:</div>
             <div ng-repeat='commission in stats.commissions'>
                 <span style='display: inline-block; width: 150px'>@{{ monthYear(commission.date) }}</span> @{{ commission.sum | number }}
