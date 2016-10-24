@@ -389,7 +389,8 @@ class SummaryController extends Controller
         //
         $attachments_query_without_user_count = $attachments_query_without_user->count();
         $numerator = $return['attachments']['active'] + $return['attachments']['archived']['three_or_more_lessons'] + 0.65 * ($return['attachments']['newest']);
-        $denominator = $attachments_query_without_user_count / $return['attachments']['total'];
+        $denominator = $return['attachments']['total'];
+        // $denominator = $attachments_query_without_user_count / $return['attachments']['total'];
 
         $total_commission = self::cloneQuery($commission_query)->sum(DB::raw('if(commission > 0, commission, ' . Account::DEFAULT_COMMISSION . ' * sum)'));
 
