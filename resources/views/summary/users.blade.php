@@ -71,7 +71,7 @@
 
             <div class="result-line">Распределение комиссии по месяцам:</div>
             <div ng-repeat='commission in stats.commissions'>
-                <span style='display: inline-block; width: 150px'>@{{ monthYear(commission.date) }} (@{{ commission.date }})</span> @{{ commission.sum | number }}
+                <span style='display: inline-block; width: 150px'>@{{ monthYear(commission.date) }}</span> @{{ commission.sum | number }}
             </div>
         </div>
     </div>
