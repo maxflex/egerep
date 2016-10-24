@@ -342,7 +342,7 @@ class SummaryController extends Controller
             $commission_query->where('account_datas.date', '>=', fromDotDate($date_from));
         }
         if (isset($date_to)) {
-            $request_query->where('created_at', '<=', fromDotDate($date_to));
+            $request_query->where('created_at', '<=', fromDotDate($date_to) . ' 23:59:59');
             $attachments_query->where('created_at', '<=', fromDotDate($date_to));
             $commission_query->where('account_datas.date', '<=', fromDotDate($date_to));
         }
