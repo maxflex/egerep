@@ -27,7 +27,7 @@ class Call extends Model
                     FROM (
                         SELECT entry_id, from_number, start
                         FROM `mango`
-                        WHERE DATE(NOW()) = DATE(FROM_UNIXTIME(start)) and from_extension=0 and from_number=" . self::EGEREP_NUMBER
+                        WHERE DATE(NOW()) = DATE(FROM_UNIXTIME(start)) and from_extension=0 and to_number=" . self::EGEREP_NUMBER
                         . (! empty($excluded = Redis::command('smembers', ['laravel:excluded_missed'])) ? " and entry_id not in (" . implode(",", array_map('wrapString', $excluded)) . ") " : "") . "
                         GROUP BY entry_id
                         HAVING sum(answer) = 0
