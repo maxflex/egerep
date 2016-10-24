@@ -7,7 +7,10 @@ angular
             $('#change-user').selectpicker 'refresh'
         , 500
 
+        cnt = 0
         $scope.update = ->
+            cnt++
+            return if cnt is 1
             $rootScope.frontend_loading = true
             $http.post 'api/summary/users', $scope.search
             .then (response) ->

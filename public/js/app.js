@@ -2626,11 +2626,17 @@
 
 (function() {
   angular.module('Egerep').controller('SummaryUsers', function($scope, $rootScope, $timeout, $http, UserService, RequestStates) {
+    var cnt;
     bindArguments($scope, arguments);
     $timeout(function() {
       return $('#change-user').selectpicker('refresh');
     }, 500);
+    cnt = 0;
     $scope.update = function() {
+      cnt++;
+      if (cnt === 1) {
+        return;
+      }
       $rootScope.frontend_loading = true;
       return $http.post('api/summary/users', $scope.search).then(function(response) {
         $rootScope.frontend_loading = false;

@@ -387,16 +387,18 @@ class SummaryController extends Controller
         //
         // ЭФФЕКТИВНОСТЬ
         //
-        $attachments_query_without_user_count = $attachments_query_without_user->count();
-        $numerator = $return['attachments']['active'] + $return['attachments']['archived']['three_or_more_lessons'] + 0.65 * ($return['attachments']['newest']);
-        $denominator = $attachments_query_without_user_count;
+        // $attachments_query_without_user_count = $attachments_query_without_user->count();
+        $numerator = $return['attachments']['active'] + $return['attachments']['archived']['three_or_more_lessons']
+                        + (0.65 * $return['attachments']['newest'])
+                        + (0.1 * $return['attachments']['archived']['one_lesson'])
+                        + (0.15 * $return['attachments']['archived']['two_lessons']);
+        // $denominator = $attachments_query_without_user_count;
 
-        // $denominator = 0;
-        // if (isset($user_ids)) {
-        //     foreach(self::cloneQuery($attachments_query)->select('tutor_id', 'client_id')->groupBy('')->get() as $a) {
-        //         $denominator +=
-        //     }
-        // }
+        $denominator = 0;
+        foreach(self::cloneQuery($attachments_query)->select('tutor_id', 'client_id')->groupBy('tutor_id', 'client_id')->get() as $a) {
+            $denominator += (self::cloneQuery($attachments_query)->where('tutor_id', $a->tutor_id)->where('client_id', $a->client_id)->count()
+                            / self::cloneQuery($attachments_query_without_user)->where('tutor_id', $a->tutor_id)->where('client_id', $a->client_id)->count());
+        }
         // $denominator = $attachments_query_without_user_count / $return['attachments']['total'];
 
         $total_commission = self::cloneQuery($commission_query)->sum(DB::raw('if(commission > 0, commission, ' . Account::DEFAULT_COMMISSION . ' * sum)'));
@@ -404,7 +406,7 @@ class SummaryController extends Controller
         $return['efficency'] = [
             'conversion'       => round($numerator / $denominator, 2),
             'forecast'         => round(self::cloneQuery($attachments_query)->avg('forecast')),
-            'request_avg'      => round($total_commission / $attachments_query_without_user_count),
+            'request_avg'      => round($total_commission / self::cloneQuery($attachments_query_without_user)->count()),
             'attachment_avg'   => round($total_commission / $return['attachments']['total']),
             'total_commission' => round($total_commission),
         ];
