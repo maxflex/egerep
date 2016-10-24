@@ -339,12 +339,12 @@ class SummaryController extends Controller
         if (isset($date_from)) {
             $request_query->where('created_at', '>=', fromDotDate($date_from));
             $attachments_query->where('created_at', '>=', fromDotDate($date_from));
-            $commission_query->where('date', '>=', fromDotDate($date_from));
+            $commission_query->where('account_datas.date', '>=', fromDotDate($date_from));
         }
         if (isset($date_to)) {
             $request_query->where('created_at', '<=', fromDotDate($date_to));
             $attachments_query->where('created_at', '<=', fromDotDate($date_to));
-            $commission_query->where('date', '<=', fromDotDate($date_to));
+            $commission_query->where('account_datas.date', '<=', fromDotDate($date_to));
         }
 
         $attachments_query_without_user = clone $attachments_query;
@@ -389,7 +389,14 @@ class SummaryController extends Controller
         //
         $attachments_query_without_user_count = $attachments_query_without_user->count();
         $numerator = $return['attachments']['active'] + $return['attachments']['archived']['three_or_more_lessons'] + 0.65 * ($return['attachments']['newest']);
-        $denominator = $return['attachments']['total'];
+        $denominator = $attachments_query_without_user_count;
+
+        // $denominator = 0;
+        // if (isset($user_ids)) {
+        //     foreach(self::cloneQuery($attachments_query)->select('tutor_id', 'client_id')->groupBy('')->get() as $a) {
+        //         $denominator +=
+        //     }
+        // }
         // $denominator = $attachments_query_without_user_count / $return['attachments']['total'];
 
         $total_commission = self::cloneQuery($commission_query)->sum(DB::raw('if(commission > 0, commission, ' . Account::DEFAULT_COMMISSION . ' * sum)'));
