@@ -414,7 +414,7 @@ class SummaryController extends Controller
     }
 
     //
-    // @todo: обновить на сервере до 7 и использовать self::cloneQuery($query)-> ...
+    // @todo: обновить на сервере до 7 и использовать (clone $query)-> ...
     //
     private static function cloneQuery($query)
     {

@@ -17,23 +17,26 @@
                         <div class="double-input">
                             <div class="input-group custom" style="width: 45%">
                               <span class="input-group-addon">от </span>
-                              <input type="text" class="form-control bs-date-clear pointer" ng-model="search.date_from" ng-change='update()'>
+                              <input type="text" class="form-control bs-date-clear pointer" ng-model="search.date_from">
                             </div>
                             <div class="input-group custom" style="width: 55%">
                               <span class="input-group-addon">до </span>
-                              <input type="text" class="form-control bs-date-clear pointer" ng-model="search.date_to" ng-change='update()'>
+                              <input type="text" class="form-control bs-date-clear pointer" ng-model="search.date_to">
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-12">
-                    <select class="form-control selectpicker" multiple id='change-user' ng-model='search.user_ids' ng-change='update()' data-none-selected-text="пользователь">
+                    <select class="form-control selectpicker" multiple id='change-user' ng-model='search.user_ids' data-none-selected-text="пользователь">
                         <option
                             ng-repeat="user in UserService.getAll()"
                             value="@{{ user.id }}"
                             data-content="<span style='color: @{{ user.color || 'black' }}'>@{{ user.login }}</span>"
                         ></option>
                     </select>
+                </div>
+                <div class="col-sm-12" style='margin-top: 5px'>
+                    <button type="button" class="btn btn-primary full-width" ng-click='update()'>обновить</button>
                 </div>
             </div>
         </div>

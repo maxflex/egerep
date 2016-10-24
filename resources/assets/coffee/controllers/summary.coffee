@@ -7,16 +7,12 @@ angular
             $('#change-user').selectpicker 'refresh'
         , 500
 
-        cnt = 0
         $scope.update = ->
-            cnt++
-            return if cnt < 3
             $rootScope.frontend_loading = true
             $http.post 'api/summary/users', $scope.search
             .then (response) ->
                 $rootScope.frontend_loading = false
                 $scope.stats = response.data
-                console.log response
 
         $scope.monthYear = (date) ->
             moment(date).format('MMMM YYYY')
