@@ -21,7 +21,7 @@
             </td>
             <td>
                 <span ng-if="call.caller.type == 'tutor'">
-                    преподаватель <a target='_blank' href='tutor/@{{ call.caller.id }}/edit'>@{{ call.caller.last_name }} @{{ call.caller.first_name }} @{{ call.caller.middle_name }}</a>
+                    преподаватель <a target='_blank' href='tutors/@{{ call.caller.id }}/edit'>@{{ call.caller.last_name }} @{{ call.caller.first_name }} @{{ call.caller.middle_name }}</a>
                 </span>
                 <span ng-if="call.caller.type == 'client'">клиент <a target='_blank' href='client/@{{ call.caller.id }}' >@{{ call.caller.name }}</a></span>
                 <span ng-if="!call.caller.type">неизвестный номер</span>
