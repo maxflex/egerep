@@ -32,7 +32,7 @@ vueInit = function() {
         return moment.utc(seconds * 1000).format("mm:ss");
       },
       formatDateTime: function(date) {
-        return moment(date).format("DD.MM.YY в HH:mm");
+        return moment.utc(date * 1000).format("DD.MM.YY в HH:mm");
       },
       hangup: function() {
         $.post('mango/hangup', {

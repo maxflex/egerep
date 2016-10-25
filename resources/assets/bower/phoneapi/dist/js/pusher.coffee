@@ -24,7 +24,7 @@ vueInit = ->
 			time: (seconds) ->
 				moment.utc(seconds * 1000).format("mm:ss")
 			formatDateTime: (date) ->
-				moment(date).format "DD.MM.YY в HH:mm"
+				moment.utc(date * 1000).format "DD.MM.YY в HH:mm"
 			hangup: ->
 				$.post 'mango/hangup',
 					call_id: this.mango.call_id
