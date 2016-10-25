@@ -103,7 +103,10 @@ angular.module('Egerep')
                 moment($scope.tutor.last_accounts[index + 1].date_end).subtract(1, 'days').toDate()
 
         $scope.getDay = (date) ->
-            moment(date).day()
+            # Weekdays[0] is Monday; moment(date).day() = 0 is Sunday.
+            day = moment(date).day() - 1
+            day = 6 if day is -1
+            day
 
         $scope.accountInfo = (client) ->
             $scope.popup_attachment = null
