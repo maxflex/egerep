@@ -11,7 +11,7 @@ vueInit = function() {
   Vue.config.debug = true;
   Vue.config.async = false;
   Vue.component('phone', {
-    props: ['user_id', 'type', 'key'],
+    props: ['user_id', 'type', 'key', 'cluster'],
     data: function() {
       return {
         show_element: false,
@@ -65,7 +65,7 @@ vueInit = function() {
         var channel, pusher;
         pusher = new Pusher(this.key, {
           encrypted: true,
-          cluster: 'eu'
+          cluster: this.cluster
         });
         channel = pusher.subscribe("user_" + this.user_id);
         channel.bind('incoming', (function(_this) {

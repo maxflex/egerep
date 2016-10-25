@@ -56,7 +56,7 @@
     @if ($user->show_phone_calls)
       <div class="phone-app">
         <?php include '../resources/assets/bower/phoneapi/dist/template/_phone_api.php' ?>
-        <phone user_id="{{ $user->id }}" type="egerep" key="{{ config('app.pusher_key') }}"></phone>
+        <phone user_id="{{ $user->id }}" type="egerep" key="{{ config('app.pusher_key') }}" cluster='eu'></phone>
       </div>
     @endif
   </body>

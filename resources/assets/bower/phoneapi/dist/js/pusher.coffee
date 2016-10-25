@@ -7,7 +7,7 @@ vueInit = ->
 	Vue.config.debug = true
 	Vue.config.async = false
 	Vue.component 'phone',
-		props: ['user_id', 'type', 'key']
+		props: ['user_id', 'type', 'key', 'cluster']
 		data: ->
 			show_element: false 		# show <phone>
 			#connected: false 			# call in progress
@@ -47,7 +47,7 @@ vueInit = ->
 			initPusher: ->
 				pusher = new Pusher this.key,
 					encrypted: true
-					cluster: 'eu'
+					cluster: this.cluster
 				channel = pusher.subscribe "user_#{this.user_id}"
 
 				channel.bind 'incoming', (data) =>
