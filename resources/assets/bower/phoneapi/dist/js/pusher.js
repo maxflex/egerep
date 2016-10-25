@@ -29,7 +29,7 @@ vueInit = function() {
     template: '#phone-template',
     methods: {
       time: function(seconds) {
-        return moment({}).seconds(seconds).format("mm:ss");
+        return moment.utc(seconds * 1000).format("mm:ss");
       },
       formatDateTime: function(date) {
         return moment(date).format("DD.MM.YY в HH:mm");

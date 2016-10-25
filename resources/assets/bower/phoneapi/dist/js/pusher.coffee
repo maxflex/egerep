@@ -22,7 +22,7 @@ vueInit = ->
 		template: '#phone-template'
 		methods:
 			time: (seconds) ->
-				moment({}).seconds(seconds).format("mm:ss")
+				moment.utc(seconds * 1000).format("mm:ss")
 			formatDateTime: (date) ->
 				moment(date).format "DD.MM.YY в HH:mm"
 			hangup: ->
