@@ -390,6 +390,8 @@ class Tutor extends Service\Person
 
     protected static function boot()
     {
+        parent::boot();
+
         static::saving(function($tutor) {
             if ($tutor->changed(['login', 'password', 'banned'])) {
                 $tutor->updateUser();

@@ -50,4 +50,10 @@ class Client extends Service\Person
             $model->delete();
         });
     }
+
+    protected static function boot()
+    {
+        // чтобы не забыли если что-то добавим в будущем.
+        parent::boot();
+    }
 }

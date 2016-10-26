@@ -45,6 +45,7 @@ class Kernel extends ConsoleKernel
         Commands\MangoSync::class,
         Commands\EgecrmTransferCabinet::class,
         Commands\EgecrmContracts::class,
+        Commands\CleanEntityPhones::class,
     ];
 
     /**
