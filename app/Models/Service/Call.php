@@ -47,44 +47,10 @@ class Call extends Model
         $missed = \DB::select(\DB::raw("SELECT * " . self::getMissedCallsSql()));
         foreach($missed as &$call) {
             if ($get_caller) {
-                $call->caller = self::getCaller($call->from_number);
+                $call->caller = self::getCaller($call->from_number, self::EGEREP_NUMBER);
             }
         }
         return $missed;
-    }
-
-    /*
-		 * Определить звонящего
-		 */
-    public static function getCaller($phone)
-    {
-        // Ищем учителя с таким номером
-        $tutor = \DB::select("
-            	select id, first_name, last_name, middle_name from tutors
-            	WHERE phone='{$phone}' OR phone2='{$phone}' OR phone3='{$phone}'  OR phone4='{$phone}'
-            ");
-        if (!empty($tutor)) {
-            $tutor[0]->type = 'tutor';
-            return $tutor[0];
-        } else {
-            # ищем ученика в ЕГЭ-РЕПЕТИТОРЕ с таким номером
-            $client = \DB::select("
-                    select id, name from clients
-                    WHERE phone='{$phone}' OR phone2='{$phone}' OR phone3='{$phone}' OR phone4='{$phone}'
-                ");
-            // Если заявка с таким номером телефона уже есть, подхватываем ученика оттуда
-            if (!empty($client)) {
-                $client[0]->type = 'client';
-                return $client[0];
-            }
-        }
-
-        // возвращается, если номера нет в базе
-        if (! isset($return)) {
-            $return = ['type' => false];
-        }
-
-        return $return;
     }
 
     /*
@@ -99,5 +65,63 @@ class Call extends Model
     {
         Redis::command('sadd', ['laravel:excluded_missed', $entry_id]);
         Redis::command('expire', ['laravel:excluded_missed', secondsTillNextDay()]);
+    }
+
+    /*
+     * Номер ЕГЭ-Центра
+     */
+    public static function isEgecentr($number) {
+        return $number == self::EGECENTR_NUMBER;
+    }
+
+    /*
+     * Номер ЕГЭ-Репетитора
+     */
+    public static function isEgerep($number) {
+        return $number == self::EGEREP_NUMBER;
+    }
+
+    /*
+     * Определить звонящего
+     */
+    public static function getCaller($phone, $to_number)
+    {
+        if (static::isEgerep($to_number)) {
+            $return = static::determineEgerep($phone);
+        }
+
+        // возвращается, если номера нет в базе
+        if (! is_object($return)) {
+            $return = ['type' => false];
+        }
+
+        return $return;
+    }
+
+    /**
+     * Определить номер для ЕГЭ-Репетитора
+     */
+    private static function determineEgerep($phone)
+    {
+        # ищем клиента в ЕГЭ-РЕПЕТИТОРЕ с таким номером
+        $client = \DB::select("
+                    select id, name from clients
+                    WHERE phone='{$phone}' OR phone2='{$phone}' OR phone3='{$phone}' OR phone4='{$phone}'
+                ");
+        // Если заявка с таким номером телефона уже есть, подхватываем ученика оттуда
+        if (!empty($client)) {
+            $client[0]->type = 'client';
+            return $client[0];
+        }
+
+        // Ищем учителя с таким номером
+        $tutor = \DB::select("
+            	select id, first_name, last_name, middle_name from tutors
+            	WHERE phone='{$phone}' OR phone2='{$phone}' OR phone3='{$phone}'  OR phone4='{$phone}'
+            ");
+        if (!empty($tutor)) {
+            $tutor[0]->type = 'tutor';
+            return $tutor[0];
+        }
     }
 }
