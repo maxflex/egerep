@@ -176,17 +176,12 @@ class Mango {
 	   while ($trial <= static::TRIALS) {
 		   $data = static::_run(static::COMMAND_GET_STATS, compact('key'), false, true);
 		   if ($data['code'] == 200) {
-			   // return $data['response'];
 			   $response_lines = explode(PHP_EOL, $data['response']);
-			   // return $response_lines;
 			   $return = [];
-
-			   DB::table('mango')->whereRaw('DATE(FROM_UNIXTIME(start)) = DATE(NOW())')->delete();
 			   foreach ($response_lines as $index => $response_line) {
-				   // echo $index;
 				   $info = explode(';', $response_line);
 				   if (count($info) > 1) {
-						DB::table('mango')->insert([
+						$return[] = [
 							'recording_id'		 => trim($info[0], '[]'),
 							'start'              => $info[1],
 							'finish'             => $info[2],
@@ -199,9 +194,14 @@ class Mango {
 							'entry_id'           => $info[9],
 							'line_number'        => $info[10],
 							'location'           => $info[11],
-						]);
+						];
 				   }
 			   }
+               // сначала добавляем новые данные, потом удаляем старые
+               // порядок важен, чтобы избежать несколькосекундную задержку
+               $last_id = DB::table('mango')->latest('id')->value('id');
+               DB::table('mango')->insert($return);
+               DB::table('mango')->whereRaw("DATE(FROM_UNIXTIME(start)) = DATE(NOW()) AND id <= {$last_id}")->delete();
 			   return;
 		   }
 		   $trial++;
