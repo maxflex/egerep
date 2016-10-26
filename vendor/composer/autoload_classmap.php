@@ -138,6 +138,7 @@ return array(
     'EgecrmAddIndexesToPaymentsTable' => $baseDir . '/database/migrations/2016_08_03_175120_egecrm_add_indexes_to_payments_table.php',
     'EgecrmAddIndexesToTeacherReviews' => $baseDir . '/database/migrations/2016_06_23_180357_egecrm_add_indexes_to_teacher_reviews.php',
     'EgecrmAddIndexesToVj' => $baseDir . '/database/migrations/2016_06_22_111633_egecrm_add_indexes_to_vj.php',
+    'EgecrmAddLogsTable' => $baseDir . '/database/migrations/2016_10_26_172422_egecrm_add_logs_table.php',
     'EgecrmAddNameToTests' => $baseDir . '/database/migrations/2016_07_15_144258_egecrm_add_name_to_tests.php',
     'EgecrmAddPhotoCroppedColumnToUsers' => $baseDir . '/database/migrations/2016_08_19_104147_egecrm_add_photo_cropped_column_to_users.php',
     'EgecrmAddReadyToStartToGroups' => $baseDir . '/database/migrations/2016_09_09_185120_egecrm_add_ready_to_start_to_groups.php',
