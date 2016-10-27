@@ -51919,7 +51919,7 @@ vueInit = function() {
               _this.answered_user = data.answered_user;
               return setTimeout(function() {
                 return _this.endCall();
-              }, 2000);
+              }, 20000);
             }
           };
         })(this));

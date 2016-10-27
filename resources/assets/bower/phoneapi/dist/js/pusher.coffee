@@ -69,7 +69,7 @@ vueInit = ->
 						this.answered_user = data.answered_user
 						setTimeout =>
 							this.endCall()
-						, 2000
+						, 20000
 		computed:
 			call_length: ->
 				moment(parseInt(this.timer.diff) * 1000).format 'mm:ss'
