@@ -8,7 +8,7 @@ class Api
     const API_KEY = "44327d40af8a93c23497047c08688a50";
 
     // Куда отправлять запросы
-    const API_URL = "http://188.226.184.24:8080/egecrm/api/";
+    const API_URL = "http://lk.ege-centr.ru:8085/api/";
 
      /**
       * Отправить запрос.
