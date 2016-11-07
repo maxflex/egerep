@@ -330,9 +330,20 @@ angular.module('Egerep')
                         ajaxStart()
                         Attachment.update
                             id: client.attachment_id
-                            hide: 1
+                            hide: hideValue()
                         , ->
                             ajaxEnd()
 
-                        $scope.hidden_clients_count++
+                        updateClientCount()
                     $scope.$apply()
+
+        # почему так? потому что раньше было AccountsCtrl/HiddenAccountsCtrl, а теперь AccountsCtrl отвечает за оба страницы.
+        # @todo наверно надо будет переделать, чтоб нормально было все.
+        hideValue = ->
+            if $scope.page is 'hidden' then 0 else 1
+
+        updateClientCount = ->
+            if $scope.page is 'hidden'
+                $scope.visible_clients_count++
+            else
+                $scope.hidden_clients_count++

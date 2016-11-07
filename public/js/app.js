@@ -300,7 +300,7 @@
       });
     };
   }).controller('AccountsCtrl', function($rootScope, $scope, $http, $timeout, Account, PaymentMethods, Archive, Grades, Attachment, AttachmentState, AttachmentStates, Weekdays, PhoneService, AttachmentVisibility, DebtTypes, YesNo, Tutor, ArchiveStates, Checked) {
-    var bindDraggable, getAccountEndDate, getAccountStartDate, getCalendarStartDate, getCommission, moveCursor, renderData;
+    var bindDraggable, getAccountEndDate, getAccountStartDate, getCalendarStartDate, getCommission, hideValue, moveCursor, renderData, updateClientCount;
     bindArguments($scope, arguments);
     $scope.current_scope = $scope;
     $scope.current_period = 0;
@@ -605,7 +605,7 @@
           return moveCursor(x, y, "down");
       }
     };
-    return bindDraggable = function() {
+    bindDraggable = function() {
       $(".client-draggable").draggable({
         helper: 'clone',
         revert: 'invalid',
@@ -630,15 +630,29 @@
             ajaxStart();
             Attachment.update({
               id: client.attachment_id,
-              hide: 1
+              hide: hideValue()
             }, function() {
               return ajaxEnd();
             });
-            $scope.hidden_clients_count++;
+            updateClientCount();
           }
           return $scope.$apply();
         }
       });
+    };
+    hideValue = function() {
+      if ($scope.page === 'hidden') {
+        return 0;
+      } else {
+        return 1;
+      }
+    };
+    return updateClientCount = function() {
+      if ($scope.page === 'hidden') {
+        return $scope.visible_clients_count++;
+      } else {
+        return $scope.hidden_clients_count++;
+      }
     };
   });
 
