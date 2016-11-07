@@ -64,5 +64,8 @@ class CalcSummary extends Command
         DB::table('summaries')->insert($summary);
 
         $this->info('Summary calculated');
+
+        $this->info('Debt updating');
+        event(new \App\Events\DebtRecalc);
     }
 }
