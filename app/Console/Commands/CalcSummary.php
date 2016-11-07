@@ -56,6 +56,9 @@ class CalcSummary extends Command
      */
     public function handle()
     {
+        $this->info('Debt updating');
+        event(new \App\Events\DebtRecalc);
+
         $this->line('Starting...');
 
         $date = date('Y-m-d', strtotime('yesterday'));
@@ -64,8 +67,5 @@ class CalcSummary extends Command
         DB::table('summaries')->insert($summary);
 
         $this->info('Summary calculated');
-
-        $this->info('Debt updating');
-        event(new \App\Events\DebtRecalc);
     }
 }
