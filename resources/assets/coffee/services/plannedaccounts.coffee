@@ -8,13 +8,12 @@ angular.module 'Egerep'
             $('#pa-date').datepicker('destroy')
             $('#pa-date').datepicker
                 language	: 'ru'
-#                startDate   : getCalendarStartDate
                 autoclose	: true
                 orientation	: 'bottom auto'
 
+            this.refresh()
+
             $('#add-planned-account').modal 'show'
-            $timeout ->
-                $('#planned-account').selectpicker('refresh')
             return
 
         this.add = (planned_account) ->
@@ -29,4 +28,12 @@ angular.module 'Egerep'
 #            else
 #                PlannedAccount.delete
 #                    id: planned_account.id
+        this.refresh = ->
+            $timeout ->
+                $('.selectpicker option').each (index, el) ->
+                    $(el).data 'subtext', $(el).attr 'data-subtext'
+                    $(el).data 'content', $(el).attr 'data-content'
+                $('.selectpicker').selectpicker 'refresh'
+                $rootScope.$apply()
+            , 200
         this

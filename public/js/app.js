@@ -4862,10 +4862,8 @@
         autoclose: true,
         orientation: 'bottom auto'
       });
+      this.refresh();
       $('#add-planned-account').modal('show');
-      $timeout(function() {
-        return $('#planned-account').selectpicker('refresh');
-      });
     };
     this.add = function(planned_account) {
       return PlannedAccount.save(planned_account, function(response) {
@@ -4877,6 +4875,16 @@
         id: planned_account.id,
         data: planned_account
       });
+    };
+    this.refresh = function() {
+      return $timeout(function() {
+        $('.selectpicker option').each(function(index, el) {
+          $(el).data('subtext', $(el).attr('data-subtext'));
+          return $(el).data('content', $(el).attr('data-content'));
+        });
+        $('.selectpicker').selectpicker('refresh');
+        return $rootScope.$apply();
+      }, 200);
     };
     return this;
   });

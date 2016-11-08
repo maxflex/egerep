@@ -3,14 +3,14 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">ПАРАМЕТРЫ РАССЧЕТА</h4>
+                <h4 class="modal-title">ПАРАМЕТРЫ РАСЧЕТА</h4>
             </div>
             <div class="modal-body">
                 <div class="row mb">
                     <div class="col-sm-6">
-                        <select class="form-control selectpicker" id="planned-account" ng-model="account_is_planned">
-                            <option value="0">расчет не назначен</option>
-                            <option value="1">расчет назначен</option>
+                        <select class="form-control selectpicker" id="planned-account" ng-model="account_is_planned" ng-change="PlannedAccountsService.refresh()">
+                            <option ng-selected="!tutor.planned_account" value="0">расчет не назначен</option>
+                            <option ng-selected="tutor.planned_account" value="1">расчет назначен</option>
                         </select>
                     </div>
                 </div>
@@ -22,7 +22,7 @@
                     </div>
                     <div class="row mb">
                         <div class="col-sm-6">
-                            <select class="form-control selectpicker" ng-model='tutor.planned_account.payment_type'>
+                            <select class="form-control selectpicker" ng-model='tutor.planned_account.payment_method'>
                                 <option value="">тип платежа</option>
                                 <option disabled>──────────────</option>
                                 <option ng-repeat="(id, label) in LkPaymentTypes"
