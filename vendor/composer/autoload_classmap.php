@@ -682,4 +682,5 @@ return array(
     'TeacherProfileUpdate' => $baseDir . '/database/migrations/2016_03_09_142848_teacher_profile_update.php',
     'TestCase' => $baseDir . '/tests/TestCase.php',
     'Text_Template' => $vendorDir . '/phpunit/php-text-template/src/Template.php',
+    'TransferPaymentMethods' => $baseDir . '/database/migrations/2016_11_08_180111_transfer_payment_methods.php',
 );
