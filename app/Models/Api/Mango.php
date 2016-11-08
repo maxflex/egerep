@@ -43,14 +43,13 @@ class Mango {
      */
     private static function _generateStats($number)
     {
-        return static::_run(static::COMMAND_REQUEST_STATS, [
-            'date_from'  => Carbon::now()->subMonth()->timestamp,
-            'date_to'    => Carbon::now()->timestamp,
-            'fields'     => 'records, start, finish, from_extension, from_number, to_extension, to_number, disconnect_reason, answer',
-            'call_party' => [
-                'number' => $number,
-            ],
-        ])->key;
+        return \DB::table('mango')
+            ->where('start', '>=', Carbon::now()->subMonth()->setTime(0,0,0)->timestamp)
+            ->select(['recording_id', 'start', 'finish', 'from_extension', 'from_number', 'to_extension', 'to_number', 'disconnect_reason', 'answer'])
+            ->whereRaw("((from_number = {$number} and answer <> 0) or to_number = {$number})")
+            ->whereRaw('not (to_extension <> 0 and answer = 0)')
+            ->orderBy('start')
+            ->get();
     }
 
     /**
@@ -59,51 +58,12 @@ class Mango {
     public static function getStats($number)
     {
 		$number = cleanNumber($number);
-        $key = static::_generateStats($number);
-
-        $trial = 1; // первая попытка
-        while ($trial <= static::TRIALS) {
-            $data = static::_run(static::COMMAND_GET_STATS, compact('key'), false, true);
-            if ($data['code'] == 200) {
-                // return $data['response'];
-                $response_lines = explode(PHP_EOL, $data['response']);
-                // return $response_lines;
-                $return = [];
-                foreach ($response_lines as $index => $response_line) {
-                    // echo $index;
-                    $info = explode(';', $response_line);
-                    if (count($info) > 1) {
-						// если это входящий звонок и разговора не было, не выводить
-						if (! empty($info[5]) && $info[8] == 0) {
-							continue;
-						}
-
-                        $return[] = [
-                            'recording_id'		=> trim($info[0], '[]'),
-                            'start'             => $info[1],
-                            'finish'            => $info[2],
-                            'from_extension'    => $info[3],
-                            'from_number'       => $info[4],
-                            'to_extension'      => $info[5],
-                            'to_number'         => $info[6],
-                            'disconnect_reason' => $info[7],
-                            'seconds'           => ($info[8] != 0 ? ($info[2] - $info[8]) : 0),
-                            'from_user'         => $info[3] ? User::find($info[3]) : null,
-                            'from_user'         => $info[5] ? User::find($info[5]) : null,
-                            'date_start'        => date('Y-m-d H:i:s', $info[1]),
-                        ];
-                    }
-                }
-
-				usort($return, function($a, $b) {
-					return $a['start'] > $b['start'];
-				});
-
-                return $return;
-            }
-            $trial++;
-            sleep(static::SLEEP);
-        }
+        $records = static::_generateStats($number);
+        return Collect($records)->unique('start')->sortBy('start')->each(function($record) {
+            $record->from_user = $record->from_extension ? User::find($record->from_extension) : null;
+            $record->date_start = date('Y-m-d H:i:s', $record->start);
+            $record->seconds = $record->answer != 0 ? $record->finish - $record->answer : 0;
+        });
     }
 
 
