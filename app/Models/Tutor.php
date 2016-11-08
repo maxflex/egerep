@@ -117,6 +117,13 @@ class Tutor extends Service\Person
                     ->where('type', static::USER_TYPE);
     }
 
+    public function plannedAccount()
+    {
+        return $this->hasOne('App\Models\PlannedAccount');
+    }
+
+    // ->whereRaw("date_end > DATE_SUB((SELECT date_end FROM accounts WHERE tutor_id=" . $this->id . " ORDER BY date_end DESC LIMIT 1), INTERVAL 60 DAY)");
+
     // ------------------------------------------------------------------------
 
     /**

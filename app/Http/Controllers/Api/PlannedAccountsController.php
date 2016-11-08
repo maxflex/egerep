@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\PlannedAccount;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use App\Models\Account;
-use App\Models\Tutor;
-use Mockery\CountValidator\Exception;
 
-class AccountsController extends Controller
+class PlannedAccountsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -40,9 +38,10 @@ class AccountsController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            return Account::create($request->input())->fresh();
-        } catch (\Illuminate\Database\QueryException $e) {
+        if (1) {
+            return PlannedAccount::create($request->input('data'))->fresh();
+        } else {
+
         }
     }
 
@@ -52,13 +51,9 @@ class AccountsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $id)
+    public function show($id)
     {
-        if (! $request->date_limit) {
-            return Tutor::with(['plannedAccount'])->find($id)->append('last_accounts');
-        } else {
-            return Tutor::plusPeriod($id, $request->date_limit);
-        }
+        //
     }
 
     /**
@@ -81,7 +76,7 @@ class AccountsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Account::find($id)->update($request->input());
+        PlannedAccount::find($id)->update($request->input('data'));
     }
 
     /**
@@ -92,6 +87,6 @@ class AccountsController extends Controller
      */
     public function destroy($id)
     {
-        Account::destroy($id);
+        PlannedAccount::find($id)->delete();
     }
 }

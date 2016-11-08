@@ -142,6 +142,10 @@ angular.module('Egerep')
         3: 'перевод на сотовый'
         4: 'перевод на карту'
 
+    .value 'LkPaymentTypes',
+        0: 'не назначено'
+        1: 'личная встреча'
+
     .value 'ArchiveStates',
         impossible: 'невозможно'
         possible: 'возможно'

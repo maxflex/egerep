@@ -32,7 +32,7 @@ angular.module('Egerep')
 
                         $scope.visible_clients_count++
                     $scope.$apply()
-    .controller 'AccountsCtrl', ($rootScope, $scope, $http, $timeout, Account, PaymentMethods, Archive, Grades, Attachment, AttachmentState, AttachmentStates, Weekdays, PhoneService, AttachmentVisibility, DebtTypes, YesNo, Tutor, ArchiveStates, Checked) ->
+    .controller 'AccountsCtrl', ($rootScope, $scope, $http, $timeout, Account, PaymentMethods, Archive, Grades, Attachment, AttachmentState, AttachmentStates, Weekdays, PhoneService, AttachmentVisibility, DebtTypes, YesNo, Tutor, ArchiveStates, Checked, PlannedAccountService, UserService, LkPaymentTypes) ->
         bindArguments($scope, arguments)
         $scope.current_scope  = $scope
         $scope.current_period = 0
@@ -147,8 +147,10 @@ angular.module('Egerep')
 
 
         $scope.save = ->
+            ajaxStart()
             $.each $scope.tutor.last_accounts, (index, account) ->
                 Account.update account
+            ajaxEnd()
 
         $scope.getFakeDates = ->
             dates = []
