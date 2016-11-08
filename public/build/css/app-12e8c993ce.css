@@ -28617,9 +28617,8 @@ a:focus {
   top: 8px;
   z-index: 999;
   left: 170px;
-  width: calc(100% - 170px - 130px);
-  opacity: 1;
-  overflow: hidden; }
+  width: calc(100% - 170px - 98px);
+  opacity: 1; }
 
 .phone-comment {
   width: 100%; }
