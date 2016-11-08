@@ -4862,28 +4862,29 @@
         autoclose: true,
         orientation: 'bottom auto'
       });
-      this.refresh();
       $('#add-planned-account').modal('show');
+      this.refresh();
     };
-    this.add = function(planned_account) {
+    this.add = function(planned_account, tutor_id) {
+      planned_account['tutor_id'] = tutor_id;
       return PlannedAccount.save(planned_account, function(response) {
         return console.log(response);
       });
     };
     this.update = function(planned_account) {
-      return PlannedAccount.update({
+      PlannedAccount.update({
         id: planned_account.id,
         data: planned_account
       });
+      $('#add-planned-account').modal('hide');
     };
     this.refresh = function() {
       return $timeout(function() {
-        $('.selectpicker option').each(function(index, el) {
+        $('#add-planned-account .selectpicker option').each(function(index, el) {
           $(el).data('subtext', $(el).attr('data-subtext'));
           return $(el).data('content', $(el).attr('data-content'));
         });
-        $('.selectpicker').selectpicker('refresh');
-        return $rootScope.$apply();
+        return $('#add-planned-account .selectpicker').selectpicker('refresh');
       }, 200);
     };
     return this;

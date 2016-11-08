@@ -17,12 +17,12 @@
                 <div ng-show="account_is_planned">
                     <div class="row mb">
                         <div class="col-sm-6">
-                            <input type="text" id='pa-date' class="form-control" placeholder="дата конца периода" ng-model='tutor.planned_account.date'>
+                            <input type="text" id='pa-date' class="form-control" placeholder="дата расчета" ng-model='tutor.planned_account.date'>
                         </div>
                     </div>
                     <div class="row mb">
                         <div class="col-sm-6">
-                            <select class="form-control selectpicker" ng-model='tutor.planned_account.payment_method'>
+                            <select class="form-control selectpicker" ng-model='tutor.planned_account.payment_method' ng-change="PlannedAccountsService.refresh()">
                                 <option value="">тип платежа</option>
                                 <option disabled>──────────────</option>
                                 <option ng-repeat="(id, label) in LkPaymentTypes"
@@ -34,7 +34,7 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-6">
-                            <select class="form-control selectpicker" ng-model='tutor.planned_account.user_id'>
+                            <select class="form-control selectpicker" ng-model='tutor.planned_account.user_id' ng-change="PlannedAccountsService.refresh()">
                                 <option value="">пользователь</option>
                                 <option disabled>──────────────</option>
                                 <option
@@ -48,7 +48,7 @@
                 </div>
             </div>
             <div class="modal-footer center">
-                <button type="button" class="btn btn-primary" ng-show="!tutor.planned_account.id" ng-click="PlannedAccountService.add(tutor.planned_account)">Добавить</button>
+                <button type="button" class="btn btn-primary" ng-show="!tutor.planned_account.id" ng-click="PlannedAccountService.add(tutor.planned_account, tutor.id)">Добавить</button>
                 <button type="button" class="btn btn-primary" ng-show="tutor.planned_account.id" ng-click="PlannedAccountService.update(tutor.planned_account)">Изменить</button>
             </div>
         </div>

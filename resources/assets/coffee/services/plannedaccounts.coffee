@@ -1,5 +1,5 @@
 angular.module 'Egerep'
-    .service 'PlannedAccountService', ($rootScope, $timeout, PlannedAccount)->
+    .service 'PlannedAccountService', ($rootScope, $timeout, PlannedAccount) ->
         this.has_planned_accounts = 0;
 
         this.showDialog = ->
@@ -11,12 +11,12 @@ angular.module 'Egerep'
                 autoclose	: true
                 orientation	: 'bottom auto'
 
-            this.refresh()
-
             $('#add-planned-account').modal 'show'
+            this.refresh()
             return
 
-        this.add = (planned_account) ->
+        this.add = (planned_account, tutor_id) ->
+            planned_account['tutor_id'] = tutor_id
             PlannedAccount.save planned_account, (response)->
                 console.log response
 
@@ -28,12 +28,14 @@ angular.module 'Egerep'
 #            else
 #                PlannedAccount.delete
 #                    id: planned_account.id
+                $('#add-planned-account').modal 'hide'
+                return
         this.refresh = ->
             $timeout ->
-                $('.selectpicker option').each (index, el) ->
+                $('#add-planned-account .selectpicker option').each (index, el) ->
                     $(el).data 'subtext', $(el).attr 'data-subtext'
                     $(el).data 'content', $(el).attr 'data-content'
-                $('.selectpicker').selectpicker 'refresh'
-                $rootScope.$apply()
+
+                $('#add-planned-account .selectpicker').selectpicker 'refresh'
             , 200
         this

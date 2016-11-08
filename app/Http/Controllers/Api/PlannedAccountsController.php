@@ -38,11 +38,7 @@ class PlannedAccountsController extends Controller
      */
     public function store(Request $request)
     {
-        if (1) {
-            return PlannedAccount::create($request->input('data'))->fresh();
-        } else {
-
-        }
+        return PlannedAccount::create($request->input())->fresh();
     }
 
     /**
