@@ -143,8 +143,7 @@ angular.module('Egerep')
         4: 'перевод на карту'
 
     .value 'LkPaymentTypes',
-        0: 'не назначено'
-        1: 'личная встреча'
+        0: 'личная встреча'
 
     .value 'ArchiveStates',
         impossible: 'невозможно'
