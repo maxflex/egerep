@@ -1,13 +1,13 @@
 {{-- НАЗНАЧЕНИЕ РАСЧЕТА --}}
 <div class="modal" id='add-planned-account' tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog dialog-narrow">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">ПАРАМЕТРЫ РАСЧЕТА</h4>
+                <h4 class="modal-title text-center">ПАРАМЕТРЫ РАСЧЕТА</h4>
             </div>
             <div class="modal-body">
                 <div class="row mb">
-                    <div class="col-sm-6">
+                    <div class="col-sm-12">
                         <select class="form-control selectpicker" id="planned-account" ng-model="tutor.planned_account.is_planned" ng-change="refreshSelects()">
                             <option ng-selected="tutor.planned_account.is_planned == 0" value="0">расчет не назначен</option>
                             <option ng-selected="tutor.planned_account.is_planned == 1" value="1">расчет назначен</option>
@@ -16,12 +16,12 @@
                 </div>
                 <div ng-show="tutor.planned_account.is_planned == 1">
                     <div class="row mb">
-                        <div class="col-sm-6">
+                        <div class="col-sm-12">
                             <input type="text" id='pa-date' class="form-control" placeholder="дата расчета" ng-model='tutor.planned_account.date'>
                         </div>
                     </div>
                     <div class="row mb">
-                        <div class="col-sm-6">
+                        <div class="col-sm-12">
                             <select class="form-control selectpicker" ng-model='tutor.planned_account.payment_method' ng-change="refreshSelects()">
                                 <option value="">тип платежа</option>
                                 <option disabled>──────────────</option>
@@ -34,7 +34,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-sm-12">
                             <select class="form-control selectpicker" ng-model='tutor.planned_account.user_id' ng-change="refreshSelects()">
                                 <option value="">пользователь</option>
                                 <option disabled>──────────────</option>

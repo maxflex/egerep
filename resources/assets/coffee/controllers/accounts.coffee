@@ -239,7 +239,7 @@ angular.module('Egerep')
                     $(el).data 'content', $(el).attr 'data-content'
 
                 $('#add-planned-account .selectpicker').selectpicker 'refresh'
-            , 200
+            , 100
 
         $scope.addAccount = ->
             Account.save
