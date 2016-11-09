@@ -23,8 +23,6 @@
                     <div class="row mb">
                         <div class="col-sm-12">
                             <select class="form-control selectpicker" ng-model='tutor.planned_account.payment_method' ng-change="refreshSelects()">
-                                <option value="">тип платежа</option>
-                                <option disabled>──────────────</option>
                                 <option ng-repeat="(id, label) in LkPaymentTypes"
                                         ng-selected="id == tutor.planned_account.payment_method"
                                         value="@{{ id }}"
@@ -50,7 +48,7 @@
                 </div>
             </div>
             <div class="modal-footer center">
-                <button type="button" class="btn btn-primary" ng-show="!tutor.planned_account.id" ng-click="addPlannedAccount()">Добавить</button>
+                <button type="button" class="btn btn-primary" ng-disabled="tutor.planned_account.is_planned == 0" ng-show="!tutor.planned_account.id" ng-click="addPlannedAccount()">Добавить</button>
                 <button type="button" class="btn btn-primary" ng-show="tutor.planned_account.id" ng-click="updatePlannedAccount()">Изменить</button>
             </div>
         </div>

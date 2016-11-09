@@ -490,7 +490,7 @@
       if (!$scope.tutor.planned_account || (ref = !'is_planned', indexOf.call($scope.tutor.planned_account, ref) >= 0)) {
         $scope.tutor.planned_account = {
           is_planned: 0,
-          payment_method: '',
+          payment_method: 0,
           user_id: '',
           date: ''
         };
