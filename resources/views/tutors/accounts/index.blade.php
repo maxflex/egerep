@@ -14,7 +14,7 @@
         сохранить
     </span>
     <span class="link-like link-reverse link-white"
-          ng-click='PlannedAccountService.showDialog();'
+          ng-click='addPlannedAccountDialog();'
     >@{{ tutor.planned_account ? 'расчет назначен на ' + tutor.planned_account.date : 'расчет не назначен' }}</span>
     <a href='tutors/{{ $tutor->id }}/accounts/hidden' ng-show="page != 'hidden'" class="client-droppable" style="margin-top: -2px">скрытые ученики (@{{ hidden_clients_count }})</a>
     <a href='tutors/{{ $tutor->id }}/accounts'  ng-show="page == 'hidden'" class="client-droppable" style="margin-top: -2px">показанные в отчетности ученики (@{{ visible_clients_count }})</a>
