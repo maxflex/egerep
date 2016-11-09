@@ -3813,3 +3813,7 @@ table.summary-table.left-align tr td {
 .result-line {
     margin: 20px 0;
 }
+
+thead.small.ng-scope.tableFloatingHeaderOriginal {
+    min-width: 1000px;
+}
