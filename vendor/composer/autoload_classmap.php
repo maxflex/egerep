@@ -97,6 +97,7 @@ return array(
     'CreateMetrosTable' => $baseDir . '/database/migrations/2016_02_24_105830_create_metros_table.php',
     'CreateNotificationsTable' => $baseDir . '/database/migrations/2016_08_31_104913_create_notifications_table.php',
     'CreatePhoneDuplicatesTable' => $baseDir . '/database/migrations/2016_06_05_103425_create_phone_duplicates_table.php',
+    'CreatePlannedAccountsTable' => $baseDir . '/database/migrations/2016_11_08_161723_create_planned_accounts_table.php',
     'CreateRequestListsTable' => $baseDir . '/database/migrations/2016_02_19_113148_create_lists_table.php',
     'CreateRequestsTable' => $baseDir . '/database/migrations/2016_01_21_085227_create_requests_table.php',
     'CreateReviewsTable' => $baseDir . '/database/migrations/2016_02_21_191244_create_reviews_table.php',

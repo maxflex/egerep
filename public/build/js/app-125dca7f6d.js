@@ -282,8 +282,6 @@
 }).call(this);
 
 (function() {
-  var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
   angular.module('Egerep').controller('AccountsHiddenCtrl', function($scope, Grades, Attachment) {
     var bindDraggable;
     bindArguments($scope, arguments);
@@ -322,7 +320,7 @@
         }
       });
     };
-  }).controller('AccountsCtrl', function($rootScope, $scope, $http, $timeout, Account, PaymentMethods, Archive, Grades, Attachment, AttachmentState, AttachmentStates, Weekdays, PhoneService, AttachmentVisibility, DebtTypes, YesNo, Tutor, ArchiveStates, Checked, PlannedAccount, UserService, LkPaymentTypes) {
+  }).controller('AccountsCtrl', function($rootScope, $scope, $http, $timeout, Account, PaymentMethods, Archive, Grades, Attachment, AttachmentState, AttachmentStates, Weekdays, PhoneService, AttachmentVisibility, DebtTypes, YesNo, Tutor, ArchiveStates, Checked) {
     var bindDraggable, getAccountEndDate, getAccountStartDate, getCalendarStartDate, getCommission, hideValue, moveCursor, renderData, updateClientCount;
     bindArguments($scope, arguments);
     $scope.current_scope = $scope;
@@ -456,11 +454,9 @@
       });
     };
     $scope.save = function() {
-      ajaxStart();
-      $.each($scope.tutor.last_accounts, function(index, account) {
+      return $.each($scope.tutor.last_accounts, function(index, account) {
         return Account.update(account);
       });
-      return ajaxEnd();
     };
     $scope.getFakeDates = function() {
       var current_date, dates;
@@ -505,63 +501,6 @@
         orientation: 'bottom auto'
       });
       return $scope.dialog('add-account');
-    };
-    $scope.addPlannedAccountDialog = function() {
-      var ref;
-      if (!$scope.tutor.planned_account || (ref = !'is_planned', indexOf.call($scope.tutor.planned_account, ref) >= 0)) {
-        $scope.tutor.planned_account = {
-          is_planned: 0,
-          payment_method: 0,
-          user_id: '',
-          date: ''
-        };
-      } else {
-        _.extend($scope.tutor.planned_account, {
-          is_planned: '1',
-          tutor_id: $scope.tutor.id
-        });
-      }
-      $('#pa-date').datepicker('destroy');
-      $('#pa-date').datepicker({
-        language: 'ru',
-        autoclose: true,
-        orientation: 'bottom auto'
-      });
-      $timeout(function() {
-        return $scope.refreshSelects();
-      });
-      $('#add-planned-account').modal('show');
-    };
-    $scope.addPlannedAccount = function() {
-      $scope.tutor.planned_account['tutor_id'] = $scope.tutor.id;
-      return PlannedAccount.save($scope.tutor.planned_account, function(response) {
-        $scope.tutor.planned_account.id = response.id;
-        $('#add-planned-account').modal('hide');
-      });
-    };
-    $scope.updatePlannedAccount = function() {
-      if (+$scope.tutor.planned_account.is_planned) {
-        PlannedAccount.update({
-          id: $scope.tutor.planned_account.id,
-          data: $scope.tutor.planned_account
-        });
-      } else {
-        PlannedAccount["delete"]({
-          id: $scope.tutor.planned_account.id
-        }, function() {
-          return $scope.tutor.planned_account = null;
-        });
-      }
-      $('#add-planned-account').modal('hide');
-    };
-    $scope.refreshSelects = function() {
-      return $timeout(function() {
-        $('#add-planned-account .selectpicker option').each(function(index, el) {
-          $(el).data('subtext', $(el).attr('data-subtext'));
-          return $(el).data('content', $(el).attr('data-content'));
-        });
-        return $('#add-planned-account .selectpicker').selectpicker('refresh');
-      }, 100);
     };
     $scope.addAccount = function() {
       return Account.save({
@@ -3671,9 +3610,6 @@
     0: 'стандартный расчет',
     1: 'яндекс.деньги',
     2: 'перевод на карту'
-  }).value('LkPaymentTypes', {
-    0: 'не назначено',
-    1: 'личная встреча'
   }).value('ArchiveStates', {
     impossible: 'невозможно',
     possible: 'возможно'
@@ -4744,10 +4680,6 @@
     }, updateMethod());
   }).factory('Account', function($resource) {
     return $resource(apiPath('accounts'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('PlannedAccount', function($resource) {
-    return $resource(apiPath('accounts/planned'), {
       id: '@id'
     }, updateMethod());
   }).factory('Review', function($resource) {

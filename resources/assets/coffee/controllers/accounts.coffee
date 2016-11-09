@@ -32,7 +32,7 @@ angular.module('Egerep')
 
                         $scope.visible_clients_count++
                     $scope.$apply()
-    .controller 'AccountsCtrl', ($rootScope, $scope, $http, $timeout, Account, PaymentMethods, Archive, Grades, Attachment, AttachmentState, AttachmentStates, Weekdays, PhoneService, AttachmentVisibility, DebtTypes, YesNo, Tutor, ArchiveStates, Checked) ->
+    .controller 'AccountsCtrl', ($rootScope, $scope, $http, $timeout, Account, PaymentMethods, Archive, Grades, Attachment, AttachmentState, AttachmentStates, Weekdays, PhoneService, AttachmentVisibility, DebtTypes, YesNo, Tutor, ArchiveStates, Checked, PlannedAccount, UserService, LkPaymentTypes) ->
         bindArguments($scope, arguments)
         $scope.current_scope  = $scope
         $scope.current_period = 0
@@ -147,8 +147,10 @@ angular.module('Egerep')
 
 
         $scope.save = ->
+            ajaxStart()
             $.each $scope.tutor.last_accounts, (index, account) ->
                 Account.update account
+            ajaxEnd()
 
         $scope.getFakeDates = ->
             dates = []
@@ -192,6 +194,52 @@ angular.module('Egerep')
                 orientation	: 'bottom auto'
 
             $scope.dialog 'add-account'
+
+        $scope.addPlannedAccountDialog = ->
+            if not $scope.tutor.planned_account or not 'is_planned' in $scope.tutor.planned_account
+                $scope.tutor.planned_account = {is_planned: 0, payment_method: 0, user_id: '', date: ''}
+            else
+                _.extend $scope.tutor.planned_account, {is_planned:'1', tutor_id: $scope.tutor.id}
+
+            $('#pa-date').datepicker('destroy')
+            $('#pa-date').datepicker
+                language	: 'ru'
+                autoclose	: true
+                orientation	: 'bottom auto'
+
+            $timeout ->
+                $scope.refreshSelects()
+            $('#add-planned-account').modal 'show'
+            return
+
+        $scope.addPlannedAccount = ->
+            $scope.tutor.planned_account['tutor_id'] = $scope.tutor.id
+            PlannedAccount.save $scope.tutor.planned_account, (response)->
+                $scope.tutor.planned_account.id = response.id
+                $('#add-planned-account').modal 'hide'
+                return
+
+        $scope.updatePlannedAccount  = ->
+            if +$scope.tutor.planned_account.is_planned
+                PlannedAccount.update
+                    id: $scope.tutor.planned_account.id
+                    data: $scope.tutor.planned_account
+            else
+                PlannedAccount.delete
+                    id: $scope.tutor.planned_account.id
+                , ->
+                    $scope.tutor.planned_account = null
+            $('#add-planned-account').modal 'hide'
+            return
+
+        $scope.refreshSelects = ->
+            $timeout ->
+                $('#add-planned-account .selectpicker option').each (index, el) ->
+                    $(el).data 'subtext', $(el).attr 'data-subtext'
+                    $(el).data 'content', $(el).attr 'data-content'
+
+                $('#add-planned-account .selectpicker').selectpicker 'refresh'
+            , 100
 
         $scope.addAccount = ->
             Account.save
