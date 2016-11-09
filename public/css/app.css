@@ -31542,7 +31542,8 @@ table.summary-table.left-align tr td {
   margin: 20px 0; }
 
 thead.small.ng-scope.tableFloatingHeaderOriginal {
-  min-width: 1000px; }
+  min-width: 1000px;
+  background: white; }
 
 .ios7-switch {
   display: inline-block;
