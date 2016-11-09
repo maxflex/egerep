@@ -12,16 +12,9 @@ class PlannedAccount extends Model
         'payment_method',
         'user_id',
     ];
+    protected static $dotDates = [
+       'date'
+    ];
 
     public $timestamps = false;
-
-    public function getDateAttribute($value)
-    {
-        return date('d.m.Y', strtotime($value));
-    }
-
-    public function setDateAttribute($value)
-    {
-        $this->attributes['date'] = fromDotDate($value);
-    }
 }
