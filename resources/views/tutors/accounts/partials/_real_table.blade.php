@@ -66,7 +66,7 @@
                 </tr>
                 <tr>
                     <td class="period-end" width='100'>
-                        <div class='accounts-data' style="position: absolute; margin-top: -86px; width: 1000px">
+                        <div class='accounts-data' style="position: absolute; margin-top: @{{ clients.length ? '-86' : '80' }}px; width: 1000px">
                             <div class="mbs">
                                 <span>Передано (руб.):</span>
                                 <pencil-input model='account.received'></pencil-input>
