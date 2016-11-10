@@ -196,7 +196,7 @@ angular.module('Egerep')
             $scope.dialog 'add-account'
 
         $scope.addPlannedAccountDialog = ->
-            if not $scope.tutor.planned_account or not 'is_planned' in $scope.tutor.planned_account
+            if not $scope.tutor.planned_account or (not 'is_planned' in $scope.tutor.planned_account or not $scope.tutor.planned_account.id)
                 $scope.tutor.planned_account = {is_planned: 0, payment_method: 0, user_id: '', date: ''}
             else
                 _.extend $scope.tutor.planned_account, {is_planned:'1', tutor_id: $scope.tutor.id}

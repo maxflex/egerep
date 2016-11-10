@@ -487,7 +487,7 @@
     };
     $scope.addPlannedAccountDialog = function() {
       var ref;
-      if (!$scope.tutor.planned_account || (ref = !'is_planned', indexOf.call($scope.tutor.planned_account, ref) >= 0)) {
+      if (!$scope.tutor.planned_account || ((ref = !'is_planned', indexOf.call($scope.tutor.planned_account, ref) >= 0) || !$scope.tutor.planned_account.id)) {
         $scope.tutor.planned_account = {
           is_planned: 0,
           payment_method: 0,
