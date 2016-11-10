@@ -196,7 +196,7 @@ angular.module('Egerep')
             $scope.dialog 'add-account'
 
         $scope.addPlannedAccountDialog = ->
-            if not $scope.tutor.planned_account or not 'is_planned' in $scope.tutor.planned_account
+            if not $scope.tutor.planned_account or (not 'is_planned' in $scope.tutor.planned_account or not $scope.tutor.planned_account.id)
                 $scope.tutor.planned_account = {is_planned: 0, payment_method: 0, user_id: '', date: ''}
             else
                 _.extend $scope.tutor.planned_account, {is_planned:'1', tutor_id: $scope.tutor.id}
@@ -212,7 +212,24 @@ angular.module('Egerep')
             $('#add-planned-account').modal 'show'
             return
 
+        validatePlannedAccount = ->
+            valid = true
+            if not (parseInt($scope.tutor.planned_account.is_planned) == 0)
+                if not $scope.tutor.planned_account.user_id > 0
+                    $('#pa-user .bootstrap-select').addClass 'has-error'
+                    valid = false
+                else
+                    $('#pa-user .bootstrap-select').removeClass 'has-error'
+                if not ($scope.tutor.planned_account.date and moment($scope.tutor.planned_account.date, 'DD.MM.YYYY').isValid())
+                    $('#pa-date').addClass 'has-error'
+                    valid = false
+                else
+                    $('#pa-date').removeClass 'has-error'
+            valid
+
         $scope.addPlannedAccount = ->
+            return if not validatePlannedAccount()
+
             $scope.tutor.planned_account['tutor_id'] = $scope.tutor.id
             PlannedAccount.save $scope.tutor.planned_account, (response)->
                 $scope.tutor.planned_account.id = response.id
@@ -220,6 +237,8 @@ angular.module('Egerep')
                 return
 
         $scope.updatePlannedAccount  = ->
+            return if not validatePlannedAccount()
+
             if +$scope.tutor.planned_account.is_planned
                 PlannedAccount.update
                     id: $scope.tutor.planned_account.id

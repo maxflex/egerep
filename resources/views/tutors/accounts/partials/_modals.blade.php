@@ -32,7 +32,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-12">
+                        <div class="col-sm-12" id="pa-user">
                             <select class="form-control selectpicker" ng-model='tutor.planned_account.user_id' ng-change="refreshSelects()">
                                 <option value="">пользователь</option>
                                 <option disabled>──────────────</option>
