@@ -13,6 +13,7 @@ return array(
     'AddCheckedToAttachments' => $baseDir . '/database/migrations/2016_06_29_132535_add_checked_to_attachments.php',
     'AddClientIdToAttachments' => $baseDir . '/database/migrations/2016_05_30_141049_add_client_id_to_attachments.php',
     'AddCommentExtendedToTutors' => $baseDir . '/database/migrations/2016_06_17_180812_add_comment_extended_to_tutors.php',
+    'AddConfirmedColumnToAccounts' => $baseDir . '/database/migrations/2016_11_10_123848_add_confirmed_column_to_accounts.php',
     'AddContinueToArchives' => $baseDir . '/database/migrations/2016_06_03_122653_add_continue_to_archives.php',
     'AddContractToSettings' => $baseDir . '/database/migrations/2016_09_02_155930_add_contract_to_settings.php',
     'AddDebtCalcToAccounts' => $baseDir . '/database/migrations/2016_05_30_135837_add_debt_calc_to_accounts.php',

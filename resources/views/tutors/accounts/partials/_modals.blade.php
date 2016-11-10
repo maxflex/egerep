@@ -49,7 +49,7 @@
             </div>
             <div class="modal-footer center">
                 <button type="button" class="btn btn-primary" ng-disabled="tutor.planned_account.is_planned == 0" ng-show="!tutor.planned_account.id" ng-click="addPlannedAccount()">Добавить</button>
-                <button type="button" class="btn btn-primary" ng-show="tutor.planned_account.id" ng-click="updatePlannedAccount()">Изменить</button>
+                <button type="button" class="btn btn-primary" ng-show="tutor.planned_account.id" ng-click="checkBeforeRun(updatePlannedAccount)">Изменить</button>
             </div>
         </div>
     </div>
@@ -84,7 +84,7 @@
                 <input type="text" id='date-end-change' class="form-control" placeholder="дата конца периода" ng-model='change_date_end'>
             </div>
             <div class="modal-footer center">
-                <button type="button" class="btn btn-primary" ng-click="changeDate()">Изменить</button>
+                <button type="button" class="btn btn-primary" ng-click="checkBeforeRun(changeDates)">Изменить</button>
             </div>
         </div>
     </div>

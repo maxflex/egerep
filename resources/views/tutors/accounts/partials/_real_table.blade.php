@@ -112,7 +112,16 @@
                             <div class="mbs">
                                 <span>Действия:</span>
                                 <span class="link-like margin-right" ng-click="changeDateDialog($index)">изменить дату встречи</span>
-                                <span class="link-like text-danger margin-right"  ng-click="remove(account)">удалить встречу</span>
+                                <span class="link-like text-danger margin-right"  ng-click="checkBeforeRun(remove, account)">удалить встречу</span>
+                            </div>
+                            <div class="mbs">
+                                <span>Статус проводки:</span>
+                                <span class="link-like"
+                                      ng-class="{'text-danger': !account.confirmed}"
+                                      ng-click="checkBeforeRun(toggleConfirmed, account)"
+                                >
+                                    @{{ Confirmed[account.confirmed] }}
+                                </span>
                             </div>
                         </div>
                     </td>

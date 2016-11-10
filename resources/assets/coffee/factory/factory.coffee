@@ -2,6 +2,9 @@ angular.module('Egerep')
     .value 'Approved',
         0: 'не подтвержден'
         1: 'подтвержден'
+    .value 'Confirmed',  # есть и approved, но там текст немножко другой.
+        0: 'подтвердить'
+        1: 'подтверждено'
     .value 'Months',
         1: 'январь'
         2: 'февраль'
@@ -16,7 +19,6 @@ angular.module('Egerep')
         11: 'ноябрь'
         12: 'декабрь'
 
-    .value 'Approved', ['не подтверждено', 'подтверждено']
     .value 'Notify', ['напомнить', 'не напоминать']
 
     .value 'AttachmentErrors',

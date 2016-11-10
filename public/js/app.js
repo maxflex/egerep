@@ -301,7 +301,7 @@
         }
       });
     };
-  }).controller('AccountsCtrl', function($rootScope, $scope, $http, $timeout, Account, PaymentMethods, Archive, Grades, Attachment, AttachmentState, AttachmentStates, Weekdays, PhoneService, AttachmentVisibility, DebtTypes, YesNo, Tutor, ArchiveStates, Checked, PlannedAccount, UserService, LkPaymentTypes) {
+  }).controller('AccountsCtrl', function($rootScope, $scope, $http, $timeout, Account, PaymentMethods, Archive, Grades, Attachment, AttachmentState, AttachmentStates, Weekdays, PhoneService, AttachmentVisibility, DebtTypes, YesNo, Tutor, ArchiveStates, Checked, PlannedAccount, UserService, LkPaymentTypes, Confirmed) {
     var bindDraggable, getAccountEndDate, getAccountStartDate, getCalendarStartDate, getCommission, hideValue, moveCursor, renderData, updateClientCount, validatePlannedAccount;
     bindArguments($scope, arguments);
     $scope.current_scope = $scope;
@@ -733,12 +733,48 @@
         return 1;
       }
     };
-    return updateClientCount = function() {
+    updateClientCount = function() {
       if ($scope.page === 'hidden') {
         return $scope.visible_clients_count++;
       } else {
         return $scope.hidden_clients_count++;
       }
+    };
+    $scope.checkBeforeRun = function(callback, param) {
+      var confirm_hash;
+      confirm_hash = 'cbcb58ac2e496207586df2854b17995f';
+      bootbox.prompt({
+        title: "Введите пароль",
+        className: "modal-password",
+        callback: (function(_this) {
+          return function(result) {
+            if (result !== null) {
+              if (md5(result) === confirm_hash) {
+                callback(param);
+                return true;
+              } else {
+                $('.bootbox-form').addClass('has-error').children().first().focus();
+                $('.bootbox-input-text').on('keydown', function() {
+                  return $(this).parent().removeClass('has-error');
+                });
+                return false;
+              }
+            }
+          };
+        })(this),
+        buttons: {
+          confirm: {
+            label: "Подтвердить"
+          },
+          cancel: {
+            className: "display-none"
+          }
+        },
+        onEscape: true
+      });
+    };
+    return $scope.toggleConfirmed = function(account) {
+      return $rootScope.toggleEnumServer(account, 'confirmed', Confirmed, Account);
     };
   });
 
@@ -4413,6 +4449,9 @@
   angular.module('Egerep').value('Approved', {
     0: 'не подтвержден',
     1: 'подтвержден'
+  }).value('Confirmed', {
+    0: 'подтвердить',
+    1: 'подтверждено'
   }).value('Months', {
     1: 'январь',
     2: 'февраль',
@@ -4426,7 +4465,7 @@
     10: 'октябрь',
     11: 'ноябрь',
     12: 'декабрь'
-  }).value('Approved', ['не подтверждено', 'подтверждено']).value('Notify', ['напомнить', 'не напоминать']).value('AttachmentErrors', {
+  }).value('Notify', ['напомнить', 'не напоминать']).value('AttachmentErrors', {
     1: 'в стыковке не указан класс',
     2: 'в стыковке не указан предмет',
     3: 'не указаны условия стыковки',
