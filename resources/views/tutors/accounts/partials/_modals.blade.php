@@ -84,7 +84,7 @@
                 <input type="text" id='date-end-change' class="form-control" placeholder="дата конца периода" ng-model='change_date_end'>
             </div>
             <div class="modal-footer center">
-                <button type="button" class="btn btn-primary" ng-click="checkBeforeRun(changeDates)">Изменить</button>
+                <button type="button" class="btn btn-primary" ng-click="checkBeforeRun(changeDate)">Изменить</button>
             </div>
         </div>
     </div>
