@@ -5,7 +5,7 @@
 @section('content')
     <div class="top-links">
         <div class="pull-right">
-            <a ng-href="@{{ type == 'total' ? '' : 'periods' }}" ng-class="{active: type == 'total'}">рассчеты</a>
+            <a ng-href="@{{ type == 'total' ? '' : 'periods' }}" ng-class="{active: type == 'total'}">текущая</a>
             <a ng-href="@{{ type == 'planned' ? '' : 'periods/planned' }}" ng-class="{active: type == 'planned'}">назначенные расчеты</a>
         </div>
     </div>
