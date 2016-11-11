@@ -36,6 +36,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::resource('requests', 'RequestsController', ['except' => ['index', 'show']]);
     Route::get('requests/{state_id?}', 'RequestsController@index');
     Route::resource('clients', 'ClientsController');
+    Route::get('periods/planned', 'PeriodsController@planned');
     Route::resource('periods', 'PeriodsController');
     Route::get('archives', 'ArchivesController@index');
     Route::get('attachments', 'AttachmentsController@index');
@@ -97,7 +98,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('users', 'UsersController');
         Route::resource('comments', 'CommentsController');
         Route::resource('accounts', 'AccountsController');
-        Route::resource('accounts/planned', 'PlannedAccountsController');
+        Route::resource('periods/planned', 'PlannedAccountsController');
         Route::resource('sms', 'SmsController');
         Route::resource('periods', 'PeriodsController');
 

@@ -27,6 +27,7 @@ class Account extends Model
         'comment',
         'payment_method',
         'data',
+        'confirmed',
     ];
     protected $appends = ['data', 'user_login', 'mutual_debts'];
 

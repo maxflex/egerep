@@ -114,6 +114,13 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
             return '' if not date
             moment(date).format "DD.MM.YY" + (if full_year then "YY" else "")
 
+        $rootScope.shortenYear = (date) ->
+            return '' if not date
+            # 11.12.2015 => 11.12.15
+            # 11-12-2016 => 11.12.16
+            date.replace /(\d{2}[\-\.]{1}\d{2}[\-\.]{1})\d{2}(\d{2})/, '$1$2'
+
+
         $rootScope.formatTimestamp = (timestamp, full_year = false) ->
             timestamp = +(timestamp + '000') if typeof timestamp is 'string'
             return '' if not timestamp
