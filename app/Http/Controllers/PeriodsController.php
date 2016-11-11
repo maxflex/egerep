@@ -14,9 +14,20 @@ class PeriodsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('periods.index');
+        return view('periods.index')->with(ngInit([
+            'type' => 'total',
+            'page' => $request->page
+        ]));
+    }
+
+    public function planned(Request $request)
+    {
+        return view('periods.index')->with(ngInit([
+            'type' => 'planned',
+            'page' => $request->page
+        ]));
     }
 
     /**

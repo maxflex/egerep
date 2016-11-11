@@ -111,7 +111,7 @@
                             </div>
                             <div class="mbs">
                                 <span>Действия:</span>
-                                <span class="link-like margin-right" ng-click="changeDateDialog($index)">изменить дату встречи</span>
+                                <span class="link-like margin-right" ng-click="checkBeforeRun(changeDateDialog, $index)">изменить дату встречи</span>
                                 <span class="link-like text-danger margin-right"  ng-click="checkBeforeRun(remove, account)">удалить встречу</span>
                             </div>
                             <div class="mbs">

@@ -1,65 +1,29 @@
 @extends('app')
-@section('title', 'Создание периодов')
+@section('title', 'Периоды')
 @section('controller', 'PeriodsIndex')
 
 @section('content')
-<div>
-    <table class="table summary-table table-hover">
-        <thead>
-            <tr>
-                <td>Преподаватель</td>
-                <td>Время проводки</td>
-                <td>Дата расчета</td>
-                <td>Пользователь</td>
-                <td>Дебет</td>
-                <td>Передано</td>
-                <td>Доход</td>
-                <td>Долг</td>
-                <td>Метод</td>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat='period in periods'>
-                <td>
-                    <a href="tutors/@{{ period.tutor.id }}/edit">@{{ period.tutor.full_name || "имя не указано" }}</a>
-                </td>
-                <td>@{{ formatDateTime(period.created_at) }}</td>
-                <td>
-                    @{{ formatDate(period.date_end) }}
-                </td>
-                <td>@{{ period.user_login }}</td>
-                <td>@{{ period.debt_calc | hideZero | number}}</td>
-                <td>
-                    <span ng-show='period.received > 0'>@{{ period.received | number }}</span>
-                    <span class='mutual-debt' ng-if="period.mutual_debts">+ @{{ period.mutual_debts.sum }}</span>
-                </td>
-                <td>
-                    @{{ totalCommission(period) | number }}
-                </td>
-                <td>
-                    <span ng-class="{
-                        'text-danger': period.debt_type == 0,
-                        'text-success': period.debt_type == 1,
-                    }">@{{ period.debt }}</span>
-                </td>
-                <td>
-                    <span ng-show='period.received > 0'>@{{ PaymentMethods[period.payment_method] }}</span>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-<pagination style="margin-top: 30px"
-        ng-hide='data.last_page <= 1'
-        ng-model="current_page"
-        ng-change="pageChanged()"
-        total-items="data.total"
-        max-size="10"
-        items-per-page="data.per_page"
-        first-text="«"
-        last-text="»"
-        previous-text="«"
-        next-text="»"
+    <div class="top-links">
+        <div class="pull-right">
+            <a ng-href="@{{ type == 'total' ? '' : 'periods' }}" ng-class="{active: type == 'total'}">рассчеты</a>
+            <a ng-href="@{{ type == 'planned' ? '' : 'periods/planned' }}" ng-class="{active: type == 'planned'}">назначенные расчеты</a>
+        </div>
+    </div>
+
+    @include('periods.total')
+    @include('periods.planned')
+
+    <pagination style="margin-top: 30px"
+                ng-hide='data.last_page <= 1'
+                ng-model="current_page"
+                ng-change="pageChanged()"
+                total-items="data.total"
+                max-size="10"
+                items-per-page="data.per_page"
+                first-text="«"
+                last-text="»"
+                previous-text="«"
+                next-text="»"
     >
-</pagination>
+    </pagination>
 @stop

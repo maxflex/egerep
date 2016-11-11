@@ -17,4 +17,9 @@ class PlannedAccount extends Model
     ];
 
     public $timestamps = false;
+
+    public function tutor()
+    {
+        return $this->belongsTo('App\Models\Tutor');
+    }
 }

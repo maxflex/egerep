@@ -9,7 +9,7 @@ angular.module('Egerep')
         $resource apiPath('accounts'), {id: '@id'}, updateMethod()
 
     .factory 'PlannedAccount', ($resource) ->
-        $resource apiPath('accounts/planned'), {id: '@id'}, updateMethod()
+        $resource apiPath('periods/planned'), {id: '@id'}, updateMethod()
 
     .factory 'Review', ($resource) ->
         $resource apiPath('reviews'), {id: '@id'}, updateMethod()

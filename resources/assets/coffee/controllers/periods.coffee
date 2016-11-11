@@ -1,14 +1,16 @@
 angular
     .module 'Egerep'
 
-    .controller 'PeriodsIndex', ($scope, $timeout, $rootScope, $http, PaymentMethods, DebtTypes) ->
+    .controller 'PeriodsIndex', ($scope, $timeout, $rootScope, $http, PaymentMethods, DebtTypes, LkPaymentTypes, UserService) ->
         bindArguments($scope, arguments)
-
         $rootScope.frontend_loading = true
 
         $timeout ->
             load $scope.page
             $scope.current_page = $scope.page
+
+        getPrefix = ->
+            prefix = if $scope.type is 'total' then '' else "/#{$scope.type}"
 
         getCommission = (val) ->
             if val.indexOf('/') isnt -1
@@ -25,14 +27,17 @@ angular
             total_commission
 
         $scope.pageChanged = ->
+            ajaxStart()
             load $scope.current_page
-            paginate('periods', $scope.current_page)
+            paginate 'periods' + getPrefix(), $scope.current_page
 
         load = (page) ->
-            params = '?page=' + page
+            params = getPrefix()
+            params += '?page=' + page
 
             $http.get "api/periods#{ params }"
             .then (response) ->
+                ajaxEnd()
                 $rootScope.frontendStop()
                 $scope.data = response.data
                 $scope.periods = $scope.data.data

@@ -17,7 +17,7 @@ class PlannedAccountsController extends Controller
      */
     public function index()
     {
-        //
+        return PlannedAccount::with(['tutor'])->orderBy('date', 'desc')->paginate(30)->toJson();
     }
 
     /**
