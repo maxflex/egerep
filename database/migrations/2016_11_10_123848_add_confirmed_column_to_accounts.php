@@ -16,7 +16,7 @@ class AddConfirmedColumnToAccounts extends Migration
             $table->boolean('confirmed')->default(false);
         });
         /* mark all old records as confirmed */
-        \DB::table('accounts')->update(['confirmed' => 1]);
+        // \DB::table('accounts')->update(['confirmed' => 1]);
     }
 
     /**
