@@ -6,6 +6,7 @@
             <td>Дата расчета</td>
             <td>Тип расчета</td>
             <td>Пользователь</td>
+            <td>Последнее посещение</td>
         </tr>
         </thead>
         <tbody>
@@ -14,6 +15,7 @@
             <td>@{{ shortenYear(period.date) }}</td>
             <td>@{{ LkPaymentTypes[period.payment_method] }}</td>
             <td>@{{ UserService.get(period.user_id).login }}</td>
+            <td ng-show="period.tutor.last_login_time">@{{ formatDate(period.tutor.last_login_time) }}</td>
         </tr>
         </tbody>
     </table>
