@@ -267,1806 +267,6 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').directive('comments', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/comments',
-      scope: {
-        user: '=',
-        entityId: '=',
-        trackLoading: '=',
-        entityType: '@'
-      },
-      controller: function($rootScope, $scope, $timeout, Comment, UserService) {
-        var bindDraggable, bindDraggableAll, focusModal;
-        $scope.UserService = UserService;
-        $scope.show_max = 4;
-        $scope.show_all_comments = false;
-        $scope.is_dragging = false;
-        bindDraggableAll = function() {
-          return $timeout(function() {
-            return $scope.getComments().forEach(function(comment) {
-              return bindDraggable(comment.id);
-            });
-          });
-        };
-        bindDraggable = function(comment_id) {
-          $("#comment-" + comment_id).draggable({
-            revert: 'invalid',
-            activeClass: 'drag-active',
-            start: function(e, ui) {
-              $scope.is_dragging = true;
-              return $scope.$apply();
-            },
-            stop: function(e, ui) {
-              $scope.is_dragging = false;
-              return $scope.$apply();
-            }
-          });
-          return $("#comment-delete-" + $scope.entityType + "-" + $scope.entityId).droppable({
-            tolerance: 'pointer',
-            hoverClass: 'hovered',
-            drop: function(e, ui) {
-              return $scope.remove($(ui.draggable).data('comment-id'));
-            }
-          });
-        };
-        $scope.showAllComments = function() {
-          $scope.show_all_comments = true;
-          bindDraggableAll();
-          return focusModal();
-        };
-        $scope.getComments = function() {
-          if ($scope.show_all_comments || $scope.comments.length <= $scope.show_max) {
-            return $scope.comments;
-          } else {
-            return _.last($scope.comments, $scope.show_max - 1);
-          }
-        };
-        $scope.$watch('entityId', function(newVal, oldVal) {
-          return $scope.comments = Comment.query({
-            entity_type: $scope.entityType,
-            entity_id: newVal
-          }, function() {
-            if ($scope.trackLoading) {
-              $rootScope.loaded_comments++;
-            }
-            return bindDraggableAll();
-          });
-        });
-        $scope.formatDateTime = function(date) {
-          return moment(date).format("DD.MM.YY в HH:mm");
-        };
-        $scope.startCommenting = function(event) {
-          $scope.start_commenting = true;
-          return $timeout(function() {
-            return $(event.target).parent().find('input').focus();
-          });
-        };
-        $scope.endCommenting = function() {
-          $scope.comment = '';
-          return $scope.start_commenting = false;
-        };
-        $scope.remove = function(comment_id) {
-          _.find($scope.comments, {
-            id: comment_id
-          }).$remove();
-          $scope.comments = _.without($scope.comments, _.findWhere($scope.comments, {
-            id: comment_id
-          }));
-          return bindDraggableAll();
-        };
-        $scope.edit = function(comment, event) {
-          var element, old_text;
-          old_text = comment.comment;
-          element = $(event.target);
-          element.unbind('keydown').unbind('blur');
-          element.attr('contenteditable', 'true').focus().on('keydown', function(e) {
-            console.log(old_text);
-            if (e.keyCode === 13) {
-              $(this).removeAttr('contenteditable').blur();
-              comment.comment = $(this).text();
-              comment.$update();
-            }
-            if (e.keyCode === 27) {
-              return $(this).blur();
-            }
-          }).on('blur', function(e) {
-            if (element.attr('contenteditable')) {
-              console.log(old_text);
-              return element.removeAttr('contenteditable').html(old_text);
-            }
-          });
-        };
-        $scope.submitComment = function(event) {
-          var new_comment;
-          if (event.keyCode === 13) {
-            new_comment = new Comment({
-              comment: $scope.comment,
-              user_id: $scope.user.id,
-              entity_id: $scope.entityId,
-              entity_type: $scope.entityType
-            });
-            new_comment.$save().then(function(response) {
-              console.log(response);
-              new_comment.user = $scope.user;
-              new_comment.id = response.id;
-              $scope.comments.push(new_comment);
-              return $timeout(function() {
-                return bindDraggable(new_comment.id);
-              });
-            });
-            $scope.endCommenting();
-            focusModal();
-          }
-          if (event.keyCode === 27) {
-            return $(event.target).blur();
-          }
-        };
-        return focusModal = function() {
-          if ($('.modal:visible').length) {
-            $('.modal:visible').focus();
-          }
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('email', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/email',
-      scope: {
-        entity: '='
-      },
-      controller: function($scope) {
-        return $scope.send = function() {
-          return $('#email-modal').modal('show');
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('ngHighlight', function() {
-    return {
-      restrict: 'A',
-      scope: {
-        ngModel: '='
-      },
-      controller: function($scope, $element, $attrs, $timeout) {
-        var refreshInput, refreshSelect;
-        if ($($element).prop('tagName') === 'INPUT') {
-          $($element).on('keyup', function() {
-            return refreshInput(this);
-          });
-          $timeout(function() {
-            return refreshInput($element);
-          }, 500);
-        }
-        if ($($element).prop('tagName') === 'SELECT') {
-          $($element).on('change', function() {
-            return refreshSelect(this);
-          });
-          $timeout(function() {
-            return refreshSelect($element);
-          }, 500);
-        }
-        refreshInput = function(el) {
-          if ($(el).val()) {
-            return $(el).parent().find('input, span').addClass('is-selected');
-          } else {
-            return $(el).parent().find('input, span').removeClass('is-selected');
-          }
-        };
-        return refreshSelect = function(el) {
-          $(el).parent().find('button').removeClass('is-selected');
-          return $(el).parent().find('select > option[value!=""]:selected').parent('select').siblings('button').addClass('is-selected');
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('inputComment', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/input-comment',
-      scope: {
-        entity: '=',
-        commentField: '@'
-      },
-      controller: function($scope, $timeout) {
-        $scope.is_being_commented = false;
-        $scope.blurComment = function() {
-          return $scope.is_being_commented = false;
-        };
-        $scope.focusComment = function() {
-          return $scope.is_being_commented = true;
-        };
-        $scope.startComment = function(event) {
-          $scope.is_being_commented = true;
-          return $timeout(function() {
-            return $(event.target).parent().children('input').focus();
-          });
-        };
-        return $scope.endComment = function(event) {
-          if (event.keyCode === 13) {
-            $(event.target).blur();
-          }
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('metroList', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/metro-list',
-      scope: {
-        markers: '='
-      },
-      controller: function($scope, $element, $attrs) {
-        $scope.inline = $attrs.hasOwnProperty('inline');
-        $scope.one_station = $attrs.hasOwnProperty('oneStation');
-        $scope.short = function(title) {
-          return title.slice(0, 3).toUpperCase();
-        };
-        return $scope.minutes = function(minutes) {
-          return Math.round(minutes);
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('ngMulti', function() {
-    return {
-      restrict: 'E',
-      replace: true,
-      scope: {
-        object: '=',
-        model: '=',
-        noneText: '@'
-      },
-      templateUrl: 'directives/ngmulti',
-      controller: function($scope, $element, $attrs, $timeout) {
-        $scope.highlight = $attrs.hasOwnProperty('highlight');
-        $timeout(function() {
-          return $($element).selectpicker({
-            noneSelectedText: $scope.noneText
-          });
-        });
-        if ($scope.highlight) {
-          return $scope.$watch('model', function(newVal, oldVal) {
-            if (newVal) {
-              return $timeout(function() {
-                $($element).parent().find('button').removeClass('is-selected');
-                return $($element).parent().find('select > option[value!=""]:selected').parent('select').siblings('button').addClass('is-selected');
-              });
-            }
-          });
-        }
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('notifications', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/notifications',
-      scope: {
-        user: '=',
-        entityId: '=',
-        trackLoading: '=',
-        entityType: '@'
-      },
-      controller: function($rootScope, $scope, $timeout, Notification, Notify) {
-        var bindDraggableAndMask, handleDateKeycodes, notificate, saveEdit;
-        $scope.show_max = 4;
-        $scope.show_all_notifications = false;
-        $scope.is_dragging = false;
-        $scope.Notification = Notification;
-        $scope.Notify = Notify;
-        bindDraggableAndMask = function(notification_id) {
-          var element;
-          element = $("#notification-" + notification_id);
-          element.draggable({
-            revert: 'invalid',
-            activeClass: 'drag-active',
-            start: function(e, ui) {
-              $scope.is_dragging = true;
-              return $scope.$apply();
-            },
-            stop: function(e, ui) {
-              $scope.is_dragging = false;
-              return $scope.$apply();
-            }
-          });
-          return element.find('.notification-date-add').mask('d9.y9.y9', {
-            clearIfNotMatch: true
-          });
-        };
-        $timeout(function() {
-          $scope.notifications.forEach(function(notification) {
-            return bindDraggableAndMask(notification.id);
-          });
-          return $("#notification-delete-" + $scope.entityType + "-" + $scope.entityId).droppable({
-            tolerance: 'pointer',
-            hoverClass: 'hovered',
-            drop: function(e, ui) {
-              return $scope.remove($(ui.draggable).data('notification-id'));
-            }
-          });
-        }, 2000);
-        $scope.showAllNotifications = function() {
-          $scope.show_all_notifications = true;
-          return $timeout(function() {
-            return $scope.notifications.forEach(function(notification) {
-              return bindDraggableAndMask(notification.id);
-            });
-          });
-        };
-        $scope.getNotifications = function() {
-          if ($scope.show_all_notifications || $scope.notifications.length <= $scope.show_max) {
-            return $scope.notifications;
-          } else {
-            return _.last($scope.notifications, $scope.show_max - 1);
-          }
-        };
-        $scope.hack = function(event) {
-          $(event.target).attr('contenteditable', true).focus();
-        };
-        $scope.toggle = function(notification) {
-          return $rootScope.toggleEnumServer(notification, 'approved', Notify, Notification);
-        };
-        $scope.$watch('entityId', function(newVal, oldVal) {
-          return $scope.notifications = Notification.query({
-            entity_type: $scope.entityType,
-            entity_id: newVal
-          }, function() {
-            if ($scope.trackLoading) {
-              return $rootScope.loaded_notifications++;
-            }
-          });
-        });
-        $scope.formatDateTime = function(date) {
-          return moment(date).format("DD.MM.YY в HH:mm");
-        };
-        $scope.startNotificationing = function(event) {
-          $scope.start_notificationing = true;
-          return $timeout(function() {
-            $(event.target).parents('div').first().find('div').focus();
-            return $(event.target).parents('div').first().find('input').mask('d9.y9.y9', {
-              clearIfNotMatch: true
-            });
-          });
-        };
-        $scope.endNotificationing = function(comment_element, date_element) {
-          comment_element.html('');
-          date_element.val('');
-          return $scope.start_notificationing = false;
-        };
-        $scope.remove = function(notification_id) {
-          _.find($scope.notifications, {
-            id: notification_id
-          }).$remove();
-          return $scope.notifications = _.without($scope.notifications, _.findWhere($scope.notifications, {
-            id: notification_id
-          }));
-        };
-        saveEdit = function(notification, event) {
-          var comment, comment_element, date, date_element, parent;
-          event.preventDefault();
-          parent = $(event.target).parents('div').first();
-          comment_element = parent.find('div').last();
-          date_element = parent.find('input');
-          comment = comment_element.text();
-          date = date_element.val();
-          if (date === '' || date.match(/_/)) {
-            console.log('no date', date, date_element);
-            date_element.blur().focus();
-            return;
-          }
-          if (comment === '') {
-            console.log('no comment', comment, comment_element);
-            comment_element.focus();
-            return;
-          }
-          return Notification.update({
-            id: notification.id
-          }, {
-            comment: comment,
-            date: date
-          });
-        };
-        $scope.editNotification = function(notification, event) {
-          handleDateKeycodes(event);
-          if (event.keyCode === 13) {
-            event.preventDefault();
-            $(event.target).blur();
-            window.getSelection().removeAllRanges();
-            saveEdit(notification, event);
-          }
-          if (event.keyCode === 27) {
-            window.getSelection().removeAllRanges();
-            return $(event.target).blur();
-          }
-        };
-        notificate = function(event) {
-          var comment, comment_element, date, date_element, new_notification, parent;
-          parent = $(event.target).parents('div').first();
-          comment_element = parent.find('div').last();
-          date_element = parent.find('input');
-          comment = comment_element.text();
-          date = date_element.val();
-          if (date === '' || date.match(/_/)) {
-            date_element.blur().focus();
-            return;
-          }
-          if (comment === '') {
-            comment_element.focus();
-            return;
-          }
-          new_notification = new Notification({
-            comment: comment,
-            user_id: $scope.user.id,
-            entity_id: $scope.entityId,
-            date: date,
-            entity_type: $scope.entityType
-          });
-          new_notification.$save().then(function(response) {
-            console.log(response);
-            new_notification.user = $scope.user;
-            new_notification.id = response.id;
-            new_notification.approved = 0;
-            $scope.notifications.push(new_notification);
-            return $timeout(function() {
-              return bindDraggableAndMask(new_notification.id);
-            });
-          });
-          return $scope.endNotificationing(comment_element, date_element);
-        };
-        handleDateKeycodes = function(event) {
-          var add_days, date, date_node, new_date, ref;
-          if ($(event.target).prop('tagName') === 'DIV') {
-            return;
-          }
-          if ((ref = event.keyCode) === 38 || ref === 40) {
-            event.preventDefault();
-            date_node = $(event.target).parents('div').first().find('input');
-            date = date_node.val();
-            if (date.match(/_/)) {
-              return date_node.val($rootScope.formatDate(moment()));
-            } else {
-              add_days = event.keyCode === 38 ? 1 : -1;
-              new_date = $rootScope.formatDate(moment('20' + convertDate(date)).add({
-                day: add_days
-              }));
-              return date_node.val(new_date);
-            }
-          }
-        };
-        $scope.submitNotification = function(event) {
-          handleDateKeycodes(event);
-          if (event.keyCode === 13) {
-            event.preventDefault();
-            notificate(event);
-          }
-          if (event.keyCode === 27) {
-            window.getSelection().removeAllRanges();
-            return $(event.target).blur();
-          }
-        };
-        return $scope.defaultNotification = function() {
-          var new_notification;
-          new_notification = new Notification({
-            comment: 'стандартное напоминание',
-            user_id: $scope.user.id,
-            entity_id: $scope.entityId,
-            entity_type: $scope.entityType,
-            approved: 1,
-            date: moment(convertDate($scope.$parent.selected_attachment.date)).add(2, 'days').format('DD.MM.YY')
-          });
-          return new_notification.$save().then(function(response) {
-            new_notification.user = $scope.user;
-            new_notification.id = response.id;
-            new_notification.approved = 1;
-            $scope.notifications.push(new_notification);
-            return $timeout(function() {
-              return bindDraggableAndMask(new_notification.id);
-            });
-          });
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('pencilInput', function() {
-    return {
-      restrict: 'E',
-      replace: true,
-      templateUrl: 'directives/pencil-input',
-      scope: {
-        model: '='
-      },
-      controller: function($scope, $timeout, $element, $controller) {
-        $scope.is_being_commented = false;
-        $scope.blurComment = function() {
-          return $scope.is_being_commented = false;
-        };
-        $scope.focusComment = function() {
-          return $scope.is_being_commented = true;
-        };
-        $scope.startComment = function(event) {
-          $scope.is_being_commented = true;
-          return $timeout(function() {
-            return $(event.target).parent().children('div').focus();
-          });
-        };
-        return $scope.watchEnter = function(event) {
-          var ref;
-          if ((ref = event.keyCode) === 13 || ref === 27) {
-            if (event.keyCode === 13) {
-              $scope.model = $(event.target).parent().children('div').text();
-            }
-            $(event.target).parent().children('div').text($scope.model);
-            event.preventDefault();
-            $(event.target).blur();
-          }
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('phones', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/phones',
-      scope: {
-        entity: '='
-      },
-      controller: function($scope, $timeout, $rootScope, PhoneService, UserService) {
-        var recodringLink;
-        $scope.PhoneService = PhoneService;
-        $scope.UserService = UserService;
-        console.log($scope.entityType);
-        $rootScope.dataLoaded.promise.then(function(data) {
-          return $scope.level = $scope.entity.phones && $scope.entity.phones.length ? $scope.entity.phones.length : 1;
-        });
-        $scope.nextLevel = function() {
-          return $scope.level++;
-        };
-        $scope.phoneMaskControl = function(event) {
-          var el, phone_id;
-          el = $(event.target);
-          phone_id = el.attr('ng-model').split('.')[1];
-          return $scope.entity[phone_id] = $(event.target).val();
-        };
-        $scope.isFull = function(number) {
-          if (number === void 0 || number === "") {
-            return false;
-          }
-          return !number.match(/_/);
-        };
-        $scope.sms = function(number) {
-          $('#sms-modal').modal('show');
-          return $rootScope.sms_number = number;
-        };
-        $scope.info = function(number) {
-          $scope.api_number = number;
-          $scope.mango_info = null;
-          $('#api-phone-info').modal('show');
-          return PhoneService.info(number).then(function(response) {
-            console.log(response.data);
-            return $scope.mango_info = response.data;
-          });
-        };
-        $scope.formatDateTime = function(date) {
-          return moment(date).format("DD.MM.YY в HH:mm");
-        };
-        $scope.time = function(seconds) {
-          return moment(0).seconds(seconds).format("mm:ss");
-        };
-        $scope.getNumberTitle = function(number) {
-          console.log(number, $scope.api_number);
-          if (number === PhoneService.clean($scope.api_number)) {
-            return 'текущий номер';
-          }
-          return number;
-        };
-        recodringLink = function(recording_id) {
-          var api_key, api_salt, sha256, sign, timestamp;
-          api_key = 'goea67jyo7i63nf4xdtjn59npnfcee5l';
-          api_salt = 't9mp7vdltmhn0nhnq0x4vwha9ncdr8pa';
-          timestamp = moment().add(5, 'minute').unix();
-          sha256 = new jsSHA('SHA-256', 'TEXT');
-          sha256.update(api_key + timestamp + recording_id + api_salt);
-          sign = sha256.getHash('HEX');
-          return "https://app.mango-office.ru/vpbx/queries/recording/link/" + recording_id + "/play/" + api_key + "/" + timestamp + "/" + sign;
-        };
-        $scope.play = function(recording_id) {
-          if ($scope.audio) {
-            $scope.audio.pause();
-          }
-          $scope.audio = new Audio(recodringLink(recording_id));
-          $scope.audio.play();
-          return $scope.is_playing = recording_id;
-        };
-        $scope.isPlaying = function(recording_id) {
-          return $scope.is_playing === recording_id;
-        };
-        return $scope.stop = function(recording_id) {
-          $scope.is_playing = null;
-          return $scope.audio.pause();
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('plural', function() {
-    return {
-      restrict: 'E',
-      scope: {
-        count: '=',
-        type: '@',
-        noneText: '@',
-        additional: '='
-      },
-      templateUrl: 'directives/plural',
-      controller: function($scope, $element, $attrs, $timeout) {
-        $scope.textOnly = $attrs.hasOwnProperty('textOnly');
-        $scope.hideZero = $attrs.hasOwnProperty('hideZero');
-        return $scope.when = {
-          'age': ['год', 'года', 'лет'],
-          'student': ['ученик', 'ученика', 'учеников'],
-          'minute': ['минуту', 'минуты', 'минут'],
-          'hour': ['час', 'часа', 'часов'],
-          'day': ['день', 'дня', 'дней'],
-          'meeting': ['встреча', 'встречи', 'встреч'],
-          'score': ['балл', 'балла', 'баллов'],
-          'rubbles': ['рубль', 'рубля', 'рублей'],
-          'lesson': ['занятие', 'занятия', 'занятий'],
-          'client': ['клиент', 'клиента', 'клиентов'],
-          'mark': ['оценки', 'оценок', 'оценок'],
-          'request': ['заявка', 'заявки', 'заявок']
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('plus', function() {
-    return {
-      restrict: 'E',
-      scope: {
-        previous: '=',
-        count: '='
-      },
-      templateUrl: 'directives/plus'
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('securityNotification', function() {
-    return {
-      restrict: 'E',
-      scope: {
-        tutor: '='
-      },
-      templateUrl: 'directives/security-notification',
-      controller: function($scope, Tutor) {
-        return $scope.toggleNotification = function(index) {
-          var security_notification;
-          security_notification = angular.copy($scope.tutor.security_notification);
-          security_notification[index] = !security_notification[index];
-          return Tutor.update({
-            id: $scope.tutor.id,
-            security_notification: security_notification
-          }, function() {
-            return $scope.tutor.security_notification = angular.copy(security_notification);
-          });
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('ngSelect', function() {
-    return {
-      restrict: 'E',
-      replace: true,
-      scope: {
-        object: '=',
-        model: '=',
-        noneText: '@'
-      },
-      templateUrl: 'directives/ngselect',
-      controller: function($scope, $element, $attrs) {
-        if (!$scope.noneText) {
-          return $scope.model = _.first(Object.keys($scope.object));
-        }
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('sms', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/sms',
-      scope: {
-        number: '='
-      },
-      controller: function($scope, $timeout, Sms) {
-        var scrollDown;
-        $scope.mass = false;
-        $scope.smsCount = function() {
-          return SmsCounter.count($scope.message || '').messages;
-        };
-        $scope.send = function() {
-          var sms;
-          if ($scope.message) {
-            $scope.sms_sending = true;
-            ajaxStart();
-            sms = new Sms({
-              message: $scope.message,
-              to: $scope.number,
-              mass: $scope.mass
-            });
-            return sms.$save().then(function(data) {
-              ajaxEnd();
-              $scope.sms_sending = false;
-              $scope.message = '';
-              $scope.history.push(data);
-              return scrollDown();
-            });
-          }
-        };
-        $scope.$watch('number', function(newVal, oldVal) {
-          console.log($scope.$parent.formatDateTime($scope.created_at));
-          if (newVal) {
-            $scope.history = Sms.query({
-              number: newVal
-            });
-          }
-          return scrollDown();
-        });
-        return scrollDown = function() {
-          return $timeout(function() {
-            return $("#sms-history").animate({
-              scrollTop: $(window).height()
-            }, "fast");
-          });
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('tutorPhoto', function() {
-    return {
-      restrict: 'E',
-      replace: true,
-      scope: {
-        tutor: '=',
-        version: '='
-      },
-      templateUrl: 'directives/tutor-photo'
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('userSwitch', function() {
-    return {
-      restrict: 'E',
-      scope: {
-        entity: '=',
-        resource: '=',
-        userId: '@'
-      },
-      templateUrl: 'directives/user-switch',
-      controller: function($scope) {
-        return $scope.UserService = $scope.$parent.UserService;
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('user', function() {
-    return {
-      restrict: 'E',
-      scope: {
-        model: '='
-      },
-      templateUrl: 'directives/user'
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').value('Approved', {
-    0: 'не подтвержден',
-    1: 'подтвержден'
-  }).value('Confirmed', {
-    0: 'подтвердить',
-    1: 'подтверждено'
-  }).value('Months', {
-    1: 'январь',
-    2: 'февраль',
-    3: 'март',
-    4: 'апрель',
-    5: 'май',
-    6: 'июнь',
-    7: 'июль',
-    8: 'август',
-    9: 'сентябрь',
-    10: 'октябрь',
-    11: 'ноябрь',
-    12: 'декабрь'
-  }).value('Notify', ['напомнить', 'не напоминать']).value('AttachmentErrors', {
-    1: 'в стыковке не указан класс',
-    2: 'в стыковке не указан предмет',
-    3: 'не указаны условия стыковки',
-    4: 'дата архивации должна быть позже даты стыковки',
-    5: 'не указаны детали архивации',
-    6: 'прогноз и занятия не сочетаются',
-    7: 'прогноз и занятия не сочетаются',
-    8: 'при наличии занятий к проводке стыковка не может быть скрыта',
-    9: 'дата архивации не совпадает с датой последнего занятия',
-    10: 'возможно стыковку можно скрыть',
-    11: 'возможно стыковку можно скрыть',
-    12: 'в скрытой стыковке дата архивации должна совпадать с датой последнего занятия',
-    13: 'в скрытой стыковке без занятий между датами стыковки и архивации должно быть 7 дней',
-    14: 'если архивация отсутствует, стыковка не может быть скрыта',
-    15: 'стыковка, у которой дата архивации позже даты последнего расчета не может быть скрыта',
-    16: 'слишком маленький прогноз',
-    17: 'слишком большой прогноз'
-  }).value('ReviewErrors', {
-    1: 'не стоит оценка к отзыву',
-    2: 'нет подписи к опубликованному отзыву',
-    3: 'нет текста отзыва к опубликованному отзыву'
-  }).value('TutorErrors', {
-    1: 'нет оригинала фото',
-    2: 'нет обрезанного фото',
-    3: 'цена не установлена',
-    4: 'нет меток и выезда'
-  }).value('LogTypes', {
-    create: 'создание',
-    update: 'обновление',
-    "delete": 'удаление'
-  }).value('Recommendations', {
-    1: {
-      text: 'У этого репетитора уже было несколько расчетов, поэтому ему можно доверить длительное обучение, требующееся данному клиенту',
-      type: 0
-    },
-    2: {
-      text: 'У этого репетитора был всего 1 расчет и ему можно доверить длительное обучение, но лучше поискать более проверенные варианты',
-      type: 1
-    },
-    3: {
-      text: 'С этим репетитором не было встреч и есть клиенты, за которых он еще не рассчитался. Отдавать этого клиента категорически нельзя',
-      type: 2
-    },
-    4: {
-      text: 'С этим репетитором не было встреч и у него нет активных клиентов. Отдавать ему клиента можно, но только в крайнем случае',
-      type: 1
-    },
-    5: {
-      text: 'У этого репетитора уже было несколько расчетов, поэтому ему можно доверить данного клиента',
-      type: 0
-    },
-    6: {
-      text: 'У этого репетитора был всего 1 расчет, то есть у него средний кредитный рейтинг. Если более проверенных репетиторов нет, ему можно доверить этого клиента',
-      type: 1
-    },
-    7: {
-      text: 'С этим репетитором не было встреч и есть клиенты, за которых он еще не рассчитался. Отдавать этого репетитора можно в самом крайнем случае',
-      type: 2
-    },
-    8: {
-      text: 'С этим репетитором не было встреч и у него нет активных клиентов. Риск сотрудничества средний, поэтому работать с репетитором можно, если нет других вариантов',
-      type: 1
-    },
-    9: {
-      text: 'У этого репетитора высокий кредитный рейтинг, но конец учебного года лучше использовать для проверки неизвестных репетиторов',
-      type: 1
-    },
-    10: {
-      text: 'Этому репетитору мы не доверяем, но сейчас отличное время для его проверки. Если сотрудничество будет успешным, то мы будем рекомендовать в следующем году как проверенного. Если он не заплатит, то невыплаты будут минимальными и репетитора мы закроем навсегда, в чем великая польза.',
-      type: 0
-    },
-    11: {
-      text: 'С 10-классниками нужно быть особенно аккуратными и этот репетитор в данном случае рекомендован',
-      type: 0
-    },
-    12: {
-      text: 'С этим репетитором была всего 1 встреча, поэтому давать его ученику 10 класса будет риском. Сделайте все, чтобы избежать этого, но если не получается – давать можно',
-      type: 1
-    },
-    13: {
-      text: 'С этим репетитором не было встреч и есть клиенты, за которых он еще не рассчитался. Нужно сделать все, чтобы 10-классник его не получил, так как 10 классы всегда продолжают заниматься и в 11 классе. Давать этого репетитора категорически нельзя',
-      type: 2
-    },
-    14: {
-      text: 'Этот репетитор для компании новый. Давать 10-класснику можно, но в самом крайнем случае',
-      type: 2
-    }
-  }).value('RecommendationTypes', ['очень рекомендован', 'средне рекомендован', 'не рекомендован']).value('DebtTypes', {
-    0: 'не доплатил',
-    1: 'переплатил'
-  }).value('Weekdays', {
-    0: 'пн',
-    1: 'вт',
-    2: 'ср',
-    3: 'чт',
-    4: 'пт',
-    5: 'сб',
-    6: 'вс'
-  }).value('Destinations', {
-    r_k: 'репетитор едет к клиенту',
-    k_r: 'клиент едет к репетитору'
-  }).value('Workplaces', {
-    0: 'не активен в системе ЕГЭ-Центре',
-    1: 'активен в системе ЕГЭ-Центра',
-    2: 'ведет занятия в ЕГЭ-Центре',
-    3: 'ранее работал в ЕГЭ-Центре'
-  }).value('Genders', {
-    male: 'мужской',
-    female: 'женский'
-  }).value('YesNo', {
-    0: 'нет',
-    1: 'да'
-  }).value('TutorStates', {
-    0: 'не установлено',
-    1: 'на проверку',
-    2: 'к закрытию',
-    3: 'закрыто',
-    4: 'к одобрению',
-    5: 'одобрено'
-  }).value('TutorPublishedStates', {
-    0: 'не опубликован',
-    1: 'опубликован'
-  }).value('PaymentMethods', {
-    0: 'стандартный расчет',
-    1: 'яндекс.деньги',
-    2: 'перевод на карту'
-  }).value('LkPaymentTypes', {
-    0: 'личная встреча'
-  }).value('ArchiveStates', {
-    impossible: 'невозможно',
-    possible: 'возможно'
-  }).value('ReviewStates', {
-    unpublished: 'не опубликован',
-    published: 'опубликован'
-  }).value('Existance', ['созданные', 'требующие создания']).value('Presence', [['есть', 'отсутствует'], ['есть', 'нет']]).value('AttachmentVisibility', {
-    0: 'показано',
-    1: 'скрыто'
-  }).value('AttachmentStates', {
-    "new": 'новые',
-    inprogress: 'рабочие',
-    ended: 'завершенные'
-  }).value('AttachmentState', {
-    "new": 'новый',
-    inprogress: 'рабочий',
-    ended: 'завершенный'
-  }).value('Checked', ['не проверено', 'проверено']).value('ReviewScores', {
-    1: 1,
-    2: 2,
-    3: 3,
-    4: 4,
-    5: 5,
-    6: 6,
-    7: 7,
-    8: 8,
-    9: 9,
-    10: 10,
-    11: 'отзыв не собирать',
-    12: 'отзыв собрать позже'
-  }).value('Grades', {
-    1: '1 класс',
-    2: '2 класс',
-    3: '3 класс',
-    4: '4 класс',
-    5: '5 класс',
-    6: '6 класс',
-    7: '7 класс',
-    8: '8 класс',
-    9: '9 класс',
-    10: '10 класс',
-    11: '11 класс',
-    12: 'студенты',
-    13: 'остальные'
-  }).value('Subjects', {
-    all: {
-      1: 'математика',
-      2: 'физика',
-      3: 'химия',
-      4: 'биология',
-      5: 'информатика',
-      6: 'русский',
-      7: 'литература',
-      8: 'обществознание',
-      9: 'история',
-      10: 'английский',
-      11: 'неизвестный предмет'
-    },
-    full: {
-      1: 'Математика',
-      2: 'Физика',
-      3: 'Химия',
-      4: 'Биология',
-      5: 'Информатика',
-      6: 'Русский язык',
-      7: 'Литература',
-      8: 'Обществознание',
-      9: 'История',
-      10: 'Английский язык'
-    },
-    dative: {
-      1: 'математике',
-      2: 'физике',
-      3: 'химии',
-      4: 'биологии',
-      5: 'информатике',
-      6: 'русскому языку',
-      7: 'литературе',
-      8: 'обществознанию',
-      9: 'истории',
-      10: 'английскому языку',
-      11: 'неизвестному предмету'
-    },
-    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
-    three_letters: {
-      1: 'МАТ',
-      2: 'ФИЗ',
-      3: 'ХИМ',
-      4: 'БИО',
-      5: 'ИНФ',
-      6: 'РУС',
-      7: 'ЛИТ',
-      8: 'ОБЩ',
-      9: 'ИСТ',
-      10: 'АНГ'
-    },
-    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
-  }).value('Branches', {
-    1: {
-      code: 'TRG',
-      full: 'Тургеневская',
-      short: 'ТУР',
-      address: 'Мясницкая 40с1',
-      color: '#FBAA33'
-    },
-    2: {
-      code: 'PVN',
-      full: 'Проспект Вернадского',
-      short: 'ВЕР',
-      address: '',
-      color: '#EF1E25'
-    },
-    3: {
-      code: 'BGT',
-      full: 'Багратионовская',
-      short: 'БАГ',
-      address: '',
-      color: '#019EE0'
-    },
-    5: {
-      code: 'IZM',
-      full: 'Измайловская',
-      short: 'ИЗМ',
-      address: '',
-      color: '#0252A2'
-    },
-    6: {
-      code: 'OPL',
-      full: 'Октябрьское поле',
-      short: 'ОКТ',
-      address: '',
-      color: '#B61D8E'
-    },
-    7: {
-      code: 'RPT',
-      full: 'Рязанский Проспект',
-      short: 'РЯЗ',
-      address: '',
-      color: '#B61D8E'
-    },
-    8: {
-      code: 'VKS',
-      full: 'Войковская',
-      short: 'ВОЙ',
-      address: '',
-      color: '#029A55'
-    },
-    9: {
-      code: 'ORH',
-      full: 'Орехово',
-      short: 'ОРЕ',
-      address: '',
-      color: '#029A55'
-    },
-    11: {
-      code: 'UJN',
-      full: 'Южная',
-      short: 'ЮЖН',
-      address: '',
-      color: '#ACADAF'
-    },
-    12: {
-      code: 'PER',
-      full: 'Перово',
-      short: 'ПЕР',
-      address: '',
-      color: '#FFD803'
-    },
-    13: {
-      code: 'KLG',
-      full: 'Калужская',
-      short: 'КЛЖ',
-      address: 'Научный проезд 8с1',
-      color: '#C07911'
-    },
-    14: {
-      code: 'BRT',
-      full: 'Братиславская',
-      short: 'БРА',
-      address: '',
-      color: '#B1D332'
-    },
-    15: {
-      code: 'MLD',
-      full: 'Молодежная',
-      short: 'МОЛ',
-      address: '',
-      color: '#0252A2'
-    },
-    16: {
-      code: 'VLD',
-      full: 'Владыкино',
-      short: 'ВЛА',
-      address: '',
-      color: '#ACADAF'
-    }
-  });
-
-}).call(this);
-
-(function() {
-  var apiPath, updateMethod;
-
-  angular.module('Egerep').factory('Marker', function($resource) {
-    return $resource(apiPath('markers'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Notification', function($resource) {
-    return $resource(apiPath('notifications'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Account', function($resource) {
-    return $resource(apiPath('accounts'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('PlannedAccount', function($resource) {
-    return $resource(apiPath('periods/planned'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Review', function($resource) {
-    return $resource(apiPath('reviews'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Archive', function($resource) {
-    return $resource(apiPath('archives'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Attachment', function($resource) {
-    return $resource(apiPath('attachments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('RequestList', function($resource) {
-    return $resource(apiPath('lists'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Request', function($resource) {
-    return $resource(apiPath('requests'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      transfer: {
-        method: 'POST',
-        url: apiPath('requests', 'transfer')
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  }).factory('Sms', function($resource) {
-    return $resource(apiPath('sms'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Comment', function($resource) {
-    return $resource(apiPath('comments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Client', function($resource) {
-    return $resource(apiPath('clients'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('User', function($resource) {
-    return $resource(apiPath('users'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Tutor', function($resource) {
-    return $resource(apiPath('tutors'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      deletePhoto: {
-        url: apiPath('tutors', 'photo'),
-        method: 'DELETE'
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  });
-
-  apiPath = function(entity, additional) {
-    if (additional == null) {
-      additional = '';
-    }
-    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
-  };
-
-  updateMethod = function() {
-    return {
-      update: {
-        method: 'PUT'
-      }
-    };
-  };
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('ApiService', function($http) {
-    this.metro = function(fun, data) {
-      return $http.post("api/metro/" + fun, data);
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('AttachmentService', function(AttachmentStates) {
-    this.AttachmentStates = AttachmentStates;
-    this.getState = function(attachment) {
-      if (attachment.archive) {
-        return 'ended';
-      } else {
-        if (attachment.forecast) {
-          return 'inprogress';
-        } else {
-          return 'new';
-        }
-      }
-    };
-    this.getStatus = function(attachment) {
-      return this.AttachmentStates[this.getState(attachment)];
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('BranchService', function(Branches) {
-    this.branches = Branches;
-    this.getNameWithColor = function(branch_id) {
-      var curBranch;
-      curBranch = this.branches[branch_id];
-      return '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="svg-metro"><circle fill="' + curBranch.color + '" r="6" cx="7" cy="7"></circle></svg>' + curBranch.full;
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('PhoneService', function($rootScope, $http) {
-    this.info = function(number) {
-      return $http.post('api/command/mango-stats', {
-        number: number
-      });
-    };
-    this.call = function(number) {
-      return location.href = "sip:" + number.replace(/[^0-9]/g, '');
-    };
-    this.isMobile = function(number) {
-      return number && (parseInt(number[4]) === 9 || parseInt(number[1]) === 9);
-    };
-    this.clean = function(number) {
-      return number.replace(/[^0-9]/gim, "");
-    };
-    this.format = function(number) {
-      if (!number) {
-        return;
-      }
-      number = this.clean(number);
-      return '+' + number.substr(0, 1) + ' (' + number.substr(1, 3) + ') ' + number.substr(4, 3) + '-' + number.substr(7, 2) + '-' + number.substr(9, 2);
-    };
-    this.sms = function(number) {
-      $rootScope.sms_number = number;
-      return $('#sms-modal').modal('show');
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('PusherService', function($http) {
-    var init;
-    this.bind = function(channel, callback) {
-      if (this.pusher === void 0) {
-        init();
-      }
-      return this.channel.bind("App\\Events\\" + channel, callback);
-    };
-    init = (function(_this) {
-      return function() {
-        _this.pusher = new Pusher('2d212b249c84f8c7ba5c', {
-          encrypted: true,
-          cluster: 'eu'
-        });
-        return _this.channel = _this.pusher.subscribe('egerep');
-      };
-    })(this);
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('RecommendationService', function(Recommendations, RecommendationTypes) {
-    this.get = function(tutor, grade) {
-      var recommendation;
-      recommendation = this.getRecommendation(tutor, grade);
-      recommendation.type_text = RecommendationTypes[recommendation.type];
-      return recommendation;
-    };
-    this.getRecommendation = function(tutor, grade) {
-      var month;
-      month = moment().format('M');
-      if (grade !== 10) {
-        if (month >= 7 && month <= 10) {
-          if (tutor.meeting_count >= 2) {
-            return Recommendations[1];
-          } else {
-            if (tutor.meeting_count === 1) {
-              return Recommendations[2];
-            } else {
-              if (tutor.active_clients_count >= 2) {
-                return Recommendations[3];
-              } else {
-                return Recommendations[4];
-              }
-            }
-          }
-        } else {
-          if (month >= 11 || month <= 2) {
-            if (tutor.meeting_count >= 2) {
-              return Recommendations[5];
-            } else {
-              if (tutor.meeting_count === 1) {
-                return Recommendations[6];
-              } else {
-                if (tutor.active_clients_count >= 2) {
-                  return Recommendations[7];
-                } else {
-                  return Recommendations[8];
-                }
-              }
-            }
-          } else {
-            if (tutor.meeting_count >= 2) {
-              return Recommendations[9];
-            } else {
-              return Recommendations[10];
-            }
-          }
-        }
-      } else {
-        if (tutor.meeting_count >= 2) {
-          return Recommendations[11];
-        } else {
-          if (tutor.meeting_count === 1) {
-            return Recommendations[12];
-          } else {
-            if (tutor.active_clients_count >= 2) {
-              return Recommendations[13];
-            } else {
-              return Recommendations[14];
-            }
-          }
-        }
-      }
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('SvgMap', function() {
-    this.map = new SVGMap({
-      iframeId: 'map',
-      clicable: true,
-      places: [],
-      placesHash: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 180, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211],
-      groups: [
-        {
-          "id": "1",
-          "title": "внутри кольца",
-          "points": [4, 8, 12, 15, 18, 19, 38, 47, 48, 51, 54, 56, 58, 60, 63, 66, 68, 71, 74, 82, 83, 86, 90, 91, 92, 102, 104, 109, 111, 120, 122, 126, 129, 131, 132, 133, 137, 138, 140, 153, 156, 157, 158, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 198, 199]
-        }, {
-          "id": "2",
-          "title": "красная север",
-          "points": [55, 106, 124, 145, 154]
-        }, {
-          "id": "3",
-          "title": "красная юг",
-          "points": [33, 108, 125, 148, 151, 164, 209, 210]
-        }, {
-          "id": "4",
-          "title": "зеленая север",
-          "points": [9, 28, 29, 36, 112, 123]
-        }, {
-          "id": "5",
-          "title": "зеленая юг",
-          "points": [2, 39, 44, 46, 50, 53, 88, 152, 197, 202, 204]
-        }, {
-          "id": "6",
-          "title": "синяя запад",
-          "points": [32, 59, 62, 75, 76, 77, 93, 121, 127, 186, 203]
-        }, {
-          "id": "7",
-          "title": "синяя восток",
-          "points": [13, 42, 94, 95, 119, 161, 163]
-        }, {
-          "id": "8",
-          "title": "голубая",
-          "points": [11, 62, 64, 99, 128, 149, 150, 186]
-        }, {
-          "id": "9",
-          "title": "оранжевая север",
-          "points": [5, 10, 20, 26, 72, 113, 117]
-        }, {
-          "id": "10",
-          "title": "оранжевая юг",
-          "points": [3, 16, 43, 52, 65, 84, 85, 110, 135, 159, 166]
-        }, {
-          "id": "11",
-          "title": "фиолетовая север",
-          "points": [14, 87, 100, 103, 130, 141, 142, 162]
-        }, {
-          "id": "12",
-          "title": "фиолетовая юг",
-          "points": [30, 35, 57, 61, 107, 115, 134, 205, 206, 211]
-        }, {
-          "id": "13",
-          "title": "желтая",
-          "points": [1, 81, 96, 101, 114, 160, 180]
-        }, {
-          "id": "14",
-          "title": "серая север",
-          "points": [6, 17, 27, 37, 89, 97, 116, 136]
-        }, {
-          "id": "15",
-          "title": "серая юг",
-          "points": [7, 23, 45, 78, 79, 80, 105, 118, 139, 143, 147, 155, 165]
-        }, {
-          "id": "16",
-          "title": "светло-зеленая",
-          "points": [21, 31, 41, 49, 53, 57, 67, 70, 98, 101, 107, 114, 200, 201, 202]
-        }, {
-          "id": "17",
-          "title": "бутовская",
-          "points": [22, 23, 24, 84, 144, 146, 147, 207, 208]
-        }, {
-          "id": "18",
-          "title": "каховская",
-          "points": [25, 45, 46, 118, 197]
-        }
-      ]
-    });
-    this.show = function(points) {
-      var map;
-      $('#svg-modal').modal('show');
-      map = this.map;
-      map.init();
-      map.selected = {};
-      map.deselectAll();
-      map.select(points);
-      $(".legend a").unbind('click');
-      return $(".legend a").on('click', function() {
-        var id;
-        id = $(this).attr("data-rel");
-        return map.toggleGroup(id);
-      });
-    };
-    this.el = function() {
-      return $('#map').contents();
-    };
-    this.save = function() {
-      $('#svg-modal').modal('hide');
-      return this.map.save();
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('TutorService', function($http) {
-    this.translit = {
-      'А': 'A',
-      'Б': 'B',
-      'В': 'V',
-      'Г': 'G',
-      'Д': 'D',
-      'Е': 'E',
-      'Ё': 'E',
-      'Ж': 'Gh',
-      'З': 'Z',
-      'И': 'I',
-      'Й': 'Y',
-      'К': 'K',
-      'Л': 'L',
-      'М': 'M',
-      'Н': 'N',
-      'О': 'O',
-      'П': 'P',
-      'Р': 'R',
-      'С': 'S',
-      'Т': 'T',
-      'У': 'U',
-      'Ф': 'F',
-      'Х': 'H',
-      'Ц': 'C',
-      'Ч': 'Ch',
-      'Ш': 'Sh',
-      'Щ': 'Sch',
-      'Ъ': 'Y',
-      'Ы': 'Y',
-      'Ь': 'Y',
-      'Э': 'E',
-      'Ю': 'Yu',
-      'Я': 'Ya',
-      'а': 'a',
-      'б': 'b',
-      'в': 'v',
-      'г': 'g',
-      'д': 'd',
-      'е': 'e',
-      'ё': 'e',
-      'ж': 'gh',
-      'з': 'z',
-      'и': 'i',
-      'й': 'y',
-      'к': 'k',
-      'л': 'l',
-      'м': 'm',
-      'н': 'n',
-      'о': 'o',
-      'п': 'p',
-      'р': 'r',
-      'с': 's',
-      'т': 't',
-      'у': 'u',
-      'ф': 'f',
-      'х': 'h',
-      'ц': 'c',
-      'ч': 'ch',
-      'ш': 'sh',
-      'щ': 'sch',
-      'ъ': 'y',
-      'ы': 'y',
-      'ь': 'y',
-      'э': 'e',
-      'ю': 'yu',
-      'я': 'ya'
-    };
-    this.default_tutor = {
-      gender: "male",
-      branches: [],
-      phones: [],
-      subjects: [],
-      grades: [],
-      svg_map: [],
-      markers: [],
-      state: 0,
-      in_egecentr: 0
-    };
-    this.getFiltered = function(search_data) {
-      return $http.post('api/tutors/filtered', search_data);
-    };
-    this.select = function(search_data) {
-      return $http.post('api/tutors/select', search_data);
-    };
-    this.getDebtMap = function(search_data) {
-      return $http.post('api/debt/map', search_data);
-    };
-    this.getDebtors = function() {
-      return $http.get('api/debt');
-    };
-    this.generateLogin = function(tutor) {
-      var i, len, letter, login, ref;
-      login = '';
-      ref = tutor.last_name.toLowerCase();
-      for (i = 0, len = ref.length; i < len; i++) {
-        letter = ref[i];
-        login += this.translit[letter];
-      }
-      login = login.slice(0, 3);
-      login += '_' + this.translit[tutor.first_name.toLowerCase()[0]] + this.translit[tutor.middle_name.toLowerCase()[0]];
-      return login;
-    };
-    this.generatePassword = function() {
-      return Math.floor(10000000 + Math.random() * 89999999);
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('UserService', function(User, $rootScope, $timeout) {
-    var system_user;
-    this.users = User.query();
-    $timeout((function(_this) {
-      return function() {
-        return _this.current_user = $rootScope.$$childTail.user;
-      };
-    })(this));
-    system_user = {
-      color: '#999999',
-      login: 'system',
-      id: 0,
-      banned: 0
-    };
-    this.get = function(user_id) {
-      return this.getUser(user_id);
-    };
-    this.getUser = function(user_id) {
-      return _.findWhere(this.users, {
-        id: parseInt(user_id)
-      }) || system_user;
-    };
-    this.getLogin = function(user_id) {
-      return this.getUser(parseInt(user_id)).login;
-    };
-    this.getColor = function(user_id) {
-      return this.getUser(parseInt(user_id)).color;
-    };
-    this.getWithSystem = function(only_active) {
-      var users;
-      if (only_active == null) {
-        only_active = true;
-      }
-      users = this.getAll(only_active);
-      users.unshift(system_user);
-      return users;
-    };
-    this.getAll = function(only_active) {
-      if (only_active == null) {
-        only_active = true;
-      }
-      if (only_active) {
-        return _.where(this.users, {
-          banned: 0
-        });
-      } else {
-        return this.users;
-      }
-    };
-    this.toggle = function(entity, user_id, Resource) {
-      var new_user_id, obj;
-      if (Resource == null) {
-        Resource = false;
-      }
-      new_user_id = entity[user_id] ? 0 : this.current_user.id;
-      if (Resource) {
-        return Resource.update((
-          obj = {
-            id: entity.id
-          },
-          obj["" + user_id] = new_user_id,
-          obj
-        ), function() {
-          return entity[user_id] = new_user_id;
-        });
-      } else {
-        return entity[user_id] = new_user_id;
-      }
-    };
-    this.getBannedUsers = function() {
-      return _.where(this.users, {
-        banned: 1
-      });
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').factory('Model', function($resource) {
-    return $resource('api/models/:id', {}, {
-      update: {
-        method: 'PUT'
-      }
-    });
-  }).controller("ModelsIndex", function($scope, $timeout, Model) {
-    return $scope.models = Model.query();
-  }).controller("ModelsForm", function($scope, $timeout, $interval, Model) {
-    return $timeout(function() {
-      if ($scope.id > 0) {
-        return $scope.model = Model.get({
-          id: $scope.id
-        });
-      }
-    });
-  });
-
-}).call(this);
-
-(function() {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   angular.module('Egerep').controller('AccountsHiddenCtrl', function($scope, Grades, Attachment) {
@@ -2292,32 +492,30 @@
       return $scope.dialog('add-account');
     };
     $scope.addPlannedAccountDialog = function() {
-      return $scope.checkBeforeRun(function() {
-        var ref;
-        if (!$scope.tutor.planned_account || ((ref = !'is_planned', indexOf.call($scope.tutor.planned_account, ref) >= 0) || !$scope.tutor.planned_account.id)) {
-          $scope.tutor.planned_account = {
-            is_planned: 0,
-            payment_method: 0,
-            user_id: '',
-            date: ''
-          };
-        } else {
-          _.extend($scope.tutor.planned_account, {
-            is_planned: '1',
-            tutor_id: $scope.tutor.id
-          });
-        }
-        $('#pa-date').datepicker('destroy');
-        $('#pa-date').datepicker({
-          language: 'ru',
-          autoclose: true,
-          orientation: 'bottom auto'
+      var ref;
+      if (!$scope.tutor.planned_account || ((ref = !'is_planned', indexOf.call($scope.tutor.planned_account, ref) >= 0) || !$scope.tutor.planned_account.id)) {
+        $scope.tutor.planned_account = {
+          is_planned: 0,
+          payment_method: 0,
+          user_id: '',
+          date: ''
+        };
+      } else {
+        _.extend($scope.tutor.planned_account, {
+          is_planned: '1',
+          tutor_id: $scope.tutor.id
         });
-        $timeout(function() {
-          return $scope.refreshSelects();
-        });
-        $('#add-planned-account').modal('show');
+      }
+      $('#pa-date').datepicker('destroy');
+      $('#pa-date').datepicker({
+        language: 'ru',
+        autoclose: true,
+        orientation: 'bottom auto'
       });
+      $timeout(function() {
+        return $scope.refreshSelects();
+      });
+      $('#add-planned-account').modal('show');
     };
     validatePlannedAccount = function() {
       var valid;
@@ -2548,41 +746,50 @@
         return $scope.hidden_clients_count++;
       }
     };
-    $scope.checkBeforeRun = function(callback, param) {
+    $scope.checkBeforeRun = function(check, callback, param) {
       var confirm_hash;
-      confirm_hash = 'cbcb58ac2e496207586df2854b17995f';
-      bootbox.prompt({
-        title: "Введите пароль",
-        className: "modal-password",
-        callback: (function(_this) {
-          return function(result) {
-            if (result !== null) {
-              if (md5(result) === confirm_hash) {
-                callback(param);
-                return true;
-              } else {
-                $('.bootbox-form').addClass('has-error').children().first().focus();
-                $('.bootbox-input-text').on('keydown', function() {
-                  return $(this).parent().removeClass('has-error');
-                });
-                return false;
+      if (check) {
+        confirm_hash = 'cbcb58ac2e496207586df2854b17995f';
+        bootbox.prompt({
+          title: "Введите пароль",
+          className: "modal-password",
+          callback: (function(_this) {
+            return function(result) {
+              if (result !== null) {
+                if (md5(result) === confirm_hash) {
+                  callback(param);
+                  return true;
+                } else {
+                  $('.bootbox-form').addClass('has-error').children().first().focus();
+                  $('.bootbox-input-text').on('keydown', function() {
+                    return $(this).parent().removeClass('has-error');
+                  });
+                  return false;
+                }
               }
+            };
+          })(this),
+          buttons: {
+            confirm: {
+              label: "Подтвердить"
+            },
+            cancel: {
+              className: "display-none"
             }
-          };
-        })(this),
-        buttons: {
-          confirm: {
-            label: "Подтвердить"
           },
-          cancel: {
-            className: "display-none"
-          }
-        },
-        onEscape: true
-      });
+          onEscape: true
+        });
+      } else {
+        return callback(param);
+      }
     };
-    return $scope.toggleConfirmed = function(account) {
+    $scope.toggleConfirmed = function(account) {
       return $rootScope.toggleEnumServer(account, 'confirmed', Confirmed, Account);
+    };
+    return $scope.hasConfirmedAccount = function() {
+      return _.where($scope.tutor.last_accounts, {
+        confirmed: 1
+      }).length;
     };
   });
 
@@ -5378,6 +3585,1806 @@
       $scope.form_changed = true;
       return $('#gmap-modal').modal('hide');
     };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').factory('Model', function($resource) {
+    return $resource('api/models/:id', {}, {
+      update: {
+        method: 'PUT'
+      }
+    });
+  }).controller("ModelsIndex", function($scope, $timeout, Model) {
+    return $scope.models = Model.query();
+  }).controller("ModelsForm", function($scope, $timeout, $interval, Model) {
+    return $timeout(function() {
+      if ($scope.id > 0) {
+        return $scope.model = Model.get({
+          id: $scope.id
+        });
+      }
+    });
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('comments', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/comments',
+      scope: {
+        user: '=',
+        entityId: '=',
+        trackLoading: '=',
+        entityType: '@'
+      },
+      controller: function($rootScope, $scope, $timeout, Comment, UserService) {
+        var bindDraggable, bindDraggableAll, focusModal;
+        $scope.UserService = UserService;
+        $scope.show_max = 4;
+        $scope.show_all_comments = false;
+        $scope.is_dragging = false;
+        bindDraggableAll = function() {
+          return $timeout(function() {
+            return $scope.getComments().forEach(function(comment) {
+              return bindDraggable(comment.id);
+            });
+          });
+        };
+        bindDraggable = function(comment_id) {
+          $("#comment-" + comment_id).draggable({
+            revert: 'invalid',
+            activeClass: 'drag-active',
+            start: function(e, ui) {
+              $scope.is_dragging = true;
+              return $scope.$apply();
+            },
+            stop: function(e, ui) {
+              $scope.is_dragging = false;
+              return $scope.$apply();
+            }
+          });
+          return $("#comment-delete-" + $scope.entityType + "-" + $scope.entityId).droppable({
+            tolerance: 'pointer',
+            hoverClass: 'hovered',
+            drop: function(e, ui) {
+              return $scope.remove($(ui.draggable).data('comment-id'));
+            }
+          });
+        };
+        $scope.showAllComments = function() {
+          $scope.show_all_comments = true;
+          bindDraggableAll();
+          return focusModal();
+        };
+        $scope.getComments = function() {
+          if ($scope.show_all_comments || $scope.comments.length <= $scope.show_max) {
+            return $scope.comments;
+          } else {
+            return _.last($scope.comments, $scope.show_max - 1);
+          }
+        };
+        $scope.$watch('entityId', function(newVal, oldVal) {
+          return $scope.comments = Comment.query({
+            entity_type: $scope.entityType,
+            entity_id: newVal
+          }, function() {
+            if ($scope.trackLoading) {
+              $rootScope.loaded_comments++;
+            }
+            return bindDraggableAll();
+          });
+        });
+        $scope.formatDateTime = function(date) {
+          return moment(date).format("DD.MM.YY в HH:mm");
+        };
+        $scope.startCommenting = function(event) {
+          $scope.start_commenting = true;
+          return $timeout(function() {
+            return $(event.target).parent().find('input').focus();
+          });
+        };
+        $scope.endCommenting = function() {
+          $scope.comment = '';
+          return $scope.start_commenting = false;
+        };
+        $scope.remove = function(comment_id) {
+          _.find($scope.comments, {
+            id: comment_id
+          }).$remove();
+          $scope.comments = _.without($scope.comments, _.findWhere($scope.comments, {
+            id: comment_id
+          }));
+          return bindDraggableAll();
+        };
+        $scope.edit = function(comment, event) {
+          var element, old_text;
+          old_text = comment.comment;
+          element = $(event.target);
+          element.unbind('keydown').unbind('blur');
+          element.attr('contenteditable', 'true').focus().on('keydown', function(e) {
+            console.log(old_text);
+            if (e.keyCode === 13) {
+              $(this).removeAttr('contenteditable').blur();
+              comment.comment = $(this).text();
+              comment.$update();
+            }
+            if (e.keyCode === 27) {
+              return $(this).blur();
+            }
+          }).on('blur', function(e) {
+            if (element.attr('contenteditable')) {
+              console.log(old_text);
+              return element.removeAttr('contenteditable').html(old_text);
+            }
+          });
+        };
+        $scope.submitComment = function(event) {
+          var new_comment;
+          if (event.keyCode === 13) {
+            new_comment = new Comment({
+              comment: $scope.comment,
+              user_id: $scope.user.id,
+              entity_id: $scope.entityId,
+              entity_type: $scope.entityType
+            });
+            new_comment.$save().then(function(response) {
+              console.log(response);
+              new_comment.user = $scope.user;
+              new_comment.id = response.id;
+              $scope.comments.push(new_comment);
+              return $timeout(function() {
+                return bindDraggable(new_comment.id);
+              });
+            });
+            $scope.endCommenting();
+            focusModal();
+          }
+          if (event.keyCode === 27) {
+            return $(event.target).blur();
+          }
+        };
+        return focusModal = function() {
+          if ($('.modal:visible').length) {
+            $('.modal:visible').focus();
+          }
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('email', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/email',
+      scope: {
+        entity: '='
+      },
+      controller: function($scope) {
+        return $scope.send = function() {
+          return $('#email-modal').modal('show');
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('ngHighlight', function() {
+    return {
+      restrict: 'A',
+      scope: {
+        ngModel: '='
+      },
+      controller: function($scope, $element, $attrs, $timeout) {
+        var refreshInput, refreshSelect;
+        if ($($element).prop('tagName') === 'INPUT') {
+          $($element).on('keyup', function() {
+            return refreshInput(this);
+          });
+          $timeout(function() {
+            return refreshInput($element);
+          }, 500);
+        }
+        if ($($element).prop('tagName') === 'SELECT') {
+          $($element).on('change', function() {
+            return refreshSelect(this);
+          });
+          $timeout(function() {
+            return refreshSelect($element);
+          }, 500);
+        }
+        refreshInput = function(el) {
+          if ($(el).val()) {
+            return $(el).parent().find('input, span').addClass('is-selected');
+          } else {
+            return $(el).parent().find('input, span').removeClass('is-selected');
+          }
+        };
+        return refreshSelect = function(el) {
+          $(el).parent().find('button').removeClass('is-selected');
+          return $(el).parent().find('select > option[value!=""]:selected').parent('select').siblings('button').addClass('is-selected');
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('inputComment', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/input-comment',
+      scope: {
+        entity: '=',
+        commentField: '@'
+      },
+      controller: function($scope, $timeout) {
+        $scope.is_being_commented = false;
+        $scope.blurComment = function() {
+          return $scope.is_being_commented = false;
+        };
+        $scope.focusComment = function() {
+          return $scope.is_being_commented = true;
+        };
+        $scope.startComment = function(event) {
+          $scope.is_being_commented = true;
+          return $timeout(function() {
+            return $(event.target).parent().children('input').focus();
+          });
+        };
+        return $scope.endComment = function(event) {
+          if (event.keyCode === 13) {
+            $(event.target).blur();
+          }
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('metroList', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/metro-list',
+      scope: {
+        markers: '='
+      },
+      controller: function($scope, $element, $attrs) {
+        $scope.inline = $attrs.hasOwnProperty('inline');
+        $scope.one_station = $attrs.hasOwnProperty('oneStation');
+        $scope.short = function(title) {
+          return title.slice(0, 3).toUpperCase();
+        };
+        return $scope.minutes = function(minutes) {
+          return Math.round(minutes);
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('ngMulti', function() {
+    return {
+      restrict: 'E',
+      replace: true,
+      scope: {
+        object: '=',
+        model: '=',
+        noneText: '@'
+      },
+      templateUrl: 'directives/ngmulti',
+      controller: function($scope, $element, $attrs, $timeout) {
+        $scope.highlight = $attrs.hasOwnProperty('highlight');
+        $timeout(function() {
+          return $($element).selectpicker({
+            noneSelectedText: $scope.noneText
+          });
+        });
+        if ($scope.highlight) {
+          return $scope.$watch('model', function(newVal, oldVal) {
+            if (newVal) {
+              return $timeout(function() {
+                $($element).parent().find('button').removeClass('is-selected');
+                return $($element).parent().find('select > option[value!=""]:selected').parent('select').siblings('button').addClass('is-selected');
+              });
+            }
+          });
+        }
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('notifications', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/notifications',
+      scope: {
+        user: '=',
+        entityId: '=',
+        trackLoading: '=',
+        entityType: '@'
+      },
+      controller: function($rootScope, $scope, $timeout, Notification, Notify) {
+        var bindDraggableAndMask, handleDateKeycodes, notificate, saveEdit;
+        $scope.show_max = 4;
+        $scope.show_all_notifications = false;
+        $scope.is_dragging = false;
+        $scope.Notification = Notification;
+        $scope.Notify = Notify;
+        bindDraggableAndMask = function(notification_id) {
+          var element;
+          element = $("#notification-" + notification_id);
+          element.draggable({
+            revert: 'invalid',
+            activeClass: 'drag-active',
+            start: function(e, ui) {
+              $scope.is_dragging = true;
+              return $scope.$apply();
+            },
+            stop: function(e, ui) {
+              $scope.is_dragging = false;
+              return $scope.$apply();
+            }
+          });
+          return element.find('.notification-date-add').mask('d9.y9.y9', {
+            clearIfNotMatch: true
+          });
+        };
+        $timeout(function() {
+          $scope.notifications.forEach(function(notification) {
+            return bindDraggableAndMask(notification.id);
+          });
+          return $("#notification-delete-" + $scope.entityType + "-" + $scope.entityId).droppable({
+            tolerance: 'pointer',
+            hoverClass: 'hovered',
+            drop: function(e, ui) {
+              return $scope.remove($(ui.draggable).data('notification-id'));
+            }
+          });
+        }, 2000);
+        $scope.showAllNotifications = function() {
+          $scope.show_all_notifications = true;
+          return $timeout(function() {
+            return $scope.notifications.forEach(function(notification) {
+              return bindDraggableAndMask(notification.id);
+            });
+          });
+        };
+        $scope.getNotifications = function() {
+          if ($scope.show_all_notifications || $scope.notifications.length <= $scope.show_max) {
+            return $scope.notifications;
+          } else {
+            return _.last($scope.notifications, $scope.show_max - 1);
+          }
+        };
+        $scope.hack = function(event) {
+          $(event.target).attr('contenteditable', true).focus();
+        };
+        $scope.toggle = function(notification) {
+          return $rootScope.toggleEnumServer(notification, 'approved', Notify, Notification);
+        };
+        $scope.$watch('entityId', function(newVal, oldVal) {
+          return $scope.notifications = Notification.query({
+            entity_type: $scope.entityType,
+            entity_id: newVal
+          }, function() {
+            if ($scope.trackLoading) {
+              return $rootScope.loaded_notifications++;
+            }
+          });
+        });
+        $scope.formatDateTime = function(date) {
+          return moment(date).format("DD.MM.YY в HH:mm");
+        };
+        $scope.startNotificationing = function(event) {
+          $scope.start_notificationing = true;
+          return $timeout(function() {
+            $(event.target).parents('div').first().find('div').focus();
+            return $(event.target).parents('div').first().find('input').mask('d9.y9.y9', {
+              clearIfNotMatch: true
+            });
+          });
+        };
+        $scope.endNotificationing = function(comment_element, date_element) {
+          comment_element.html('');
+          date_element.val('');
+          return $scope.start_notificationing = false;
+        };
+        $scope.remove = function(notification_id) {
+          _.find($scope.notifications, {
+            id: notification_id
+          }).$remove();
+          return $scope.notifications = _.without($scope.notifications, _.findWhere($scope.notifications, {
+            id: notification_id
+          }));
+        };
+        saveEdit = function(notification, event) {
+          var comment, comment_element, date, date_element, parent;
+          event.preventDefault();
+          parent = $(event.target).parents('div').first();
+          comment_element = parent.find('div').last();
+          date_element = parent.find('input');
+          comment = comment_element.text();
+          date = date_element.val();
+          if (date === '' || date.match(/_/)) {
+            console.log('no date', date, date_element);
+            date_element.blur().focus();
+            return;
+          }
+          if (comment === '') {
+            console.log('no comment', comment, comment_element);
+            comment_element.focus();
+            return;
+          }
+          return Notification.update({
+            id: notification.id
+          }, {
+            comment: comment,
+            date: date
+          });
+        };
+        $scope.editNotification = function(notification, event) {
+          handleDateKeycodes(event);
+          if (event.keyCode === 13) {
+            event.preventDefault();
+            $(event.target).blur();
+            window.getSelection().removeAllRanges();
+            saveEdit(notification, event);
+          }
+          if (event.keyCode === 27) {
+            window.getSelection().removeAllRanges();
+            return $(event.target).blur();
+          }
+        };
+        notificate = function(event) {
+          var comment, comment_element, date, date_element, new_notification, parent;
+          parent = $(event.target).parents('div').first();
+          comment_element = parent.find('div').last();
+          date_element = parent.find('input');
+          comment = comment_element.text();
+          date = date_element.val();
+          if (date === '' || date.match(/_/)) {
+            date_element.blur().focus();
+            return;
+          }
+          if (comment === '') {
+            comment_element.focus();
+            return;
+          }
+          new_notification = new Notification({
+            comment: comment,
+            user_id: $scope.user.id,
+            entity_id: $scope.entityId,
+            date: date,
+            entity_type: $scope.entityType
+          });
+          new_notification.$save().then(function(response) {
+            console.log(response);
+            new_notification.user = $scope.user;
+            new_notification.id = response.id;
+            new_notification.approved = 0;
+            $scope.notifications.push(new_notification);
+            return $timeout(function() {
+              return bindDraggableAndMask(new_notification.id);
+            });
+          });
+          return $scope.endNotificationing(comment_element, date_element);
+        };
+        handleDateKeycodes = function(event) {
+          var add_days, date, date_node, new_date, ref;
+          if ($(event.target).prop('tagName') === 'DIV') {
+            return;
+          }
+          if ((ref = event.keyCode) === 38 || ref === 40) {
+            event.preventDefault();
+            date_node = $(event.target).parents('div').first().find('input');
+            date = date_node.val();
+            if (date.match(/_/)) {
+              return date_node.val($rootScope.formatDate(moment()));
+            } else {
+              add_days = event.keyCode === 38 ? 1 : -1;
+              new_date = $rootScope.formatDate(moment('20' + convertDate(date)).add({
+                day: add_days
+              }));
+              return date_node.val(new_date);
+            }
+          }
+        };
+        $scope.submitNotification = function(event) {
+          handleDateKeycodes(event);
+          if (event.keyCode === 13) {
+            event.preventDefault();
+            notificate(event);
+          }
+          if (event.keyCode === 27) {
+            window.getSelection().removeAllRanges();
+            return $(event.target).blur();
+          }
+        };
+        return $scope.defaultNotification = function() {
+          var new_notification;
+          new_notification = new Notification({
+            comment: 'стандартное напоминание',
+            user_id: $scope.user.id,
+            entity_id: $scope.entityId,
+            entity_type: $scope.entityType,
+            approved: 1,
+            date: moment(convertDate($scope.$parent.selected_attachment.date)).add(2, 'days').format('DD.MM.YY')
+          });
+          return new_notification.$save().then(function(response) {
+            new_notification.user = $scope.user;
+            new_notification.id = response.id;
+            new_notification.approved = 1;
+            $scope.notifications.push(new_notification);
+            return $timeout(function() {
+              return bindDraggableAndMask(new_notification.id);
+            });
+          });
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('pencilInput', function() {
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: 'directives/pencil-input',
+      scope: {
+        model: '='
+      },
+      controller: function($scope, $timeout, $element, $controller) {
+        $scope.is_being_commented = false;
+        $scope.blurComment = function() {
+          return $scope.is_being_commented = false;
+        };
+        $scope.focusComment = function() {
+          return $scope.is_being_commented = true;
+        };
+        $scope.startComment = function(event) {
+          $scope.is_being_commented = true;
+          return $timeout(function() {
+            return $(event.target).parent().children('div').focus();
+          });
+        };
+        return $scope.watchEnter = function(event) {
+          var ref;
+          if ((ref = event.keyCode) === 13 || ref === 27) {
+            if (event.keyCode === 13) {
+              $scope.model = $(event.target).parent().children('div').text();
+            }
+            $(event.target).parent().children('div').text($scope.model);
+            event.preventDefault();
+            $(event.target).blur();
+          }
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('phones', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/phones',
+      scope: {
+        entity: '='
+      },
+      controller: function($scope, $timeout, $rootScope, PhoneService, UserService) {
+        var recodringLink;
+        $scope.PhoneService = PhoneService;
+        $scope.UserService = UserService;
+        console.log($scope.entityType);
+        $rootScope.dataLoaded.promise.then(function(data) {
+          return $scope.level = $scope.entity.phones && $scope.entity.phones.length ? $scope.entity.phones.length : 1;
+        });
+        $scope.nextLevel = function() {
+          return $scope.level++;
+        };
+        $scope.phoneMaskControl = function(event) {
+          var el, phone_id;
+          el = $(event.target);
+          phone_id = el.attr('ng-model').split('.')[1];
+          return $scope.entity[phone_id] = $(event.target).val();
+        };
+        $scope.isFull = function(number) {
+          if (number === void 0 || number === "") {
+            return false;
+          }
+          return !number.match(/_/);
+        };
+        $scope.sms = function(number) {
+          $('#sms-modal').modal('show');
+          return $rootScope.sms_number = number;
+        };
+        $scope.info = function(number) {
+          $scope.api_number = number;
+          $scope.mango_info = null;
+          $('#api-phone-info').modal('show');
+          return PhoneService.info(number).then(function(response) {
+            console.log(response.data);
+            return $scope.mango_info = response.data;
+          });
+        };
+        $scope.formatDateTime = function(date) {
+          return moment(date).format("DD.MM.YY в HH:mm");
+        };
+        $scope.time = function(seconds) {
+          return moment(0).seconds(seconds).format("mm:ss");
+        };
+        $scope.getNumberTitle = function(number) {
+          console.log(number, $scope.api_number);
+          if (number === PhoneService.clean($scope.api_number)) {
+            return 'текущий номер';
+          }
+          return number;
+        };
+        recodringLink = function(recording_id) {
+          var api_key, api_salt, sha256, sign, timestamp;
+          api_key = 'goea67jyo7i63nf4xdtjn59npnfcee5l';
+          api_salt = 't9mp7vdltmhn0nhnq0x4vwha9ncdr8pa';
+          timestamp = moment().add(5, 'minute').unix();
+          sha256 = new jsSHA('SHA-256', 'TEXT');
+          sha256.update(api_key + timestamp + recording_id + api_salt);
+          sign = sha256.getHash('HEX');
+          return "https://app.mango-office.ru/vpbx/queries/recording/link/" + recording_id + "/play/" + api_key + "/" + timestamp + "/" + sign;
+        };
+        $scope.play = function(recording_id) {
+          if ($scope.audio) {
+            $scope.audio.pause();
+          }
+          $scope.audio = new Audio(recodringLink(recording_id));
+          $scope.audio.play();
+          return $scope.is_playing = recording_id;
+        };
+        $scope.isPlaying = function(recording_id) {
+          return $scope.is_playing === recording_id;
+        };
+        return $scope.stop = function(recording_id) {
+          $scope.is_playing = null;
+          return $scope.audio.pause();
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('plural', function() {
+    return {
+      restrict: 'E',
+      scope: {
+        count: '=',
+        type: '@',
+        noneText: '@',
+        additional: '='
+      },
+      templateUrl: 'directives/plural',
+      controller: function($scope, $element, $attrs, $timeout) {
+        $scope.textOnly = $attrs.hasOwnProperty('textOnly');
+        $scope.hideZero = $attrs.hasOwnProperty('hideZero');
+        return $scope.when = {
+          'age': ['год', 'года', 'лет'],
+          'student': ['ученик', 'ученика', 'учеников'],
+          'minute': ['минуту', 'минуты', 'минут'],
+          'hour': ['час', 'часа', 'часов'],
+          'day': ['день', 'дня', 'дней'],
+          'meeting': ['встреча', 'встречи', 'встреч'],
+          'score': ['балл', 'балла', 'баллов'],
+          'rubbles': ['рубль', 'рубля', 'рублей'],
+          'lesson': ['занятие', 'занятия', 'занятий'],
+          'client': ['клиент', 'клиента', 'клиентов'],
+          'mark': ['оценки', 'оценок', 'оценок'],
+          'request': ['заявка', 'заявки', 'заявок']
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('plus', function() {
+    return {
+      restrict: 'E',
+      scope: {
+        previous: '=',
+        count: '='
+      },
+      templateUrl: 'directives/plus'
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('securityNotification', function() {
+    return {
+      restrict: 'E',
+      scope: {
+        tutor: '='
+      },
+      templateUrl: 'directives/security-notification',
+      controller: function($scope, Tutor) {
+        return $scope.toggleNotification = function(index) {
+          var security_notification;
+          security_notification = angular.copy($scope.tutor.security_notification);
+          security_notification[index] = !security_notification[index];
+          return Tutor.update({
+            id: $scope.tutor.id,
+            security_notification: security_notification
+          }, function() {
+            return $scope.tutor.security_notification = angular.copy(security_notification);
+          });
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('ngSelect', function() {
+    return {
+      restrict: 'E',
+      replace: true,
+      scope: {
+        object: '=',
+        model: '=',
+        noneText: '@'
+      },
+      templateUrl: 'directives/ngselect',
+      controller: function($scope, $element, $attrs) {
+        if (!$scope.noneText) {
+          return $scope.model = _.first(Object.keys($scope.object));
+        }
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('sms', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/sms',
+      scope: {
+        number: '='
+      },
+      controller: function($scope, $timeout, Sms) {
+        var scrollDown;
+        $scope.mass = false;
+        $scope.smsCount = function() {
+          return SmsCounter.count($scope.message || '').messages;
+        };
+        $scope.send = function() {
+          var sms;
+          if ($scope.message) {
+            $scope.sms_sending = true;
+            ajaxStart();
+            sms = new Sms({
+              message: $scope.message,
+              to: $scope.number,
+              mass: $scope.mass
+            });
+            return sms.$save().then(function(data) {
+              ajaxEnd();
+              $scope.sms_sending = false;
+              $scope.message = '';
+              $scope.history.push(data);
+              return scrollDown();
+            });
+          }
+        };
+        $scope.$watch('number', function(newVal, oldVal) {
+          console.log($scope.$parent.formatDateTime($scope.created_at));
+          if (newVal) {
+            $scope.history = Sms.query({
+              number: newVal
+            });
+          }
+          return scrollDown();
+        });
+        return scrollDown = function() {
+          return $timeout(function() {
+            return $("#sms-history").animate({
+              scrollTop: $(window).height()
+            }, "fast");
+          });
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('tutorPhoto', function() {
+    return {
+      restrict: 'E',
+      replace: true,
+      scope: {
+        tutor: '=',
+        version: '='
+      },
+      templateUrl: 'directives/tutor-photo'
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('userSwitch', function() {
+    return {
+      restrict: 'E',
+      scope: {
+        entity: '=',
+        resource: '=',
+        userId: '@'
+      },
+      templateUrl: 'directives/user-switch',
+      controller: function($scope) {
+        return $scope.UserService = $scope.$parent.UserService;
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('user', function() {
+    return {
+      restrict: 'E',
+      scope: {
+        model: '='
+      },
+      templateUrl: 'directives/user'
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').value('Approved', {
+    0: 'не подтвержден',
+    1: 'подтвержден'
+  }).value('Confirmed', {
+    0: 'подтвердить',
+    1: 'подтверждено'
+  }).value('Months', {
+    1: 'январь',
+    2: 'февраль',
+    3: 'март',
+    4: 'апрель',
+    5: 'май',
+    6: 'июнь',
+    7: 'июль',
+    8: 'август',
+    9: 'сентябрь',
+    10: 'октябрь',
+    11: 'ноябрь',
+    12: 'декабрь'
+  }).value('Notify', ['напомнить', 'не напоминать']).value('AttachmentErrors', {
+    1: 'в стыковке не указан класс',
+    2: 'в стыковке не указан предмет',
+    3: 'не указаны условия стыковки',
+    4: 'дата архивации должна быть позже даты стыковки',
+    5: 'не указаны детали архивации',
+    6: 'прогноз и занятия не сочетаются',
+    7: 'прогноз и занятия не сочетаются',
+    8: 'при наличии занятий к проводке стыковка не может быть скрыта',
+    9: 'дата архивации не совпадает с датой последнего занятия',
+    10: 'возможно стыковку можно скрыть',
+    11: 'возможно стыковку можно скрыть',
+    12: 'в скрытой стыковке дата архивации должна совпадать с датой последнего занятия',
+    13: 'в скрытой стыковке без занятий между датами стыковки и архивации должно быть 7 дней',
+    14: 'если архивация отсутствует, стыковка не может быть скрыта',
+    15: 'стыковка, у которой дата архивации позже даты последнего расчета не может быть скрыта',
+    16: 'слишком маленький прогноз',
+    17: 'слишком большой прогноз'
+  }).value('ReviewErrors', {
+    1: 'не стоит оценка к отзыву',
+    2: 'нет подписи к опубликованному отзыву',
+    3: 'нет текста отзыва к опубликованному отзыву'
+  }).value('TutorErrors', {
+    1: 'нет оригинала фото',
+    2: 'нет обрезанного фото',
+    3: 'цена не установлена',
+    4: 'нет меток и выезда'
+  }).value('LogTypes', {
+    create: 'создание',
+    update: 'обновление',
+    "delete": 'удаление'
+  }).value('Recommendations', {
+    1: {
+      text: 'У этого репетитора уже было несколько расчетов, поэтому ему можно доверить длительное обучение, требующееся данному клиенту',
+      type: 0
+    },
+    2: {
+      text: 'У этого репетитора был всего 1 расчет и ему можно доверить длительное обучение, но лучше поискать более проверенные варианты',
+      type: 1
+    },
+    3: {
+      text: 'С этим репетитором не было встреч и есть клиенты, за которых он еще не рассчитался. Отдавать этого клиента категорически нельзя',
+      type: 2
+    },
+    4: {
+      text: 'С этим репетитором не было встреч и у него нет активных клиентов. Отдавать ему клиента можно, но только в крайнем случае',
+      type: 1
+    },
+    5: {
+      text: 'У этого репетитора уже было несколько расчетов, поэтому ему можно доверить данного клиента',
+      type: 0
+    },
+    6: {
+      text: 'У этого репетитора был всего 1 расчет, то есть у него средний кредитный рейтинг. Если более проверенных репетиторов нет, ему можно доверить этого клиента',
+      type: 1
+    },
+    7: {
+      text: 'С этим репетитором не было встреч и есть клиенты, за которых он еще не рассчитался. Отдавать этого репетитора можно в самом крайнем случае',
+      type: 2
+    },
+    8: {
+      text: 'С этим репетитором не было встреч и у него нет активных клиентов. Риск сотрудничества средний, поэтому работать с репетитором можно, если нет других вариантов',
+      type: 1
+    },
+    9: {
+      text: 'У этого репетитора высокий кредитный рейтинг, но конец учебного года лучше использовать для проверки неизвестных репетиторов',
+      type: 1
+    },
+    10: {
+      text: 'Этому репетитору мы не доверяем, но сейчас отличное время для его проверки. Если сотрудничество будет успешным, то мы будем рекомендовать в следующем году как проверенного. Если он не заплатит, то невыплаты будут минимальными и репетитора мы закроем навсегда, в чем великая польза.',
+      type: 0
+    },
+    11: {
+      text: 'С 10-классниками нужно быть особенно аккуратными и этот репетитор в данном случае рекомендован',
+      type: 0
+    },
+    12: {
+      text: 'С этим репетитором была всего 1 встреча, поэтому давать его ученику 10 класса будет риском. Сделайте все, чтобы избежать этого, но если не получается – давать можно',
+      type: 1
+    },
+    13: {
+      text: 'С этим репетитором не было встреч и есть клиенты, за которых он еще не рассчитался. Нужно сделать все, чтобы 10-классник его не получил, так как 10 классы всегда продолжают заниматься и в 11 классе. Давать этого репетитора категорически нельзя',
+      type: 2
+    },
+    14: {
+      text: 'Этот репетитор для компании новый. Давать 10-класснику можно, но в самом крайнем случае',
+      type: 2
+    }
+  }).value('RecommendationTypes', ['очень рекомендован', 'средне рекомендован', 'не рекомендован']).value('DebtTypes', {
+    0: 'не доплатил',
+    1: 'переплатил'
+  }).value('Weekdays', {
+    0: 'пн',
+    1: 'вт',
+    2: 'ср',
+    3: 'чт',
+    4: 'пт',
+    5: 'сб',
+    6: 'вс'
+  }).value('Destinations', {
+    r_k: 'репетитор едет к клиенту',
+    k_r: 'клиент едет к репетитору'
+  }).value('Workplaces', {
+    0: 'не активен в системе ЕГЭ-Центре',
+    1: 'активен в системе ЕГЭ-Центра',
+    2: 'ведет занятия в ЕГЭ-Центре',
+    3: 'ранее работал в ЕГЭ-Центре'
+  }).value('Genders', {
+    male: 'мужской',
+    female: 'женский'
+  }).value('YesNo', {
+    0: 'нет',
+    1: 'да'
+  }).value('TutorStates', {
+    0: 'не установлено',
+    1: 'на проверку',
+    2: 'к закрытию',
+    3: 'закрыто',
+    4: 'к одобрению',
+    5: 'одобрено'
+  }).value('TutorPublishedStates', {
+    0: 'не опубликован',
+    1: 'опубликован'
+  }).value('PaymentMethods', {
+    0: 'стандартный расчет',
+    1: 'яндекс.деньги',
+    2: 'перевод на карту'
+  }).value('LkPaymentTypes', {
+    0: 'личная встреча'
+  }).value('ArchiveStates', {
+    impossible: 'невозможно',
+    possible: 'возможно'
+  }).value('ReviewStates', {
+    unpublished: 'не опубликован',
+    published: 'опубликован'
+  }).value('Existance', ['созданные', 'требующие создания']).value('Presence', [['есть', 'отсутствует'], ['есть', 'нет']]).value('AttachmentVisibility', {
+    0: 'показано',
+    1: 'скрыто'
+  }).value('AttachmentStates', {
+    "new": 'новые',
+    inprogress: 'рабочие',
+    ended: 'завершенные'
+  }).value('AttachmentState', {
+    "new": 'новый',
+    inprogress: 'рабочий',
+    ended: 'завершенный'
+  }).value('Checked', ['не проверено', 'проверено']).value('ReviewScores', {
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+    6: 6,
+    7: 7,
+    8: 8,
+    9: 9,
+    10: 10,
+    11: 'отзыв не собирать',
+    12: 'отзыв собрать позже'
+  }).value('Grades', {
+    1: '1 класс',
+    2: '2 класс',
+    3: '3 класс',
+    4: '4 класс',
+    5: '5 класс',
+    6: '6 класс',
+    7: '7 класс',
+    8: '8 класс',
+    9: '9 класс',
+    10: '10 класс',
+    11: '11 класс',
+    12: 'студенты',
+    13: 'остальные'
+  }).value('Subjects', {
+    all: {
+      1: 'математика',
+      2: 'физика',
+      3: 'химия',
+      4: 'биология',
+      5: 'информатика',
+      6: 'русский',
+      7: 'литература',
+      8: 'обществознание',
+      9: 'история',
+      10: 'английский',
+      11: 'неизвестный предмет'
+    },
+    full: {
+      1: 'Математика',
+      2: 'Физика',
+      3: 'Химия',
+      4: 'Биология',
+      5: 'Информатика',
+      6: 'Русский язык',
+      7: 'Литература',
+      8: 'Обществознание',
+      9: 'История',
+      10: 'Английский язык'
+    },
+    dative: {
+      1: 'математике',
+      2: 'физике',
+      3: 'химии',
+      4: 'биологии',
+      5: 'информатике',
+      6: 'русскому языку',
+      7: 'литературе',
+      8: 'обществознанию',
+      9: 'истории',
+      10: 'английскому языку',
+      11: 'неизвестному предмету'
+    },
+    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин'],
+    three_letters: {
+      1: 'МАТ',
+      2: 'ФИЗ',
+      3: 'ХИМ',
+      4: 'БИО',
+      5: 'ИНФ',
+      6: 'РУС',
+      7: 'ЛИТ',
+      8: 'ОБЩ',
+      9: 'ИСТ',
+      10: 'АНГ'
+    },
+    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf']
+  }).value('Branches', {
+    1: {
+      code: 'TRG',
+      full: 'Тургеневская',
+      short: 'ТУР',
+      address: 'Мясницкая 40с1',
+      color: '#FBAA33'
+    },
+    2: {
+      code: 'PVN',
+      full: 'Проспект Вернадского',
+      short: 'ВЕР',
+      address: '',
+      color: '#EF1E25'
+    },
+    3: {
+      code: 'BGT',
+      full: 'Багратионовская',
+      short: 'БАГ',
+      address: '',
+      color: '#019EE0'
+    },
+    5: {
+      code: 'IZM',
+      full: 'Измайловская',
+      short: 'ИЗМ',
+      address: '',
+      color: '#0252A2'
+    },
+    6: {
+      code: 'OPL',
+      full: 'Октябрьское поле',
+      short: 'ОКТ',
+      address: '',
+      color: '#B61D8E'
+    },
+    7: {
+      code: 'RPT',
+      full: 'Рязанский Проспект',
+      short: 'РЯЗ',
+      address: '',
+      color: '#B61D8E'
+    },
+    8: {
+      code: 'VKS',
+      full: 'Войковская',
+      short: 'ВОЙ',
+      address: '',
+      color: '#029A55'
+    },
+    9: {
+      code: 'ORH',
+      full: 'Орехово',
+      short: 'ОРЕ',
+      address: '',
+      color: '#029A55'
+    },
+    11: {
+      code: 'UJN',
+      full: 'Южная',
+      short: 'ЮЖН',
+      address: '',
+      color: '#ACADAF'
+    },
+    12: {
+      code: 'PER',
+      full: 'Перово',
+      short: 'ПЕР',
+      address: '',
+      color: '#FFD803'
+    },
+    13: {
+      code: 'KLG',
+      full: 'Калужская',
+      short: 'КЛЖ',
+      address: 'Научный проезд 8с1',
+      color: '#C07911'
+    },
+    14: {
+      code: 'BRT',
+      full: 'Братиславская',
+      short: 'БРА',
+      address: '',
+      color: '#B1D332'
+    },
+    15: {
+      code: 'MLD',
+      full: 'Молодежная',
+      short: 'МОЛ',
+      address: '',
+      color: '#0252A2'
+    },
+    16: {
+      code: 'VLD',
+      full: 'Владыкино',
+      short: 'ВЛА',
+      address: '',
+      color: '#ACADAF'
+    }
+  });
+
+}).call(this);
+
+(function() {
+  var apiPath, updateMethod;
+
+  angular.module('Egerep').factory('Marker', function($resource) {
+    return $resource(apiPath('markers'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Notification', function($resource) {
+    return $resource(apiPath('notifications'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Account', function($resource) {
+    return $resource(apiPath('accounts'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('PlannedAccount', function($resource) {
+    return $resource(apiPath('periods/planned'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Review', function($resource) {
+    return $resource(apiPath('reviews'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Archive', function($resource) {
+    return $resource(apiPath('archives'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Attachment', function($resource) {
+    return $resource(apiPath('attachments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('RequestList', function($resource) {
+    return $resource(apiPath('lists'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Request', function($resource) {
+    return $resource(apiPath('requests'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      transfer: {
+        method: 'POST',
+        url: apiPath('requests', 'transfer')
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  }).factory('Sms', function($resource) {
+    return $resource(apiPath('sms'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Comment', function($resource) {
+    return $resource(apiPath('comments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Client', function($resource) {
+    return $resource(apiPath('clients'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('User', function($resource) {
+    return $resource(apiPath('users'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Tutor', function($resource) {
+    return $resource(apiPath('tutors'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      deletePhoto: {
+        url: apiPath('tutors', 'photo'),
+        method: 'DELETE'
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  });
+
+  apiPath = function(entity, additional) {
+    if (additional == null) {
+      additional = '';
+    }
+    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
+  };
+
+  updateMethod = function() {
+    return {
+      update: {
+        method: 'PUT'
+      }
+    };
+  };
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('ApiService', function($http) {
+    this.metro = function(fun, data) {
+      return $http.post("api/metro/" + fun, data);
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('AttachmentService', function(AttachmentStates) {
+    this.AttachmentStates = AttachmentStates;
+    this.getState = function(attachment) {
+      if (attachment.archive) {
+        return 'ended';
+      } else {
+        if (attachment.forecast) {
+          return 'inprogress';
+        } else {
+          return 'new';
+        }
+      }
+    };
+    this.getStatus = function(attachment) {
+      return this.AttachmentStates[this.getState(attachment)];
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('BranchService', function(Branches) {
+    this.branches = Branches;
+    this.getNameWithColor = function(branch_id) {
+      var curBranch;
+      curBranch = this.branches[branch_id];
+      return '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="svg-metro"><circle fill="' + curBranch.color + '" r="6" cx="7" cy="7"></circle></svg>' + curBranch.full;
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('PhoneService', function($rootScope, $http) {
+    this.info = function(number) {
+      return $http.post('api/command/mango-stats', {
+        number: number
+      });
+    };
+    this.call = function(number) {
+      return location.href = "sip:" + number.replace(/[^0-9]/g, '');
+    };
+    this.isMobile = function(number) {
+      return number && (parseInt(number[4]) === 9 || parseInt(number[1]) === 9);
+    };
+    this.clean = function(number) {
+      return number.replace(/[^0-9]/gim, "");
+    };
+    this.format = function(number) {
+      if (!number) {
+        return;
+      }
+      number = this.clean(number);
+      return '+' + number.substr(0, 1) + ' (' + number.substr(1, 3) + ') ' + number.substr(4, 3) + '-' + number.substr(7, 2) + '-' + number.substr(9, 2);
+    };
+    this.sms = function(number) {
+      $rootScope.sms_number = number;
+      return $('#sms-modal').modal('show');
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('PusherService', function($http) {
+    var init;
+    this.bind = function(channel, callback) {
+      if (this.pusher === void 0) {
+        init();
+      }
+      return this.channel.bind("App\\Events\\" + channel, callback);
+    };
+    init = (function(_this) {
+      return function() {
+        _this.pusher = new Pusher('2d212b249c84f8c7ba5c', {
+          encrypted: true,
+          cluster: 'eu'
+        });
+        return _this.channel = _this.pusher.subscribe('egerep');
+      };
+    })(this);
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('RecommendationService', function(Recommendations, RecommendationTypes) {
+    this.get = function(tutor, grade) {
+      var recommendation;
+      recommendation = this.getRecommendation(tutor, grade);
+      recommendation.type_text = RecommendationTypes[recommendation.type];
+      return recommendation;
+    };
+    this.getRecommendation = function(tutor, grade) {
+      var month;
+      month = moment().format('M');
+      if (grade !== 10) {
+        if (month >= 7 && month <= 10) {
+          if (tutor.meeting_count >= 2) {
+            return Recommendations[1];
+          } else {
+            if (tutor.meeting_count === 1) {
+              return Recommendations[2];
+            } else {
+              if (tutor.active_clients_count >= 2) {
+                return Recommendations[3];
+              } else {
+                return Recommendations[4];
+              }
+            }
+          }
+        } else {
+          if (month >= 11 || month <= 2) {
+            if (tutor.meeting_count >= 2) {
+              return Recommendations[5];
+            } else {
+              if (tutor.meeting_count === 1) {
+                return Recommendations[6];
+              } else {
+                if (tutor.active_clients_count >= 2) {
+                  return Recommendations[7];
+                } else {
+                  return Recommendations[8];
+                }
+              }
+            }
+          } else {
+            if (tutor.meeting_count >= 2) {
+              return Recommendations[9];
+            } else {
+              return Recommendations[10];
+            }
+          }
+        }
+      } else {
+        if (tutor.meeting_count >= 2) {
+          return Recommendations[11];
+        } else {
+          if (tutor.meeting_count === 1) {
+            return Recommendations[12];
+          } else {
+            if (tutor.active_clients_count >= 2) {
+              return Recommendations[13];
+            } else {
+              return Recommendations[14];
+            }
+          }
+        }
+      }
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('SvgMap', function() {
+    this.map = new SVGMap({
+      iframeId: 'map',
+      clicable: true,
+      places: [],
+      placesHash: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 180, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211],
+      groups: [
+        {
+          "id": "1",
+          "title": "внутри кольца",
+          "points": [4, 8, 12, 15, 18, 19, 38, 47, 48, 51, 54, 56, 58, 60, 63, 66, 68, 71, 74, 82, 83, 86, 90, 91, 92, 102, 104, 109, 111, 120, 122, 126, 129, 131, 132, 133, 137, 138, 140, 153, 156, 157, 158, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 198, 199]
+        }, {
+          "id": "2",
+          "title": "красная север",
+          "points": [55, 106, 124, 145, 154]
+        }, {
+          "id": "3",
+          "title": "красная юг",
+          "points": [33, 108, 125, 148, 151, 164, 209, 210]
+        }, {
+          "id": "4",
+          "title": "зеленая север",
+          "points": [9, 28, 29, 36, 112, 123]
+        }, {
+          "id": "5",
+          "title": "зеленая юг",
+          "points": [2, 39, 44, 46, 50, 53, 88, 152, 197, 202, 204]
+        }, {
+          "id": "6",
+          "title": "синяя запад",
+          "points": [32, 59, 62, 75, 76, 77, 93, 121, 127, 186, 203]
+        }, {
+          "id": "7",
+          "title": "синяя восток",
+          "points": [13, 42, 94, 95, 119, 161, 163]
+        }, {
+          "id": "8",
+          "title": "голубая",
+          "points": [11, 62, 64, 99, 128, 149, 150, 186]
+        }, {
+          "id": "9",
+          "title": "оранжевая север",
+          "points": [5, 10, 20, 26, 72, 113, 117]
+        }, {
+          "id": "10",
+          "title": "оранжевая юг",
+          "points": [3, 16, 43, 52, 65, 84, 85, 110, 135, 159, 166]
+        }, {
+          "id": "11",
+          "title": "фиолетовая север",
+          "points": [14, 87, 100, 103, 130, 141, 142, 162]
+        }, {
+          "id": "12",
+          "title": "фиолетовая юг",
+          "points": [30, 35, 57, 61, 107, 115, 134, 205, 206, 211]
+        }, {
+          "id": "13",
+          "title": "желтая",
+          "points": [1, 81, 96, 101, 114, 160, 180]
+        }, {
+          "id": "14",
+          "title": "серая север",
+          "points": [6, 17, 27, 37, 89, 97, 116, 136]
+        }, {
+          "id": "15",
+          "title": "серая юг",
+          "points": [7, 23, 45, 78, 79, 80, 105, 118, 139, 143, 147, 155, 165]
+        }, {
+          "id": "16",
+          "title": "светло-зеленая",
+          "points": [21, 31, 41, 49, 53, 57, 67, 70, 98, 101, 107, 114, 200, 201, 202]
+        }, {
+          "id": "17",
+          "title": "бутовская",
+          "points": [22, 23, 24, 84, 144, 146, 147, 207, 208]
+        }, {
+          "id": "18",
+          "title": "каховская",
+          "points": [25, 45, 46, 118, 197]
+        }
+      ]
+    });
+    this.show = function(points) {
+      var map;
+      $('#svg-modal').modal('show');
+      map = this.map;
+      map.init();
+      map.selected = {};
+      map.deselectAll();
+      map.select(points);
+      $(".legend a").unbind('click');
+      return $(".legend a").on('click', function() {
+        var id;
+        id = $(this).attr("data-rel");
+        return map.toggleGroup(id);
+      });
+    };
+    this.el = function() {
+      return $('#map').contents();
+    };
+    this.save = function() {
+      $('#svg-modal').modal('hide');
+      return this.map.save();
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('TutorService', function($http) {
+    this.translit = {
+      'А': 'A',
+      'Б': 'B',
+      'В': 'V',
+      'Г': 'G',
+      'Д': 'D',
+      'Е': 'E',
+      'Ё': 'E',
+      'Ж': 'Gh',
+      'З': 'Z',
+      'И': 'I',
+      'Й': 'Y',
+      'К': 'K',
+      'Л': 'L',
+      'М': 'M',
+      'Н': 'N',
+      'О': 'O',
+      'П': 'P',
+      'Р': 'R',
+      'С': 'S',
+      'Т': 'T',
+      'У': 'U',
+      'Ф': 'F',
+      'Х': 'H',
+      'Ц': 'C',
+      'Ч': 'Ch',
+      'Ш': 'Sh',
+      'Щ': 'Sch',
+      'Ъ': 'Y',
+      'Ы': 'Y',
+      'Ь': 'Y',
+      'Э': 'E',
+      'Ю': 'Yu',
+      'Я': 'Ya',
+      'а': 'a',
+      'б': 'b',
+      'в': 'v',
+      'г': 'g',
+      'д': 'd',
+      'е': 'e',
+      'ё': 'e',
+      'ж': 'gh',
+      'з': 'z',
+      'и': 'i',
+      'й': 'y',
+      'к': 'k',
+      'л': 'l',
+      'м': 'm',
+      'н': 'n',
+      'о': 'o',
+      'п': 'p',
+      'р': 'r',
+      'с': 's',
+      'т': 't',
+      'у': 'u',
+      'ф': 'f',
+      'х': 'h',
+      'ц': 'c',
+      'ч': 'ch',
+      'ш': 'sh',
+      'щ': 'sch',
+      'ъ': 'y',
+      'ы': 'y',
+      'ь': 'y',
+      'э': 'e',
+      'ю': 'yu',
+      'я': 'ya'
+    };
+    this.default_tutor = {
+      gender: "male",
+      branches: [],
+      phones: [],
+      subjects: [],
+      grades: [],
+      svg_map: [],
+      markers: [],
+      state: 0,
+      in_egecentr: 0
+    };
+    this.getFiltered = function(search_data) {
+      return $http.post('api/tutors/filtered', search_data);
+    };
+    this.select = function(search_data) {
+      return $http.post('api/tutors/select', search_data);
+    };
+    this.getDebtMap = function(search_data) {
+      return $http.post('api/debt/map', search_data);
+    };
+    this.getDebtors = function() {
+      return $http.get('api/debt');
+    };
+    this.generateLogin = function(tutor) {
+      var i, len, letter, login, ref;
+      login = '';
+      ref = tutor.last_name.toLowerCase();
+      for (i = 0, len = ref.length; i < len; i++) {
+        letter = ref[i];
+        login += this.translit[letter];
+      }
+      login = login.slice(0, 3);
+      login += '_' + this.translit[tutor.first_name.toLowerCase()[0]] + this.translit[tutor.middle_name.toLowerCase()[0]];
+      return login;
+    };
+    this.generatePassword = function() {
+      return Math.floor(10000000 + Math.random() * 89999999);
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('UserService', function(User, $rootScope, $timeout) {
+    var system_user;
+    this.users = User.query();
+    $timeout((function(_this) {
+      return function() {
+        return _this.current_user = $rootScope.$$childTail.user;
+      };
+    })(this));
+    system_user = {
+      color: '#999999',
+      login: 'system',
+      id: 0,
+      banned: 0
+    };
+    this.get = function(user_id) {
+      return this.getUser(user_id);
+    };
+    this.getUser = function(user_id) {
+      return _.findWhere(this.users, {
+        id: parseInt(user_id)
+      }) || system_user;
+    };
+    this.getLogin = function(user_id) {
+      return this.getUser(parseInt(user_id)).login;
+    };
+    this.getColor = function(user_id) {
+      return this.getUser(parseInt(user_id)).color;
+    };
+    this.getWithSystem = function(only_active) {
+      var users;
+      if (only_active == null) {
+        only_active = true;
+      }
+      users = this.getAll(only_active);
+      users.unshift(system_user);
+      return users;
+    };
+    this.getAll = function(only_active) {
+      if (only_active == null) {
+        only_active = true;
+      }
+      if (only_active) {
+        return _.where(this.users, {
+          banned: 0
+        });
+      } else {
+        return this.users;
+      }
+    };
+    this.toggle = function(entity, user_id, Resource) {
+      var new_user_id, obj;
+      if (Resource == null) {
+        Resource = false;
+      }
+      new_user_id = entity[user_id] ? 0 : this.current_user.id;
+      if (Resource) {
+        return Resource.update((
+          obj = {
+            id: entity.id
+          },
+          obj["" + user_id] = new_user_id,
+          obj
+        ), function() {
+          return entity[user_id] = new_user_id;
+        });
+      } else {
+        return entity[user_id] = new_user_id;
+      }
+    };
+    this.getBannedUsers = function() {
+      return _.where(this.users, {
+        banned: 1
+      });
+    };
+    return this;
   });
 
 }).call(this);

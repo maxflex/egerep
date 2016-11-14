@@ -196,22 +196,21 @@ angular.module('Egerep')
             $scope.dialog 'add-account'
 
         $scope.addPlannedAccountDialog = ->
-            $scope.checkBeforeRun ->
-                if not $scope.tutor.planned_account or (not 'is_planned' in $scope.tutor.planned_account or not $scope.tutor.planned_account.id)
-                    $scope.tutor.planned_account = {is_planned: 0, payment_method: 0, user_id: '', date: ''}
-                else
-                    _.extend $scope.tutor.planned_account, {is_planned:'1', tutor_id: $scope.tutor.id}
+            if not $scope.tutor.planned_account or (not 'is_planned' in $scope.tutor.planned_account or not $scope.tutor.planned_account.id)
+                $scope.tutor.planned_account = {is_planned: 0, payment_method: 0, user_id: '', date: ''}
+            else
+                _.extend $scope.tutor.planned_account, {is_planned:'1', tutor_id: $scope.tutor.id}
 
-                $('#pa-date').datepicker('destroy')
-                $('#pa-date').datepicker
-                    language	: 'ru'
-                    autoclose	: true
-                    orientation	: 'bottom auto'
+            $('#pa-date').datepicker('destroy')
+            $('#pa-date').datepicker
+                language	: 'ru'
+                autoclose	: true
+                orientation	: 'bottom auto'
 
-                $timeout ->
-                    $scope.refreshSelects()
-                $('#add-planned-account').modal 'show'
-                return
+            $timeout ->
+                $scope.refreshSelects()
+            $('#add-planned-account').modal 'show'
+            return
 
         validatePlannedAccount = ->
             valid = true
@@ -416,35 +415,39 @@ angular.module('Egerep')
             else
                 $scope.hidden_clients_count++
 
-        $scope.checkBeforeRun = (callback, param) ->
-            confirm_hash = 'cbcb58ac2e496207586df2854b17995f';
-
-            bootbox.prompt {
-                title: "Введите пароль",
-                className: "modal-password",
-                callback: (result) =>
-                    if result isnt null
-                        if md5(result) is confirm_hash
-                            callback(param)
-                            return true
-                        else
-                            $('.bootbox-form').addClass('has-error').children().first().focus()
-                            $('.bootbox-input-text').on 'keydown', ->
-                                $(this).parent().removeClass 'has-error'
-                            return false
-                ,
-                buttons: {
-                    confirm: {
-                        label: "Подтвердить"
-                    },
-                    cancel: {
-                        className: "display-none"
-                    },
+        $scope.checkBeforeRun = (check, callback, param) ->
+            if check
+                confirm_hash = 'cbcb58ac2e496207586df2854b17995f';
+                bootbox.prompt {
+                    title: "Введите пароль",
+                    className: "modal-password",
+                    callback: (result) =>
+                        if result isnt null
+                            if md5(result) is confirm_hash
+                                callback(param)
+                                return true
+                            else
+                                $('.bootbox-form').addClass('has-error').children().first().focus()
+                                $('.bootbox-input-text').on 'keydown', ->
+                                    $(this).parent().removeClass 'has-error'
+                                return false
+                    ,
+                    buttons: {
+                        confirm: {
+                            label: "Подтвердить"
+                        },
+                        cancel: {
+                            className: "display-none"
+                        },
+                    }
+                    onEscape: true
                 }
-                onEscape: true
-            }
-            return
-
+                return
+            else
+                callback(param)
 
         $scope.toggleConfirmed = (account) ->
             $rootScope.toggleEnumServer account, 'confirmed', Confirmed, Account
+
+        $scope.hasConfirmedAccount = ->
+            return _.where($scope.tutor.last_accounts, {confirmed: 1}).length

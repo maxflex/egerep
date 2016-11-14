@@ -9,7 +9,7 @@
 @section('title-right')
     <span style="position: absolute; left: 45%;" class="link-like link-reverse link-white"
           ng-if='tutor.last_accounts.length > 0'
-          ng-click="checkBeforeRun(save)" ng-disabled="saving"
+          ng-click="checkBeforeRun(hasConfirmedAccount(), save)" ng-disabled="saving"
     >
         сохранить
     </span>
