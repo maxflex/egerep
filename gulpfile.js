@@ -75,6 +75,7 @@ elixir(function(mix) {
             'ace-builds/src/mode-json',
             'ace/lib/ace/commands/default_commands',
             'vue/dist/vue.min',
-            'phoneapi/dist/js/pusher'
+            'phoneapi/dist/js/pusher',
+            'js-md5/build/md5.min'
         ]), 'public/js/vendor.js');
 });
