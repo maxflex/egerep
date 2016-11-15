@@ -66,59 +66,62 @@
                 </tr>
                 <tr>
                     <td class="period-end" width='100'>
-                        <div class='accounts-data' style="position: absolute; margin-top: @{{ clients.length ? '-86' : '80' }}px; width: 1000px">
-                            <div class="mbs">
-                                <span>Передано (руб.):</span>
-                                <pencil-input model='account.received'></pencil-input>
-                                <span ng-show='account.received > 0'>
+                        <div class="accounts-data" style="position: absolute; margin-top: @{{ clients.length ? '-86' : '80' }}px; width: 1000px">
+                            <div style="position:relative;">
+                                <div class="account-guard" ng-show="account.confirmed && AccessService.isLocked(account.id)" ng-click="AccessService.serve(account.id)"></div>
+                                <div class="mbs">
+                                    <span>Передано (руб.):</span>
+                                    <pencil-input model='account.received'></pencil-input>
+                                    <span ng-show='account.received > 0'>
                                     – методом
                                     <span class="link-like" ng-click="toggleEnum(account, 'payment_method', PaymentMethods)">
                                         @{{ PaymentMethods[account.payment_method] }}
                                     </span>
                                 </span>
-                                <span class='mutual-debt' ng-if="account.mutual_debts">
+                                    <span class='mutual-debt' ng-if="account.mutual_debts">
                                     + @{{ account.mutual_debts.sum }}
                                 </span>
-                            </div>
-                            <div class="mbs">
-                                <span>Итого комиссия за период (руб.):</span>
-                                @{{ totalCommission(account) }}
-                            </div>
-                            <div class="mbs">
-                                <span>Дебет:</span>
-                                <span>@{{ account.debt_calc }}</span>
-                            </div>
-                            <div class="mbs">
-                               <span>Задолженность:</span>
-                               <pencil-input model='account.debt'></pencil-input>
-                               <span ng-if='account.debt > 0'> – репетитор <span class="link-like-no-color"
-                                       ng-class="{
+                                </div>
+                                <div class="mbs">
+                                    <span>Итого комиссия за период (руб.):</span>
+                                    @{{ totalCommission(account) }}
+                                </div>
+                                <div class="mbs">
+                                    <span>Дебет:</span>
+                                    <span>@{{ account.debt_calc }}</span>
+                                </div>
+                                <div class="mbs">
+                                    <span>Задолженность:</span>
+                                    <pencil-input model='account.debt'></pencil-input>
+                                    <span ng-if='account.debt > 0'> – репетитор <span class="link-like-no-color"
+                                                                                      ng-class="{
                                            'text-danger': account.debt_type == 0,
                                            'text-success': account.debt_type == 1,
                                        }"
-                                       ng-click="toggleEnum(account, 'debt_type', DebtTypes)">@{{ DebtTypes[account.debt_type] }}</span>
+                                           ng-click="toggleEnum(account, 'debt_type', DebtTypes)">@{{ DebtTypes[account.debt_type] }}</span>
                                </span>
-                           </div>
-                            <div class="mbs">
-                                <span>Комментарий:</span>
-                                <pencil-input model='account.comment' class="period-comment"></pencil-input>
-                                {{-- <div class='period-comment' contenteditable>@{{ account.comment }}</div> --}}
-                                {{-- <input ng-model='account.comment' class='no-border-outline' style="width: 90%"> --}}
-                            </div>
-                            <div class="mbs">
-                                <span>Расчет создан:</span>
-                                 @{{ account.user_login }} @{{ formatDateTime(account.created_at) }}
-                            </div>
-                            <div class="mbs">
-                                <span>Действия:</span>
-                                <span class="link-like margin-right" ng-click="checkBeforeRun(account.confirmed, changeDateDialog, $index)">изменить дату встречи</span>
-                                <span class="link-like text-danger margin-right"  ng-click="checkBeforeRun(account.confirmed, remove, account)">удалить встречу</span>
+                                </div>
+                                <div class="mbs">
+                                    <span>Комментарий:</span>
+                                    <pencil-input model='account.comment' class='period-comment'></pencil-input>
+                                    {{-- <div class='period-comment' contenteditable>@{{ account.comment }}</div> --}}
+                                    {{-- <input ng-model='account.comment' class='no-border-outline' style="width: 90%"> --}}
+                                </div>
+                                <div class="mbs">
+                                    <span>Расчет создан:</span>
+                                    @{{ account.user_login }} @{{ formatDateTime(account.created_at) }}
+                                </div>
+                                <div class="mbs">
+                                    <span>Действия:</span>
+                                    <span class="link-like margin-right" ng-click="changeDateDialog($index)">изменить дату встречи</span>
+                                    <span class="link-like text-danger margin-right"  ng-click="remove(account)">удалить встречу</span>
+                                </div>
                             </div>
                             <div class="mbs">
                                 <span>Статус проводки:</span>
                                 <span class="link-like"
                                       ng-class="{'text-danger': !account.confirmed}"
-                                      ng-click="checkBeforeRun(1, toggleConfirmed, account)"
+                                      ng-click="AccessService.serve(account.id, toggleConfirmed, account)"
                                 >
                                     @{{ Confirmed[account.confirmed] }}
                                 </span>

@@ -1,4 +1,4 @@
-@extends('app')
+ @extends('app')
 @section('title', 'Отзывы')
 @section('title-right')
     ошибки обновлены @{{ formatDateTime(review_errors_updated) }}
@@ -6,7 +6,7 @@
         'spinning': review_errors_updating == 1
     }"></span>
 @stop
-@section('controller', 'ReviewsIndex')
+@section('controller', isset($tutor_id) ? 'TutorReviews' : 'ReviewsIndex')
 
 @section('content')
 

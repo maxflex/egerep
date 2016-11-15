@@ -18,12 +18,19 @@ class ReviewsController extends Controller
      */
     public function index()
     {
-        $search = isset($_COOKIE['reviews']) ? json_decode($_COOKIE['reviews']) : (object)[];
-
+        $search = static::getSearch();
         return [
             'counts' => Review::counts($search),
             'data'   => Review::search($search)->paginate(30, ['link'])
         ];
+    }
+
+    private static function getSearch()
+    {
+        if (isset($_GET['tutor_id']))
+            return isset($_COOKIE['tutor_reviews']) ? json_decode($_COOKIE['tutor_reviews']) : (object)[];
+        else
+            return isset($_COOKIE['reviews']) ? json_decode($_COOKIE['reviews']) : (object)[];
     }
 
     /**

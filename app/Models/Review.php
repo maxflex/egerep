@@ -97,6 +97,10 @@ class Review extends Model
             }
         }
 
+        if (isset($search->tutor_id)) {
+            $query->where("tutor_id", $search->tutor_id);
+        }
+
         if (isset($search->state) || isset($search->signature) || isset($search->comment) || isset($search->score) || isset($search->user_id) || isset($search->error)) {
             $query->whereHas('review', function($query) use ($search) {
                 if (isset($search->state)) {

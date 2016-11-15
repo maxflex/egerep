@@ -483,6 +483,17 @@
 					border: none;
 					text-align: left;
 				}
+				& .account-guard {
+					z-index: 1000;
+					height: 100%;
+					width: 420px;
+					position: absolute;
+					left:260px;
+					outline: none !important;
+					&:hover {
+						outline: none;
+					}
+				}
 				&.invisible-td {
 					border: none;
 					text-align: left;

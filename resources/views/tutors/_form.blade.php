@@ -319,11 +319,12 @@
                 'few': 'оценок',
                 'many': 'оценок'
             }"></ng-pluralize>)</div>
+            <a href="reviews/@{{ tutor.id }}">читать все отзывы</a>
         </div>
         <div class="mb-xl">
             <h4>ОПОВЕЩЕНИЯ О СИСТЕМЕ БЕЗОПАСНОСТИ</h4>
             <div class='mbs' ng-if='tutor.last_login_time'>Последний вход: @{{ formatDateTime(tutor.last_login_time) }}</div>
-            <security-notification tutor='tutor'></security-notifications>
+            <security-notification tutor='tutor'></security-notification>
         </div>
         <div ng-if="tutor.id">
             <h4>КОММЕНТАРИИ</h4>

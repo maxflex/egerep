@@ -42,3 +42,47 @@ angular
                 $scope.attachments = response.data.data.data
                 $rootScope.frontend_loading = false
                 refreshCounts()
+
+    .controller 'TutorReviews', ($rootScope, $scope, $timeout, $http, Existance, ReviewStates, Presence, ReviewScores, UserService, ReviewErrors) ->
+        bindArguments($scope, arguments)
+        $rootScope.frontend_loading = true
+
+        $scope.recalcReviewErrors = ->
+            $scope.review_errors_updating = true
+            $http.post 'api/command/model-errors', {model: 'reviews'}
+
+        refreshCounts = ->
+            $timeout ->
+                $('.selectpicker option').each (index, el) ->
+                    $(el).data 'subtext', $(el).attr 'data-subtext'
+                    $(el).data 'content', $(el).attr 'data-content'
+                $('.selectpicker').selectpicker 'refresh'
+            , 100
+
+        $scope.filter = ->
+            $.cookie "tutor_reviews", JSON.stringify($scope.search), { path: '/' }
+            $scope.current_page = 1
+            $scope.pageChanged()
+
+        $scope.pageChanged = ->
+            $rootScope.frontend_loading = true
+            load $scope.current_page
+            paginate 'reviews/' + $scope.tutor_id, $scope.current_page
+
+        load = (page) ->
+            params = '?page=' + page + '&tutor_id=' + $scope.tutor_id
+
+            $http.get "api/reviews#{ params }"
+            .then (response) ->
+                $scope.counts = response.data.counts
+                $scope.data = response.data.data
+                $scope.attachments = response.data.data.data
+                $rootScope.frontend_loading = false
+                refreshCounts()
+
+        angular.element(document).ready ->
+            $scope.search = {tutor_id: $scope.tutor_id}
+            $.cookie 'tutor_reviews', JSON.stringify($scope.search), { path: '/' }
+            load $scope.page
+            $scope.current_page = $scope.page
+

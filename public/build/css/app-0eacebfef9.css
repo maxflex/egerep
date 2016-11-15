@@ -28860,14 +28860,9 @@ a {
       border: none;
       text-align: left; }
     .accounts-table tr td .account-guard {
-      z-index: 1000;
       height: 100%;
-      width: 420px;
-      position: absolute;
-      left: 260px;
-      outline: none !important; }
-      .accounts-table tr td .account-guard:hover {
-        outline: none; }
+      width: 100%;
+      position: absolute; }
     .accounts-table tr td.invisible-td {
       border: none;
       text-align: left; }

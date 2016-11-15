@@ -26,6 +26,18 @@ class ReviewsController extends Controller
         );
     }
 
+    public function tutor(Request $request, $id)
+    {
+        return view('reviews.index', ['tutor_id' => $id])->with(
+            ngInit([
+                'page' => $request->page,
+                'review_errors_updated'  => Settings::get('review_errors_updated'),
+                'review_errors_updating' => Settings::get('review_errors_updating'),
+                'tutor_id' => $id,
+            ])
+        );
+    }
+
     /**
      * Show the form for creating a new resource.
      *

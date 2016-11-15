@@ -16,6 +16,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('calls/missed', 'CallsController@missed');
     Route::resource('calls', 'CallsController');
 
+    Route::get('reviews/{id}', 'ReviewsController@tutor');
     Route::resource('reviews', 'ReviewsController', ['only' => 'index']);
 
     Route::get('client/{id}', function($id) {
