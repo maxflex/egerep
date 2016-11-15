@@ -39,7 +39,7 @@ class User extends Model
      */
     public function getColorAttribute()
     {
-        if ($this->banned_egerep || $this->attributes['color'] == '#ffffff') {
+        if ($this->banned_egerep) {
             return static::DEFAULT_COLOR;
         } else {
             return $this->attributes['color'];
