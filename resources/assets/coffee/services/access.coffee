@@ -11,13 +11,20 @@ angular.module 'Egerep'
                     if result isnt null
                         if md5(result) is confirm_hash
                             if this.isLocked account_id
-                                this.unlock account_id
+                                if not param or param.confirmed
+                                    this.unlock account_id
+                                else
+                                    this.lock account_id
                             else
-                                this.lock account_id
+                                if param and param.confirmed
+                                    this.unlock account_id
+                                else
+                                    this.lock account_id
 
+                            callback param if callback
                             $timeout ->
                                 $rootScope.$apply()
-                            callback param if callback
+
                             return true
                         else
                             $('.bootbox-form').addClass('has-error').children().first().focus()
