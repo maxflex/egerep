@@ -115,8 +115,8 @@
     </thead>
     <tbody>
     <tr ng-repeat="attachment in attachments">
-        <td align="left" width="9%">
-            <a href="requests/@{{ attachment.request_id }}/edit#@{{ attachment.request_list_id }}#@{{ attachment.id }}">стыковка @{{ attachment.id }}</a>
+        <td align="left" width="5%">
+            <a href="requests/@{{ attachment.request_id }}/edit#@{{ attachment.request_list_id }}#@{{ attachment.id }}">@{{ attachment.id }}</a>
         </td>
         <td align="left" width="23%">
             <a href="tutors/@{{ attachment.tutor_id }}/edit">@{{ attachment.tutor.full_name}}</a>
