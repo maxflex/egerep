@@ -32,7 +32,7 @@ angular.module('Egerep')
 
                         $scope.visible_clients_count++
                     $scope.$apply()
-    .controller 'AccountsCtrl', ($rootScope, $scope, $http, $timeout, Account, PaymentMethods, Archive, Grades, Attachment, AttachmentState, AttachmentStates, Weekdays, PhoneService, AttachmentVisibility, DebtTypes, YesNo, Tutor, ArchiveStates, Checked, PlannedAccount, UserService, LkPaymentTypes, Confirmed) ->
+    .controller 'AccountsCtrl', ($rootScope, $scope, $http, $timeout, Account, PaymentMethods, Archive, Grades, Attachment, AttachmentState, AttachmentStates, Weekdays, PhoneService, AttachmentVisibility, DebtTypes, YesNo, Tutor, ArchiveStates, Checked, PlannedAccount, UserService, LkPaymentTypes, Confirmed, AccessService) ->
         bindArguments($scope, arguments)
         $scope.current_scope  = $scope
         $scope.current_period = 0
@@ -415,39 +415,5 @@ angular.module('Egerep')
             else
                 $scope.hidden_clients_count++
 
-        $scope.checkBeforeRun = (check, callback, param) ->
-            if check
-                confirm_hash = 'cbcb58ac2e496207586df2854b17995f';
-                bootbox.prompt {
-                    title: "Введите пароль",
-                    className: "modal-password",
-                    callback: (result) =>
-                        if result isnt null
-                            if md5(result) is confirm_hash
-                                callback(param)
-                                return true
-                            else
-                                $('.bootbox-form').addClass('has-error').children().first().focus()
-                                $('.bootbox-input-text').on 'keydown', ->
-                                    $(this).parent().removeClass 'has-error'
-                                return false
-                    ,
-                    buttons: {
-                        confirm: {
-                            label: "Подтвердить"
-                        },
-                        cancel: {
-                            className: "display-none"
-                        },
-                    }
-                    onEscape: true
-                }
-                return
-            else
-                callback(param)
-
         $scope.toggleConfirmed = (account) ->
             $rootScope.toggleEnumServer account, 'confirmed', Confirmed, Account
-
-        $scope.hasConfirmedAccount = ->
-            return _.where($scope.tutor.last_accounts, {confirmed: 1}).length

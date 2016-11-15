@@ -483,6 +483,11 @@
 					border: none;
 					text-align: left;
 				}
+				& .account-guard {
+					height: 100%;
+					width: 100%;
+					position: absolute;
+				}
 				&.invisible-td {
 					border: none;
 					text-align: left;
