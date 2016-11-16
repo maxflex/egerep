@@ -76,6 +76,9 @@ angular.module('Egerep')
             else
                 if not $scope.current_period
                     $scope.tutor = data
+                    if $scope.tutor.planned_account and $scope.tutor.planned_account.id
+                        $scope.tutor.planned_account.user_id += ''
+                        $scope.tutor.planned_account.payment_method += ''
                 else
                     $scope.tutor.last_accounts.unshift(data.account)
                     $scope.date_limit = moment(data.account.date_end).subtract(7, 'days').format('YYYY-MM-DD')
@@ -197,9 +200,9 @@ angular.module('Egerep')
 
         $scope.addPlannedAccountDialog = ->
             if not $scope.tutor.planned_account or (not 'is_planned' in $scope.tutor.planned_account or not $scope.tutor.planned_account.id)
-                $scope.tutor.planned_account = {is_planned: 0, payment_method: 0, user_id: '', date: ''}
+                $scope.tutor.planned_account = {is_planned: '0', payment_method: '0', date: ''}
             else
-                _.extend $scope.tutor.planned_account, {is_planned:'1', tutor_id: $scope.tutor.id}
+                _.extend $scope.tutor.planned_account, {is_planned: '1', tutor_id: $scope.tutor.id}
 
             $('#pa-date').datepicker('destroy')
             $('#pa-date').datepicker
