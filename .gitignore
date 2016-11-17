@@ -6,6 +6,9 @@ Homestead.yaml
 Homestead.json
 Envoy.blade.php
 .env
-vendor/composer/*
 /.idea
 .DS_Store
+/vendor
+!vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php
+!vendor/laravel/framework/src/Illuminate/Database/Eloquent/Collection.php
+!vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php
