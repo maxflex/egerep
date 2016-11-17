@@ -32,7 +32,6 @@ elixir(function(mix) {
         .scripts(jsFromBower([
             'jquery/dist/jquery',
             'bootstrap/dist/js/bootstrap.min',
-            'AdminLTE/dist/js/app.min',
             'jquery-ui/ui/minified/core.min',
             'jquery-ui/ui/minified/widget.min',
             'angular/angular.min',
