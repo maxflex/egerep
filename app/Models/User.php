@@ -21,7 +21,7 @@ class User extends Model
     public $timestamps = false;
 
     const USER_TYPE    = 'USER';
-    const BANNED_COLOR = 'black';
+    const DEFAULT_COLOR = 'black';
 
     # Fake system user
     const SYSTEM_USER = [
@@ -40,7 +40,7 @@ class User extends Model
     public function getColorAttribute()
     {
         if ($this->banned_egerep) {
-            return static::BANNED_COLOR;
+            return static::DEFAULT_COLOR;
         } else {
             return $this->attributes['color'];
         }

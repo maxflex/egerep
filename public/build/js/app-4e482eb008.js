@@ -378,10 +378,6 @@
       } else {
         if (!$scope.current_period) {
           $scope.tutor = data;
-          if ($scope.tutor.planned_account && $scope.tutor.planned_account.id) {
-            $scope.tutor.planned_account.user_id += '';
-            $scope.tutor.planned_account.payment_method += '';
-          }
         } else {
           $scope.tutor.last_accounts.unshift(data.account);
           $scope.date_limit = moment(data.account.date_end).subtract(7, 'days').format('YYYY-MM-DD');
@@ -520,8 +516,9 @@
       var ref;
       if (!$scope.tutor.planned_account || ((ref = !'is_planned', indexOf.call($scope.tutor.planned_account, ref) >= 0) || !$scope.tutor.planned_account.id)) {
         $scope.tutor.planned_account = {
-          is_planned: '0',
-          payment_method: '0',
+          is_planned: 0,
+          payment_method: 0,
+          user_id: '',
           date: ''
         };
       } else {
@@ -2744,58 +2741,6 @@
         return refreshCounts();
       });
     };
-  }).controller('TutorReviews', function($rootScope, $scope, $timeout, $http, Existance, ReviewStates, Presence, ReviewScores, UserService, ReviewErrors) {
-    var load, refreshCounts;
-    bindArguments($scope, arguments);
-    $rootScope.frontend_loading = true;
-    $scope.recalcReviewErrors = function() {
-      $scope.review_errors_updating = true;
-      return $http.post('api/command/model-errors', {
-        model: 'reviews'
-      });
-    };
-    refreshCounts = function() {
-      return $timeout(function() {
-        $('.selectpicker option').each(function(index, el) {
-          $(el).data('subtext', $(el).attr('data-subtext'));
-          return $(el).data('content', $(el).attr('data-content'));
-        });
-        return $('.selectpicker').selectpicker('refresh');
-      }, 100);
-    };
-    $scope.filter = function() {
-      $.cookie("tutor_reviews", JSON.stringify($scope.search), {
-        path: '/'
-      });
-      $scope.current_page = 1;
-      return $scope.pageChanged();
-    };
-    $scope.pageChanged = function() {
-      $rootScope.frontend_loading = true;
-      load($scope.current_page);
-      return paginate('reviews/' + $scope.tutor_id, $scope.current_page);
-    };
-    load = function(page) {
-      var params;
-      params = '?page=' + page + '&tutor_id=' + $scope.tutor_id;
-      return $http.get("api/reviews" + params).then(function(response) {
-        $scope.counts = response.data.counts;
-        $scope.data = response.data.data;
-        $scope.attachments = response.data.data.data;
-        $rootScope.frontend_loading = false;
-        return refreshCounts();
-      });
-    };
-    return angular.element(document).ready(function() {
-      $scope.search = {
-        tutor_id: $scope.tutor_id
-      };
-      $.cookie('tutor_reviews', JSON.stringify($scope.search), {
-        path: '/'
-      });
-      load($scope.page);
-      return $scope.current_page = $scope.page;
-    });
   });
 
 }).call(this);
@@ -4943,24 +4888,16 @@
             if (result !== null) {
               if (md5(result) === confirm_hash) {
                 if (_this.isLocked(account_id)) {
-                  if (!param || param.confirmed) {
-                    _this.unlock(account_id);
-                  } else {
-                    _this.lock(account_id);
-                  }
+                  _this.unlock(account_id);
                 } else {
-                  if (param && param.confirmed) {
-                    _this.unlock(account_id);
-                  } else {
-                    _this.lock(account_id);
-                  }
-                }
-                if (callback) {
-                  callback(param);
+                  _this.lock(account_id);
                 }
                 $timeout(function() {
                   return $rootScope.$apply();
                 });
+                if (callback) {
+                  callback(param);
+                }
                 return true;
               } else {
                 $('.bootbox-form').addClass('has-error').children().first().focus();
