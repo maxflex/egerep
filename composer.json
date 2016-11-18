@@ -8,7 +8,6 @@
         "php": ">=5.5.9",
         "laravel/framework": "5.2.*",
         "laravelcollective/html": "5.2.*",
-        "lord/laroute" : "2.*",
         "barryvdh/laravel-debugbar": "^2.1",
         "doctrine/dbal": "^2.5",
         "itsgoingd/clockwork": "^1.11",

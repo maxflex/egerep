@@ -13,7 +13,6 @@ class VariablesProvider extends ServiceProvider
             'inputmask',
             'mask',
             'engine',
-            'laroute',
             'svgmap',
             'ngmap.min',
             'jquery.fileupload',

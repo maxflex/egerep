@@ -1,7 +1,8 @@
 /node_modules
-/public/js/laroute.js
 /public/img/tutors/*
-/public/build/rev-manifest.json
+/public/build
+/vendor
+/resources/assets/bower
 Homestead.yaml
 Homestead.json
 Envoy.blade.php
