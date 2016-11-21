@@ -110,6 +110,7 @@
             </td>
             <td>Статус</td>
             <td>Реквизиты</td>
+            <td>Класс</td>
             <td>Ошибки</td>
         </tr>
     </thead>
@@ -138,6 +139,9 @@
         </td>
         <td width='20%'>
             @{{ UserService.getLogin(attachment.user_id) }}: @{{ formatDateTime(attachment.created_at) }}
+        </td>
+        <td>
+            @{{ Grades[attachment.grade] }}
         </td>
         <td width='10%'>
             <span ng-repeat='code in attachment.errors' ng-attr-aria-label="@{{ AttachmentErrors[code] }}" class='hint--bottom-left'>@{{ code }}@{{ $last ? '' : ',  ' }}</span>
