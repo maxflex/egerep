@@ -15,7 +15,7 @@
             <td>@{{ shortenYear(period.date) }}</td>
             <td>@{{ LkPaymentTypes[period.payment_method] }}</td>
             <td>@{{ UserService.get(period.user_id).login }}</td>
-            <td ng-show="period.tutor.last_login_time">@{{ formatDate(period.tutor.last_login_time) }}</td>
+            <td><span ng-show="period.tutor.last_login_time">@{{ formatDateTime(period.tutor.last_login_time) }}</span></td>
         </tr>
         </tbody>
     </table>

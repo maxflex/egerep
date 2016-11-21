@@ -62,21 +62,21 @@
             </select>
         </div>
         <div>
+            <select ng-highlight ng-model='search.grade' class='selectpicker fix-viewport' ng-change='filter()'>
+                <option value="" data-subtext="@{{ counts.grade[''] || '' }}">класс</option>
+                <option disabled>──────────────</option>
+                <option ng-repeat='(id, name) in Grades'
+                        data-subtext="@{{ counts.grade[id] || '' }}"
+                        value="@{{id}}">@{{ name }}</option>
+            </select>
+        </div>
+        <div>
             <select ng-highlight ng-model='search.error' class='selectpicker fix-viewport' ng-change='filter()'>
                 <option value="" data-subtext="@{{ counts.error[''] || '' }}">все</option>
                 <option disabled>──────────────</option>
                 <option ng-repeat='(id, name) in AttachmentErrors'
                         data-subtext="@{{ counts.error[id] || '' }}"
                         value="@{{id}}">@{{ id }}</option>
-            </select>
-        </div>
-        <div>
-            <select ng-highlight ng-model='search.grade' class='selectpicker fix-viewport' ng-change='filter()'>
-                <option value="" data-subtext="@{{ counts.grade[''] || '' }}">текущий класс</option>
-                <option disabled>──────────────</option>
-                <option ng-repeat='(id, name) in Grades'
-                        data-subtext="@{{ counts.grade[id] || '' }}"
-                        value="@{{id}}">@{{ name }}</option>
             </select>
         </div>
         <div>
@@ -127,10 +127,8 @@
                 Архивация
             </td>
             <td>Реквизиты</td>
+            <td>Класс</td>
             <td>Ошибки</td>
-            <td>Текущий класс</td>
-            <td>Разархивация</td>
-            <td>Статус проверки</td>
         </tr>
         </thead>
         <tbody>
@@ -156,17 +154,11 @@
             <td width='17%'>
                 @{{ UserService.getLogin(archive.archive_user_id) }}: @{{ formatDateTime(archive.archive_created_at) }}
             </td>
-            <td width='4%'>
-                <span ng-repeat='code in archive.errors.split(",")' ng-attr-aria-label="@{{ AttachmentErrors[code] }}" class='hint--bottom-left'>@{{ code }}@{{ $last ? '' : ',  ' }}</span>
-            </td>
             <td width='8%'>
                 @{{ Grades[archive.client_grade] }}
             </td>
-            <td width='8%'>
-                @{{ ArchiveStates[archive.state] }}
-            </td>
-            <td width='17%'>
-                @{{ Checked[archive.checked] }}
+            <td width='4%'>
+                <span ng-repeat='code in archive.errors.split(",")' ng-attr-aria-label="@{{ AttachmentErrors[code] }}" class='hint--bottom-left'>@{{ code }}@{{ $last ? '' : ',  ' }}</span>
             </td>
         </tr>
         </tbody>
