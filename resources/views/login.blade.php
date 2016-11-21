@@ -13,7 +13,7 @@
     <script src="{{ asset('/js/vendor.js', isProduction()) }}"></script>
     <script src="{{ config('app.url') }}{{ elixir('js/app.js', isProduction()) }}"></script>
 
-    @foreach(['moment.min', 'inputmask', 'mask', 'engine', 'laroute', 'ngmap.min'] as $script_name)
+    @foreach(['moment.min', 'inputmask', 'mask', 'engine', 'ngmap.min'] as $script_name)
         <script src="{{ asset('/js/' . $script_name . '.js', isProduction()) }}"></script>
     @endforeach
 

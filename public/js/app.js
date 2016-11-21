@@ -45,7 +45,6 @@
       }
     };
   }).run(function($rootScope, $q, PusherService) {
-    $rootScope.laroute = laroute;
     PusherService.bind('IncomingRequest', function(data) {
       var animate_speed, request_count, request_counter;
       request_count = $('#request-count');

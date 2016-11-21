@@ -23,8 +23,6 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
         (item) ->
             if item > 0 then item else null
     .run ($rootScope, $q, PusherService) ->
-        $rootScope.laroute = laroute
-
         PusherService.bind 'IncomingRequest', (data) ->
             request_count = $('#request-count')
             request_counter = $('#request-counter')
