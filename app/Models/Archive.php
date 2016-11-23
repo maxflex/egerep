@@ -196,7 +196,7 @@ class Archive extends Model
         }
 
         if (isset($search->grade)) {
-            $query->where('c.grade', $search->grade);
+            $query->where('attachments.grade', $search->grade);
         }
 
         if (isset($search->state)) {
