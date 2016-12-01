@@ -46,6 +46,7 @@ class Kernel extends ConsoleKernel
         Commands\EgecrmTransferCabinet::class,
         Commands\EgecrmContracts::class,
         Commands\CleanEntityPhones::class,
+        Commands\ResetMarkers::class,
     ];
 
     /**
