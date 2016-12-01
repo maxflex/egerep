@@ -39,10 +39,10 @@ class ResetMarkers extends Command
      */
     public function handle()
     {
-        DB::statement("
-            DELETE FROM metros
+        \DB::statement("
+            DELETE metros FROM metros
             JOIN markers ON markers.id = metros.marker_id
-            WHERE markers.markerable_type = 'App\Models\Tutor'
+            WHERE markers.markerable_type = 'App\\\Models\\\Tutor'
         ");
 
         $this->info('Getting markers...');
