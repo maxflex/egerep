@@ -337,11 +337,11 @@ class SummaryController extends Controller
 
         if (isset($date_from)) {
             $request_query->where('created_at', '>=', fromDotDate($date_from));
-            $attachments_query->where('created_at', '>=', fromDotDate($date_from));
+            $attachments_query->where('attachments.created_at', '>=', fromDotDate($date_from));
         }
         if (isset($date_to)) {
             $request_query->where('created_at', '<=', fromDotDate($date_to) . ' 23:59:59');
-            $attachments_query->where('created_at', '<=', fromDotDate($date_to) . ' 23:59:59');
+            $attachments_query->where('attachments.created_at', '<=', fromDotDate($date_to) . ' 23:59:59');
         }
 
         $attachments_query_without_user = clone $attachments_query;
@@ -351,8 +351,8 @@ class SummaryController extends Controller
         });
 
         if (isset($user_ids)) {
-            $request_query->whereIn('user_id', $user_ids);
-            $attachments_query->whereIn('user_id', $user_ids);
+            $request_query->whereIn('requests.user_id', $user_ids);
+            $attachments_query->whereIn('attachments.user_id', $user_ids);
             $commission_query->whereIn('attachments.user_id', $user_ids);
         }
 
@@ -385,6 +385,97 @@ class SummaryController extends Controller
         //
         // ЭФФЕКТИВНОСТЬ
         //
+        $effiency_data = [];
+        $attachments_with_request_list = self::cloneQuery($attachments_query)->join('request_lists as r', 'request_list_id', '=', 'r.id');
+
+        $requests = $request_query->get();
+        foreach ($requests as $request) {
+            $request_attachments = self::cloneQuery($attachments_with_request_list)->where('request_id', $request->id);
+            $request_attachments_count = $request_attachments->count();
+            $request_attachments_count_by_users = $request_attachments->groupBy('attachments.user_id')->select([\DB::raw('count(attachments.id) as count'),'attachments.user_id as user_id'])->get();
+
+            $has_one_lesson = self::cloneQuery($attachments_with_request_list)->where('request_id', $request->id)->archived()->hasLessonsWithMissing('=1')->get();
+            foreach ($has_one_lesson as $attachment) {
+                $attachment->rate = 0.1;
+
+                if ($request_attachments_count_by_users->count()) {
+                    $request_user_attachments = $request_attachments_count_by_users->search(function ($value) use ($attachment) {
+                        if ($value) {
+                            return $value->user_id == $attachment->user_id;
+                        }
+                    });
+                }
+                $attachment->share = $request_user_attachments ? $request_user_attachments->count / $request_attachments_count : 1;
+
+                $effiency_data[] = $attachment;
+            }
+
+            $has_two_lesson = self::cloneQuery($attachments_with_request_list)->where('request_id', $request->id)->archived()->hasLessonsWithMissing('=2')->get();
+            foreach ($has_two_lesson as $attachment) {
+                $attachment->rate = 0.15;
+
+                if ($request_attachments_count_by_users->count()) {
+                    $request_user_attachments = $request_attachments_count_by_users->search(function ($value) use ($attachment) {
+                        if ($value) {
+                            return $value->user_id == $attachment->user_id;
+                        }
+                    });
+                }
+                $attachment->share = $request_user_attachments ? $request_user_attachments->count / $request_attachments_count : 1;
+
+                $effiency_data[] = $attachment;
+            }
+
+            $has_three_lesson = self::cloneQuery($attachments_with_request_list)->where('request_id', $request->id)->archived()->hasLessonsWithMissing('=3')->get();
+            foreach ($has_three_lesson as $attachment) {
+                $attachment->rate = 1;
+
+                if ($request_attachments_count_by_users->count()) {
+                    $request_user_attachments = $request_attachments_count_by_users->search(function ($value) use ($attachment) {
+                        if ($value) {
+                            return $value->user_id == $attachment->user_id;
+                        }
+                    });
+                }
+                $attachment->share = $request_user_attachments ? $request_user_attachments->count / $request_attachments_count : 1;
+
+                $effiency_data[] = $attachment;
+            }
+
+            $active = self::cloneQuery($attachments_with_request_list)->where('request_id', $request->id)->active()->get();
+            foreach ($active as $attachment) {
+                $attachment->rate = 1;
+
+                if ($request_attachments_count_by_users->count()) {
+                    $request_user_attachments = $request_attachments_count_by_users->search(function ($value) use ($attachment) {
+                        if ($value) {
+                            return $value->user_id == $attachment->user_id;
+                        }
+                    });
+                }
+                $attachment->share = $request_user_attachments ? $request_user_attachments->count / $request_attachments_count : 1;
+
+                $effiency_data[] = $attachment;
+            }
+
+            $newest = self::cloneQuery($attachments_with_request_list)->where('request_id', $request->id)->newest()->get();
+            foreach ($newest as $attachment) {
+                $attachment->rate = 0.65;
+
+                $request_user_attachments = $request_attachments_count_by_users->search(function ($value) use ($attachment) {
+                    if ($value) {
+                        return $value->user_id == $attachment->user_id;
+                    }
+                });
+
+//                var_dump($request_user_attachments, $request_attachments_count);
+                $attachment->share = is_object($request_user_attachments) ? $request_user_attachments->count / $request_attachments_count : 1;
+
+                $effiency_data[] = $attachment;
+            }
+        }
+
+
         $numerator = $return['attachments']['active'] + $return['attachments']['archived']['three_or_more_lessons']
                         + (0.65 * $return['attachments']['newest'])
                         + (0.1 * $return['attachments']['archived']['one_lesson'])
@@ -400,6 +491,7 @@ class SummaryController extends Controller
 
         $return['efficency'] = [
             'conversion'       => round($numerator / $denominator, 2),
+            'data'             => $effiency_data,
             'forecast'         => round(self::cloneQuery($attachments_query)->avg('forecast')),
             'request_avg'      => round($total_commission / ($denominator + $return['requests']['deny'])),
             'attachment_avg'   => round($total_commission / $return['attachments']['total']),

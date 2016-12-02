@@ -1123,27 +1123,6 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').factory('Model', function($resource) {
-    return $resource('api/models/:id', {}, {
-      update: {
-        method: 'PUT'
-      }
-    });
-  }).controller("ModelsIndex", function($scope, $timeout, Model) {
-    return $scope.models = Model.query();
-  }).controller("ModelsForm", function($scope, $timeout, $interval, Model) {
-    return $timeout(function() {
-      if ($scope.id > 0) {
-        return $scope.model = Model.get({
-          id: $scope.id
-        });
-      }
-    });
-  });
-
-}).call(this);
-
-(function() {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   angular.module('Egerep').controller('AccountsHiddenCtrl', function($scope, Grades, Attachment) {
@@ -4475,6 +4454,27 @@
       $scope.form_changed = true;
       return $('#gmap-modal').modal('hide');
     };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').factory('Model', function($resource) {
+    return $resource('api/models/:id', {}, {
+      update: {
+        method: 'PUT'
+      }
+    });
+  }).controller("ModelsIndex", function($scope, $timeout, Model) {
+    return $scope.models = Model.query();
+  }).controller("ModelsForm", function($scope, $timeout, $interval, Model) {
+    return $timeout(function() {
+      if ($scope.id > 0) {
+        return $scope.model = Model.get({
+          id: $scope.id
+        });
+      }
+    });
   });
 
 }).call(this);
