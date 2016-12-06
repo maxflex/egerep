@@ -1,6 +1,7 @@
 /node_modules
 /public/img/tutors/*
 /public/build
+/public/js
 /vendor
 /resources/assets/bower
 Homestead.yaml
