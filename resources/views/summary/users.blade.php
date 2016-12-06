@@ -74,6 +74,45 @@
             <div>Средняя стыковка – @{{ stats.efficency.attachment_avg | number }} руб.</div>
             <div>Общая комиссия – @{{ stats.efficency.total_commission | number }} руб.</div>
 
+            <div>
+                <table class="table" style="font-size: 0.8em;">
+                    <thead class="bold">
+                    <tr>
+                        <td align="left">Cтыковка</td>
+                        <td>Преподаватель</td>
+                        <td>Cтыковка</td>
+                        <td>Статус</td>
+                        <td>Реквизиты</td>
+                        <td>Заявка</td>
+                        <td>Эффективность</td>
+                        <td>Доля заявки</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="attachment in stats.efficency.data">
+                        <td align="left" width="5%">
+                            <a href="requests/@{{ attachment.request_id }}/edit#@{{ attachment.request_list_id }}#@{{ attachment.id }}">@{{ attachment.id }}</a>
+                        </td>
+                        <td align="left" width="23%">
+                            <a href="tutors/@{{ attachment.tutor_id }}/edit">@{{ attachment.tutor.full_name}}</a>
+                        </td>
+                        <td width="6%">
+                            @{{ attachment.date }}
+                        </td>
+                        <td width='10%'>
+                            @{{ AttachmentService.getStatus(attachment) }}
+                        </td>
+                        <td width='20%'>
+                            @{{ UserService.getLogin(attachment.user_id) }}: @{{ formatDateTime(attachment.created_at) }}
+                        </td>
+                        <td><a href="requests/@{{ attachment.request_id }}">@{{ attachment.request_id }}</a></td>
+                        <td>@{{ attachment.rate }}</td>
+                        <td>@{{ attachment.share }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
             <div class="result-line">Распределение комиссии по месяцам:</div>
             <div ng-repeat='commission in stats.commissions'>
                 <span style='display: inline-block; width: 150px'>@{{ monthYear(commission.date) }}</span> @{{ commission.sum | number }}
