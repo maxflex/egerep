@@ -73,9 +73,13 @@
             <div>Средняя заявка – @{{ stats.efficency.request_avg | number }} руб.</div>
             <div>Средняя стыковка – @{{ stats.efficency.attachment_avg | number }} руб.</div>
             <div>Общая комиссия – @{{ stats.efficency.total_commission | number }} руб.</div>
+            <div class="result-line">Распределение комиссии по месяцам:</div>
+            <div ng-repeat='commission in stats.commissions'>
+                <span style='display: inline-block; width: 150px'>@{{ monthYear(commission.date) }}</span> @{{ commission.sum | number }}
+            </div>
 
             <div>
-                <table class="table" style="font-size: 0.8em;">
+                <table class="table" style="margin-top: 20px; font-size: 0.8em;">
                     <thead class="bold">
                     <tr>
                         <td align="left">Cтыковка</td>
@@ -111,11 +115,6 @@
                     </tr>
                     </tbody>
                 </table>
-            </div>
-
-            <div class="result-line">Распределение комиссии по месяцам:</div>
-            <div ng-repeat='commission in stats.commissions'>
-                <span style='display: inline-block; width: 150px'>@{{ monthYear(commission.date) }}</span> @{{ commission.sum | number }}
             </div>
         </div>
     </div>
