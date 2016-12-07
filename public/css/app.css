@@ -30490,7 +30490,7 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
   float: right;
   cursor: pointer; }
 
-body.modal-open .row {
+body.modal-open .blur {
   -webkit-filter: blur(4px); }
 
 #searchModal {
@@ -30529,5 +30529,8 @@ body.modal-open .row {
   font-size: 18px;
   text-align: center;
   color: #9d9d9d; }
+
+.hide {
+  display: none !important; }
 
 /*# sourceMappingURL=app.css.map */

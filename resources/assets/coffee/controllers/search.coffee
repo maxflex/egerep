@@ -106,7 +106,6 @@ angular
                 viewVue.results = 0;
           else
             $scope.success = {}; # обнуляем результат поиска
-            #angular.element("#searchResult").html('');
             viewVue.lists = []
             viewVue.active = 0;
             viewVue.results = -1;
@@ -137,7 +136,15 @@ $(document).ready ->
     modalDialog.css 'margin-left',leftPadding
     $('#searchResult').css 'height', windowHeigh50 - 70
     $('#searchModal').modal({keyboard: true})
-    delayFunction = ()-> $('#searchQueryInput').focus()
+    delayFunction = ()->
+      $('#searchQueryInput').focus()
     setTimeout delayFunction, 500
+    $($('body.modal-open .row')[0]).addClass('blur')
     false
-  null
+  $ '#searchModal'
+    .on 'hidden.bs.modal', () ->
+      delayFnc = ()->
+        console.log 'closer'
+        $ '.blur'
+          .removeClass 'blur'
+      setTimeout delayFnc, 500
