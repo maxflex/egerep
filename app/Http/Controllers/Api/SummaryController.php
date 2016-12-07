@@ -388,13 +388,14 @@ class SummaryController extends Controller
         $effiency_data = [];
         $attachments_with_request_list = self::cloneQuery($attachments_query)->join('request_lists as r', 'request_list_id', '=', 'r.id');
 
-        $requests = $request_query->get();
+        $requests = $request_query->select(['id', 'user_id'])->get()->toArray();
         foreach ($requests as $request) {
-            $request_attachments = self::cloneQuery($attachments_with_request_list)->where('request_id', $request->id);
+            $request['attachments'] = [];
+            $request_attachments = self::cloneQuery($attachments_with_request_list)->where('request_id', $request['id']);
             $request_attachments_count = $request_attachments->count();
             $request_attachments_count_by_users = $request_attachments->groupBy('attachments.user_id')->select([\DB::raw('count(attachments.id) as count'),'attachments.user_id as user_id'])->get();
 
-            $has_one_lesson = self::cloneQuery($attachments_with_request_list)->where('request_id', $request->id)->archived()->hasLessonsWithMissing('=1')->get();
+            $has_one_lesson = self::cloneQuery($attachments_with_request_list)->where('request_id', $request['id'])->archived()->hasLessonsWithMissing('=1')->get();
             foreach ($has_one_lesson as $attachment) {
                 $attachment->rate = 0.1;
 
@@ -407,10 +408,10 @@ class SummaryController extends Controller
                 }
                 $attachment->share = $request_user_attachments ? $request_user_attachments->count / $request_attachments_count : 1;
 
-                $effiency_data[] = $attachment;
+                $request['attachments'][] = $attachment;
             }
 
-            $has_two_lesson = self::cloneQuery($attachments_with_request_list)->where('request_id', $request->id)->archived()->hasLessonsWithMissing('=2')->get();
+            $has_two_lesson = self::cloneQuery($attachments_with_request_list)->where('request_id', $request['id'])->archived()->hasLessonsWithMissing('=2')->get();
             foreach ($has_two_lesson as $attachment) {
                 $attachment->rate = 0.15;
 
@@ -423,10 +424,10 @@ class SummaryController extends Controller
                 }
                 $attachment->share = $request_user_attachments ? $request_user_attachments->count / $request_attachments_count : 1;
 
-                $effiency_data[] = $attachment;
+                $request['attachments'][] = $attachment;
             }
 
-            $has_three_lesson = self::cloneQuery($attachments_with_request_list)->where('request_id', $request->id)->archived()->hasLessonsWithMissing('=3')->get();
+            $has_three_lesson = self::cloneQuery($attachments_with_request_list)->where('request_id', $request['id'])->archived()->hasLessonsWithMissing('=3')->get();
             foreach ($has_three_lesson as $attachment) {
                 $attachment->rate = 1;
 
@@ -439,10 +440,10 @@ class SummaryController extends Controller
                 }
                 $attachment->share = $request_user_attachments ? $request_user_attachments->count / $request_attachments_count : 1;
 
-                $effiency_data[] = $attachment;
+                $request['attachments'][] = $attachment;
             }
 
-            $active = self::cloneQuery($attachments_with_request_list)->where('request_id', $request->id)->active()->get();
+            $active = self::cloneQuery($attachments_with_request_list)->where('request_id', $request['id'])->active()->get();
             foreach ($active as $attachment) {
                 $attachment->rate = 1;
 
@@ -455,10 +456,10 @@ class SummaryController extends Controller
                 }
                 $attachment->share = $request_user_attachments ? $request_user_attachments->count / $request_attachments_count : 1;
 
-                $effiency_data[] = $attachment;
+                $request['attachments'][] = $attachment;
             }
 
-            $newest = self::cloneQuery($attachments_with_request_list)->where('request_id', $request->id)->newest()->get();
+            $newest = self::cloneQuery($attachments_with_request_list)->where('request_id', $request['id'])->newest()->get();
             foreach ($newest as $attachment) {
                 $attachment->rate = 0.65;
 
@@ -468,11 +469,12 @@ class SummaryController extends Controller
                     }
                 });
 
-//                var_dump($request_user_attachments, $request_attachments_count);
                 $attachment->share = is_object($request_user_attachments) ? $request_user_attachments->count / $request_attachments_count : 1;
 
-                $effiency_data[] = $attachment;
+                $request['attachments'][] = $attachment;
             }
+
+            $effiency_data[] = $request;
         }
 
 
@@ -489,10 +491,16 @@ class SummaryController extends Controller
 
         $total_commission = self::cloneQuery($commission_query)->sum(DB::raw('if(commission > 0, commission, ' . Account::DEFAULT_COMMISSION . ' * sum)'));
 
+
+        $forecast = round(
+            self::cloneQuery($attachments_query)->newest()->sum('forecast') + self::cloneQuery($attachments_query)->archived()->hasLessonsWithMissing('>=3')->sum('forecast')
+            / self::cloneQuery($attachments_query)->newest()->count() + self::cloneQuery($attachments_query)->archived()->hasLessonsWithMissing('>=3')->count()
+        );
+
         $return['efficency'] = [
             'conversion'       => round($numerator / $denominator, 2),
             'data'             => $effiency_data,
-            'forecast'         => round(self::cloneQuery($attachments_query)->avg('forecast')),
+            'forecast'         => $forecast,
             'request_avg'      => round($total_commission / ($denominator + $return['requests']['deny'])),
             'attachment_avg'   => round($total_commission / $return['attachments']['total']),
             'total_commission' => round($total_commission),
