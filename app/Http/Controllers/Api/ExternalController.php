@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\SmsStatusUpdate;
 use Illuminate\Http\Request;
 
 use App\Models\Api;
@@ -262,6 +263,8 @@ class ExternalController extends Controller
                 \App\Models\Sms::where('id_smsru', $sms_id)->update([
                     'id_status' => $sms_status
                 ]);
+
+				event(new SmsStatusUpdate($sms_id, $sms_status));
 
                 // "Изменение статуса. Сообщение: $sms_id. Новый статус: $sms_status";
                 // Здесь вы можете уже выполнять любые действия над этими данными.

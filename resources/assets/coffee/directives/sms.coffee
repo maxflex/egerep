@@ -3,7 +3,18 @@ angular.module('Egerep').directive 'sms', ->
     templateUrl: 'directives/sms'
     scope:
         number: '='
-    controller: ($scope, $timeout, Sms) ->
+    controller: ($scope, $timeout, Sms, PusherService) ->
+        #pusher
+        PusherService.bind 'SmsStatusUpdate', (data) ->
+            console.log 'message: ', data;
+            console.log 'message: ', $scope.history;
+
+            angular.forEach $scope.history, (val, key) ->
+                if val.id_smsru == data.id_smsru
+                    val.id_status = data.id_status
+                    $scope.$apply()
+                console.log val, key
+
         # массовая отправка?
         $scope.mass = false
 
