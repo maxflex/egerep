@@ -388,25 +388,37 @@ class SummaryController extends Controller
         $effiency_data = [];
         $attachments_with_request_list = self::cloneQuery($attachments_query)->join('request_lists as r', 'request_list_id', '=', 'r.id');
 
-        $requests = $request_query->select(['id', 'user_id'])->get()->toArray();
+        $requests = \App\Models\Request::whereIn('id', $attachments_with_request_list->pluck('request_id'))->select(['id', 'user_id'])->get()->toArray();
         foreach ($requests as $request) {
             $request['attachments'] = [];
             $request_attachments = self::cloneQuery($attachments_with_request_list)->where('request_id', $request['id']);
             $request_attachments_count = $request_attachments->count();
             $request_attachments_count_by_users = $request_attachments->groupBy('attachments.user_id')->select([\DB::raw('count(attachments.id) as count'),'attachments.user_id as user_id'])->get();
 
+            $has_no_lesson = self::cloneQuery($attachments_with_request_list)->where('request_id', $request['id'])->archived()->hasLessonsWithMissing('=0')->get();
+            foreach ($has_no_lesson as $attachment) {
+                $attachment->rate = 0;
+
+                if ($request_attachments_count_by_users->count()) {
+                    $key = $request_attachments_count_by_users->search(function ($value) use ($attachment) {
+                        return $value->user_id == $attachment->user_id;
+                    });
+                }
+                $attachment->share = $key !== false ? $request_attachments_count_by_users->get($key)->count / $request_attachments_count : 1;
+
+                $request['attachments'][] = $attachment;
+            }
+
             $has_one_lesson = self::cloneQuery($attachments_with_request_list)->where('request_id', $request['id'])->archived()->hasLessonsWithMissing('=1')->get();
             foreach ($has_one_lesson as $attachment) {
                 $attachment->rate = 0.1;
 
                 if ($request_attachments_count_by_users->count()) {
-                    $request_user_attachments = $request_attachments_count_by_users->search(function ($value) use ($attachment) {
-                        if ($value) {
-                            return $value->user_id == $attachment->user_id;
-                        }
+                    $key = $request_attachments_count_by_users->search(function ($value) use ($attachment) {
+                        return $value->user_id == $attachment->user_id;
                     });
                 }
-                $attachment->share = $request_user_attachments ? $request_user_attachments->count / $request_attachments_count : 1;
+                $attachment->share = $key !== false ? $request_attachments_count_by_users->get($key)->count / $request_attachments_count : 1;
 
                 $request['attachments'][] = $attachment;
             }
@@ -416,13 +428,11 @@ class SummaryController extends Controller
                 $attachment->rate = 0.15;
 
                 if ($request_attachments_count_by_users->count()) {
-                    $request_user_attachments = $request_attachments_count_by_users->search(function ($value) use ($attachment) {
-                        if ($value) {
-                            return $value->user_id == $attachment->user_id;
-                        }
+                    $key = $request_attachments_count_by_users->search(function ($value) use ($attachment) {
+                        return $value->user_id == $attachment->user_id;
                     });
                 }
-                $attachment->share = $request_user_attachments ? $request_user_attachments->count / $request_attachments_count : 1;
+                $attachment->share = $key !== false ? $request_attachments_count_by_users->get($key)->count / $request_attachments_count : 1;
 
                 $request['attachments'][] = $attachment;
             }
@@ -432,13 +442,11 @@ class SummaryController extends Controller
                 $attachment->rate = 1;
 
                 if ($request_attachments_count_by_users->count()) {
-                    $request_user_attachments = $request_attachments_count_by_users->search(function ($value) use ($attachment) {
-                        if ($value) {
-                            return $value->user_id == $attachment->user_id;
-                        }
+                    $key = $request_attachments_count_by_users->search(function ($value) use ($attachment) {
+                        return $value->user_id == $attachment->user_id;
                     });
                 }
-                $attachment->share = $request_user_attachments ? $request_user_attachments->count / $request_attachments_count : 1;
+                $attachment->share = $key !== false ? $request_attachments_count_by_users->get($key)->count / $request_attachments_count : 1;
 
                 $request['attachments'][] = $attachment;
             }
@@ -448,13 +456,11 @@ class SummaryController extends Controller
                 $attachment->rate = 1;
 
                 if ($request_attachments_count_by_users->count()) {
-                    $request_user_attachments = $request_attachments_count_by_users->search(function ($value) use ($attachment) {
-                        if ($value) {
-                            return $value->user_id == $attachment->user_id;
-                        }
+                    $key = $request_attachments_count_by_users->search(function ($value) use ($attachment) {
+                        return $value->user_id == $attachment->user_id;
                     });
                 }
-                $attachment->share = $request_user_attachments ? $request_user_attachments->count / $request_attachments_count : 1;
+                $attachment->share = $key !== false ? $request_attachments_count_by_users->get($key)->count / $request_attachments_count : 1;
 
                 $request['attachments'][] = $attachment;
             }
@@ -463,13 +469,11 @@ class SummaryController extends Controller
             foreach ($newest as $attachment) {
                 $attachment->rate = 0.65;
 
-                $request_user_attachments = $request_attachments_count_by_users->search(function ($value) use ($attachment) {
-                    if ($value) {
-                        return $value->user_id == $attachment->user_id;
-                    }
+                $key = $request_attachments_count_by_users->search(function ($value) use ($attachment) {
+                    return $value->user_id == $attachment->user_id;
                 });
 
-                $attachment->share = is_object($request_user_attachments) ? $request_user_attachments->count / $request_attachments_count : 1;
+                $attachment->share = $key !== false ? $request_attachments_count_by_users->get($key)->count / $request_attachments_count : 1;
 
                 $request['attachments'][] = $attachment;
             }
@@ -492,17 +496,22 @@ class SummaryController extends Controller
         $total_commission = self::cloneQuery($commission_query)->sum(DB::raw('if(commission > 0, commission, ' . Account::DEFAULT_COMMISSION . ' * sum)'));
 
 
-        $forecast = round(
-            self::cloneQuery($attachments_query)->newest()->sum('forecast') + self::cloneQuery($attachments_query)->archived()->hasLessonsWithMissing('>=3')->sum('forecast')
-            / self::cloneQuery($attachments_query)->newest()->count() + self::cloneQuery($attachments_query)->archived()->hasLessonsWithMissing('>=3')->count()
-        );
+        if ($divider = (self::cloneQuery($attachments_query)->newest()->count() + self::cloneQuery($attachments_query)->archived()->hasLessonsWithMissing('>=3')->count())) {
+            $forecast = round(
+                self::cloneQuery($attachments_query)->newest()->sum('forecast') + self::cloneQuery($attachments_query)->archived()->hasLessonsWithMissing('>=3')->sum('forecast')
+                / $divider
+            );
+        } else {
+            $forecast = 0;
+        }
+
 
         $return['efficency'] = [
-            'conversion'       => round($numerator / $denominator, 2),
+            'conversion'       => $denominator ? round($numerator / $denominator, 2) : 0,
             'data'             => $effiency_data,
             'forecast'         => $forecast,
-            'request_avg'      => round($total_commission / ($denominator + $return['requests']['deny'])),
-            'attachment_avg'   => round($total_commission / $return['attachments']['total']),
+            'request_avg'      => $denominator + $return['requests']['deny'] ? round($total_commission / ($denominator + $return['requests']['deny'])) : 0,
+            'attachment_avg'   => $return['attachments']['total'] ? round($total_commission / $return['attachments']['total']) : 0,
             'total_commission' => round($total_commission),
         ];
 

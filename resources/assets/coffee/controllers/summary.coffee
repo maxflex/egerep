@@ -1,6 +1,6 @@
 angular
     .module 'Egerep'
-    .controller 'SummaryUsers', ($scope, $rootScope, $timeout, $http, UserService, RequestStates) ->
+    .controller 'SummaryUsers', ($scope, $rootScope, $timeout, $http, UserService, RequestStates, AttachmentService) ->
         bindArguments($scope, arguments)
 
         $timeout ->
@@ -19,6 +19,23 @@ angular
             date = date.reverse()
             date = date.join("-")
             moment(date).format('MMMM YYYY')
+
+        $scope.sumEfficency = ->
+            _.reduce $scope.stats.efficency.data, (sum, request) ->
+                _.each request.attachments, (attachment) ->
+                    sum += attachment.rate
+                sum
+            , 0
+
+        $scope.sumShare = ->
+            _.reduce $scope.stats.efficency.data, (sum, request) ->
+                if request.attachments.length
+                    _.each request.attachments, (attachment) ->
+                        sum += attachment.share
+                else
+                    sum += 1
+                sum
+            , 0
 
     .controller 'SummaryIndex', ($rootScope, $scope, $http, $timeout, PaymentMethods) ->
         bindArguments($scope, arguments)
