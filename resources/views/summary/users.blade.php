@@ -86,6 +86,7 @@
                         <td>Преподаватель</td>
                         <td>Cтыковка</td>
                         <td>Статус</td>
+                        <td>Прогноз</td>
                         <td>Реквизиты</td>
                         <td>Заявка</td>
                         <td>Эффективность</td>
@@ -94,7 +95,7 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat-start="request in stats.efficency.data" ng-if="!request.attachments.length">
-                            <td align="left" colspan="4" width="44%"></td>
+                            <td align="left" colspan="5" width="44%"></td>
                             <td width='20%'>
                                 @{{ UserService.getLogin(request.user_id) }}
                             </td>
@@ -115,6 +116,9 @@
                             <td width='10%'>
                                 @{{ AttachmentService.getStatus(attachment) }}
                             </td>
+                            <td>
+                                @{{ attachment.forecast }}
+                            </td>
                             <td width='20%'>
                                 @{{ UserService.getLogin(attachment.user_id) }}: @{{ formatDateTime(attachment.created_at) }}
                             </td>
@@ -123,9 +127,9 @@
                             <td>@{{ attachment.share }}</td>
                         </tr>
                         <tr>
-                            <td align="left" colspan="6"></td>
-                            <td>@{{ stats.efficency.conversion | number }}</td>
-                            <td>@{{ stats.efficency.data.length | number }}</td>
+                            <td align="left" colspan="7"></td>
+                            <td>@{{ sumEfficency() | number }}</td>
+                            <td>@{{ sumShare() | number }}</td>
                         </tr>
                     </tbody>
                 </table>
