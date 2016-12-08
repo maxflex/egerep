@@ -14,7 +14,6 @@ class EgecrmDropRightsColumnsFromUsers extends Migration
     {
         Schema::connection('egecrm')->table('users', function (Blueprint $table) {
             $table->dropColumn('show_contract');
-            $table->dropColumn('show_attachments');
             $table->dropColumn('show_summary');
             $table->dropColumn('remove_requests');
             $table->dropColumn('show_accounts');
