@@ -3990,5 +3990,23 @@
             "predis",
             "redis"
         ]
+    },
+    {
+        "name": "ege-shared",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://mkolyadin@bitbucket.org/mkolyadin/ege-shared.git",
+            "reference": "8446c4adb0aaf5628380ea0822d87229e873f8a4"
+        },
+        "time": "2016-12-07 11:14:59",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "Shared\\": "src/"
+            }
+        }
     }
 ]

@@ -69,12 +69,12 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
           input
 
           # skip_values – какие значения в enum пропускать
-          # allowed_user_ids – пользователи, которым разрешено выбирать значения
+          # allowed – пользователю рарзешено выбирать значения из [skip_values]
           # recursion – функция была запущена рекурсивно (внизу)
-        $rootScope.toggleEnum = (ngModel, status, ngEnum, skip_values = [], allowed_user_ids = [], recursion = false) ->
+        $rootScope.toggleEnum = (ngModel, status, ngEnum, skip_values = [], allowed = [], recursion = false) ->
             # если установлено значение, которое пропускается для обычных пользователей,
             # то запрещать его смену
-            return if not recursion and (parseInt(ngModel[status]) in skip_values or (isNaN(parseInt(ngModel[status])) and skip_values.indexOf(ngModel[status]) isnt -1)) and $rootScope.$$childHead.user.id not in allowed_user_ids
+            return if not recursion and (parseInt(ngModel[status]) in skip_values or (isNaN(parseInt(ngModel[status])) and skip_values.indexOf(ngModel[status]) isnt -1)) and not allowed
 
             statuses = Object.keys(ngEnum)
             status_id = statuses.indexOf ngModel[status].toString()
@@ -82,10 +82,12 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
             status_id = 0 if status_id > (statuses.length - 1)
             ngModel[status] = statuses[status_id]
             # if in skip_values
-            $rootScope.toggleEnum(ngModel, status, ngEnum, skip_values, allowed_user_ids, true) if ((isNaN(parseInt(ngModel[status])) and skip_values.indexOf(ngModel[status]) isnt -1) or status_id in skip_values) and $rootScope.$$childHead.user.id not in allowed_user_ids
+            $rootScope.toggleEnum(ngModel, status, ngEnum, skip_values, allowed, true) if ((isNaN(parseInt(ngModel[status])) and skip_values.indexOf(ngModel[status]) isnt -1) or status_id in skip_values) and not allowed
 
         # обновить + ждать ответа от сервера
-        # раньше я неправильно понимал алгоритм, поэтому без restricted_fields, freeze_restricted тоже можно было toggleить. при необходимости можно менять и переделать как $scope.enumToggles
+        # раньше я неправильно понимал алгоритм, поэтому без restricted_fields,
+        # freeze_restricted тоже можно было toggleить.
+        # при необходимости можно менять и переделать как $scope.enumToggles
         $rootScope.toggleEnumServer = (ngModel, status, ngEnum, Resource, skip_values = [], restricted_fields = [], freeze_restricted = false) ->
             return if ngModel[status] in restricted_fields and freeze_restricted #если запрешено менять значение
 

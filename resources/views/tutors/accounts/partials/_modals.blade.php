@@ -47,10 +47,12 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer center">
-                <button type="button" class="btn btn-primary" ng-disabled="tutor.planned_account.is_planned == 0" ng-show="!tutor.planned_account.id" ng-click="addPlannedAccount()">Добавить</button>
-                <button type="button" class="btn btn-primary" ng-show="tutor.planned_account.id" ng-click="updatePlannedAccount()">Изменить</button>
-            </div>
+            @if(allowed(\Shared\Rights::ER_EDIT_ACCOUNTS))
+                <div class="modal-footer center">
+                    <button type="button" class="btn btn-primary" ng-disabled="tutor.planned_account.is_planned == 0" ng-show="!tutor.planned_account.id" ng-click="addPlannedAccount()">Добавить</button>
+                    <button type="button" class="btn btn-primary" ng-show="tutor.planned_account.id" ng-click="updatePlannedAccount()">Изменить</button>
+                </div>
+            @endif
         </div>
     </div>
 </div>

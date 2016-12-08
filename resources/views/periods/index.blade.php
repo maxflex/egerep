@@ -3,10 +3,6 @@
 @section('controller', 'PeriodsIndex')
 
 @section('content')
-    <div class="top-links">
-        <a ng-href="@{{ type == 'total' ? '' : 'periods' }}" ng-class="{active: type == 'total'}">совершенные</a>
-        <a ng-href="@{{ type == 'planned' ? '' : 'periods/planned' }}" ng-class="{active: type == 'planned'}">запланированные</a>
-    </div>
 
     @include('periods.total')
     @include('periods.planned')

@@ -1,4 +1,4 @@
-<div ng-if="type == 'payments' && user.show_summary">
+<div ng-if="type == 'payments'">
     <table class="table table-hover">
         <thead class="text-center">
             <tr>

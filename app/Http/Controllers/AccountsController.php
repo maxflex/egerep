@@ -8,11 +8,15 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Tutor;
 use App\Models\AccountData;
+use App\Models\User;
 
 class AccountsController extends Controller
 {
     public function index($id)
     {
+        if (! allowed(\Shared\Rights::ER_TUTOR_ACCOUNTS)) {
+            return view('errors.not_allowed');
+        }
         $data = $this->getData($id, [0, false, true]); // params in array: hidden, with_lesson_count, get_possible_archives
         if ($data === false) {
             return view('tutors.accounts.no_clients');

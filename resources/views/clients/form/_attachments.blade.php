@@ -6,7 +6,9 @@
                 ng-class="{'link-like': attachment !== selected_attachment}"
                 ng-click="selectAttachment(attachment)"
             >@{{ tutors[attachment.tutor_id] }}</span>
-            <span class='link-like text-danger show-on-hover' ng-click="removeAttachment()" ng-show='selected_attachment'>удалить стыковку</span>
+            @if($user->allowed(\Shared\Rights::ER_REQUEST_DATA))
+                <span class='link-like text-danger show-on-hover' ng-click="removeAttachment()" ng-show='selected_attachment'>удалить стыковку</span>
+            @endif
         </div>
     </div>
 

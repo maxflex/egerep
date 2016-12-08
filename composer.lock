@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f815395a48044f1105558556067be3e4",
-    "content-hash": "cb140d97369bbc3b29fff9df95e08906",
+    "hash": "e14417a0a61a52a5a43a1bc24050dbb1",
+    "content-hash": "a329e13366ade71c0abcfa3be1c8e5ec",
     "packages": [
         {
             "name": "abeautifulsite/simpleimage",
@@ -665,6 +665,22 @@
                 "parser"
             ],
             "time": "2014-09-09 13:34:57"
+        },
+        {
+            "name": "ege-shared",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://mkolyadin@bitbucket.org/mkolyadin/ege-shared.git",
+                "reference": "8446c4adb0aaf5628380ea0822d87229e873f8a4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Shared\\": "src/"
+                }
+            },
+            "time": "2016-12-07 11:14:59"
         },
         {
             "name": "graham-campbell/throttle",
@@ -3868,7 +3884,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "ege-shared": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

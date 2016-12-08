@@ -13,18 +13,21 @@
                 <td>
                     архиваций
                 </td>
-                <td ng-show="user.show_summary">
+                {{-- @rights-refactored --}}
+                @if (allowed(\Shared\Rights::ER_SUMMARY))
+                <td>
                     получено
                 </td>
-                <td ng-show="user.show_summary">
+                <td>
                     комиссия
                 </td>
-                <td ng-show="user.show_summary">
+                <td>
                     прогноз
                 </td>
-                <td ng-show="user.show_summary">
+                <td>
                     дебет
                 </td>
+                @endif
                 <td>
                     рабочих процессов
                 </td>
@@ -47,20 +50,22 @@
                 <td>
                     @{{ summary.archives.cnt | hideZero }}
                 </td>
-                <td ng-show="user.show_summary">
+                @if (allowed(\Shared\Rights::ER_SUMMARY))
+                <td>
                     <span title="@{{ summary.received.sum | number }} + @{{ (summary.mutual_debts.sum ? summary.mutual_debts.sum : 0) | number }}">
                         @{{ +(summary.received.sum) + +(summary.mutual_debts.sum) | hideZero | number }}
                     </span>
                 </td>
-                <td ng-show="user.show_summary">
+                <td>
                     @{{ summary.commission.sum | hideZero | number }}
                 </td>
-                <td ng-show="user.show_summary">
+                <td>
                     @{{ summary.forecast.sum | hideZero | number }}
                 </td>
-                <td ng-show="user.show_summary">
+                <td>
                     @{{ summary.debt.sum | hideZero | number }}
                 </td>
+                @endif
                 <td>@{{ summary.active_attachments.sum }}</td>
                 <td>@{{ summary.new_clients.sum }}</td>
             </tr>

@@ -31,6 +31,9 @@ class AttachmentsController extends Controller
 
     public function stats(Request $request, $month = null)
     {
+        if (! allowed(\Shared\Rights::ER_ATTACHMENT_STATS)) {
+            return view('errors.not_allowed');
+        }
         if ($month === null) {
             $month = date('n'); // по умолчанию берём текущий месяц
         }

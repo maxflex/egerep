@@ -192,3 +192,9 @@
     function set_active($path, $active = 'active') {
        return "href={$path}" . (call_user_func_array('Request::is', (array)$path) ? " class={$active}" : '');
    }
+
+   function allowed($right, $return_int = false)
+   {
+       $allowed = \App\Models\User::fromSession()->allowed($right);
+       return $return_int ? (int)$allowed : $allowed;
+   }

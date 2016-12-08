@@ -17,6 +17,9 @@ class LogsController extends Controller
      */
     public function index(Request $request)
     {
+        if (! allowed(\Shared\Rights::ER_LOGS)) {
+            return view('errors.not_allowed');
+        }
         return view('logs.index')->with(
             ngInit([
                 'page'      => $request->page,

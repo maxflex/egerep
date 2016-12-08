@@ -16,11 +16,14 @@
            ng-repeat="(period_id, period) in {day:'дни', week:'недели', month:'месяцы', year:'годы'}"
            ng-class="{active : filter == period_id}">@{{ period }}</a>
 
-		<div class="pull-right" ng-show="user.show_summary">
+        {{-- @rights-refactored --}}
+        @if (allowed(\Shared\Rights::ER_SUMMARY))
+		<div class="pull-right">
 			<a href="summary" ng-class="{active: type == 'total'}">итоговые данные</a>
 			<a href="summary/payments" ng-class="{active: type == 'payments'}">детализация по платежам</a>
             <a href="summary/debtors" ng-class="{active: type == 'debtors'}">сводка по вечным должникам</a>
 		</div>
+        @endif
     </div>
 
 	@include('summary.total')

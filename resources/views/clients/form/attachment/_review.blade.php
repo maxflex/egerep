@@ -4,8 +4,10 @@
             <b>отзыв</b>
             <span ng-hide='selected_attachment.review' class="link-like link-gray" style="margin-left: 10px"
                 ng-click="toggleReview()">написать отзыв</span>
+            @if($user->allowed(\Shared\Rights::ER_REQUEST_DATA))
             <span ng-show='selected_attachment.review' class="link-like link-gray" style="margin-left: 10px"
                 ng-click="toggleReview()">удалить отзыв</span>
+            @endif
         </div>
     </div>
 </div>

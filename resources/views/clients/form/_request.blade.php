@@ -5,7 +5,9 @@
             ng-class="{'link-like': request !== selected_request}"><span ng-if='request.id'>заявка @{{ request.id }}</span><span ng-if='!request.id'>новая заявка</span></span>
         <a class='link-like link-gray' ng-show="selected_request.id" ng-click='addRequest()'>добавить</a>
         <a class='link-like show-on-hover' ng-show='selected_request && selected_request.id' ng-click='transferRequest()'>переместить заявку в другого клиента</a>
-        <a class='link-like text-danger show-on-hover' ng-show='selected_request && selected_request.id && user.remove_requests' ng-click='removeRequest()'>удалить заявку</a>
+        @if($user->allowed(\Shared\Rights::ER_REQUEST_DATA))
+            <a class='link-like text-danger show-on-hover' ng-show='selected_request && selected_request.id' ng-click='removeRequest()'>удалить заявку</a>
+        @endif
     </div>
 </div>
 
@@ -24,8 +26,10 @@
             <user-switch entity='selected_request' user-id='user_id' resource='Request'>
         </div>
         <div class='mbs'>
-            <b>Статус заявки:</b> <span class="link-like"
-`                ng-click="toggleEnum(selected_request, 'state', RequestStates, ['checked_reasoned_deny'], [@if ($user->id == 56 or $user->isDev() or $user->isRoot()){{ $user->id }}@endif])">@{{ RequestStates[selected_request.state] }}</span>
+            <b>Статус заявки:</b>
+            <span class="link-like"
+                ng-click="toggleEnum(selected_request, 'state', RequestStates, ['checked_reasoned_deny'], {{ allowed(\Shared\Rights::ER_REQUEST_STATUSES, true) }})">
+                @{{ RequestStates[selected_request.state] }}</span>
         </div>
         <div class='mbs' ng-show='request_tutor_ids.length > 0'>
             <b>Отмеченные репетиторы в заявке:</b>

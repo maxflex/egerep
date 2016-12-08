@@ -24,6 +24,7 @@ return array(
     'Symfony\\Component\\CssSelector\\' => array($vendorDir . '/symfony/css-selector'),
     'Symfony\\Component\\Console\\' => array($vendorDir . '/symfony/console'),
     'SuperClosure\\' => array($vendorDir . '/jeremeamia/SuperClosure/src'),
+    'Shared\\' => array($vendorDir . '/ege-shared/src'),
     'Psy\\' => array($vendorDir . '/psy/psysh/src/Psy'),
     'Predis\\' => array($vendorDir . '/predis/predis/src'),
     'PhpParser\\' => array($vendorDir . '/nikic/php-parser/lib/PhpParser'),

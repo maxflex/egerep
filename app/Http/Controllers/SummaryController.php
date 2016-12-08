@@ -72,6 +72,9 @@ class SummaryController extends Controller
 
     public function users()
     {
+        if (! allowed(\Shared\Rights::ER_SUMMARY_USERS)) {
+            return view('errors.not_allowed');
+        }
         return view('summary.users')->with(
             ngInit([
                 'total_debt'    => Tutor::totalDebt(),

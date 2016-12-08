@@ -68,7 +68,10 @@
                     <td class="period-end" width='100'>
                         <div class="accounts-data" style="position: absolute; margin-top: @{{ clients.length ? '-86' : '80' }}px; width: 1000px">
                             <div style="position:relative;">
-                                <div class="account-guard" ng-show="account.confirmed && AccessService.isLocked(account.id)" ng-click="AccessService.serve(account.id)"></div>
+                                @if(! allowed(\Shared\Rights::ER_EDIT_ACCOUNTS))
+                                    <div class="account-guard"></div>
+                                @endif
+                                <div class="account-guard" ng-show="account.confirmed && {{ allowed(\Shared\Rights::ER_ACCEPT_ACCOUNTS, true) }}"></div>
                                 <div class="mbs">
                                     <span>Передано (руб.):</span>
                                     <pencil-input model='account.received'></pencil-input>
@@ -119,10 +122,11 @@
                             </div>
                             <div class="mbs">
                                 <span>Статус проводки:</span>
-                                <span class="link-like"
-                                      ng-class="{'text-danger': !account.confirmed}"
-                                      ng-click="AccessService.serve(account.id, toggleConfirmed, account)"
-                                >
+                                <span @if(allowed(\Shared\Rights::ER_ACCEPT_ACCOUNTS)) class="link-like" ng-click="toggleConfirmed(account)" @endif
+                                      ng-class="{
+                                          'text-danger': !account.confirmed,
+                                          'text-success': account.confirmed
+                                      }">
                                     @{{ Confirmed[account.confirmed] }}
                                 </span>
                             </div>

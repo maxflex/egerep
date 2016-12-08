@@ -14,9 +14,10 @@ class User extends Model
         'color',
         'type',
         'banned_egerep',
-        'can_approve_tutors',
         'id_entity',
     ];
+
+    protected static $commaSeparated = ['rights'];
 
     public $timestamps = false;
 
@@ -145,11 +146,16 @@ class User extends Model
     }
 
     public static function isDev() {
-        return User::fromSession()->is_dev == 1;
+        return User::fromSession()->allowed(\Shared\Rights::IS_DEVELOPER);
     }
 
     public static function isRoot() {
         return User::fromSession()->id == 1;
 
+    }
+
+    public function allowed($right)
+    {
+        return in_array($right, $this->rights);
     }
 }

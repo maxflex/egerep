@@ -67,7 +67,7 @@
                 <span><i class="fa fa-circle"></i>ответственный:
                 <user-switch entity='request' user-id='user_id' resource='Request'></span>
                 <span class="pull-right link-like"
-                      ng-click="toggleEnumServer(request, 'state', RequestStates, Request, ['all'], [@if (! ($user->isDev() || $user->isRoot() || $user->id == 56)) 'checked_reasoned_deny' @endif], true)
+                      ng-click="toggleEnumServer(request, 'state', RequestStates, Request, ['all'], [@if(! allowed(\Shared\Rights::ER_REQUEST_STATUSES)) 'checked_reasoned_deny' @endif], true)
                 ">@{{ RequestStates[request.state] }}</span>
             </div>
             <div class="row">

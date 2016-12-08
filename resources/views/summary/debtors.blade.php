@@ -1,4 +1,5 @@
-<div ng-if="type == 'debtors' && user.show_summary">
+{{-- @rights-refactored --}}
+<div ng-if="type == 'debtors'">
     <table class="table table-hover">
         <thead class="text-center">
             <tr>

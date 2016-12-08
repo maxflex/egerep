@@ -42,7 +42,7 @@
         </div>
         <div class='mbs'>
             <b>Видимость:</b>
-            <span ng-click="deny(selected_attachment, 'hide')" class="link-like">
+            <span @if($user->allowed(\Shared\Rights::ER_REQUEST_DATA)) ng-click="deny(selected_attachment, 'hide')" class="link-like" @endif>
                 @{{ AttachmentVisibility[selected_attachment.hide] }}
             </span>
         </div>

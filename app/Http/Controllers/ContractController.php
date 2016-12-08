@@ -66,6 +66,7 @@ class ContractController extends Controller
      */
     public function edit()
     {
+        // @rights-need-to-refactor
         if (User::isDev() || User::isRoot()) {
             return view('contract.edit')->with(
                 ngInit([

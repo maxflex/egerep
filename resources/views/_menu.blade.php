@@ -21,18 +21,32 @@
         <span class="badge badge-danger pull-right">{{ $missed_calls_count }}</span>
     @endif
 </a>
-<a class="list-group-item active">Финансы</a>
-@if (\App\Models\User::fromSession()->show_accounts)
-    <a href="periods" class="list-group-item">Расчеты</a>
-@endif
-@if (\App\Models\User::fromSession()->show_debt)
-    <a href="debt/map" class="list-group-item">Дебет</a>
+@if(allowed(\Shared\Rights::ER_PERIODS) || allowed(\Shared\Rights::ER_PERIODS_PLANNED) || allowed(\Shared\Rights::ER_DEBT))
+    <a class="list-group-item active">Финансы</a>
+    @if (allowed(\Shared\Rights::ER_PERIODS))
+        <a href="periods" class="list-group-item">Совершенные расчеты</a>
+    @endif
+    @if (allowed(\Shared\Rights::ER_PERIODS_PLANNED))
+        <a href="periods/planned" class="list-group-item">Планируемые расчеты</a>
+    @endif
+    @if (allowed(\Shared\Rights::ER_DEBT))
+        <a href="debt/map" class="list-group-item">Дебет</a>
+    @endif
 @endif
 <a class="list-group-item active">Административное</a>
-<a href="summary" class="list-group-item">Итоги</a>
-<a href="attachments/stats" class="list-group-item">Статистика</a>
-<a href="logs" class="list-group-item">Логи</a>
-@if (\App\Models\User::fromSession()->show_contract)
+@if (allowed(\Shared\Rights::ER_SUMMARY))
+    <a href="summary" class="list-group-item">Итоги</a>
+@endif
+@if (allowed(\Shared\Rights::ER_ATTACHMENT_STATS))
+    <a href="attachments/stats" class="list-group-item">Статистика</a>
+@endif
+@if (allowed(\Shared\Rights::ER_SUMMARY_USERS))
+    <a href="summary/users" class="list-group-item">Эффективность</a>
+@endif
+@if (allowed(\Shared\Rights::ER_LOGS))
+    <a href="logs" class="list-group-item">Логи</a>
+@endif
+@if (allowed(\Shared\Rights::SHOW_CONTRACT))
     <a href="contract" class="list-group-item">Договор</a>
 @endif
 <a href="logout" class="list-group-item">Выход</a>
