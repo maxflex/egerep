@@ -39,7 +39,7 @@ class User extends Model
      */
     public function getColorAttribute()
     {
-        if ($this->allowed(\Shared\Rights::BANNED_EGEREP)) {
+        if ($this->allowed(\Shared\Rights::ER_BANNED)) {
             return static::DEFAULT_COLOR;
         } else {
             return $this->attributes['color'];
