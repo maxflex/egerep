@@ -101,11 +101,11 @@
                             </td>
                             <td><a href="requests/@{{ request.id }}/edit">@{{ request.id }}</a></td>
                             <td>0</td>
-                            <td>1</td>
+                            <td>@{{ isDenied(request) ? 0 : 1 }}</td>
                         </tr>
                         <tr ng-repeat-end ng-repeat="attachment in request.attachments">
                             <td align="left" width="5%">
-                                <a href="requests/@{{ attachment.request_id }}/edit#@{{ attachment.request_list_id }}#@{{ attachment.id }}">@{{ attachment.id }}</a>
+                                <a href="requests/@{{ request.id }}/edit#@{{ attachment.request_list_id }}#@{{ attachment.id }}">@{{ attachment.id }}</a>
                             </td>
                             <td align="left" width="23%">
                                 <a href="tutors/@{{ attachment.tutor_id }}/edit">@{{ attachment.tutor.full_name}}</a>
@@ -122,7 +122,7 @@
                             <td width='20%'>
                                 @{{ UserService.getLogin(attachment.user_id) }}: @{{ formatDateTime(attachment.created_at) }}
                             </td>
-                            <td><a href="requests/@{{ attachment.request_id }}/edit">@{{ attachment.request_id }}</a></td>
+                            <td><a href="requests/@{{ request.id }}/edit">@{{ request.id }}</a></td>
                             <td>@{{ attachment.rate }}</td>
                             <td>@{{ attachment.share }}</td>
                         </tr>

@@ -28,14 +28,18 @@ angular
             , 0
 
         $scope.sumShare = ->
-            _.reduce $scope.stats.efficency.data, (sum, request) ->
+            requests_to_sum = _.filter $scope.stats.efficency.data, (request) ->
+                not $scope.isDenied request
+
+            _.reduce requests_to_sum, (sum, request) ->
                 if request.attachments.length
                     _.each request.attachments, (attachment) ->
                         sum += attachment.share
-                else
-                    sum += 1
                 sum
             , 0
+
+        $scope.isDenied = (request) ->
+            request.state in ['deny', 'reasoned_deny', 'checked_reasoned_deny']
 
     .controller 'SummaryIndex', ($rootScope, $scope, $http, $timeout, PaymentMethods) ->
         bindArguments($scope, arguments)
