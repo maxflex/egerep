@@ -2,7 +2,7 @@
 @section('title', 'Договор')
 @section('controller', 'ContractIndex')
 
-@if (\App\Models\User::isDev() || \App\Models\User::isRoot())
+@if (allowed(\Shared\Rights::EDIT_CONTACT))
     @section('title-right')
         {{ link_to('contract/edit', 'изменить договор') }}
     @endsection

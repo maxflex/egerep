@@ -14,7 +14,7 @@
                     архиваций
                 </td>
                 {{-- @rights-refactored --}}
-                @if (allowed(\Shared\Rights::ER_SUMMARY))
+                @if (allowed(\Shared\Rights::ER_SUMMARY_FIELDS))
                 <td>
                     получено
                 </td>
@@ -50,7 +50,7 @@
                 <td>
                     @{{ summary.archives.cnt | hideZero }}
                 </td>
-                @if (allowed(\Shared\Rights::ER_SUMMARY))
+                @if (allowed(\Shared\Rights::ER_SUMMARY_FIELDS))
                 <td>
                     <span title="@{{ summary.received.sum | number }} + @{{ (summary.mutual_debts.sum ? summary.mutual_debts.sum : 0) | number }}">
                         @{{ +(summary.received.sum) + +(summary.mutual_debts.sum) | hideZero | number }}

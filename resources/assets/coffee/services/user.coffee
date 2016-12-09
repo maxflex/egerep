@@ -12,7 +12,6 @@ angular.module 'Egerep'
             color: '#999999'
             login: 'system'
             id: 0
-            banned: 0
 
         this.get = (user_id) ->
             this.getUser(user_id)
@@ -32,9 +31,9 @@ angular.module 'Egerep'
             users
 
         this.getAll = (only_active = true) ->
-
             if only_active
-                _.where(this.users, {banned: 0})
+                _.filter @users, (user) ->
+                    user.rights.indexOf(35) is -1
             else
                 this.users
 
@@ -51,6 +50,7 @@ angular.module 'Egerep'
                 entity[user_id] = new_user_id
 
         this.getBannedUsers = ->
-            _.where this.users, {banned : 1}
+            _.filter @users, (user) ->
+                user.rights.indexOf(35) isnt -1
 
         this
