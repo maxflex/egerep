@@ -1,17 +1,21 @@
 <!-- форма поиска -->
-<div class="modal fade" id="searchModal" tabindex="-1" ng-controller="SearchCtrl">
+<div class="modal" id="searchModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
-            <input type="text" ng-model="query" ng-keyup="key($event)" ng-keydown="stoper($event)" placeholder="искать" id="searchQueryInput">
+            <input type="text" placeholder="искать" id="searchQueryInput" v-on:keyup="keyup" v-on:keydown.up.prevent="showResponder"  v-model="query">
+            <!--<input type="text" ng-model="query" ng-keyup="key($event)" ng-keydown="stoper($event)" placeholder="искать" id="searchQueryInput">-->
             <div id="searchResult">
-                <div class="notFound" v-bind:class="{hide: (results > 0 || results < 0)}">cовпадений нет</div>
+                <div class="searchResultWraper" v-if="results == 0">
+                    <div class="notFound" v-if="!error">cовпадений нет</div>
+                </div>
 
-                <div v-for="(index, row) in lists" class="resultRow" v-bind:class="{ active: ((index+1) ==  active), hide: (results == 0)}">
+
+                <div v-if="results > 0" v-for="(index, row) in lists" class="resultRow" v-bind:class="{ active: ((index+1) ==  active)}">
                     <div v-if="row.type == 'clients'">
-                        <a href="#">@{{row.name}}</a>  - ученик
+                        <a v-bind:href="row.link" v-html="(row.name == '') ? 'Имя не указано' : row.name" target="_blank"></a>  - ученик
                     </div>
                     <div v-else>
-                        <a href="#">@{{row.last_name}} @{{row.first_name}} @{{row.middle_name}}</a>  - репетитор
+                        <a v-bind:href="row.link" target="_blank" v-html="row.last_name + ' ' + row.first_name + ' ' + row.middle_name"></a>  - репетитор
                     </div>
                 </div>
 

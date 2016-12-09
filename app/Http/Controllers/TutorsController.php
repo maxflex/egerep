@@ -15,27 +15,13 @@ class TutorsController extends Controller
 {
     public function index(Request $request)
     {
-        $search_text = $request->global_search;
-
-
-        // поиск по клиентам (временно)
-        if ($search_text[0] == 'c') {
-            return view('clients.index')->with(
-                ngInit([
-                    'page'          => $request->input('page'),
-                    'global_search' => $request->input('global_search'),
-                ])
-            );
-        } else {
-            return view('tutors.index')->with(
-                ngInit([
-                    'page'          => $request->input('page'),
-                    'global_search' => $request->input('global_search'),
-                    'tutor_errors_updated'  => Settings::get('tutor_errors_updated'),
-                    'tutor_errors_updating' => Settings::get('tutor_errors_updating'),
-                ])
-            );
-        }
+        return view('tutors.index')->with(
+            ngInit([
+                'page'          => $request->input('page'),
+                'tutor_errors_updated'  => Settings::get('tutor_errors_updated'),
+                'tutor_errors_updating' => Settings::get('tutor_errors_updating'),
+            ])
+        );
     }
 
     public function create()
