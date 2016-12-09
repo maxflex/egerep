@@ -198,3 +198,11 @@
        $allowed = \App\Models\User::fromSession()->allowed($right);
        return $return_int ? (int)$allowed : $allowed;
    }
+
+   /**
+     * Factory connection helper
+     */
+    function dbFactory($table)
+    {
+        return \DB::connection('factory')->table($table);
+    }

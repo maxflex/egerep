@@ -32,7 +32,7 @@ angular.module('Egerep')
 
                         $scope.visible_clients_count++
                     $scope.$apply()
-    .controller 'AccountsCtrl', ($rootScope, $scope, $http, $timeout, Account, PaymentMethods, Archive, Grades, Attachment, AttachmentState, AttachmentStates, Weekdays, PhoneService, AttachmentVisibility, DebtTypes, YesNo, Tutor, ArchiveStates, Checked, PlannedAccount, UserService, LkPaymentTypes, Confirmed) ->
+    .controller 'AccountsCtrl', ($rootScope, $scope, $http, $timeout, Account, PaymentMethods, Archive, Grades, Attachment, AttachmentState, AttachmentStates, Weekdays, PhoneService, AttachmentVisibility, DebtTypes, YesNo, Tutor, ArchiveStates, Checked, PlannedAccount, UserService, TeacherPaymentTypes, Confirmed) ->
         bindArguments($scope, arguments)
         $scope.current_scope  = $scope
         $scope.current_period = 0

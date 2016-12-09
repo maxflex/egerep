@@ -672,7 +672,7 @@
             "source": {
                 "type": "git",
                 "url": "https://mkolyadin@bitbucket.org/mkolyadin/ege-shared.git",
-                "reference": "8446c4adb0aaf5628380ea0822d87229e873f8a4"
+                "reference": "637b6e94eabb48c1a0cad12057f939f7bc31ae42"
             },
             "type": "library",
             "autoload": {
@@ -680,7 +680,7 @@
                     "Shared\\": "src/"
                 }
             },
-            "time": "2016-12-07 11:14:59"
+            "time": "2016-12-09 07:22:04"
         },
         {
             "name": "graham-campbell/throttle",

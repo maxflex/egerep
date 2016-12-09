@@ -82,13 +82,25 @@ return [
             'username'  => env('DB_USERNAME_REPETITORS'),
             'password'  => env('DB_PASSWORD_REPETITORS'),
         ],
-        
+
         'egerep' => [
             'driver'    => 'mysql',
             'host'      => env('DB_HOST_EGEREP'),
             'database'  => env('DB_DATABASE_EGEREP'),
             'username'  => env('DB_USERNAME_EGEREP'),
             'password'  => env('DB_PASSWORD_EGEREP'),
+            'charset'   => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix'    => '',
+            'unix_socket'   => env('DB_SOCKET', ''),
+        ],
+
+        'factory' => [
+            'driver'    => 'mysql',
+            'host'      => env('DB_HOST_FACTORY'),
+            'database'  => env('DB_DATABASE_FACTORY'),
+            'username'  => env('DB_USERNAME_FACTORY'),
+            'password'  => env('DB_PASSWORD_FACTORY'),
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix'    => '',

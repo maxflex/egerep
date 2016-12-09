@@ -327,7 +327,7 @@
         }
       });
     };
-  }).controller('AccountsCtrl', function($rootScope, $scope, $http, $timeout, Account, PaymentMethods, Archive, Grades, Attachment, AttachmentState, AttachmentStates, Weekdays, PhoneService, AttachmentVisibility, DebtTypes, YesNo, Tutor, ArchiveStates, Checked, PlannedAccount, UserService, LkPaymentTypes, Confirmed) {
+  }).controller('AccountsCtrl', function($rootScope, $scope, $http, $timeout, Account, PaymentMethods, Archive, Grades, Attachment, AttachmentState, AttachmentStates, Weekdays, PhoneService, AttachmentVisibility, DebtTypes, YesNo, Tutor, ArchiveStates, Checked, PlannedAccount, UserService, TeacherPaymentTypes, Confirmed) {
     var bindDraggable, getAccountEndDate, getAccountStartDate, getCalendarStartDate, getCommission, hideValue, moveCursor, renderData, updateClientCount, validatePlannedAccount;
     bindArguments($scope, arguments);
     $scope.current_scope = $scope;
@@ -1446,10 +1446,17 @@
     $scope.attachmentExists = function(tutor_id) {
       var attachment_exists;
       attachment_exists = false;
-      $.each($scope.selected_list.attachments, function(index, attachment) {
-        if (parseInt(attachment.tutor_id) === parseInt(tutor_id)) {
-          return attachment_exists = true;
+      $.each($scope.client.requests, function(index, request) {
+        if (attachment_exists) {
+          return;
         }
+        return $.each(request.lists, function(index, list) {
+          return $.each(list.attachments, function(index, attachment) {
+            if (parseInt(attachment.tutor_id) === parseInt(tutor_id)) {
+              return attachment_exists = true;
+            }
+          });
+        });
       });
       return attachment_exists;
     };
@@ -2508,7 +2515,7 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').controller('PeriodsIndex', function($scope, $timeout, $rootScope, $http, PaymentMethods, DebtTypes, LkPaymentTypes, UserService) {
+  angular.module('Egerep').controller('PeriodsIndex', function($scope, $timeout, $rootScope, $http, PaymentMethods, DebtTypes, TeacherPaymentTypes, UserService) {
     var getCommission, getPrefix, load;
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
@@ -4639,8 +4646,6 @@
     0: 'стандартный расчет',
     1: 'яндекс.деньги',
     2: 'перевод на карту'
-  }).value('LkPaymentTypes', {
-    0: 'личная встреча'
   }).value('ArchiveStates', {
     impossible: 'невозможно',
     possible: 'возможно'
