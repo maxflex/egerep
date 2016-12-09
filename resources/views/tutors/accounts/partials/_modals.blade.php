@@ -23,17 +23,17 @@
                     <div class="row mb">
                         <div class="col-sm-12">
                             <select class="form-control selectpicker" ng-model='tutor.planned_account.payment_method' ng-change="refreshSelects()">
-                                <option ng-repeat="(id, label) in LkPaymentTypes"
-                                        ng-selected="id == tutor.planned_account.payment_method"
-                                        value="@{{ id }}"
-                                        data-content="@{{ label }}</span>"
+                                <option ng-repeat="PaymentType in TeacherPaymentTypes"
+                                        ng-selected="PaymentType.id == tutor.planned_account.payment_method"
+                                        value="@{{ PaymentType.id }}"
+                                        data-content="@{{ PaymentType.title }}</span>"
                                 ></option>
                             </select>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-12" id="pa-user">
-                            <select class="form-control selectpicker" ng-model='tutor.planned_account.user_id' ng-change="refreshSelects()">
+                            <select class="form-control selectpicker" ng-disabled='tutor.planned_account.payment_method > 1' ng-model='tutor.planned_account.user_id' ng-change="refreshSelects()">
                                 <option value="">пользователь</option>
                                 <option disabled>──────────────</option>
                                 <option

@@ -146,8 +146,11 @@ angular
 
         $scope.attachmentExists = (tutor_id) ->
             attachment_exists = false
-            $.each $scope.selected_list.attachments, (index, attachment) ->
-                attachment_exists = true if parseInt(attachment.tutor_id) is parseInt(tutor_id)
+            $.each $scope.client.requests, (index, request) ->
+                return if attachment_exists
+                $.each request.lists, (index, list) ->
+                    $.each list.attachments, (index, attachment) ->
+                        attachment_exists = true if parseInt(attachment.tutor_id) is parseInt(tutor_id)
             attachment_exists
 
         $scope.selectAttachment = (attachment) ->
