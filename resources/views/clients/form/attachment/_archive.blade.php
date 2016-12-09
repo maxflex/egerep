@@ -4,7 +4,7 @@
             <b>архивация</b>
             <span ng-hide='selected_attachment.archive' class="link-like link-gray" style="margin-left: 10px"
                 ng-click="toggleArchive()">начать процесс</span>
-            @if($user->allowed(\Shared\Rights::ER_REQUEST_DATA))
+            @if($user->allowed(\Shared\Rights::ER_DELETE_ARCHIVES))
                 <span ng-show='selected_attachment.archive' class="link-like link-gray" style="margin-left: 10px"
                     ng-click="toggleArchive()">разархивировать</span>
             @endif

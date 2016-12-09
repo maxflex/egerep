@@ -7,7 +7,7 @@
         >список по <sbj ng-repeat='subject_id in list.subjects'>@{{Subjects.dative[subject_id]}}@{{$last ? '' : ' и '}}</sbj></span>
         <span class="link-like link-gray" ng-click="addList()">добавить список</span>
         <div class="teacher-remove-droppable drop-delete" ng-show='is_dragging_teacher'>удалить репетитора из списка</div>
-        @if($user->allowed(\Shared\Rights::ER_REQUEST_DATA))
+        @if($user->allowed(\Shared\Rights::ER_DELETE_LISTS))
             <span class="link-like text-danger show-on-hover" ng-show='selected_list && !selected_list.attachments.length' ng-click="removeList()">удалить список</span>
         @endif
     </div>
