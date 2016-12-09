@@ -33,7 +33,7 @@ angular.module 'Egerep'
         this.getAll = (only_active = true) ->
             if only_active
                 _.filter @users, (user) ->
-                    user.rights.indexOf(35) is -1
+                    user.rights.length && user.rights.indexOf('35') is -1
             else
                 this.users
 
@@ -51,6 +51,6 @@ angular.module 'Egerep'
 
         this.getBannedUsers = ->
             _.filter @users, (user) ->
-                user.rights.indexOf(35) isnt -1
+                user.rights.length and user.rights.indexOf('35') isnt -1
 
         this
