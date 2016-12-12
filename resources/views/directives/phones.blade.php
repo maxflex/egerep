@@ -51,9 +51,20 @@
                             @{{ time(data.seconds) }}
                         </td>
                         <td width='100'>
-                            <span class="link-like" ng-show='data.recording_id'>
-                                <span class='link-like text-danger' ng-show='isPlaying(data.recording_id)' ng-click='stop(data.recording_id)'>остановить</span>
-                                <span ng-hide='isPlaying(data.recording_id)' ng-click='play(data.recording_id)'>прослушать</span>
+
+                            <div class="progress_bar" ng-show='isPlaying(data.recording_id)'>
+                                <div class="wraperPGBR">
+                                    <div class="line" style="width: @{{prc}}%;"></div>
+                                </div>
+                                <div class="clicker" ng-click="setCurentTime($event)"></div>
+                            </div>
+
+                            <span ng-hide='isPlaying(data.recording_id)' ng-click='initAudio(data.recording_id)' class="link-like">прослушать</span>
+
+                            <span ng-show='data.recording_id'>
+                                <span class='link-like' ng-show='isPlaying(data.recording_id)' ng-click='stop(data.recording_id)'>остановить</span>
+                                <span class='link-like' ng-show='isPlaying(data.recording_id) && is_playing_stage == "play"' ng-click='pause(data.recording_id)'>пауза</span>
+                                <span class='link-like' ng-show='isPlaying(data.recording_id) && is_playing_stage == "pause"' ng-click='play((parseInt(prc) == 100) ? 0 : "")'>воспроизвести</span>
                             </span>
                         </td>
                     </tr>
