@@ -24,7 +24,7 @@ elixir(function(mix) {
     mix
         .browserSync({
             port: 8081,
-            proxy: 'egerep.dev'
+            proxy: 'localhost:8080'
         })
         .sass('app.scss')
         .coffee(['resources/assets/coffee/*.coffee', 'resources/assets/coffee/*/*.coffee'])
