@@ -69,6 +69,10 @@ Route::group(['middleware' => ['web']], function () {
 	# Поиск по преподам
 	Route::post('search', 'TutorsController@index');
 
+    #Шаблоны
+	Route::get('templates', 'TemplatesController@index');
+	Route::post('templates', 'TemplatesController@save');
+
     Route::get('contract/edit', 'ContractController@edit');
     Route::resource('contract', 'ContractController');
 
@@ -111,6 +115,10 @@ Route::group(['middleware' => ['web']], function () {
         Route::controllers([
             'command'  => 'CommandsController',
         ]);
+
+        #шаблоны смс
+        Route::get('template/{id}', 'TemplatesController@getTemplatesByType');
+
     });
 
 

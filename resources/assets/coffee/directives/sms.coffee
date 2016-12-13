@@ -3,7 +3,19 @@ angular.module('Egerep').directive 'sms', ->
     templateUrl: 'directives/sms'
     scope:
         number: '='
-    controller: ($scope, $timeout, Sms) ->
+        templateType: '='
+    controller: ($scope, $timeout, Sms, $http) ->
+        # включен ли вывод шаблона сообщений
+        #if !$scope.templateType
+        $scope.templateType = 1
+        $http.get 'api/template/' + $scope.templateType
+        .then (success) ->
+            $scope.templates = success.data
+
+        #установка сообщения из шаблона
+        $scope.setMsg = (msg) ->
+            $scope.message = msg
+
         # массовая отправка?
         $scope.mass = false
 
