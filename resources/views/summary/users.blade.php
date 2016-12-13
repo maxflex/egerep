@@ -1,4 +1,4 @@
-@extends('asapp')
+@extends('app')
 @section('title', 'Итоги')
 @section('title-right')
     общий дебет на сегодня: @{{ total_debt | number}}, обновлено @{{ formatDateTime(debt_updated) }}
@@ -133,7 +133,7 @@
                             <td>@{{ attachment.rate }}</td>
                             <td>@{{ attachment.share }}</td>
                         </tr>
-                        <tr>
+                        <tr>e
                             <td align="left" colspan="8"></td>
                             <td>@{{ sumEfficency() | number }}</td>
                             <td>@{{ sumShare() | number }}</td>
