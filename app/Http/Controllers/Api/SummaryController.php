@@ -441,7 +441,7 @@ class SummaryController extends Controller
     {
         @extract(array_filter($request->all()));
         $request_query = \App\Models\Request::query();
-        $attachments_with_request_list = Attachment::query()->join('request_lists as rl', 'request_list_id', '=', 'rl.id')->without(['review']);
+        $attachments_with_request_list = Attachment::query()->join('request_lists as rl', 'request_list_id', '=', 'rl.id')->without(['review'])->with('tutor');
         $request_attachments_without_users = \App\Models\Request::query()->join('request_lists as rl', 'rl.request_id', '=', 'requests.id')->join('attachments', 'request_list_id', '=', 'rl.id');
 
         if (isset($date_from)) {

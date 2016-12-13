@@ -87,8 +87,9 @@
                         <td align="left">Cтыковка</td>
                         <td>Преподаватель</td>
                         <td>Cтыковка</td>
-                        <td>Статус</td>
+                        <td>Количество занятий</td>
                         <td>Прогноз</td>
+                        <td>Статус</td>
                         <td>Реквизиты</td>
                         <td>Заявка</td>
                         <td>Эффективность</td>
@@ -97,7 +98,7 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat-start="request in stats.efficency.data" ng-if="!request.attachments.length">
-                            <td align="left" colspan="5" width="44%"></td>
+                            <td align="left" colspan="6" width="44%"></td>
                             <td width='20%'>
                                 @{{ UserService.getLogin(request.user_id) }}
                             </td>
@@ -115,12 +116,16 @@
                             <td width="6%">
                                 @{{ attachment.date }}
                             </td>
-                            <td width='10%'>
-                                @{{ AttachmentService.getStatus(attachment) }}
+                            <td>
+                                @{{ attachment.account_data_count | hideZero }}<plus previous='attachment.account_data_count' count='attachment.archive.total_lessons_missing'></plus>
                             </td>
                             <td>
                                 @{{ attachment.forecast }}
                             </td>
+                            <td width='10%'>
+                                @{{ AttachmentService.getStatus(attachment) }}
+                            </td>
+
                             <td width='20%'>
                                 @{{ UserService.getLogin(attachment.user_id) }}: @{{ formatDateTime(attachment.created_at) }}
                             </td>
