@@ -4,8 +4,6 @@ angular.module('Egerep')
     #scope:
     #  enter: '@'
     link: (scope, element, attrs) ->
-      console.log 'test2', scope
-
       element.bind "keydown keypress"
       , (event) ->
           if event.which == 13
