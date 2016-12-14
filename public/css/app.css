@@ -7726,6 +7726,7 @@ button.close {
   transform: scale(1, -1); }
 
 :root .fa-rotate-90, :root .fa-rotate-180, :root .fa-rotate-270, :root .fa-flip-horizontal, :root .fa-flip-vertical {
+  -webkit-filter: none;
   filter: none; }
 
 .fa-stack {
@@ -21984,15 +21985,10 @@ md-progress-linear {
     md-progress-linear .md-container.md-mode-determinate .md-bar1 {
       display: none; }
     md-progress-linear .md-container.md-mode-indeterminate .md-bar1 {
-<<<<<<< HEAD
       -webkit-animation: md-progress-linear-indeterminate-scale-1 4s infinite, md-progress-linear-indeterminate-1 4s infinite;
       animation: md-progress-linear-indeterminate-scale-1 4s infinite, md-progress-linear-indeterminate-1 4s infinite; }
     md-progress-linear .md-container.md-mode-indeterminate .md-bar2 {
       -webkit-animation: md-progress-linear-indeterminate-scale-2 4s infinite, md-progress-linear-indeterminate-2 4s infinite;
-=======
-      animation: md-progress-linear-indeterminate-scale-1 4s infinite, md-progress-linear-indeterminate-1 4s infinite; }
-    md-progress-linear .md-container.md-mode-indeterminate .md-bar2 {
->>>>>>> 55ac41da70b377a5d4208c9c70bb2946353817a9
       animation: md-progress-linear-indeterminate-scale-2 4s infinite, md-progress-linear-indeterminate-2 4s infinite; }
     md-progress-linear .md-container.ng-hide {
       -webkit-animation: none;
@@ -30267,13 +30263,13 @@ input[type="radio"][disabled], input[type="checkbox"][disabled], input[type="rad
   margin-bottom: 10px; }
   .sms-template-list span {
     font-size: 12px;
-    color: #337AB7;
-    border-bottom: 1px dotted #337AB7;
+    color: #5cb85c;
+    border-bottom: 1px dotted #5cb85c;
     cursor: pointer;
     margin-right: 34px; }
     .sms-template-list span:hover {
-      border-color: #23527c;
-      color: #23527c; }
+      border-color: #029A55;
+      color: #029A55; }
 
 button:disabled, select:disabled {
   cursor: default !important; }
@@ -33876,13 +33872,30 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
   float: right;
   cursor: pointer; }
 
+body.modal-open {
+  overflow: hidden;
+  height: 100% !important; }
+
 body.modal-open .blur {
-  -webkit-filter: blur(4px); }
+  -webkit-filter: blur(4px);
+  overflow: hidden;
+  height: 100%; }
+
+#searchModal.modal {
+  overflow-y: hidden; }
 
 #searchModal {
   z-index: 100000; }
+  #searchModal .modal-dialog {
+    position: absolute;
+    left: 25%;
+    top: 25%;
+    width: 50% !important;
+    height: 50% !important;
+    margin-top: 0px !important; }
   #searchModal .modal-content {
-    padding: 10px 15px; }
+    padding: 10px 15px;
+    height: 100% !important; }
     #searchModal .modal-content input, #searchModal .modal-content input:focus {
       border: none;
       border-bottom: 1px solid #eee;
@@ -33909,14 +33922,46 @@ body.modal-open .blur {
 #searchResult {
   overflow-y: scroll;
   width: 100%;
-  height: 300px; }
+  height: 80%; }
 
-.notFound {
-  font-size: 18px;
-  text-align: center;
-  color: #9d9d9d; }
+.searchResultWraper {
+  position: relative;
+  height: 90%; }
+  .searchResultWraper .notFound {
+    position: absolute;
+    left: 0px;
+    top: 47%;
+    font-size: 18px;
+    text-align: center;
+    color: #9d9d9d;
+    width: 100%; }
 
 .hide {
   display: none !important; }
+
+.progress_bar {
+  padding: 7px 0px;
+  cursor: pointer;
+  position: relative; }
+  .progress_bar .clicker {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 16px;
+    z-index: 100000; }
+  .progress_bar .clicker:focus {
+    outline: 0  !important; }
+  .progress_bar .wraperPGBR {
+    height: 2px;
+    width: 100%;
+    background: #ececec; }
+  .progress_bar .line {
+    height: 2px;
+    width: 0%;
+    background: #158E51; }
+
+.link-offset-right {
+  margin-right: 10px; }
 
 /*# sourceMappingURL=app.css.map */

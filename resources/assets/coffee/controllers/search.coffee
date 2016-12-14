@@ -26,6 +26,7 @@ $(document).ready ->
       query: ''
       oldquery: ''
       all: 0
+      loading: false
      methods:
       showResponder: (e)-> #пустой метод для остановки события по стрелке вверх
       scroll: -> #метод скролит по необходимости до нужной части результата поиска
@@ -50,8 +51,10 @@ $(document).ready ->
         else
           if this.query != '' or this.query != ' '
             if this.oldQuery != this.query
-              this.$http.post '/api/search', {query: this.query}
+              this.loading = true
+              this.$http.post 'api/search', {query: this.query}
                 .then (success) =>
+                  this.loading = false
                   this.active = 0
                   this.all = 0
                   this.lists = []
@@ -89,4 +92,3 @@ $(document).ready ->
             this.results = -1
           #console.log this.lists
         null
-

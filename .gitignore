@@ -10,3 +10,4 @@ Envoy.blade.php
 .env
 /.idea
 .DS_Store
+.editorconfig

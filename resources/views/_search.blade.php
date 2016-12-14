@@ -5,7 +5,7 @@
             <input type="text" placeholder="искать" id="searchQueryInput" v-on:keyup="keyup" v-on:keydown.up.prevent="showResponder"  v-model="query">
             <!--<input type="text" ng-model="query" ng-keyup="key($event)" ng-keydown="stoper($event)" placeholder="искать" id="searchQueryInput">-->
             <div id="searchResult">
-                <div class="searchResultWraper" v-if="results == 0">
+                <div class="searchResultWraper" v-if="query!='' && !loading && results == 0">
                     <div class="notFound" v-if="!error">cовпадений нет</div>
                 </div>
 
