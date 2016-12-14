@@ -133,7 +133,7 @@
                             <td>@{{ attachment.rate }}</td>
                             <td>@{{ attachment.share }}</td>
                         </tr>
-                        <tr>e
+                        <tr>
                             <td align="left" colspan="8"></td>
                             <td>@{{ sumEfficency() | number }}</td>
                             <td>@{{ sumShare() | number }}</td>
