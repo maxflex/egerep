@@ -3,18 +3,17 @@ angular.module('Egerep').directive 'sms', ->
     templateUrl: 'directives/sms'
     scope:
         number: '='
-        templateType: '='
-    controller: ($scope, $timeout, Sms, $http) ->
-        # включен ли вывод шаблона сообщений
-        #if !$scope.templateType
-        $scope.templateType = 1
-        $http.get 'api/template/' + $scope.templateType
-        .then (success) ->
-            $scope.templates = success.data
+    controller: ($scope, $timeout, Sms, PusherService) ->
+        #pusher
+        PusherService.bind 'SmsStatusUpdate', (data) ->
+            console.log 'message: ', data;
+            console.log 'message: ', $scope.history;
 
-        #установка сообщения из шаблона
-        $scope.setMsg = (msg) ->
-            $scope.message = msg
+            angular.forEach $scope.history, (val, key) ->
+                if val.id_smsru == data.id_smsru
+                    val.id_status = data.id_status
+                    $scope.$apply()
+                console.log val, key
 
         # массовая отправка?
         $scope.mass = false
