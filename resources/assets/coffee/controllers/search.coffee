@@ -3,29 +3,29 @@ $(document).ready ->
   #вешеаем событие по клику по кнопке
   $('#searchModalOpen').click ->
     $('#searchModal').modal({keyboard: true})
-    delayFunction = ()->
+    delayFunction = ->
       $('#searchQueryInput').focus()
     setTimeout delayFunction, 500
     $($('body.modal-open .row')[0]).addClass('blur')
     false
-  $ '#searchModal'
-  .on 'hidden.bs.modal', () ->
-    delayFnc = ()->
-      $ '.blur'
-      .removeClass 'blur'
-    setTimeout delayFnc, 500
+  $('#searchModal')
+    .on 'hidden.bs.modal', ->
+      delayFnc = ->
+        $('.blur')
+          .removeClass 'blur'
+      setTimeout delayFnc, 500
 
   # компонент поиска
   viewVue = new Vue
     el: '#searchModal'
     data:
-      lists:[]
-      links:{}
+      lists: []
+      links: {}
       results: -1
       active: 0
       query: ''
-      oldquery:''
-      all: 0,
+      oldquery: ''
+      all: 0
      methods:
       showResponder: (e)-> #пустой метод для остановки события по стрелке вверх
       scroll: -> #метод скролит по необходимости до нужной части результата поиска

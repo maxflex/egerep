@@ -20,17 +20,17 @@ class SearchController extends Controller
                 'query' => 'required'
             ];
 
-            #текст для ошибок обработки валидации
+            # текст для ошибок обработки валидации
             $messages = [
                 'required' => 'Запрос не должен быть пустым',
             ];
 
-            #проверка
+            # проверка
             $validator = Validator::make($request->all(), $rules, $messages);
 
             if (!$validator->fails()) {
                 $query = trim($request->input('query'));
-                //поиск по ученикам
+                # поиск по ученикам
                 $clients = DB::table('clients')->select('id', 'name')
                                 ->where('name', 'LIKE', '%' . $query . '%')
                                 ->orWhere('phone', 'LIKE', '%' . $query . '%')
@@ -41,7 +41,7 @@ class SearchController extends Controller
                                 ->take(30)
                                 ->get();
 
-                //поиск по по предователям
+                # поиск по по предователям
                 $tutors = DB::table('tutors')->select('id', 'first_name', 'last_name', 'middle_name')
                                 ->where('first_name', 'LIKE', '%' . $query . '%')
                                 ->orWhere('last_name', 'LIKE', '%' . $query . '%')
