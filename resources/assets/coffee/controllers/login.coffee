@@ -3,6 +3,11 @@ angular
     .controller 'LoginCtrl', ($scope, $http) ->
         angular.element(document).ready ->
             $scope.l = Ladda.create(document.querySelector('#login-submit'))
+            
+        #обработка события по enter в форме логина
+        $scope.enter = ($event) ->
+            if $event.keyCode == 13
+                $scope.checkFields()
 
         $scope.checkFields = ->
             $scope.l.start()
