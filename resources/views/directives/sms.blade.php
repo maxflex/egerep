@@ -29,7 +29,11 @@
                 				@{{ smsCount() }} СМС
                 			</span>
             			</div>
-
+                        <!-- ШАБЛОНЫ СМС -->
+                        <div class="sms-template-list">
+                            <span ng-repeat="row in templates" ng-click="setMsg(row.text)" ng-bind="::row.name"></span>
+                        </div>
+                        <!-- /ШАБЛОНЫ СМС -->
             			<div style="clear: both">
             				<button class="btn btn-primary" ng-disabled="!message.length|| sms_sending" ng-click="send()" style="margin-bottom: 7px">Отправить</button>
             			</div>

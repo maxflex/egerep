@@ -50,6 +50,7 @@
     <a href="logs" class="list-group-item">Логи</a>
 @endif
 @if (allowed(\Shared\Rights::SHOW_CONTRACT))
+
     <a href="contract" class="list-group-item">Договор</a>
 @endif
 <a href="logout" class="list-group-item">Выход</a>
