@@ -1,4 +1,7 @@
-<a class="list-group-item active">Основное</a>
+<a class="list-group-item active">
+    Основное
+    <span class="search_icon" id="searchModalOpen"><span class="glyphicon glyphicon-search no-margin-right"></span></span>
+</a>
 <a href="requests" class="list-group-item">Заявки
     <span class="badge pull-right" id='request-count'>{{ \App\Models\Request::where('state', 'new')->count() }}</span>
     <span id='request-counter' class='pull-right' style="margin-right: 3px; opacity: 0; font-size: 13px; font-weight: bold">+1</span>

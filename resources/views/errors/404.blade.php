@@ -8,19 +8,11 @@
     <base href="{{ config('app.url') }}">
     <link href="{{ config('app.url') }}{{ elixir('css/app.css') }}" rel="stylesheet" type="text/css">
     <link rel="shortcut icon" href="favicon.png" />
-
   </head>
   <body class="content">
     <div class="row">
       <div style="margin-left: 10px" class="col-sm-2">
         <div>
-          <form id="global-search" action="search" method="post" style="margin-bottom: 10px">
-            <div class="input-group">
-              <input id="global-search-text" type="text" placeholder="Поиск..." name="global_search" class="form-control" ng-model='global_search'><span class="input-group-btn">
-                <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search no-margin-right"></span></button></span>
-            </div>
-            <!-- /input-group-->
-          </form>
           <div class="list-group">
               @include('_menu')
           </div>
@@ -40,5 +32,6 @@
         </div>
       </div>
     </div>
+    @include('_search')
   </body>
 </html>

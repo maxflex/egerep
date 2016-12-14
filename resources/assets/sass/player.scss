@@ -1,0 +1,34 @@
+.progress_bar{
+  padding: 7px 0px;
+  cursor: pointer;
+  position: relative;
+
+  .clicker{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 16px;
+    z-index: 100000;
+  }
+
+  .clicker:focus{
+    outline:0  !important;
+  }
+
+  .wraperPGBR{
+    height: 2px;
+    width: 100%;
+    background: #ececec;
+  }
+
+  .line{
+    height: 2px;
+    width: 0%;
+    background: #158E51;
+  }
+}
+
+.link-offset-right{
+  margin-right: 10px;
+}

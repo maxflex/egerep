@@ -3,11 +3,14 @@ angular.module('Egerep').directive 'phones', ->
     templateUrl: 'directives/phones'
     scope:
         entity: '='
-    controller: ($scope, $timeout, $rootScope, PhoneService, UserService) ->
+    controller: ($scope, $timeout, $rootScope, PhoneService, UserService, $interval) ->
         $scope.PhoneService = PhoneService
         $scope.UserService  = UserService
 
-        console.log $scope.entityType
+        $scope.is_playing_stage = 'stop'
+        $scope.isOpened = false;
+
+#console.log $scope.entityType
 
         # level depth
         $rootScope.dataLoaded.promise.then (data) ->
@@ -34,11 +37,22 @@ angular.module('Egerep').directive 'phones', ->
 
         # информация по api
         $scope.info = (number) ->
+
             $scope.api_number = number
             $scope.mango_info = null
             $('#api-phone-info').modal 'show'
+            if $scope.isOpened == false
+                $('#api-phone-info')
+                    .on 'hidden.bs.modal', () ->
+                        $scope.isOpened = true
+                        if $scope.audio
+                            $scope.audio.pause()
+                            $scope.audio = null
+                            $scope.is_playing_stage = 'stop'
+                            $scope.is_playing = null
+
             PhoneService.info(number).then (response) ->
-                console.log response.data
+                ##console.log response.data
                 $scope.mango_info = response.data
 
         $scope.formatDateTime = (date) ->
@@ -48,7 +62,7 @@ angular.module('Egerep').directive 'phones', ->
             moment(0).seconds(seconds).format("mm:ss")
 
         $scope.getNumberTitle = (number) ->
-            console.log number, $scope.api_number
+            #console.log number, $scope.api_number
             return 'текущий номер' if number is PhoneService.clean($scope.api_number)
             number
 
@@ -63,15 +77,65 @@ angular.module('Egerep').directive 'phones', ->
 
             return "https://app.mango-office.ru/vpbx/queries/recording/link/#{recording_id}/play/#{api_key}/#{timestamp}/#{sign}"
 
-        $scope.play = (recording_id) ->
-            $scope.audio.pause() if $scope.audio
+        $scope.intervalStart = () ->
+            $scope.interval = $interval ->
+              if $scope.audio
+                  $scope.current_time = angular.copy $scope.audio.currentTime
+                  $scope.prc = (($scope.current_time * 100) /  $scope.audio.duration).toFixed(2)
+                  if parseInt($scope.prc) == 100
+                      $scope.is_playing_stage = 'pause'
+                      $scope.intervalCancel()
+            , 100
+
+        $scope.intervalCancel = () ->
+            $interval.cancel $scope.interval
+
+
+        #инициализируем аудио
+        $scope.initAudio = (recording_id) ->
+            if $scope.audio
+                $scope.audio.pause()
+                $scope.audio = null
+
             $scope.audio = new Audio recodringLink(recording_id)
             $scope.audio.play()
             $scope.is_playing = recording_id
+            $scope.is_playing_stage = 'play'
+            $scope.current_time = 0
+            $scope.intervalStart()
 
+
+        #ставим на паузу
+        $scope.pause = () ->
+            $scope.intervalCancel()
+            $scope.audio.pause() if $scope.audio
+            $scope.is_playing_stage = 'pause'
+
+        #воспроизводим звук
+        $scope.play = (start) ->
+            if start
+                $scope.audio.currentTime = start
+            $scope.audio.play()
+            $scope.is_playing_stage = 'play'
+            $scope.intervalStart()
+
+        #указатель воспроизведения
         $scope.isPlaying = (recording_id) ->
             $scope.is_playing is recording_id
 
+        #полная остановка процесса воспроизведения
         $scope.stop = (recording_id) ->
+            $scope.prc = 0
             $scope.is_playing = null
             $scope.audio.pause()
+            $scope.audio = null
+            $scope.is_playing_stage = 'stop'
+            $scope.intervalCancel()
+
+        #прокрутка звука
+        $scope.setCurentTime = (e) ->
+            width = angular.element e.target
+                    .width()
+            $scope.prc = (e.offsetX * 100) / width;
+            time = ($scope.audio.duration * $scope.prc) / 100
+            $scope.audio.currentTime = time

@@ -27,13 +27,6 @@
     <div class="row">
       <div style="margin-left: 10px" class="col-sm-2">
         <div>
-          <form id="global-search" action="search" method="post" style="margin-bottom: 10px">
-            <div class="input-group">
-              <input id="global-search-text" type="text" placeholder="Поиск..." name="global_search" class="form-control" ng-model='global_search'><span class="input-group-btn">
-                <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search no-margin-right"></span></button></span>
-            </div>
-            <!-- /input-group-->
-          </form>
           <div class="list-group">
               @include('_menu')
           </div>
@@ -60,5 +53,6 @@
         <phone user_id="{{ $user->id }}" type="egerep" key="{{ config('app.pusher_key') }}" cluster='eu'></phone>
       </div>
     @endif
+    @include('_search')
   </body>
 </html>
