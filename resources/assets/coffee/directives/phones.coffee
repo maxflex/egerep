@@ -136,6 +136,6 @@ angular.module('Egerep').directive 'phones', ->
         $scope.setCurentTime = (e) ->
             width = angular.element e.target
                     .width()
-            prc1 = (e.offsetX * 100) / width;
-            time = ($scope.audio.duration * prc1) / 100
+            $scope.prc = (e.offsetX * 100) / width;
+            time = ($scope.audio.duration * $scope.prc) / 100
             $scope.audio.currentTime = time

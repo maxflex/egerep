@@ -50,7 +50,7 @@
                         <td width='100'>
                             @{{ time(data.seconds) }}
                         </td>
-                        <td width='100'>
+                        <td width='300'>
 
                             <div class="progress_bar" ng-show='isPlaying(data.recording_id)'>
                                 <div class="wraperPGBR">
@@ -62,7 +62,7 @@
                             <span ng-hide='isPlaying(data.recording_id)' ng-click='initAudio(data.recording_id)' class="link-like">прослушать</span>
 
                             <span ng-show='data.recording_id'>
-                                <span class='link-like' ng-show='isPlaying(data.recording_id)' ng-click='stop(data.recording_id)'>остановить</span>
+                                <span class='link-like link-offset-right' ng-show='isPlaying(data.recording_id)' ng-click='stop(data.recording_id)'>остановить</span>
                                 <span class='link-like' ng-show='isPlaying(data.recording_id) && is_playing_stage == "play"' ng-click='pause(data.recording_id)'>пауза</span>
                                 <span class='link-like' ng-show='isPlaying(data.recording_id) && is_playing_stage == "pause"' ng-click='play((parseInt(prc) == 100) ? 0 : "")'>воспроизвести</span>
                             </span>
