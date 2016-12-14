@@ -1,4 +1,4 @@
-@extends('asapp')
+@extends('app')
 @section('title', 'Итоги')
 @section('title-right')
     общий дебет на сегодня: @{{ total_debt | number}}, обновлено @{{ formatDateTime(debt_updated) }}
