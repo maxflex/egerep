@@ -26,6 +26,15 @@ angular
                     total_commission += getCommission(val) if val isnt ''
             total_commission
 
+        # находим по id метод оплаты в данных TeacherPaymentTypes
+        $scope.getPaymetnMethod = (method_id) ->
+            data = {}
+            return data if angular.isUndefined method_id
+            angular.forEach TeacherPaymentTypes, (row)->
+                if row.id == method_id
+                    data = row
+            return data
+
         $scope.pageChanged = ->
             ajaxStart()
             load $scope.current_page
