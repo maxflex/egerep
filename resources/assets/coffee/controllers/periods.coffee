@@ -30,7 +30,7 @@ angular
         $scope.getPaymetnMethod = (method_id) ->
             data = {}
             return data if angular.isUndefined method_id
-            angular.forEach TeacherPaymentTypes, (row)->
+            angular.forEach TeacherPaymentTypes, (row) ->
                 if row.id == method_id
                     data = row
             return data
