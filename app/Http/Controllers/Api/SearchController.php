@@ -32,8 +32,7 @@ class SearchController extends Controller
                 $query = trim($request->input('query'));
                 # поиск по ученикам
                 $clients = DB::table('clients')->select('id', 'name')
-                                ->where('name', 'LIKE', '%' . $query . '%')
-                                ->orWhere('phone', 'LIKE', '%' . $query . '%')
+                                ->where('phone', 'LIKE', '%' . $query . '%')
                                 ->orWhere('phone2', 'LIKE', '%' . $query . '%')
                                 ->orWhere('phone3', 'LIKE', '%' . $query . '%')
                                 ->orWhere('phone4', 'LIKE', '%' . $query . '%')
