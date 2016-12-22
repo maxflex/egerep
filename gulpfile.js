@@ -76,6 +76,7 @@ elixir(function(mix) {
             'vue/dist/vue.min',
             'vue-resource/dist/vue-resource.min',
             'phoneapi/dist/js/pusher',
-            'js-md5/build/md5.min'
+            'js-md5/build/md5.min',
+            'egerep-svg-metro/scripts/svg'
         ]), 'public/js/vendor.js');
 });

@@ -27,7 +27,7 @@
                             <span>загрузка...</span>
                         </div>
                         <div ng-show='tutor.has_photo_original' style="height: 100%">
-                            <img src="img/tutors/@{{ tutor.id + '_original.' + tutor.photo_extension }}?ver=@{{ picture_version }}" id='photo-edit'>
+                            <img ng-src="img/tutors/@{{ tutor.id + '_original.' + tutor.photo_extension }}?ver=@{{ picture_version }}" id='photo-edit'>
                         </div>
                     </div>
                     <div class="col-sm-2 center image-col-right">

@@ -351,7 +351,7 @@
 	}
 
 	.btn.btn-primary {
-		border-color: $green_main;
+		border-color: $green_main!important;
 		&:hover {
 			background-color: lighten($green_main, 10);
 			border-color: lighten($green_main, 10);
