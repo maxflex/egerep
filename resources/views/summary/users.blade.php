@@ -78,8 +78,10 @@
                 <span style='display: inline-block; width: 150px'>@{{ monthYear(commission.date) }}</span> @{{ commission.sum | number }}
             </div>
 
-            <div>
-                <table class="table" style="margin-top: 20px; font-size: 0.8em;">
+            <div style="margin-top: 20px; ">
+                <span ng-show="!stats.efficency.data.length && !explaination_loading" ng-click="getExplanation()" class="link-like">показать расшифровку</span>
+                <span ng-show="explaination_loading" ng-click="getExplanation()" class="link-like">загрузка данных...</span>
+                <table ng-show="!explaination_loading && stats.efficency.data.length" class="table" style="font-size: 0.8em;">
                     <thead class="bold">
                     <tr>
                         <td align="left">Cтыковка</td>
@@ -101,7 +103,7 @@
                             </td>
                             <td><a href="requests/@{{ request.id }}/edit">@{{ request.id }}</a></td>
                             <td>0</td>
-                            <td>@{{ isDenied(request) ? 0 : 1 }}</td>
+                            <td>@{{ isDenied(request) ? 1 : 0 }}</td>
                         </tr>
                         <tr ng-repeat-end ng-repeat="attachment in request.attachments">
                             <td align="left" width="5%">

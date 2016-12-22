@@ -104,6 +104,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('periods', 'PeriodsController');
 
         Route::post('summary/users', 'SummaryController@users');
+        Route::post('summary/users/explain', 'SummaryController@explain');
         Route::post('summary/payments', 'SummaryController@payments');
         Route::post('summary/debtors', 'SummaryController@debtors');
         Route::post('summary', 'SummaryController@index');

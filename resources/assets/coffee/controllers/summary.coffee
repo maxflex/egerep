@@ -14,6 +14,13 @@ angular
                 $rootScope.frontend_loading = false
                 $scope.stats = response.data
 
+        $scope.getExplanation = ->
+            $rootScope.explaination_loading = true
+            $http.post 'api/summary/users/explain', $scope.search
+            .then (response) ->
+                $rootScope.explaination_loading = false
+                $scope.stats.efficency.data = response.data
+
         $scope.monthYear = (date) ->
             date = date.split(".")
             date = date.reverse()
@@ -21,25 +28,25 @@ angular
             moment(date).format('MMMM YYYY')
 
         $scope.sumEfficency = ->
-            _.reduce $scope.stats.efficency.data, (sum, request) ->
+            sum = _.reduce $scope.stats.efficency.data, (sum, request) ->
                 _.each request.attachments, (attachment) ->
                     sum += attachment.rate
                 sum
             , 0
 
-        $scope.sumShare = ->
-            requests_to_sum = _.filter $scope.stats.efficency.data, (request) ->
-                not $scope.isDenied request
+            sum.toFixed(2)
 
-            _.reduce requests_to_sum, (sum, request) ->
+        $scope.sumShare = ->
+            _.reduce $scope.stats.efficency.data, (sum, request) ->
                 if request.attachments.length
                     _.each request.attachments, (attachment) ->
                         sum += attachment.share
+                sum += 1 if $scope.isDenied(request)
                 sum
             , 0
 
         $scope.isDenied = (request) ->
-            request.state in ['deny', 'reasoned_deny', 'checked_reasoned_deny']
+            request.state in ['deny']
 
     .controller 'SummaryIndex', ($rootScope, $scope, $http, $timeout, PaymentMethods) ->
         bindArguments($scope, arguments)
