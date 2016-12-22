@@ -334,17 +334,20 @@ class SummaryController extends Controller
         $return = [];
         $request_query = \App\Models\Request::query();
         $attachments_query = Attachment::query();
+        $request_attachments_without_users = \App\Models\Request::query()
+                    ->join('request_lists as rl', 'rl.request_id', '=', 'requests.id')
+                    ->join('attachments', 'request_list_id', '=', 'rl.id');
 
         if (isset($date_from)) {
-            $request_query->where('created_at', '>=', fromDotDate($date_from));
+            $request_query->where('requests.created_at', '>=', fromDotDate($date_from));
             $attachments_query->where('attachments.created_at', '>=', fromDotDate($date_from));
         }
         if (isset($date_to)) {
-            $request_query->where('created_at', '<=', fromDotDate($date_to) . ' 23:59:59');
+            $request_query->where('requests.created_at', '<=', fromDotDate($date_to) . ' 23:59:59');
             $attachments_query->where('attachments.created_at', '<=', fromDotDate($date_to) . ' 23:59:59');
         }
 
-        $attachments_query_without_user = clone $attachments_query;
+//        $attachments_query_without_user = clone $attachments_query;
         $commission_query = self::cloneQuery($attachments_query)->join('account_datas', function($join) {
             $join->on('attachments.tutor_id', '=', 'account_datas.tutor_id')
                 ->on('attachments.client_id', '=', 'account_datas.client_id');
@@ -385,149 +388,125 @@ class SummaryController extends Controller
         //
         // ЭФФЕКТИВНОСТЬ
         //
-
         $numerator = $return['attachments']['active'] + $return['attachments']['archived']['three_or_more_lessons']
                         + (0.65 * $return['attachments']['newest'])
                         + (0.1 * $return['attachments']['archived']['one_lesson'])
                         + (0.15 * $return['attachments']['archived']['two_lessons']);
 
+//        $denominator = 0;
+//        foreach (self::cloneQuery($attachments_query)->select('tutor_id', 'client_id')->groupBy('tutor_id', 'client_id')->get() as $a) {
+//            $denominator += (self::cloneQuery($attachments_query)->where('tutor_id', $a->tutor_id)->where('client_id', $a->client_id)->count()
+//                            / self::cloneQuery($attachments_query_without_user)->where('tutor_id', $a->tutor_id)->where('client_id', $a->client_id)->count());
+//        }
+//        $denominator += $denied_requests->count();
+
+        $attachments_with_request_list = self::cloneQuery($attachments_query)->join('request_lists as rl', 'request_list_id', '=', 'rl.id')->without(['review', 'archive']);
         $denominator = 0;
-        foreach(self::cloneQuery($attachments_query)->select('tutor_id', 'client_id')->groupBy('tutor_id', 'client_id')->get() as $a) {
-            $denominator += (self::cloneQuery($attachments_query)->where('tutor_id', $a->tutor_id)->where('client_id', $a->client_id)->count()
-                            / self::cloneQuery($attachments_query_without_user)->where('tutor_id', $a->tutor_id)->where('client_id', $a->client_id)->count());
+
+        $request_ids = self::cloneQuery($attachments_with_request_list)->pluck('request_id')->unique();
+        $requests = \App\Models\Request ::whereIn('id', $request_ids)->select(['id', 'user_id', 'state'])->get()->toArray();
+        foreach ($requests as $request) {
+            $request_attachments_count = self::cloneQuery($attachments_with_request_list)->where('request_id', $request['id'])->count();
+            $request_attachments_count_without_users = self::cloneQuery($request_attachments_without_users)->where('request_id', $request['id'])->count();
+
+            $denominator += $request_attachments_count / $request_attachments_count_without_users;
         }
-        $denominator += $request_query->where('state', 'deny')->count();// отказные заявки
+        $denominator += $return['requests']['deny'];
+
 
         $total_commission = self::cloneQuery($commission_query)->sum(DB::raw('if(commission > 0, commission, ' . Account::DEFAULT_COMMISSION . ' * sum)'));
 
 
-        if ($divider = (self::cloneQuery($attachments_query)->newest()->count() + self::cloneQuery($attachments_query)->archived()->hasLessonsWithMissing('>=3')->count())) {
-            $forecast = round(
-                self::cloneQuery($attachments_query)->newest()->sum('forecast') + self::cloneQuery($attachments_query)->archived()->hasLessonsWithMissing('>=3')->sum('forecast')
-                / $divider
-            );
-        } else {
-            $forecast = 0;
-        }
+        $forecast_denominator = self::cloneQuery($attachments_query)->active()->count() + self::cloneQuery($attachments_query)->archived()->hasLessonsWithMissing('>=3')->count();
+        $forecast_numerator = self::cloneQuery($attachments_query)->active()->sum('forecast') + self::cloneQuery($attachments_query)->archived()->hasLessonsWithMissing('>=3')->sum('forecast');
+        $forecast = $forecast_denominator ? round($forecast_numerator / $forecast_denominator, 2) : 0;
 
 
         $return['efficency'] = [
             'conversion'       => $denominator ? round($numerator / $denominator, 2) : 0,
             'forecast'         => $forecast,
-            'request_avg'      => $denominator + $return['requests']['deny'] ? round($total_commission / ($denominator + $return['requests']['deny'])) : 0,
-            'attachment_avg'   => $return['attachments']['total'] ? round($total_commission / $return['attachments']['total']) : 0,
-            'total_commission' => round($total_commission),
+            'request_avg'      => $denominator + $return['requests']['deny'] ? round(floatval($total_commission) / ($denominator + $return['requests']['deny'])) : 0,
+            'attachment_avg'   => $return['attachments']['total'] ? round(floatval($total_commission) / $return['attachments']['total']) : 0,
+            'total_commission' => round($total_commission)
         ];
 
         return $return;
     }
 
+    /**
+     * @todo for @user shamshod
+     * - optimize
+     * */
     public function explain(Request $request)
     {
         @extract(array_filter($request->all()));
         $request_query = \App\Models\Request::query();
-        $attachments_query = Attachment::query();
+        $attachments_with_request_list = Attachment::query()->join('request_lists as rl', 'request_list_id', '=', 'rl.id')->without(['review']);
+        $request_attachments_without_users = \App\Models\Request::query()->join('request_lists as rl', 'rl.request_id', '=', 'requests.id')->join('attachments', 'request_list_id', '=', 'rl.id');
 
         if (isset($date_from)) {
             $request_query->where('created_at', '>=', fromDotDate($date_from));
-            $attachments_query->where('attachments.created_at', '>=', fromDotDate($date_from));
+            $attachments_with_request_list->where('attachments.created_at', '>=', fromDotDate($date_from));
         }
         if (isset($date_to)) {
             $request_query->where('created_at', '<=', fromDotDate($date_to) . ' 23:59:59');
-            $attachments_query->where('attachments.created_at', '<=', fromDotDate($date_to) . ' 23:59:59');
+            $attachments_with_request_list->where('attachments.created_at', '<=', fromDotDate($date_to) . ' 23:59:59');
         }
-
         if (isset($user_ids)) {
             $request_query->whereIn('requests.user_id', $user_ids);
-            $attachments_query->whereIn('attachments.user_id', $user_ids);
+            $attachments_with_request_list->whereIn('attachments.user_id', $user_ids);
         }
 
         $effiency_data = [];
-        $attachments_with_request_list = self::cloneQuery($attachments_query)
-            ->join('request_lists as r', 'request_list_id', '=', 'r.id')
-            ->without(['review']);
 
-        $request_query->where('state', 'deny'); // Только отказные заявки кроме тех, которые со стыковками
+        $request_query->where('state', 'deny'); // берем отказные заявки + со стыковками рабочие/заверщенные(3+)
         $request_ids = $request_query->pluck('id')->merge(self::cloneQuery($attachments_with_request_list)->pluck('request_id'))->unique();
-
         $requests = \App\Models\Request ::whereIn('id', $request_ids)->select(['id', 'user_id', 'state'])->get()->toArray();
 
         foreach ($requests as $request) {
             $request['attachments'] = [];
             $request_attachments = self::cloneQuery($attachments_with_request_list)->where('request_id', $request['id']);
-            $request_attachments_count = $request_attachments->count();
-            $request_attachments_count_by_users = self::cloneQuery($request_attachments)->groupBy('attachments.user_id')->select([\DB::raw('count(attachments.id) as count'),'attachments.user_id as user_id'])->get();
-            $request['data'] = [$request_attachments_count, $request_attachments_count_by_users];
+            $request_attachments_count = self::cloneQuery($request_attachments_without_users)->where('request_id', $request['id'])->count();
 
             $has_no_lesson = self::cloneQuery($request_attachments)->archived()->hasLessonsWithMissing('=0')->select('attachments.*')->get();
             foreach ($has_no_lesson as $attachment) {
                 $attachment->rate = 0;
-                $attachment->share = 1;
+                $attachment->share = round(1 / $request_attachments_count, 2);
                 $request['attachments'][] = $attachment;
             }
 
             $has_one_lesson = self::cloneQuery($request_attachments)->archived()->hasLessonsWithMissing('=1')->select('attachments.*')->get();
             foreach ($has_one_lesson as $attachment) {
                 $attachment->rate = 0.1;
-
-                if ($request_attachments_count_by_users->count()) {
-                    $key = $request_attachments_count_by_users->search(function ($value) use ($attachment) {
-                        return $value->user_id == $attachment->user_id;
-                    });
-                    $attachment->share = $key !== false ? round($request_attachments_count_by_users->get($key)->count / $request_attachments_count, 2) : -1;
-                }
+                $attachment->share = round(1 / $request_attachments_count, 2);
                 $request['attachments'][] = $attachment;
             }
 
             $has_two_lesson = self::cloneQuery($request_attachments)->archived()->hasLessonsWithMissing('=2')->select('attachments.*')->get();
             foreach ($has_two_lesson as $attachment) {
                 $attachment->rate = 0.15;
-
-                if ($request_attachments_count_by_users->count()) {
-                    $key = $request_attachments_count_by_users->search(function ($value) use ($attachment) {
-                        return $value->user_id == $attachment->user_id;
-                    });
-                    $attachment->share = $key !== false ? round($request_attachments_count_by_users->get($key)->count / $request_attachments_count, 2) : -1;
-                }
+                $attachment->share = round(1 / $request_attachments_count, 2);
                 $request['attachments'][] = $attachment;
             }
 
             $has_three_lesson = self::cloneQuery($request_attachments)->archived()->hasLessonsWithMissing('>=3')->select('attachments.*')->get();
             foreach ($has_three_lesson as $attachment) {
                 $attachment->rate = 1;
-
-                if ($request_attachments_count_by_users->count()) {
-                    $key = $request_attachments_count_by_users->search(function ($value) use ($attachment) {
-                        return $value->user_id == $attachment->user_id;
-                    });
-                    $attachment->share = $key !== false ? round($request_attachments_count_by_users->get($key)->count / $request_attachments_count, 2) : -1;
-                }
+                $attachment->share = round(1 / $request_attachments_count, 2);
                 $request['attachments'][] = $attachment;
             }
 
             $active = self::cloneQuery($request_attachments)->active()->select('attachments.*')->get();
             foreach ($active as $attachment) {
                 $attachment->rate = 1;
-
-                if ($request_attachments_count_by_users->count()) {
-                    $key = $request_attachments_count_by_users->search(function ($value) use ($attachment) {
-                        return $value->user_id == $attachment->user_id;
-                    });
-                    $attachment->share = $key !== false ? round($request_attachments_count_by_users->get($key)->count / $request_attachments_count, 2) : -1;
-                }
+                $attachment->share = round(1 / $request_attachments_count, 2);
                 $request['attachments'][] = $attachment;
             }
 
             $newest = self::cloneQuery($request_attachments)->newest()->select('attachments.*')->get();
             foreach ($newest as $attachment) {
                 $attachment->rate = 0.65;
-
-                if ($request_attachments_count_by_users->count()) {
-                    $key = $request_attachments_count_by_users->search(function ($value) use ($attachment) {
-                        return $value->user_id == $attachment->user_id;
-                    });
-                    $attachment->share = $key !== false ? round($request_attachments_count_by_users->get($key)->count / $request_attachments_count, 2) : -1;
-                }
+                $attachment->share = round(1 / $request_attachments_count, 2);
                 $request['attachments'][] = $attachment;
             }
 

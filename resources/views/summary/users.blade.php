@@ -69,7 +69,7 @@
 
             <div class="result-line">Эффективность:</div>
             <div>Общая конверсия заявок в покупающего клиента – @{{ stats.efficency.conversion | number }}</div>
-            <div>Средний прогноз – @{{ stats.efficency.forecast | number }} руб.</div>
+            <div>Средний прогноз среди рабочих и завершенных (3+) – @{{ stats.efficency.forecast | number }} руб.</div>
             <div>Средняя заявка – @{{ stats.efficency.request_avg | number }} руб.</div>
             <div>Средняя стыковка – @{{ stats.efficency.attachment_avg | number }} руб.</div>
             <div>Общая комиссия – @{{ stats.efficency.total_commission | number }} руб.</div>
@@ -80,7 +80,7 @@
 
             <div style="margin-top: 20px; ">
                 <span ng-show="!stats.efficency.data.length && !explaination_loading" ng-click="getExplanation()" class="link-like">показать расшифровку</span>
-                <span ng-show="explaination_loading" ng-click="getExplanation()" class="link-like">загрузка данных...</span>
+                <span ng-show="explaination_loading" class="link-like">загрузка данных...</span>
                 <table ng-show="!explaination_loading && stats.efficency.data.length" class="table" style="font-size: 0.8em;">
                     <thead class="bold">
                     <tr>

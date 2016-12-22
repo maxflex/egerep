@@ -37,13 +37,15 @@ angular
             sum.toFixed(2)
 
         $scope.sumShare = ->
-            _.reduce $scope.stats.efficency.data, (sum, request) ->
+            sum = _.reduce $scope.stats.efficency.data, (sum, request) ->
                 if request.attachments.length
                     _.each request.attachments, (attachment) ->
                         sum += attachment.share
                 sum += 1 if $scope.isDenied(request)
                 sum
             , 0
+
+            sum.toFixed(2)
 
         $scope.isDenied = (request) ->
             request.state in ['deny']
