@@ -37,7 +37,7 @@
                     </td>
                     <td>
                         <span ng-show='s.sort'>
-                            @{{ s.place ? findById(places, s.place) : 'неважно где' }}
+                            @{{ s.place ? findById(places, s.place).title : 'неважно где' }}
                         </span>
                     </td>
                     <td>
