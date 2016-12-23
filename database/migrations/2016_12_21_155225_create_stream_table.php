@@ -24,6 +24,7 @@ class CreateStreamTable extends Migration
             $table->integer('step')->unsigned();
             $table->integer('position')->unsigned()->nullable();
             $table->string('client_id');
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 
