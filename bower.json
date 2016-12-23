@@ -22,7 +22,7 @@
     "normalize-css": "normalize.css#~3.0.3",
     "Ionicons": "ionicons#~2.0.1",
     "font-awesome": "~4.5.0",
-    "angular": "~1.4.8",
+    "angular": "~1.5.8",
     "jquery.inputmask": "~3.2.5",
     "jquery-ui": "jquery.ui#^1.11.4",
     "angular-animate": "~1.4.8",
@@ -63,6 +63,11 @@
     "phoneapi": "*",
     "vue": "^1.0.26",
     "js-md5": "md5#^0.4.1",
-    "vue-resource": "^1.0.3"
+    "vue-resource": "^1.0.3",
+    "egerep-svg-metro": "*"
+  },
+  "resolutions": {
+    "angular": "^1.5.8",
+    "jquery-ui": "1.11.4"
   }
 }

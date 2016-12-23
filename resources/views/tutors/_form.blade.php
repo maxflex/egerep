@@ -7,7 +7,7 @@
 <div class="row">
     <div class="col-sm-1" style="width: 157px">
         {{-- <div class="form-group img-container">
-             <img id='image' src="img/photo/@{{ tutor.has_photo ? tutor.photo : 'no-profile-img.gif' }}">
+             <img id='image' ng-src="img/photo/@{{ tutor.has_photo ? tutor.photo : 'no-profile-img.gif' }}">
         </div> --}}
         <div class="form-group">
             <div class="tutor-img" ng-class="{'border-transparent': tutor.has_photo_cropped}" ng-click="showPhotoEditor()">
@@ -17,7 +17,7 @@
                 <span class="btn-file">
                     {{-- <input name="tutor_photo" type="file" id="fileupload" data-url="upload/tutor/" accept="image/jpg"> --}}
                 </span>
-                <img src="@{{ tutor.photo_url }}?ver=@{{ picture_version }}">
+                <img ng-src="@{{ tutor.photo_url }}?ver=@{{ picture_version }}">
             </div>
         </div>
         <div class="form-group">

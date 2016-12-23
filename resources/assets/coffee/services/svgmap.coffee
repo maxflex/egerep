@@ -1,4 +1,9 @@
 angular.module('Egerep').service 'SvgMap', ->
+    this.show_new_map = false
+
+    this.toggleNew = ->
+        this.show_new_map = !this.show_new_map
+
     this.map = new SVGMap
         iframeId: 'map',
         clicable: true,
