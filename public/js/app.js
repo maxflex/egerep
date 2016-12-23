@@ -1,7 +1,7 @@
 (function() {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ngAnimate', 'ui.sortable', 'ui.bootstrap', 'angular-ladda', 'mwl.calendar']).config([
+  angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ngAnimate', 'ui.sortable', 'ui.bootstrap', 'angular-ladda', 'mwl.calendar', 'svgmap']).config([
     '$compileProvider', function($compileProvider) {
       return $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension|sip):/);
     }
@@ -2934,6 +2934,33 @@
 }).call(this);
 
 (function() {
+  angular.module('Egerep').controller('StreamIndex', function($rootScope, $scope, $timeout, $http, Subjects) {
+    var load;
+    bindArguments($scope, arguments);
+    $rootScope.frontend_loading = true;
+    $timeout(function() {
+      load($scope.page);
+      return $scope.current_page = $scope.page;
+    });
+    $scope.pageChanged = function() {
+      $rootScope.frontend_loading = true;
+      load($scope.current_page);
+      return paginate('stream', $scope.current_page);
+    };
+    return load = function(page) {
+      var params;
+      params = '?page=' + page;
+      return $http.get("api/stream" + params).then(function(response) {
+        console.log(response);
+        $scope.stream = response.data.data;
+        return $rootScope.frontend_loading = false;
+      });
+    };
+  });
+
+}).call(this);
+
+(function() {
   angular.module('Egerep').controller('SummaryUsers', function($scope, $rootScope, $timeout, $http, UserService, RequestStates, AttachmentService) {
     bindArguments($scope, arguments);
     $timeout(function() {
@@ -5357,6 +5384,10 @@
 
 (function() {
   angular.module('Egerep').service('SvgMap', function() {
+    this.show_new_map = false;
+    this.toggleNew = function() {
+      return this.show_new_map = !this.show_new_map;
+    };
     this.map = new SVGMap({
       iframeId: 'map',
       clicable: true,

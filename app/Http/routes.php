@@ -14,6 +14,8 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
 Route::group(['middleware' => ['web']], function () {
     Route::get('/', 'RequestsController@index');
 
+    Route::get('stream', 'StreamController@index');
+
     Route::get('calls/missed', 'CallsController@missed');
     Route::resource('calls', 'CallsController');
 
@@ -69,7 +71,7 @@ Route::group(['middleware' => ['web']], function () {
 	# Поиск по преподам
 	Route::post('search', 'TutorsController@index');
 
-    #Шаблоны
+    # Шаблоны
 	Route::get('templates', 'TemplatesController@index');
 	Route::post('templates', 'TemplatesController@save');
 
@@ -107,6 +109,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('periods/planned', 'PlannedAccountsController');
         Route::resource('sms', 'SmsController');
         Route::resource('periods', 'PeriodsController');
+        Route::resource('stream', 'StreamController');
 
         Route::post('summary/users', 'SummaryController@users');
         Route::post('summary/users/explain', 'SummaryController@explain');
@@ -117,7 +120,7 @@ Route::group(['middleware' => ['web']], function () {
             'command'  => 'CommandsController',
         ]);
 
-        #шаблоны смс
+        # шаблоны смс
         Route::get('template/{id}', 'TemplatesController@getTemplatesByType');
 
     });
