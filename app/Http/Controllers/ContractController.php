@@ -67,7 +67,7 @@ class ContractController extends Controller
     public function edit()
     {
         // @rights-need-to-refactor
-        if (allowed(\Shared\Rights::EDIT_CONTACT)) {
+        if (allowed(\Shared\Rights::EDIT_CONTRACT)) {
             return view('contract.edit')->with(
                 ngInit([
                     'contract_html'  => Settings::get('contract_html'),

@@ -36,6 +36,7 @@ angular
             $http.get "api/stream#{ params }"
             .then (response) ->
                 console.log response
+                $scope.data = response.data
                 $scope.stream = response.data.data
                 $rootScope.frontend_loading = false
                 # refreshCounts()
