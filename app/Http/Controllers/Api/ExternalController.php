@@ -50,7 +50,7 @@ class ExternalController extends Controller
 
     public function requestNew($data)
     {
-        $phone = cleanNumber($data->phone, true);
+        $phone = cleanNumber($data->phone);
 
 		// Если в заявке номер телефона совпадает с номером телефона,
 		// указанным в другой невыполненной заявке, то такие заявки нужно сливать
@@ -87,7 +87,7 @@ class ExternalController extends Controller
      */
     public function request($data)
     {
-		$phone = cleanNumber($data->phone, true);
+		$phone = cleanNumber($data->phone);
 
 		// Если в заявке номер телефона совпадает с номером телефона,
 		// указанным в другой невыполненной заявке, то такие заявки нужно сливать

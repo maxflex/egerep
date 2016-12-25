@@ -56,9 +56,13 @@
      * Возвратить чистый номер телефона.
      *
      */
-    function cleanNumber($number, $add_seven = false)
+    function cleanNumber($number)
     {
-        return ($add_seven ? '7' : '') . preg_replace("/[^0-9]/", "", $number);
+        $number = preg_replace("/[^0-9]/", "", $number);
+        if ($number[0] != '7') {
+            $number .= '7';
+        }
+        return $number;
     }
 
     /**
