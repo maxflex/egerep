@@ -59,7 +59,7 @@
     function cleanNumber($number)
     {
         $number = preg_replace("/[^0-9]/", "", $number);
-        if ($number[0] != '7') {
+        if ($number && $number[0] != '7') {
             $number .= '7';
         }
         return $number;
