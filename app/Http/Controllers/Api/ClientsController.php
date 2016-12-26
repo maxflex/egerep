@@ -97,7 +97,9 @@ class ClientsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Client::find($id)->update($request->input());
+        $client = Client::find($id);
+        $client->update($request->input());
+        return $client->fresh();
     }
 
     /**

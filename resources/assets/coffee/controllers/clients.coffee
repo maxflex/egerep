@@ -58,7 +58,9 @@ angular
             filterMarkers()
             $scope.ajaxStart()
             $scope.client.$update()
-                .then ->
+                .then (response) ->
+                    $scope.client = response;
+                    $scope.loadMarkers()
                     $scope.ajaxEnd()
 
         # Save everything
@@ -481,7 +483,8 @@ angular
                     $scope.bindMarkerDelete(new_marker)
                     $scope.bindMarkerChangeType(new_marker)
                     markers.push new_marker
-                $scope.client.markers = markers
+                $scope.client.markers = _.sortBy markers, (marker) ->
+                    marker.server_id
 
         # Сохранить метки
         $scope.saveMarkers = ->
