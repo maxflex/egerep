@@ -349,6 +349,8 @@ angular
 
             $scope.tutor.$update()
                 .then (response) ->
+                    $scope.tutor = response;
+                    $scope.loadMarkers()
                     $scope.saving = false
                     $scope.form_changed = false
                     ajaxEnd()
@@ -541,7 +543,8 @@ angular
                     $scope.bindMarkerDelete(new_marker)
                     $scope.bindMarkerChangeType(new_marker)
                     markers.push new_marker
-                $scope.tutor.markers = markers
+                $scope.tutor.markers = _.sortBy markers, (marker) ->
+                    marker.server_id
                 $timeout ->
                     $scope.fully_loaded = true
 

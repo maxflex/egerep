@@ -80,7 +80,9 @@ class TutorsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Tutor::find($id)->update($request->input());
+        $tutor = Tutor::find($id);
+        $tutor->update($request->input());
+        return $tutor->fresh(['markers']);
     }
 
     /**
