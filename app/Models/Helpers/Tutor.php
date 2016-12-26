@@ -42,6 +42,6 @@ class Tutor
         $date = date('Y-m-d H');
         $hash = md5($salt . $date);
         $tutor_id_hash = md5($tutor_id . $salt . $hash);
-        return "https://web.ege-repetitor.ru/login/{$hash}{$tutor_id_hash}";
+        return "https://ege-repetitor.ru/login/{$hash}{$tutor_id_hash}";
     }
 }
