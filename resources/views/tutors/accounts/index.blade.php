@@ -8,19 +8,17 @@
 
 @section('title-right')
     @if(allowed(\Shared\Rights::ER_EDIT_ACCOUNTS))
-        <span style="position: absolute; left: 45%;" class="link-like link-reverse link-white"
+        <span class="link-like link-reverse link-white"
               ng-if='tutor.last_accounts.length > 0'
               ng-click="save()" ng-disabled="saving"
-        >
-            сохранить
-        </span>
+        >сохранить</span>
     @endif
+    <span>вечный должник: <span class='link-white link-reverse link-like' ng-click="toggleEnumServer(tutor, 'debtor', YesNo, Tutor)">@{{ YesNo[tutor.debtor] }}</span></span>
     <span class="link-like link-reverse link-white"
           ng-click='addPlannedAccountDialog();'>
           @{{ tutor.planned_account &&  tutor.planned_account.id ? 'расчет назначен на ' + shortenYear(tutor.planned_account.date) : 'расчет не назначен' }}</span>
     <a href='tutors/{{ $tutor->id }}/accounts/hidden' ng-show="page != 'hidden'" class="client-droppable" style="margin-top: -2px">скрытые ученики (@{{ hidden_clients_count }})</a>
     <a href='tutors/{{ $tutor->id }}/accounts'  ng-show="page == 'hidden'" class="client-droppable" style="margin-top: -2px">показанные в отчетности ученики (@{{ visible_clients_count }})</a>
-    <span style="position: absolute; left: 50%; top: 13px">вечный должник: <span class='link-white link-reverse link-like' ng-click="toggleEnumServer(tutor, 'debtor', YesNo, Tutor)">@{{ YesNo[tutor.debtor] }}</span></span>
     @if(allowed(\Shared\Rights::ER_EDIT_ACCOUNTS))
         <span class="link-like link-reverse link-white" ng-click='addAccountDialog()'>добавить расчет</span>
     @endif
