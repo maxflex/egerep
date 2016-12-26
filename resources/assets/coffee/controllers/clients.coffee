@@ -486,6 +486,7 @@ angular
         # Сохранить метки
         $scope.saveMarkers = ->
             $('#gmap-modal').modal 'hide'
+            filterMarkers()
             return
 
 
