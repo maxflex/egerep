@@ -549,3 +549,4 @@ angular
         $scope.saveMarkers = ->
             $scope.form_changed = true
             $('#gmap-modal').modal 'hide'
+            return
