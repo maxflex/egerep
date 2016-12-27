@@ -1,7 +1,7 @@
 <span ng-init='_tutor = {{ $tutor }}'></span>
 
 {{-- <tutor-photo tutor='_tutor' class="ava"></tutor-photo> --}}
-<img class='ava' src="@{{ _tutor.photo_url }}">
+<img class='ava' ng-src="@{{ _tutor.photo_url }}">
 <div class="info-line">
     <a href="tutors/@{{ _tutor.id }}/edit" target="_blank">@{{ _tutor.full_name }}</a>
 </div>

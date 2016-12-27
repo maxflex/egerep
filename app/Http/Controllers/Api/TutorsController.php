@@ -203,7 +203,7 @@ class TutorsController extends Controller
              $query->whereExists(function ($query) {
                  $query->selectRaw('1')
                        ->from('tutor_departures as td')
-                       ->where('td.tutor_id', 'tutors.id');
+                       ->whereRaw('td.tutor_id = tutors.id');
              });
          }
 

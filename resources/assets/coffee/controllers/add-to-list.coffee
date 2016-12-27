@@ -62,19 +62,21 @@ angular.module 'Egerep'
             $scope.tutor_list = []
 
             $scope.markers = []
-            $scope.tutors.forEach (tutor) ->
-                tutor.markers.forEach (marker) ->
-                    # Создаем маркер
-                    new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, marker.type)
-                    new_marker.metros = marker.metros
-                    new_marker.tutor = tutor
+            if $scope.tutors
+                $scope.tutors.forEach (tutor) ->
+                    tutor.markers.forEach (marker) ->
+                        # Создаем маркер
+                        new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, marker.type)
+                        new_marker.metros = marker.metros
+                        new_marker.tutor = tutor
 
-                    # Добавляем маркер на карту
-                    new_marker.setMap($scope.map)
+                        # Добавляем маркер на карту
+                        new_marker.setMap($scope.map)
 
-                    # Добавляем ивент удаления маркера
-                    bindTutorMarkerEvents(new_marker)
-                    $scope.markers.push new_marker
+                        # Добавляем ивент удаления маркера
+                        bindTutorMarkerEvents(new_marker)
+                        $scope.markers.push new_marker
+
             # @todo: consider using Marker Clusterer
             markerClusterer = new MarkerClusterer $scope.map, $scope.markers,
                 gridSize: 10
