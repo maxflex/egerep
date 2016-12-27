@@ -68,7 +68,7 @@ class TutorsController extends Controller
      */
     public function show($id)
     {
-        return Tutor::with(['markers'])->find($id)->append(['banned', 'statistics'])->toJson();
+        return Tutor::with(['markers'])->find($id)->append(['banned', 'statistics', 'svg_map'])->toJson();
     }
 
     /**
@@ -82,7 +82,7 @@ class TutorsController extends Controller
     {
         $tutor = Tutor::find($id);
         $tutor->update($request->input());
-        return $tutor->fresh(['markers']);
+        return $tutor->fresh(['markers'])->append('svg_map');
     }
 
     /**
@@ -200,7 +200,11 @@ class TutorsController extends Controller
              }]);
          } else {
              # если "Клиент едет к репетитору", то только репетиторы с картой выезда
-             $query->where('svg_map', '<>', '');
+             $query->whereExists(function ($query) {
+                 $query->selectRaw('1')
+                       ->from('tutor_departures as td')
+                       ->where('td.tutor_id', 'tutors.id');
+             });
          }
 
          # выбираем только нужные поля для ускорения запроса
@@ -209,7 +213,6 @@ class TutorsController extends Controller
              'first_name',
              'last_name',
              'middle_name',
-             'svg_map',
              'photo_extension',
              'birth_year',
              'subjects',
@@ -324,7 +327,6 @@ class TutorsController extends Controller
              'first_name',
              'last_name',
              'middle_name',
-             'svg_map',
              'photo_extension',
              'birth_year',
              'subjects',
@@ -337,7 +339,7 @@ class TutorsController extends Controller
 
          foreach($tutors as $tutor) {
             # Количество учеников, Количество встреч
-            $tutor->append(['clients_count', 'meeting_count']);
+            $tutor->append(['clients_count', 'meeting_count', 'svg_map']);
          }
 
          return $tutors;

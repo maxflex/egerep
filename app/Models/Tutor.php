@@ -77,7 +77,7 @@ class Tutor extends Service\Person
 
     // protected $with = ['markers'];
 
-    protected static $commaSeparated = ['svg_map', 'subjects', 'grades', 'branches', 'errors'];
+    protected static $commaSeparated = ['subjects', 'grades', 'branches', 'errors'];
     protected static $virtual = ['banned'];
 
     const UPLOAD_DIR = '/img/tutors/';
@@ -125,6 +125,26 @@ class Tutor extends Service\Person
     // ->whereRaw("date_end > DATE_SUB((SELECT date_end FROM accounts WHERE tutor_id=" . $this->id . " ORDER BY date_end DESC LIMIT 1), INTERVAL 60 DAY)");
 
     // ------------------------------------------------------------------------
+
+    public function getSvgMapAttribute()
+    {
+        return DB::table('tutor_departures')->where('tutor_id', $this->id)->pluck('station_id');
+    }
+
+    public function setSvgMapAttribute($station_ids)
+    {
+        DB::table('tutor_departures')->where('tutor_id', $this->id)->delete();
+        $departure_stations  = [];
+
+        foreach (array_unique($station_ids) as $station_id) {
+            $departure_stations[] = [
+                'tutor_id'   => $this->id,
+                'station_id' => $station_id
+            ];
+        }
+
+        DB::table('tutor_departures')->insert($departure_stations);
+    }
 
     /**
      * Последняя задолженность
@@ -414,6 +434,10 @@ class Tutor extends Service\Person
 
         static::saved(function($model) {
             DB::table('tutors')->where('id', $model->id)->update(['errors' => \App\Models\Helpers\Tutor::errors($model)]);
+        });
+
+        static::deleted(function($tutor) {
+            \DB::table('tutor_departures')->where('tutor_id', $tutor->id)->delete();
         });
     }
 

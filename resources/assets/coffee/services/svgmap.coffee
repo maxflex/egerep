@@ -149,6 +149,7 @@ angular.module('Egerep').service 'SvgMap', ->
         $(".legend a").on 'click', ->
             id = $(this).attr("data-rel")
             map.toggleGroup(id)
+        return
 
     this.el = ->
         $('#map').contents()
