@@ -1,4 +1,4 @@
-#Vue.config.devtools = true
+Vue.config.devtools = true
 $(document).ready ->
   #вешеаем событие по клику по кнопке
   $('#searchModalOpen').click ->
@@ -28,6 +28,40 @@ $(document).ready ->
       all: 0
       loading: false
      methods:
+      loadData:  _.debounce ->
+          this.$http.post 'api/search', {query: this.query}
+            .then (success) =>
+              this.loading = false
+              this.active = 0
+              this.all = 0
+              this.lists = []
+              if success.body.results > 0
+                this.results = success.body.results
+                if success.body.clients.length > 0
+                  for item, i in success.body.clients
+                    item.type = 'clients'
+                    this.all++
+                    this.links[this.all] = 'client/' + item.id
+                    item.link = this.links[this.all]
+                    this.lists.push(item)
+                if success.body.tutors.length > 0
+                  for item, i in success.body.tutors
+                    item.type = 'tutors'
+                    this.all++
+                    this.links[this.all] = 'tutors/' + item.id + '/edit'
+                    item.link = this.links[this.all]
+                    this.lists.push(item)
+              else
+                this.active = 0
+                this.all = 0
+                this.lists = []
+                this.results = 0
+          , (error) =>
+            this.active = 0
+            this.all = 0
+            this.lists = []
+            this.results = 0
+        , 250
       showResponder: (e)-> #пустой метод для остановки события по стрелке вверх
       scroll: -> #метод скролит по необходимости до нужной части результата поиска
         totalObject = Object.keys this.links
@@ -47,43 +81,14 @@ $(document).ready ->
           if this.active > 4
             this.scroll()
         else if e.code == 'Enter'
-          window.open this.links[this.active]
+          if this.active > 0
+            window.open this.links[this.active]
         else
           if this.query != '' or this.query != ' '
             if this.oldQuery != this.query
-              this.loading = true
-              this.$http.post 'api/search', {query: this.query}
-                .then (success) =>
-                  this.loading = false
-                  this.active = 0
-                  this.all = 0
-                  this.lists = []
-                  if success.body.results > 0
-                    this.results = success.body.results
-                    if success.body.clients.length > 0
-                      for item, i in success.body.clients
-                        item.type = 'clients'
-                        this.all++
-                        this.links[this.all] = 'client/' + item.id
-                        item.link = this.links[this.all]
-                        this.lists.push(item)
-                    if success.body.tutors.length > 0
-                      for item, i in success.body.tutors
-                        item.type = 'tutors'
-                        this.all++
-                        this.links[this.all] = 'tutors/' + item.id + '/edit'
-                        item.link = this.links[this.all]
-                        this.lists.push(item)
-                  else
-                    this.active = 0
-                    this.all = 0
-                    this.lists = []
-                    this.results = 0
-                , (error) =>
-                  this.active = 0
-                  this.all = 0
-                  this.lists = []
-                  this.results = 0
+              if this.oldQuery != this.query and this.query.length > 2
+                this.loading = true
+                this.loadData()
             this.oldquery = this.query
           else
             this.active = 0

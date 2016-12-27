@@ -13,53 +13,88 @@ class SearchController extends Controller
     /**
      * @param Request $request
      */
-    public function search(Request $request){
+    public function search(Request $request)
+    {
 
-            # правила валидации
-            $rules = [
-                'query' => 'required'
-            ];
+        # правила валидации
+        $rules = [
+            'query' => 'required'
+        ];
 
-            # текст для ошибок обработки валидации
-            $messages = [
-                'required' => 'Запрос не должен быть пустым',
-            ];
+        # текст для ошибок обработки валидации
+        $messages = [
+            'required' => 'Запрос не должен быть пустым',
+        ];
 
-            # проверка
-            $validator = Validator::make($request->all(), $rules, $messages);
+        # проверка
+        $validator = Validator::make($request->all(), $rules, $messages);
 
-            if (!$validator->fails()) {
-                $query = trim($request->input('query'));
-                # поиск по ученикам
-                $clients = DB::table('clients')->select('id', 'name')
-                                ->where('phone', 'LIKE', '%' . $query . '%')
-                                ->orWhere('phone2', 'LIKE', '%' . $query . '%')
-                                ->orWhere('phone3', 'LIKE', '%' . $query . '%')
-                                ->orWhere('phone4', 'LIKE', '%' . $query . '%')
-                                ->orWhere('email', 'LIKE', '%' . $query . '%')
-                                ->take(30)
-                                ->get();
+        if (!$validator->fails()) {
+            $query = trim($request->input('query'));
+            # удаляем все тире, чтобы искалось по номеру телефона и так, и так
+            $query = str_replace("-", "", $query);
 
-                # поиск по по предователям
-                $tutors = DB::table('tutors')->select('id', 'first_name', 'last_name', 'middle_name')
-                                ->where('first_name', 'LIKE', '%' . $query . '%')
-                                ->orWhere('last_name', 'LIKE', '%' . $query . '%')
-                                ->orWhere('middle_name', 'LIKE', '%' . $query . '%')
-                                ->orWhere('phone', 'LIKE', '%' . $query . '%')
-                                ->orWhere('phone2', 'LIKE', '%' . $query . '%')
-                                ->orWhere('phone3', 'LIKE', '%' . $query . '%')
-                                ->orWhere('phone4', 'LIKE', '%' . $query . '%')
-                                ->orWhere('email', 'LIKE', '%' . $query . '%')
-                                ->take(30)
-                                ->get();
-                return [
-                    'clients' => $clients,
-                    'tutors' => $tutors,
-                    'results' => count($tutors) + count($clients),
-                    'query' => $query
-                ];
-            }else{
-                return response($validator->errors()->all(), 400);
+            # очистка и разбиение запроса на ключевые слова и формирование текста для FULLTEXT
+            $queryArray = explode(' ', $query);
+
+
+            # поля по которым должен искать клиентский поиск
+            $fieldsSearchClients = ['phone', 'phone2', 'phone3', 'phone4', 'email'];
+
+            # поиск по ученикам
+            $clientsDB = DB::table('clients')
+                ->select('id');
+
+            foreach ($queryArray as $word) {
+                $clientsDB->where(function ($query) use ($word, $fieldsSearchClients) {
+                    foreach ($fieldsSearchClients as $field) {
+                        $query->orWhere($field, 'LIKE', '%' . $word . '%');
+                    }
+                    return $query;
+                });
             }
+
+            $clients = $clientsDB
+                ->orderBy('id', 'desc')
+                ->take(30)
+                ->get();
+
+            # поля по которым должен искать преподовательский поиск
+            $fieldsSearchTutors = [
+                'first_name',
+                'last_name',
+                'middle_name',
+                'phone',
+                'phone2',
+                'phone3',
+                'phone4',
+                'email'
+            ];
+
+            # поиск по по предователям
+            $tutorsDB = DB::table('tutors')->select('id', 'first_name', 'last_name', 'middle_name');
+            foreach ($queryArray as $word) {
+                $tutorsDB->where(function ($query) use ($word, $fieldsSearchTutors) {
+                    foreach ($fieldsSearchTutors as $field) {
+                        $query->orWhere($field, 'LIKE', '%' . $word . '%');
+                    }
+                    return $query;
+                });
+            }
+
+            $tutors = $tutorsDB->take(30)
+                ->orderBy('id')
+                ->take(30)
+                ->get();
+
+            return [
+                'clients' => $clients,
+                'tutors' => $tutors,
+                'results' => count($tutors) + count($clients),
+                'query' => $query
+            ];
+        } else {
+            return response($validator->errors()->all(), 400);
+        }
     }
 }
