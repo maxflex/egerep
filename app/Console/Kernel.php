@@ -48,6 +48,7 @@ class Kernel extends ConsoleKernel
         Commands\CleanEntityPhones::class,
         Commands\ResetMarkers::class,
         Commands\TransferTutorDeparture::class,
+        Commands\SvgAddStations::class,
     ];
 
     /**
