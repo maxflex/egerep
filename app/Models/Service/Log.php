@@ -11,7 +11,7 @@ class Log extends Model
     public $timestamps = false;
 
     // не включать эти таблицы в список полей
-    const EXCEPT_TABLES = ['logs', 'distances', 'graph_distances', 'graph_places', 'migrations', 'phone_duplicates', 'stations'];
+    const EXCEPT_TABLES = ['logs', 'distances', 'graph_distances', 'migrations', 'phone_duplicates', 'stations'];
 
     protected $appends = ['user'];
 

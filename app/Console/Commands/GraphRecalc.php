@@ -64,7 +64,7 @@ class GraphRecalc extends Command
     }
 
     private static function loadPlaces() {
-        static::$places = \DB::table('graph_places')->pluck('id');
+        static::$places = \DB::table('stations')->pluck('id');
         static::$places_count = count(static::$places);
     } //загрузка станций
 

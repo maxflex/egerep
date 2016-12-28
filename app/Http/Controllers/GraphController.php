@@ -11,7 +11,7 @@ class GraphController extends Controller
 {
     public function getIndex()
     {
-        $stations   = \DB::table('graph_places')->get(['id', 'name', 'lines']);
+        $stations   = \DB::table('stations')->get(['id', 'title', 'line_id']);
         $distances  = \DB::table('graph_distances')->get();
 
         return view('graph.index')->with(
