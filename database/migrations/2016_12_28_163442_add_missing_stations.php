@@ -22,6 +22,7 @@ class AddMissingStations extends Migration
             ['id' => 199, 'title' => 'Таганская',       'lat' => 55.7402, 'lng' => 37.6522, 'line_id' => 7, 'rel'=> '68,131'],
         ]);
         \DB::table('stations')->insert([
+        [
             'id' => 186,
             'title' => 'Кунцевская',
             'line_id' => 3,
@@ -70,7 +71,7 @@ class AddMissingStations extends Migration
             'lat' => 55.7297,
             'lng' => 37.6091,
             'rel' => 86
-        ]);
+        ]]);
     }
 
     /**
