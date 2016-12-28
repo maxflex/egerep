@@ -435,10 +435,6 @@ class Tutor extends Service\Person
         static::saved(function($model) {
             DB::table('tutors')->where('id', $model->id)->update(['errors' => \App\Models\Helpers\Tutor::errors($model)]);
         });
-
-        static::deleted(function($tutor) {
-            \DB::table('tutor_departures')->where('tutor_id', $tutor->id)->delete();
-        });
     }
 
     public function scopeSearchByLastNameAndPhone($query, $searchText)
