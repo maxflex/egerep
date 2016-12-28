@@ -4,18 +4,10 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-sm-9">
-                        <div ng-show="SvgMap.show_new_map" style="height: 750px;">
-                            <p ng-click="SvgMap.toggleNew()" style="position: absolute;">показать старую карту</p>
-                            <svg-map selected="tutor.svg_map" selectable></svg-map>
-                        </div>
-                        <div ng-show="!SvgMap.show_new_map">
-                            <p class="pull-left" ng-click="SvgMap.toggleNew()">показать новую карту</p>
-                            <iframe src="svg/map.svg" frameborder="0" marginwidth="0" marginheight="0" data-width="700" id="map"
-                                    scrolling="no" style="height: 668px; width: 700px; overflow: hidden"></iframe>
-                        </div>
+                        <svg-map selected="tutor.svg_map" selectable></svg-map>
                     </div>
                     <div class="col-sm-3 center">
-                        <div id="metromap">
+                        <div id="metromap" ng-hide="1">
                             <div class="legend">
                                 <div style="text-align:center"><a data-rel="0">Вся Москва</a></div>
                                 <a data-rel="1" class="marker big center" style="top:65px;left:82px;"></a>
