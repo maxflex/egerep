@@ -332,7 +332,8 @@ angular
                 $scope.tutor.password = TutorService.generatePassword()
 
         $scope.svgSave = ->
-            $scope.tutor.svg_map = SvgMap.save()
+            $('#svg-modal').modal 'hide'
+            return
 
         $scope.yearDifference = (year) ->
             moment().format("YYYY") - year
