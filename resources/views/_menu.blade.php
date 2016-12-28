@@ -49,6 +49,9 @@
 @if (allowed(\Shared\Rights::ER_LOGS))
     <a href="logs" class="list-group-item">Логи</a>
 @endif
+@if (allowed(\Shared\Rights::ER_STREAM))
+    <a href="stream" class="list-group-item">Стрим</a>
+@endif
 @if (allowed(\Shared\Rights::SHOW_CONTRACT))
 
     <a href="contract" class="list-group-item">Договор</a>
