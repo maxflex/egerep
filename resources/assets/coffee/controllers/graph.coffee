@@ -1,50 +1,45 @@
 angular
     .module 'Egerep'
-    .controller 'GraphController', ($scope, $timeout, $http, $rootScope, SvgMap) ->
+    .controller 'GraphController', ($scope, $timeout, $http, $rootScope) ->
         bindArguments($scope, arguments)
 
         $scope.map_loaded = false
+        $scope.selected = []
+
+        parseId = (elem) ->
+            parseInt($(elem).attr('id').replace(/[^\d]/g, ''))
 
         angular.element(document).ready ->
             $timeout ->
-                SvgMap.show()
-
-                SvgMap.el().find('#stations > g > g').each (index, el) ->
+                $('#stations > g > g').each (index, el) ->
                     $(el).on 'mouseenter', ->
-                        $scope.hovered_station_id = parseInt($(@).attr('id').replace(/[^\d]/g, ''))
+                        $scope.hovered_station_id = parseId @
                         $scope.$apply()
                     $(el).on 'mouseleave', ->
                         $scope.hovered_station_id = undefined
                         $scope.$apply()
 
-                SvgMap.map.options.clickCallback = (id) ->
-                    if SvgMap.map.getSelected().length > 2
-                        SvgMap.map.deselectAll()
-                        SvgMap.map.select id
-                    $scope.selected = SvgMap.map.getSelected()
+                    $(el).on 'click', ->
+                        $scope.selected = [] if $scope.selected.length is 2
+                        $scope.selected.push parseId @
+                        $scope.new_distance = getDistance($scope.selected[0], $scope.selected[1]) if $scope.selected.length is 2
+                        $scope.$apply()
 
                 $scope.map_loaded = true
             , 500
-
-        $scope.$watch 'selected', (newVal, oldVal) ->
-            return if newVal is undefined
-            if newVal.length is 2
-                $scope.new_distance = getDistance(newVal[0], newVal[1])
 
         $scope.$watch 'hovered_station_id', (newVal, oldVal) ->
             if newVal isnt undefined
                 found_distances = _.filter $scope.distances, (distance) ->
                     distance.from is newVal or distance.to is newVal
 
-                # 1. objects in js are copied by ref
-                # 2. _.clone - shallow copy
                 $scope.found_distances = _.map found_distances, _.clone
 
                 angular.forEach $scope.found_distances, (distance) ->
-                     if distance.from isnt newVal
-                         from_buffer = distance.from
-                         distance.from = newVal
-                         distance.to = from_buffer
+                    if distance.from isnt newVal
+                        from_buffer = distance.from
+                        distance.from = newVal
+                        distance.to = from_buffer
 
 
         $scope.save = ->
@@ -79,7 +74,6 @@ angular
                 $rootScope.ajaxEnd()
                 $scope.distances = _.without($scope.distances, _.findWhere($scope.distances, {from: from, to: to}))
                 $scope.selected = []
-                SvgMap.map.deselectAll()
 
         getDistance = (from, to) ->
             distance = getDistanceObject(from, to)

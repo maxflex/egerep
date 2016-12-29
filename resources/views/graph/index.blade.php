@@ -4,11 +4,10 @@
 
 @section('content')
     <div class="row">
-        <div class="col-sm-7">
-            <iframe ng-show='map_loaded' src="svg/map.svg" frameborder="0" marginwidth="0" marginheight="0" data-width="700" id="map"
-                scrolling="no" style="height: 900px; width: 100%; overflow: hidden"></iframe>
+        <div class="col-sm-8">
+            <svg-map selected="selected"></svg-map>
         </div>
-        <div class="col-sm-5">
+        <div class="col-sm-4">
             <div style="margin: 100px 0 50px; height: 100px">
                 <div ng-show='hovered_station_id'>
                     <div ng-repeat="d in found_distances" style='white-space: nowrap'>
