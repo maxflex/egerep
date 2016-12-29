@@ -52,6 +52,9 @@
 @if (allowed(\Shared\Rights::ER_STREAM))
     <a href="stream" class="list-group-item">Стрим</a>
 @endif
+@if (allowed(\Shared\Rights::ER_TEMPLATES))
+    <a href="templates" class="list-group-item">Шаблоны</a>
+@endif
 @if (allowed(\Shared\Rights::SHOW_CONTRACT))
 
     <a href="contract" class="list-group-item">Договор</a>
