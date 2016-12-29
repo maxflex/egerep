@@ -44,7 +44,7 @@ class ResetMarkers extends Command
         \DB::statement("
             DELETE metros FROM metros
             JOIN markers ON markers.id = metros.marker_id
-            WHERE markers.markerable_type = 'App\\\Models\\$entity'
+            WHERE markers.markerable_type = 'App\\\Models\\\\$entity'
         ");
         $this->info('Getting markers...');
         $markers = Marker::where('markerable_type', "App\Models\\$entity")->get();
