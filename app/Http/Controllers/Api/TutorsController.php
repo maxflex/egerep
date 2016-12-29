@@ -224,7 +224,7 @@ class TutorsController extends Controller
 
          foreach($tutors as $tutor) {
             # Количество учеников, Количество встреч
-            $tutor->append(['clients_count', 'meeting_count']);
+            $tutor->append(['clients_count', 'meeting_count', 'svg_map']);
 
             # Получить минуты
             $tutor->minutes = $tutor->getMinutes($request->client_marker);
