@@ -13,7 +13,7 @@ class ResetMarkers extends Command
      *
      * @var string
      */
-    protected $signature = 'markers:reset';
+    protected $signature = 'markers:reset {entity=tutor}';
 
     /**
      * The console command description.
@@ -39,16 +39,17 @@ class ResetMarkers extends Command
      */
     public function handle()
     {
+        $entity = ucfirst($this->argument('entity'));
+        $this->info($entity);
         \DB::statement("
             DELETE metros FROM metros
             JOIN markers ON markers.id = metros.marker_id
-            WHERE markers.markerable_type = 'App\\\Models\\\Tutor'
+            WHERE markers.markerable_type = 'App\\\Models\\$entity'
         ");
-
         $this->info('Getting markers...');
-        $markers = Marker::where('markerable_type', 'App\Models\Tutor')->get();
+        $markers = Marker::where('markerable_type', "App\Models\\$entity")->get();
 
-        $this->info('Creating metros...');
+        $this->info(count($markers) . " markers found. Creating metros...");
         foreach($markers as $marker) {
             $marker->createMetros();
         }
