@@ -151,7 +151,7 @@ angular
                     marker.intersecting = false
                     $scope.client.markers.forEach (client_marker) ->
                         client_marker.metros.forEach (client_metro) ->
-                            if client_metro.station_id.toString() in marker.tutor.svg_map
+                            if client_metro.station_id in marker.tutor.svg_map
                                 marker.intersecting = true
                                 marker.tutor.intersecting = true
                                 return
