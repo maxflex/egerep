@@ -102,7 +102,7 @@ class User extends Model
 	 * @boolean $init – инициализировать ли соединение с БД пользователя
 	 * @boolean $update – обновлять данные из БД
 	 */
-	public static function fromSession($upadte = true)
+	public static function fromSession($upadte = false)
 	{
 		// Если обновить данные из БД, то загружаем пользователя
 		if ($upadte) {
