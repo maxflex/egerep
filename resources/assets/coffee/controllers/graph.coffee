@@ -80,6 +80,6 @@ angular
             if distance is undefined then undefined else distance.distance
 
         getDistanceObject = (from, to) ->
-            from = Math.min(from, to)
-            to = Math.max(from, to)
-            _.find($scope.distances, {from: from, to: to})
+            a = Math.min(from, to)
+            b = Math.max(from, to)
+            _.find($scope.distances, {from: a, to: b})
