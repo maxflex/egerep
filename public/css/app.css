@@ -28523,6 +28523,10 @@ a.cal-event-week {
   background-color: #b0cccb;
   border-color: #b0cccb; }
 
+.place_mark.line13 {
+  background-color: #e2a6a6;
+  border-color: #e2a6a6; }
+
 .gmnoprint:not(.gm-bundled-control) {
   display: none; }
 
