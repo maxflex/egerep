@@ -17,6 +17,9 @@ class ContractController extends Controller
      */
     public function index()
     {
+        if (! allowed(\Shared\Rights::SHOW_CONTRACT)) {
+            return view('errors.not_allowed');
+        }
         return view('contract.index')->with(
             ngInit([
                 'contract_html'  => Settings::get('contract_html'),
