@@ -5,7 +5,7 @@ angular
 
         $timeout ->
             $scope.search = {}
-            $scope.search.user_ids = [$scope.user.id] if not $scope.allowed_all
+            $scope.search.user_ids = [$scope.user.id.toString()] if not $scope.allowed_all
             $timeout -> $('#change-user').selectpicker 'refresh'
         , 500
 
