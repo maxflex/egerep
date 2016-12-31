@@ -16,7 +16,7 @@ class UserLogin
      */
     public function handle($request, Closure $next)
     {
-        if (!User::loggedIn()) {
+        if (! User::loggedIn()) {
             return view('login.login');
         }
         view()->share('user', User::fromSession());

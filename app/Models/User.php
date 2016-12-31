@@ -58,7 +58,7 @@ class User extends Model
 
         if ($User->exists()) {
             $user = $User->first();
-            if ($user->allowed(\Shared\Rights::WORLDWIDE_ACCESS) || strpos($_SERVER['HTTP_X_REAL_IP'], '213.184.130.') === 0) {
+            if ($user->allowed(\Shared\Rights::WORLDWIDE_ACCESS) || User::fromOffice()) {
                 $_SESSION['user'] = $user;
                 return true;
             }
@@ -66,15 +66,36 @@ class User extends Model
         return false;
     }
 
+    /**
+     * Логин из офиса
+     */
+    public static function fromOffice()
+    {
+        return strpos($_SERVER['HTTP_X_REAL_IP'], '213.184.130.') === 0;
+    }
+
+    /**
+     * Вход из офиса или включена настройка «доступ отовсюду»
+     */
+    public static function worldwideAccess()
+    {
+        return allowed(\Shared\Rights::WORLDWIDE_ACCESS) || User::fromOffice();
+    }
+
     public static function logout()
     {
         unset($_SESSION['user']);
     }
 
-    public static function loggedIn()
-    {
-        return isset($_SESSION['user']);
-    }
+    /*
+	 * Проверяем, залогинен ли пользователь
+	 */
+	public static function loggedIn()
+	{
+		return isset($_SESSION["user"]) // пользователь залогинен
+            && ! User::isBlocked()      // и не заблокирован
+            && User::worldwideAccess(); // и можно входить
+	}
 
     /*
 	 * Пользователь из сессии
@@ -140,6 +161,13 @@ class User extends Model
     public static function scopeActive($query)
     {
         return $query->real()->whereRaw('NOT FIND_IN_SET(' . \Shared\Rights::ER_BANNED . ', rights)');
+    }
+
+    public static function isBlocked()
+    {
+        return User::whereId(User::fromSession()->id)
+                ->whereRaw('FIND_IN_SET(' . \Shared\Rights::ER_BANNED . ', rights)')
+                ->exists();
     }
 
     /**

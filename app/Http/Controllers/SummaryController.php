@@ -18,6 +18,9 @@ class SummaryController extends Controller
      */
     public function index(Request $request, $filter = 'day')
     {
+        if (! allowed(\Shared\Rights::ER_SUMMARY)) {
+            return view('errors.not_allowed');
+        }
         $item_cnt = \App\Models\Request::summaryItemsCount($filter);
 
         return view('summary.index', [
@@ -36,6 +39,9 @@ class SummaryController extends Controller
 
     public function payments(Request $request, $filter = 'day')
     {
+        if (! allowed(\Shared\Rights::ER_SUMMARY)) {
+            return view('errors.not_allowed');
+        }
         $item_cnt = \App\Models\Account::summaryItemsCount($filter);
 
         return view('summary.index', [
@@ -79,6 +85,7 @@ class SummaryController extends Controller
             ngInit([
                 'total_debt'    => Tutor::totalDebt(),
                 'debt_updated'  => Settings::get('debt_updated'),
+                'allowed_all'   => allowed(\Shared\Rights::ER_SUMMARY_USERS_ALL)
             ])
         );
     }

@@ -6,6 +6,7 @@
                 <h4 class="modal-title text-center">ПАРАМЕТРЫ РАСЧЕТА</h4>
             </div>
             <div class="modal-body">
+                <div class='blocker-div' ng-show='{{ ! allowed(\Shared\Rights::ER_ACCEPT_ACCOUNTS, true) }}'></div>
                 <div class="row mb">
                     <div class="col-sm-12">
                         <select class="form-control selectpicker" id="planned-account" ng-model="tutor.planned_account.is_planned" ng-change="refreshSelects()">
@@ -47,7 +48,7 @@
                     </div>
                 </div>
             </div>
-            @if(allowed(\Shared\Rights::ER_EDIT_ACCOUNTS))
+            @if(allowed(\Shared\Rights::ER_ACCEPT_ACCOUNTS))
                 <div class="modal-footer center">
                     <button type="button" class="btn btn-primary" ng-disabled="tutor.planned_account.is_planned == 0" ng-show="!tutor.planned_account.id" ng-click="addPlannedAccount()">Добавить</button>
                     <button type="button" class="btn btn-primary" ng-show="tutor.planned_account.id" ng-click="updatePlannedAccount()">Изменить</button>
