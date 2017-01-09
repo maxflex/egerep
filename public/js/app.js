@@ -290,45 +290,9 @@
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   angular.module('Egerep').controller('AccountsHiddenCtrl', function($scope, Grades, Attachment) {
-    var bindDraggable;
-    bindArguments($scope, arguments);
-    angular.element(document).ready(function() {
-      return bindDraggable();
-    });
-    return bindDraggable = function() {
-      $(".client-draggable").draggable({
-        helper: 'clone',
-        revert: 'invalid',
-        appendTo: 'body',
-        activeClass: 'drag-active',
-        start: function(event, ui) {
-          return $(this).css("visibility", "hidden");
-        },
-        stop: function(event, ui) {
-          return $(this).css("visibility", "visible");
-        }
-      });
-      return $(".client-droppable").droppable({
-        tolerance: 'pointer',
-        hoverClass: 'client-droppable-hover',
-        drop: function(event, ui) {
-          var client, client_id;
-          client_id = $(ui.draggable).data('id');
-          client = $scope.findById($scope.clients, client_id);
-          if (client.archive_state !== 'possible') {
-            $scope.clients = removeById($scope.clients, client_id);
-            Attachment.update({
-              id: client.attachment_id,
-              hide: 0
-            });
-            $scope.visible_clients_count++;
-          }
-          return $scope.$apply();
-        }
-      });
-    };
+    return bindArguments($scope, arguments);
   }).controller('AccountsCtrl', function($rootScope, $scope, $http, $timeout, Account, PaymentMethods, Archive, Grades, Attachment, AttachmentState, AttachmentStates, Weekdays, PhoneService, AttachmentVisibility, DebtTypes, YesNo, Tutor, ArchiveStates, Checked, PlannedAccount, UserService, TeacherPaymentTypes, Confirmed) {
-    var bindDraggable, getAccountEndDate, getAccountStartDate, getCalendarStartDate, getCommission, hideValue, moveCursor, renderData, updateClientCount, validatePlannedAccount;
+    var getAccountEndDate, getAccountStartDate, getCalendarStartDate, getCommission, hideValue, moveCursor, renderData, updateClientCount, validatePlannedAccount;
     bindArguments($scope, arguments);
     $scope.current_scope = $scope;
     $scope.current_period = 0;
@@ -394,7 +358,6 @@
       $('.accounts-table').stickyTableHeaders('destroy');
       return $timeout(function() {
         $('.accounts-table').stickyTableHeaders();
-        bindDraggable();
         return $('.right-table-scroll').scroll(function() {
           return $(window).trigger('resize.stickyTableHeaders');
         });
@@ -722,41 +685,6 @@
         case 40:
           return moveCursor(x, y, "down");
       }
-    };
-    bindDraggable = function() {
-      $(".client-draggable").draggable({
-        helper: 'clone',
-        revert: 'invalid',
-        appendTo: 'body',
-        activeClass: 'drag-active',
-        start: function(event, ui) {
-          return $(this).css("visibility", "hidden");
-        },
-        stop: function(event, ui) {
-          return $(this).css("visibility", "visible");
-        }
-      });
-      return $(".client-droppable").droppable({
-        tolerance: 'pointer',
-        hoverClass: 'client-droppable-hover',
-        drop: function(event, ui) {
-          var client, client_id;
-          client_id = $(ui.draggable).data('id');
-          client = $scope.findById($scope.clients, client_id);
-          if (client.archive_state !== 'possible') {
-            $scope.clients = removeById($scope.clients, client_id);
-            ajaxStart();
-            Attachment.update({
-              id: client.attachment_id,
-              hide: hideValue()
-            }, function() {
-              return ajaxEnd();
-            });
-            updateClientCount();
-          }
-          return $scope.$apply();
-        }
-      });
     };
     hideValue = function() {
       if ($scope.page === 'hidden') {
@@ -2975,9 +2903,11 @@
     $timeout(function() {
       $scope.search = {};
       if (!$scope.allowed_all) {
-        $scope.search.user_ids = [$scope.user_id];
+        $scope.search.user_ids = [$scope.user.id.toString()];
       }
-      return $('#change-user').selectpicker('refresh');
+      return $timeout(function() {
+        return $('#change-user').selectpicker('refresh');
+      });
     }, 500);
     $scope.update = function() {
       $rootScope.frontend_loading = true;
@@ -4783,6 +4713,106 @@
 }).call(this);
 
 (function() {
+  var apiPath, updateMethod;
+
+  angular.module('Egerep').factory('Marker', function($resource) {
+    return $resource(apiPath('markers'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Notification', function($resource) {
+    return $resource(apiPath('notifications'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Account', function($resource) {
+    return $resource(apiPath('accounts'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('PlannedAccount', function($resource) {
+    return $resource(apiPath('periods/planned'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Review', function($resource) {
+    return $resource(apiPath('reviews'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Archive', function($resource) {
+    return $resource(apiPath('archives'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Attachment', function($resource) {
+    return $resource(apiPath('attachments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('RequestList', function($resource) {
+    return $resource(apiPath('lists'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Request', function($resource) {
+    return $resource(apiPath('requests'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      transfer: {
+        method: 'POST',
+        url: apiPath('requests', 'transfer')
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  }).factory('Sms', function($resource) {
+    return $resource(apiPath('sms'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Comment', function($resource) {
+    return $resource(apiPath('comments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Client', function($resource) {
+    return $resource(apiPath('clients'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('User', function($resource) {
+    return $resource(apiPath('users'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Tutor', function($resource) {
+    return $resource(apiPath('tutors'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      deletePhoto: {
+        url: apiPath('tutors', 'photo'),
+        method: 'DELETE'
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  });
+
+  apiPath = function(entity, additional) {
+    if (additional == null) {
+      additional = '';
+    }
+    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
+  };
+
+  updateMethod = function() {
+    return {
+      update: {
+        method: 'PUT'
+      }
+    };
+  };
+
+}).call(this);
+
+(function() {
   angular.module('Egerep').value('Approved', {
     0: 'не подтвержден',
     1: 'подтвержден'
@@ -5128,106 +5158,6 @@
       color: '#ACADAF'
     }
   });
-
-}).call(this);
-
-(function() {
-  var apiPath, updateMethod;
-
-  angular.module('Egerep').factory('Marker', function($resource) {
-    return $resource(apiPath('markers'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Notification', function($resource) {
-    return $resource(apiPath('notifications'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Account', function($resource) {
-    return $resource(apiPath('accounts'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('PlannedAccount', function($resource) {
-    return $resource(apiPath('periods/planned'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Review', function($resource) {
-    return $resource(apiPath('reviews'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Archive', function($resource) {
-    return $resource(apiPath('archives'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Attachment', function($resource) {
-    return $resource(apiPath('attachments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('RequestList', function($resource) {
-    return $resource(apiPath('lists'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Request', function($resource) {
-    return $resource(apiPath('requests'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      transfer: {
-        method: 'POST',
-        url: apiPath('requests', 'transfer')
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  }).factory('Sms', function($resource) {
-    return $resource(apiPath('sms'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Comment', function($resource) {
-    return $resource(apiPath('comments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Client', function($resource) {
-    return $resource(apiPath('clients'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('User', function($resource) {
-    return $resource(apiPath('users'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Tutor', function($resource) {
-    return $resource(apiPath('tutors'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      deletePhoto: {
-        url: apiPath('tutors', 'photo'),
-        method: 'DELETE'
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  });
-
-  apiPath = function(entity, additional) {
-    if (additional == null) {
-      additional = '';
-    }
-    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
-  };
-
-  updateMethod = function() {
-    return {
-      update: {
-        method: 'PUT'
-      }
-    };
-  };
 
 }).call(this);
 
@@ -5596,6 +5526,11 @@
     this.getBannedUsers = function() {
       return _.filter(this.users, function(user) {
         return user.rights.length && user.rights.indexOf('35') !== -1;
+      });
+    };
+    this.getBannedHaving = function(condition_obj) {
+      return _.filter(this.users, function(user) {
+        return user.rights.indexOf(35) !== -1 && condition_obj[user.id];
       });
     };
     return this;

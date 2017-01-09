@@ -1,37 +1,6 @@
 angular.module('Egerep')
     .controller 'AccountsHiddenCtrl', ($scope, Grades, Attachment) ->
         bindArguments($scope, arguments)
-        angular.element(document).ready ->
-            bindDraggable()
-
-        # draggable
-        bindDraggable = ->
-            $(".client-draggable").draggable
-                helper: 'clone'
-                revert: 'invalid'
-                appendTo: 'body'
-                activeClass: 'drag-active'
-                start: (event, ui) ->
-                    $(this).css "visibility", "hidden"
-                stop: (event, ui) ->
-                    $(this).css "visibility", "visible"
-
-            $(".client-droppable").droppable
-                tolerance: 'pointer'
-                hoverClass: 'client-droppable-hover'
-                drop: (event, ui) ->
-                    # ui.draggable.remove()
-                    client_id      = $(ui.draggable).data('id')
-                    client         = $scope.findById($scope.clients, client_id)
-                    if client.archive_state isnt 'possible'
-                        $scope.clients = removeById($scope.clients, client_id)
-
-                        Attachment.update
-                            id: client.attachment_id
-                            hide: 0
-
-                        $scope.visible_clients_count++
-                    $scope.$apply()
     .controller 'AccountsCtrl', ($rootScope, $scope, $http, $timeout, Account, PaymentMethods, Archive, Grades, Attachment, AttachmentState, AttachmentStates, Weekdays, PhoneService, AttachmentVisibility, DebtTypes, YesNo, Tutor, ArchiveStates, Checked, PlannedAccount, UserService, TeacherPaymentTypes, Confirmed) ->
         bindArguments($scope, arguments)
         $scope.current_scope  = $scope
@@ -89,7 +58,6 @@ angular.module('Egerep')
             $('.accounts-table').stickyTableHeaders('destroy')
             $timeout ->
                 $('.accounts-table').stickyTableHeaders()
-                bindDraggable()
                 $('.right-table-scroll').scroll ->
                     $(window).trigger('resize.stickyTableHeaders')
 
@@ -374,39 +342,6 @@ angular.module('Egerep')
                 when 39 then moveCursor(x, y, "right")
                 # ВНИЗ
                 when 13, 40 then moveCursor(x, y, "down")
-
-
-        # draggable
-        bindDraggable = ->
-            $(".client-draggable").draggable
-                helper: 'clone'
-                revert: 'invalid'
-                appendTo: 'body'
-                activeClass: 'drag-active'
-                start: (event, ui) ->
-                    $(this).css "visibility", "hidden"
-                stop: (event, ui) ->
-                    $(this).css "visibility", "visible"
-
-            $(".client-droppable").droppable
-                tolerance: 'pointer'
-                hoverClass: 'client-droppable-hover'
-                drop: (event, ui) ->
-                    # ui.draggable.remove()
-                    client_id      = $(ui.draggable).data('id')
-                    client         = $scope.findById($scope.clients, client_id)
-                    if client.archive_state isnt 'possible'
-                        $scope.clients = removeById($scope.clients, client_id)
-
-                        ajaxStart()
-                        Attachment.update
-                            id: client.attachment_id
-                            hide: hideValue()
-                        , ->
-                            ajaxEnd()
-
-                        updateClientCount()
-                    $scope.$apply()
 
         # почему так? потому что раньше было AccountsCtrl/HiddenAccountsCtrl, а теперь AccountsCtrl отвечает за оба страницы.
         # @todo наверно надо будет переделать, чтоб нормально было все.
