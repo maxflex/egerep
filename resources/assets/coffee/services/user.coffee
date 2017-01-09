@@ -55,6 +55,6 @@ angular.module 'Egerep'
 
         this.getBannedHaving = (condition_obj) ->
             _.filter this.users, (user) ->
-                user.rights.indexOf('35') isnt -1 and condition_obj[user.id]
+                user.rights.indexOf('35') isnt -1 and condition_obj and condition_obj[user.id]
 
         this
