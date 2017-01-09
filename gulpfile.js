@@ -31,7 +31,6 @@ elixir(function(mix) {
         .version(['css/app.css', 'js/app.js'])
         .scripts(jsFromBower([
             'jquery/dist/jquery',
-            'bootstrap/dist/js/bootstrap.min',
             'jquery-ui/ui/minified/core.min',
             'jquery-ui/ui/minified/widget.min',
             'angular/angular.min',
@@ -72,11 +71,10 @@ elixir(function(mix) {
             'ace-builds/src/ace',
             'ace-builds/src/mode-html',
             'ace-builds/src/mode-json',
-            'ace/lib/ace/commands/default_commands',
             'vue/dist/vue.min',
             'vue-resource/dist/vue-resource.min',
             'phoneapi/dist/js/pusher',
             'js-md5/build/md5.min',
             'egerep-svg-metro/scripts/svg'
-        ]), 'public/js/vendor.js');
+        ]).concat(['resources/assets/js/*.js']), 'public/js/vendor.js');
 });
