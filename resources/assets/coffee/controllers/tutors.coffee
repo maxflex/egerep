@@ -333,8 +333,6 @@ angular
 
         $scope.svgSave = ->
             $('#svg-modal').modal 'hide'
-            # @todo исправить
-            $scope.form_changed = true
             return
 
         $scope.yearDifference = (year) ->
