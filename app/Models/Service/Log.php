@@ -51,7 +51,7 @@ class Log extends Model
 
     public static function counts($search)
     {
-		foreach(array_merge(['', 0], User::active()->pluck('id')->all()) as $user_id) {
+		foreach(array_merge(['', 0], User::real()->pluck('id')->all()) as $user_id) {
 			$new_search = clone $search;
 			$new_search->user_id = $user_id;
 			$counts['user'][$user_id] = static::search($new_search)->count();
