@@ -1,4 +1,4 @@
-#Vue.config.devtools = true
+Vue.config.devtools = true
 $(document).ready ->
   #вешеаем событие по клику по кнопке
   $('#searchModalOpen').click ->

@@ -12,10 +12,10 @@
 
                 <div v-if="results > 0" v-for="(index, row) in lists" class="resultRow" v-bind:class="{ active: ((index+1) ==  active)}">
                     <div v-if="row.type == 'clients'">
-                        <a v-bind:href="row.link" v-html="(row.name == '') ? 'Имя не указано' : row.name" target="_blank"></a>  - ученик
+                        <a v-bind:href="row.link" v-html="'клиент ' + row.id" target="_blank"></a>
                     </div>
                     <div v-else>
-                        <a v-bind:href="row.link" target="_blank" v-html="row.last_name + ' ' + row.first_name + ' ' + row.middle_name"></a>  - репетитор
+                        <a v-bind:href="row.link" target="_blank" v-html="'репетитор ' + row.last_name + ' ' + row.first_name + ' ' + row.middle_name"></a>
                     </div>
                 </div>
 

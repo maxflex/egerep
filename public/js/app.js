@@ -2741,6 +2741,8 @@
 }).call(this);
 
 (function() {
+  Vue.config.devtools = true;
+
   $(document).ready(function() {
     var viewVue;
     $('#searchModalOpen').click(function() {
