@@ -2,7 +2,7 @@
 <div class="modal" id="searchModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
-            <input type="text" placeholder="искать" id="searchQueryInput" v-on:keyup="keyup" v-on:keydown.up.prevent="showResponder"  v-model="query">
+            <input type="text" placeholder="искать" id="searchQueryInput" v-on:keyup="keyup" v-on:keydown.up.prevent v-model="query">
             <!--<input type="text" ng-model="query" ng-keyup="key($event)" ng-keydown="stoper($event)" placeholder="искать" id="searchQueryInput">-->
             <div id="searchResult">
                 <div class="searchResultWraper" v-if="query!='' && !loading && results == 0">

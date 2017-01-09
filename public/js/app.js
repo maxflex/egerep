@@ -266,355 +266,6 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').value('Approved', {
-    0: 'не подтвержден',
-    1: 'подтвержден'
-  }).value('Confirmed', {
-    0: 'подтвердить',
-    1: 'подтверждено'
-  }).value('Months', {
-    1: 'январь',
-    2: 'февраль',
-    3: 'март',
-    4: 'апрель',
-    5: 'май',
-    6: 'июнь',
-    7: 'июль',
-    8: 'август',
-    9: 'сентябрь',
-    10: 'октябрь',
-    11: 'ноябрь',
-    12: 'декабрь'
-  }).value('Notify', ['напомнить', 'не напоминать']).value('AttachmentErrors', {
-    1: 'в стыковке не указан класс',
-    2: 'в стыковке не указан предмет',
-    3: 'не указаны условия стыковки',
-    4: 'дата архивации должна быть позже даты стыковки',
-    5: 'не указаны детали архивации',
-    6: 'прогноз и занятия не сочетаются',
-    7: 'прогноз и занятия не сочетаются',
-    8: 'при наличии занятий к проводке стыковка не может быть скрыта',
-    9: 'дата архивации не совпадает с датой последнего занятия',
-    10: 'возможно стыковку можно скрыть',
-    11: 'возможно стыковку можно скрыть',
-    12: 'в скрытой стыковке дата архивации должна совпадать с датой последнего занятия',
-    13: 'в скрытой стыковке без занятий между датами стыковки и архивации должно быть 7 дней',
-    14: 'если архивация отсутствует, стыковка не может быть скрыта',
-    15: 'стыковка, у которой дата архивации позже даты последнего расчета не может быть скрыта',
-    16: 'слишком маленький прогноз',
-    17: 'слишком большой прогноз'
-  }).value('ReviewErrors', {
-    1: 'не стоит оценка к отзыву',
-    2: 'нет подписи к опубликованному отзыву',
-    3: 'нет текста отзыва к опубликованному отзыву'
-  }).value('TutorErrors', {
-    1: 'нет оригинала фото',
-    2: 'нет обрезанного фото',
-    3: 'цена не установлена',
-    4: 'нет меток и выезда'
-  }).value('LogTypes', {
-    create: 'создание',
-    update: 'обновление',
-    "delete": 'удаление'
-  }).value('Recommendations', {
-    1: {
-      text: 'У этого репетитора уже было несколько расчетов, поэтому ему можно доверить длительное обучение, требующееся данному клиенту',
-      type: 0
-    },
-    2: {
-      text: 'У этого репетитора был всего 1 расчет и ему можно доверить длительное обучение, но лучше поискать более проверенные варианты',
-      type: 1
-    },
-    3: {
-      text: 'С этим репетитором не было встреч и есть клиенты, за которых он еще не рассчитался. Отдавать этого клиента категорически нельзя',
-      type: 2
-    },
-    4: {
-      text: 'С этим репетитором не было встреч и у него нет активных клиентов. Отдавать ему клиента можно, но только в крайнем случае',
-      type: 1
-    },
-    5: {
-      text: 'У этого репетитора уже было несколько расчетов, поэтому ему можно доверить данного клиента',
-      type: 0
-    },
-    6: {
-      text: 'У этого репетитора был всего 1 расчет, то есть у него средний кредитный рейтинг. Если более проверенных репетиторов нет, ему можно доверить этого клиента',
-      type: 1
-    },
-    7: {
-      text: 'С этим репетитором не было встреч и есть клиенты, за которых он еще не рассчитался. Отдавать этого репетитора можно в самом крайнем случае',
-      type: 2
-    },
-    8: {
-      text: 'С этим репетитором не было встреч и у него нет активных клиентов. Риск сотрудничества средний, поэтому работать с репетитором можно, если нет других вариантов',
-      type: 1
-    },
-    9: {
-      text: 'У этого репетитора высокий кредитный рейтинг, но конец учебного года лучше использовать для проверки неизвестных репетиторов',
-      type: 1
-    },
-    10: {
-      text: 'Этому репетитору мы не доверяем, но сейчас отличное время для его проверки. Если сотрудничество будет успешным, то мы будем рекомендовать в следующем году как проверенного. Если он не заплатит, то невыплаты будут минимальными и репетитора мы закроем навсегда, в чем великая польза.',
-      type: 0
-    },
-    11: {
-      text: 'С 10-классниками нужно быть особенно аккуратными и этот репетитор в данном случае рекомендован',
-      type: 0
-    },
-    12: {
-      text: 'С этим репетитором была всего 1 встреча, поэтому давать его ученику 10 класса будет риском. Сделайте все, чтобы избежать этого, но если не получается – давать можно',
-      type: 1
-    },
-    13: {
-      text: 'С этим репетитором не было встреч и есть клиенты, за которых он еще не рассчитался. Нужно сделать все, чтобы 10-классник его не получил, так как 10 классы всегда продолжают заниматься и в 11 классе. Давать этого репетитора категорически нельзя',
-      type: 2
-    },
-    14: {
-      text: 'Этот репетитор для компании новый. Давать 10-класснику можно, но в самом крайнем случае',
-      type: 2
-    }
-  }).value('RecommendationTypes', ['очень рекомендован', 'средне рекомендован', 'не рекомендован']).value('DebtTypes', {
-    0: 'не доплатил',
-    1: 'переплатил'
-  }).value('Weekdays', {
-    0: 'пн',
-    1: 'вт',
-    2: 'ср',
-    3: 'чт',
-    4: 'пт',
-    5: 'сб',
-    6: 'вс'
-  }).value('Destinations', {
-    r_k: 'репетитор едет к клиенту',
-    k_r: 'клиент едет к репетитору'
-  }).value('Workplaces', {
-    0: 'не активен в системе ЕГЭ-Центре',
-    1: 'активен в системе ЕГЭ-Центра',
-    2: 'ведет занятия в ЕГЭ-Центре',
-    3: 'ранее работал в ЕГЭ-Центре'
-  }).value('Genders', {
-    male: 'мужской',
-    female: 'женский'
-  }).value('YesNo', {
-    0: 'нет',
-    1: 'да'
-  }).value('TutorStates', {
-    0: 'не установлено',
-    1: 'на проверку',
-    2: 'к закрытию',
-    3: 'закрыто',
-    4: 'к одобрению',
-    5: 'одобрено'
-  }).value('TutorPublishedStates', {
-    0: 'не опубликован',
-    1: 'опубликован'
-  }).value('PaymentMethods', {
-    0: 'стандартный расчет',
-    1: 'яндекс.деньги',
-    2: 'перевод на карту'
-  }).value('ArchiveStates', {
-    impossible: 'невозможно',
-    possible: 'возможно'
-  }).value('ReviewStates', {
-    unpublished: 'не опубликован',
-    published: 'опубликован'
-  }).value('Existance', ['созданные', 'требующие создания']).value('Presence', [['есть', 'отсутствует'], ['есть', 'нет']]).value('AttachmentVisibility', {
-    0: 'показано',
-    1: 'скрыто'
-  }).value('AttachmentStates', {
-    "new": 'новые',
-    inprogress: 'рабочие',
-    ended: 'завершенные'
-  }).value('AttachmentState', {
-    "new": 'новый',
-    inprogress: 'рабочий',
-    ended: 'завершенный'
-  }).value('Checked', ['не проверено', 'проверено']).value('ReviewScores', {
-    1: 1,
-    2: 2,
-    3: 3,
-    4: 4,
-    5: 5,
-    6: 6,
-    7: 7,
-    8: 8,
-    9: 9,
-    10: 10,
-    11: 'отзыв не собирать',
-    12: 'отзыв собрать позже'
-  }).value('Grades', {
-    1: '1 класс',
-    2: '2 класс',
-    3: '3 класс',
-    4: '4 класс',
-    5: '5 класс',
-    6: '6 класс',
-    7: '7 класс',
-    8: '8 класс',
-    9: '9 класс',
-    10: '10 класс',
-    11: '11 класс',
-    12: 'студенты',
-    13: 'остальные'
-  }).value('Subjects', {
-    all: {
-      1: 'математика',
-      2: 'физика',
-      3: 'химия',
-      4: 'биология',
-      5: 'информатика',
-      6: 'русский',
-      7: 'литература',
-      8: 'обществознание',
-      9: 'история',
-      10: 'английский',
-      11: 'география'
-    },
-    full: {
-      1: 'Математика',
-      2: 'Физика',
-      3: 'Химия',
-      4: 'Биология',
-      5: 'Информатика',
-      6: 'Русский язык',
-      7: 'Литература',
-      8: 'Обществознание',
-      9: 'История',
-      10: 'Английский язык',
-      11: 'География'
-    },
-    dative: {
-      1: 'математике',
-      2: 'физике',
-      3: 'химии',
-      4: 'биологии',
-      5: 'информатике',
-      6: 'русскому языку',
-      7: 'литературе',
-      8: 'обществознанию',
-      9: 'истории',
-      10: 'английскому языку',
-      11: 'географии'
-    },
-    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин', 'Г'],
-    three_letters: {
-      1: 'МАТ',
-      2: 'ФИЗ',
-      3: 'ХИМ',
-      4: 'БИО',
-      5: 'ИНФ',
-      6: 'РУС',
-      7: 'ЛИТ',
-      8: 'ОБЩ',
-      9: 'ИСТ',
-      10: 'АНГ',
-      11: 'ГЕО'
-    },
-    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf', 'geo']
-  }).value('Branches', {
-    1: {
-      code: 'TRG',
-      full: 'Тургеневская',
-      short: 'ТУР',
-      address: 'Мясницкая 40с1',
-      color: '#FBAA33'
-    },
-    2: {
-      code: 'PVN',
-      full: 'Проспект Вернадского',
-      short: 'ВЕР',
-      address: '',
-      color: '#EF1E25'
-    },
-    3: {
-      code: 'BGT',
-      full: 'Багратионовская',
-      short: 'БАГ',
-      address: '',
-      color: '#019EE0'
-    },
-    5: {
-      code: 'IZM',
-      full: 'Измайловская',
-      short: 'ИЗМ',
-      address: '',
-      color: '#0252A2'
-    },
-    6: {
-      code: 'OPL',
-      full: 'Октябрьское поле',
-      short: 'ОКТ',
-      address: '',
-      color: '#B61D8E'
-    },
-    7: {
-      code: 'RPT',
-      full: 'Рязанский Проспект',
-      short: 'РЯЗ',
-      address: '',
-      color: '#B61D8E'
-    },
-    8: {
-      code: 'VKS',
-      full: 'Войковская',
-      short: 'ВОЙ',
-      address: '',
-      color: '#029A55'
-    },
-    9: {
-      code: 'ORH',
-      full: 'Орехово',
-      short: 'ОРЕ',
-      address: '',
-      color: '#029A55'
-    },
-    11: {
-      code: 'UJN',
-      full: 'Южная',
-      short: 'ЮЖН',
-      address: '',
-      color: '#ACADAF'
-    },
-    12: {
-      code: 'PER',
-      full: 'Перово',
-      short: 'ПЕР',
-      address: '',
-      color: '#FFD803'
-    },
-    13: {
-      code: 'KLG',
-      full: 'Калужская',
-      short: 'КЛЖ',
-      address: 'Научный проезд 8с1',
-      color: '#C07911'
-    },
-    14: {
-      code: 'BRT',
-      full: 'Братиславская',
-      short: 'БРА',
-      address: '',
-      color: '#B1D332'
-    },
-    15: {
-      code: 'MLD',
-      full: 'Молодежная',
-      short: 'МОЛ',
-      address: '',
-      color: '#0252A2'
-    },
-    16: {
-      code: 'VLD',
-      full: 'Владыкино',
-      short: 'ВЛА',
-      address: '',
-      color: '#ACADAF'
-    }
-  });
-
-}).call(this);
-
-(function() {
   angular.module('Egerep').factory('Model', function($resource) {
     return $resource('api/models/:id', {}, {
       update: {
@@ -3124,10 +2775,59 @@
         loading: false
       },
       methods: {
-        showResponder: function(e) {},
+        loadData: _.debounce(function() {
+          return this.$http.post('api/search', {
+            query: this.query
+          }).then((function(_this) {
+            return function(success) {
+              var i, item, j, k, len, len1, ref, ref1, results;
+              _this.loading = false;
+              _this.active = 0;
+              _this.all = 0;
+              _this.lists = [];
+              if (success.body.results > 0) {
+                _this.results = success.body.results;
+                if (success.body.clients.length > 0) {
+                  ref = success.body.clients;
+                  for (i = j = 0, len = ref.length; j < len; i = ++j) {
+                    item = ref[i];
+                    item.type = 'clients';
+                    _this.all++;
+                    _this.links[_this.all] = 'client/' + item.id;
+                    item.link = _this.links[_this.all];
+                    _this.lists.push(item);
+                  }
+                }
+                if (success.body.tutors.length > 0) {
+                  ref1 = success.body.tutors;
+                  results = [];
+                  for (i = k = 0, len1 = ref1.length; k < len1; i = ++k) {
+                    item = ref1[i];
+                    item.type = 'tutors';
+                    _this.all++;
+                    _this.links[_this.all] = 'tutors/' + item.id + '/edit';
+                    item.link = _this.links[_this.all];
+                    results.push(_this.lists.push(item));
+                  }
+                  return results;
+                }
+              } else {
+                _this.active = 0;
+                _this.all = 0;
+                _this.lists = [];
+                return _this.results = 0;
+              }
+            };
+          })(this), (function(_this) {
+            return function(error) {
+              _this.active = 0;
+              _this.all = 0;
+              _this.lists = [];
+              return _this.results = 0;
+            };
+          })(this));
+        }, 150),
         scroll: function() {
-          var totalObject;
-          totalObject = Object.keys(this.links).length;
           return $('#searchResult').scrollTop((this.active - 4) * 30);
         },
         keyup: function(e) {
@@ -3146,61 +2846,13 @@
               this.scroll();
             }
           } else if (e.code === 'Enter') {
-            window.open(this.links[this.active]);
+            if (this.active > 0) {
+              window.open(this.links[this.active]);
+            }
           } else {
-            if (this.query !== '' || this.query !== ' ') {
-              if (this.oldQuery !== this.query) {
-                this.loading = true;
-                this.$http.post('api/search', {
-                  query: this.query
-                }).then((function(_this) {
-                  return function(success) {
-                    var i, item, j, k, len, len1, ref, ref1, results;
-                    _this.loading = false;
-                    _this.active = 0;
-                    _this.all = 0;
-                    _this.lists = [];
-                    if (success.body.results > 0) {
-                      _this.results = success.body.results;
-                      if (success.body.clients.length > 0) {
-                        ref = success.body.clients;
-                        for (i = j = 0, len = ref.length; j < len; i = ++j) {
-                          item = ref[i];
-                          item.type = 'clients';
-                          _this.all++;
-                          _this.links[_this.all] = 'client/' + item.id;
-                          item.link = _this.links[_this.all];
-                          _this.lists.push(item);
-                        }
-                      }
-                      if (success.body.tutors.length > 0) {
-                        ref1 = success.body.tutors;
-                        results = [];
-                        for (i = k = 0, len1 = ref1.length; k < len1; i = ++k) {
-                          item = ref1[i];
-                          item.type = 'tutors';
-                          _this.all++;
-                          _this.links[_this.all] = 'tutors/' + item.id + '/edit';
-                          item.link = _this.links[_this.all];
-                          results.push(_this.lists.push(item));
-                        }
-                        return results;
-                      }
-                    } else {
-                      _this.active = 0;
-                      _this.all = 0;
-                      _this.lists = [];
-                      return _this.results = 0;
-                    }
-                  };
-                })(this), (function(_this) {
-                  return function(error) {
-                    _this.active = 0;
-                    _this.all = 0;
-                    _this.lists = [];
-                    return _this.results = 0;
-                  };
-                })(this));
+            if (this.query !== '') {
+              if (this.oldquery !== this.query) {
+                this.loadData();
               }
               this.oldquery = this.query;
             } else {
@@ -4141,483 +3793,6 @@
 }).call(this);
 
 (function() {
-  var apiPath, updateMethod;
-
-  angular.module('Egerep').factory('Marker', function($resource) {
-    return $resource(apiPath('markers'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Notification', function($resource) {
-    return $resource(apiPath('notifications'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Account', function($resource) {
-    return $resource(apiPath('accounts'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('PlannedAccount', function($resource) {
-    return $resource(apiPath('periods/planned'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Review', function($resource) {
-    return $resource(apiPath('reviews'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Archive', function($resource) {
-    return $resource(apiPath('archives'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Attachment', function($resource) {
-    return $resource(apiPath('attachments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('RequestList', function($resource) {
-    return $resource(apiPath('lists'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Request', function($resource) {
-    return $resource(apiPath('requests'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      transfer: {
-        method: 'POST',
-        url: apiPath('requests', 'transfer')
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  }).factory('Sms', function($resource) {
-    return $resource(apiPath('sms'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Comment', function($resource) {
-    return $resource(apiPath('comments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Client', function($resource) {
-    return $resource(apiPath('clients'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('User', function($resource) {
-    return $resource(apiPath('users'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Tutor', function($resource) {
-    return $resource(apiPath('tutors'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      deletePhoto: {
-        url: apiPath('tutors', 'photo'),
-        method: 'DELETE'
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  });
-
-  apiPath = function(entity, additional) {
-    if (additional == null) {
-      additional = '';
-    }
-    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
-  };
-
-  updateMethod = function() {
-    return {
-      update: {
-        method: 'PUT'
-      }
-    };
-  };
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('ApiService', function($http) {
-    this.metro = function(fun, data) {
-      return $http.post("api/metro/" + fun, data);
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('AttachmentService', function(AttachmentStates) {
-    this.AttachmentStates = AttachmentStates;
-    this.getState = function(attachment) {
-      if (attachment.archive) {
-        return 'ended';
-      } else {
-        if (attachment.forecast) {
-          return 'inprogress';
-        } else {
-          return 'new';
-        }
-      }
-    };
-    this.getStatus = function(attachment) {
-      return this.AttachmentStates[this.getState(attachment)];
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('BranchService', function(Branches) {
-    this.branches = Branches;
-    this.getNameWithColor = function(branch_id) {
-      var curBranch;
-      curBranch = this.branches[branch_id];
-      return '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="svg-metro"><circle fill="' + curBranch.color + '" r="6" cx="7" cy="7"></circle></svg>' + curBranch.full;
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('PhoneService', function($rootScope, $http) {
-    this.info = function(number) {
-      return $http.post('api/command/mango-stats', {
-        number: number
-      });
-    };
-    this.call = function(number) {
-      return location.href = "sip:" + number.replace(/[^0-9]/g, '');
-    };
-    this.isMobile = function(number) {
-      return number && (parseInt(number[4]) === 9 || parseInt(number[1]) === 9);
-    };
-    this.clean = function(number) {
-      return number.replace(/[^0-9]/gim, "");
-    };
-    this.format = function(number) {
-      if (!number) {
-        return;
-      }
-      number = this.clean(number);
-      return '+' + number.substr(0, 1) + ' (' + number.substr(1, 3) + ') ' + number.substr(4, 3) + '-' + number.substr(7, 2) + '-' + number.substr(9, 2);
-    };
-    this.sms = function(number) {
-      $rootScope.sms_number = number;
-      return $('#sms-modal').modal('show');
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('PusherService', function($http) {
-    var init;
-    this.bind = function(channel, callback) {
-      if (this.pusher === void 0) {
-        init();
-      }
-      return this.channel.bind("App\\Events\\" + channel, callback);
-    };
-    init = (function(_this) {
-      return function() {
-        _this.pusher = new Pusher('2d212b249c84f8c7ba5c', {
-          encrypted: true,
-          cluster: 'eu'
-        });
-        return _this.channel = _this.pusher.subscribe('egerep');
-      };
-    })(this);
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('RecommendationService', function(Recommendations, RecommendationTypes) {
-    this.get = function(tutor, grade) {
-      var recommendation;
-      recommendation = this.getRecommendation(tutor, grade);
-      recommendation.type_text = RecommendationTypes[recommendation.type];
-      return recommendation;
-    };
-    this.getRecommendation = function(tutor, grade) {
-      var month;
-      month = moment().format('M');
-      if (grade !== 10) {
-        if (month >= 7 && month <= 10) {
-          if (tutor.meeting_count >= 2) {
-            return Recommendations[1];
-          } else {
-            if (tutor.meeting_count === 1) {
-              return Recommendations[2];
-            } else {
-              if (tutor.active_clients_count >= 2) {
-                return Recommendations[3];
-              } else {
-                return Recommendations[4];
-              }
-            }
-          }
-        } else {
-          if (month >= 11 || month <= 2) {
-            if (tutor.meeting_count >= 2) {
-              return Recommendations[5];
-            } else {
-              if (tutor.meeting_count === 1) {
-                return Recommendations[6];
-              } else {
-                if (tutor.active_clients_count >= 2) {
-                  return Recommendations[7];
-                } else {
-                  return Recommendations[8];
-                }
-              }
-            }
-          } else {
-            if (tutor.meeting_count >= 2) {
-              return Recommendations[9];
-            } else {
-              return Recommendations[10];
-            }
-          }
-        }
-      } else {
-        if (tutor.meeting_count >= 2) {
-          return Recommendations[11];
-        } else {
-          if (tutor.meeting_count === 1) {
-            return Recommendations[12];
-          } else {
-            if (tutor.active_clients_count >= 2) {
-              return Recommendations[13];
-            } else {
-              return Recommendations[14];
-            }
-          }
-        }
-      }
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('SvgMap', function() {
-    this.show = function() {
-      $('#svg-modal').modal('show');
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('TutorService', function($http) {
-    this.translit = {
-      'А': 'A',
-      'Б': 'B',
-      'В': 'V',
-      'Г': 'G',
-      'Д': 'D',
-      'Е': 'E',
-      'Ё': 'E',
-      'Ж': 'Gh',
-      'З': 'Z',
-      'И': 'I',
-      'Й': 'Y',
-      'К': 'K',
-      'Л': 'L',
-      'М': 'M',
-      'Н': 'N',
-      'О': 'O',
-      'П': 'P',
-      'Р': 'R',
-      'С': 'S',
-      'Т': 'T',
-      'У': 'U',
-      'Ф': 'F',
-      'Х': 'H',
-      'Ц': 'C',
-      'Ч': 'Ch',
-      'Ш': 'Sh',
-      'Щ': 'Sch',
-      'Ъ': 'Y',
-      'Ы': 'Y',
-      'Ь': 'Y',
-      'Э': 'E',
-      'Ю': 'Yu',
-      'Я': 'Ya',
-      'а': 'a',
-      'б': 'b',
-      'в': 'v',
-      'г': 'g',
-      'д': 'd',
-      'е': 'e',
-      'ё': 'e',
-      'ж': 'gh',
-      'з': 'z',
-      'и': 'i',
-      'й': 'y',
-      'к': 'k',
-      'л': 'l',
-      'м': 'm',
-      'н': 'n',
-      'о': 'o',
-      'п': 'p',
-      'р': 'r',
-      'с': 's',
-      'т': 't',
-      'у': 'u',
-      'ф': 'f',
-      'х': 'h',
-      'ц': 'c',
-      'ч': 'ch',
-      'ш': 'sh',
-      'щ': 'sch',
-      'ъ': 'y',
-      'ы': 'y',
-      'ь': 'y',
-      'э': 'e',
-      'ю': 'yu',
-      'я': 'ya'
-    };
-    this.default_tutor = {
-      gender: "male",
-      branches: [],
-      phones: [],
-      subjects: [],
-      grades: [],
-      svg_map: [],
-      markers: [],
-      state: 0,
-      in_egecentr: 0
-    };
-    this.getFiltered = function(search_data) {
-      return $http.post('api/tutors/filtered', search_data);
-    };
-    this.select = function(search_data) {
-      return $http.post('api/tutors/select', search_data);
-    };
-    this.getDebtMap = function(search_data) {
-      return $http.post('api/debt/map', search_data);
-    };
-    this.getDebtors = function() {
-      return $http.get('api/debt');
-    };
-    this.generateLogin = function(tutor) {
-      var i, len, letter, login, ref;
-      login = '';
-      ref = tutor.last_name.toLowerCase();
-      for (i = 0, len = ref.length; i < len; i++) {
-        letter = ref[i];
-        login += this.translit[letter];
-      }
-      login = login.slice(0, 3);
-      login += '_' + this.translit[tutor.first_name.toLowerCase()[0]] + this.translit[tutor.middle_name.toLowerCase()[0]];
-      return login;
-    };
-    this.generatePassword = function() {
-      return Math.floor(10000000 + Math.random() * 89999999);
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('UserService', function(User, $rootScope, $timeout) {
-    var system_user;
-    this.users = User.query();
-    $timeout((function(_this) {
-      return function() {
-        return _this.current_user = $rootScope.$$childTail.user;
-      };
-    })(this));
-    system_user = {
-      color: '#999999',
-      login: 'system',
-      id: 0
-    };
-    this.get = function(user_id) {
-      return this.getUser(user_id);
-    };
-    this.getUser = function(user_id) {
-      return _.findWhere(this.users, {
-        id: parseInt(user_id)
-      }) || system_user;
-    };
-    this.getLogin = function(user_id) {
-      return this.getUser(parseInt(user_id)).login;
-    };
-    this.getColor = function(user_id) {
-      return this.getUser(parseInt(user_id)).color;
-    };
-    this.getWithSystem = function(only_active) {
-      var users;
-      if (only_active == null) {
-        only_active = true;
-      }
-      users = this.getAll(only_active);
-      users.unshift(system_user);
-      return users;
-    };
-    this.getAll = function(only_active) {
-      if (only_active == null) {
-        only_active = true;
-      }
-      if (only_active) {
-        return _.filter(this.users, function(user) {
-          return user.rights.length && user.rights.indexOf('35') === -1;
-        });
-      } else {
-        return this.users;
-      }
-    };
-    this.toggle = function(entity, user_id, Resource) {
-      var new_user_id, obj;
-      if (Resource == null) {
-        Resource = false;
-      }
-      new_user_id = entity[user_id] ? 0 : this.current_user.id;
-      if (Resource) {
-        return Resource.update((
-          obj = {
-            id: entity.id
-          },
-          obj["" + user_id] = new_user_id,
-          obj
-        ), function() {
-          return entity[user_id] = new_user_id;
-        });
-      } else {
-        return entity[user_id] = new_user_id;
-      }
-    };
-    this.getBannedUsers = function() {
-      return _.filter(this.users, function(user) {
-        return user.rights.length && user.rights.indexOf('35') !== -1;
-      });
-    };
-    this.getBannedHaving = function(condition_obj) {
-      return _.filter(this.users, function(user) {
-        return user.rights.indexOf('35') !== -1 && condition_obj && condition_obj[user.id];
-      });
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
   angular.module('Egerep').directive('comments', function() {
     return {
       restrict: 'E',
@@ -5534,6 +4709,832 @@
       },
       templateUrl: 'directives/user'
     };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').value('Approved', {
+    0: 'не подтвержден',
+    1: 'подтвержден'
+  }).value('Confirmed', {
+    0: 'подтвердить',
+    1: 'подтверждено'
+  }).value('Months', {
+    1: 'январь',
+    2: 'февраль',
+    3: 'март',
+    4: 'апрель',
+    5: 'май',
+    6: 'июнь',
+    7: 'июль',
+    8: 'август',
+    9: 'сентябрь',
+    10: 'октябрь',
+    11: 'ноябрь',
+    12: 'декабрь'
+  }).value('Notify', ['напомнить', 'не напоминать']).value('AttachmentErrors', {
+    1: 'в стыковке не указан класс',
+    2: 'в стыковке не указан предмет',
+    3: 'не указаны условия стыковки',
+    4: 'дата архивации должна быть позже даты стыковки',
+    5: 'не указаны детали архивации',
+    6: 'прогноз и занятия не сочетаются',
+    7: 'прогноз и занятия не сочетаются',
+    8: 'при наличии занятий к проводке стыковка не может быть скрыта',
+    9: 'дата архивации не совпадает с датой последнего занятия',
+    10: 'возможно стыковку можно скрыть',
+    11: 'возможно стыковку можно скрыть',
+    12: 'в скрытой стыковке дата архивации должна совпадать с датой последнего занятия',
+    13: 'в скрытой стыковке без занятий между датами стыковки и архивации должно быть 7 дней',
+    14: 'если архивация отсутствует, стыковка не может быть скрыта',
+    15: 'стыковка, у которой дата архивации позже даты последнего расчета не может быть скрыта',
+    16: 'слишком маленький прогноз',
+    17: 'слишком большой прогноз'
+  }).value('ReviewErrors', {
+    1: 'не стоит оценка к отзыву',
+    2: 'нет подписи к опубликованному отзыву',
+    3: 'нет текста отзыва к опубликованному отзыву'
+  }).value('TutorErrors', {
+    1: 'нет оригинала фото',
+    2: 'нет обрезанного фото',
+    3: 'цена не установлена',
+    4: 'нет меток и выезда'
+  }).value('LogTypes', {
+    create: 'создание',
+    update: 'обновление',
+    "delete": 'удаление'
+  }).value('Recommendations', {
+    1: {
+      text: 'У этого репетитора уже было несколько расчетов, поэтому ему можно доверить длительное обучение, требующееся данному клиенту',
+      type: 0
+    },
+    2: {
+      text: 'У этого репетитора был всего 1 расчет и ему можно доверить длительное обучение, но лучше поискать более проверенные варианты',
+      type: 1
+    },
+    3: {
+      text: 'С этим репетитором не было встреч и есть клиенты, за которых он еще не рассчитался. Отдавать этого клиента категорически нельзя',
+      type: 2
+    },
+    4: {
+      text: 'С этим репетитором не было встреч и у него нет активных клиентов. Отдавать ему клиента можно, но только в крайнем случае',
+      type: 1
+    },
+    5: {
+      text: 'У этого репетитора уже было несколько расчетов, поэтому ему можно доверить данного клиента',
+      type: 0
+    },
+    6: {
+      text: 'У этого репетитора был всего 1 расчет, то есть у него средний кредитный рейтинг. Если более проверенных репетиторов нет, ему можно доверить этого клиента',
+      type: 1
+    },
+    7: {
+      text: 'С этим репетитором не было встреч и есть клиенты, за которых он еще не рассчитался. Отдавать этого репетитора можно в самом крайнем случае',
+      type: 2
+    },
+    8: {
+      text: 'С этим репетитором не было встреч и у него нет активных клиентов. Риск сотрудничества средний, поэтому работать с репетитором можно, если нет других вариантов',
+      type: 1
+    },
+    9: {
+      text: 'У этого репетитора высокий кредитный рейтинг, но конец учебного года лучше использовать для проверки неизвестных репетиторов',
+      type: 1
+    },
+    10: {
+      text: 'Этому репетитору мы не доверяем, но сейчас отличное время для его проверки. Если сотрудничество будет успешным, то мы будем рекомендовать в следующем году как проверенного. Если он не заплатит, то невыплаты будут минимальными и репетитора мы закроем навсегда, в чем великая польза.',
+      type: 0
+    },
+    11: {
+      text: 'С 10-классниками нужно быть особенно аккуратными и этот репетитор в данном случае рекомендован',
+      type: 0
+    },
+    12: {
+      text: 'С этим репетитором была всего 1 встреча, поэтому давать его ученику 10 класса будет риском. Сделайте все, чтобы избежать этого, но если не получается – давать можно',
+      type: 1
+    },
+    13: {
+      text: 'С этим репетитором не было встреч и есть клиенты, за которых он еще не рассчитался. Нужно сделать все, чтобы 10-классник его не получил, так как 10 классы всегда продолжают заниматься и в 11 классе. Давать этого репетитора категорически нельзя',
+      type: 2
+    },
+    14: {
+      text: 'Этот репетитор для компании новый. Давать 10-класснику можно, но в самом крайнем случае',
+      type: 2
+    }
+  }).value('RecommendationTypes', ['очень рекомендован', 'средне рекомендован', 'не рекомендован']).value('DebtTypes', {
+    0: 'не доплатил',
+    1: 'переплатил'
+  }).value('Weekdays', {
+    0: 'пн',
+    1: 'вт',
+    2: 'ср',
+    3: 'чт',
+    4: 'пт',
+    5: 'сб',
+    6: 'вс'
+  }).value('Destinations', {
+    r_k: 'репетитор едет к клиенту',
+    k_r: 'клиент едет к репетитору'
+  }).value('Workplaces', {
+    0: 'не активен в системе ЕГЭ-Центре',
+    1: 'активен в системе ЕГЭ-Центра',
+    2: 'ведет занятия в ЕГЭ-Центре',
+    3: 'ранее работал в ЕГЭ-Центре'
+  }).value('Genders', {
+    male: 'мужской',
+    female: 'женский'
+  }).value('YesNo', {
+    0: 'нет',
+    1: 'да'
+  }).value('TutorStates', {
+    0: 'не установлено',
+    1: 'на проверку',
+    2: 'к закрытию',
+    3: 'закрыто',
+    4: 'к одобрению',
+    5: 'одобрено'
+  }).value('TutorPublishedStates', {
+    0: 'не опубликован',
+    1: 'опубликован'
+  }).value('PaymentMethods', {
+    0: 'стандартный расчет',
+    1: 'яндекс.деньги',
+    2: 'перевод на карту'
+  }).value('ArchiveStates', {
+    impossible: 'невозможно',
+    possible: 'возможно'
+  }).value('ReviewStates', {
+    unpublished: 'не опубликован',
+    published: 'опубликован'
+  }).value('Existance', ['созданные', 'требующие создания']).value('Presence', [['есть', 'отсутствует'], ['есть', 'нет']]).value('AttachmentVisibility', {
+    0: 'показано',
+    1: 'скрыто'
+  }).value('AttachmentStates', {
+    "new": 'новые',
+    inprogress: 'рабочие',
+    ended: 'завершенные'
+  }).value('AttachmentState', {
+    "new": 'новый',
+    inprogress: 'рабочий',
+    ended: 'завершенный'
+  }).value('Checked', ['не проверено', 'проверено']).value('ReviewScores', {
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+    6: 6,
+    7: 7,
+    8: 8,
+    9: 9,
+    10: 10,
+    11: 'отзыв не собирать',
+    12: 'отзыв собрать позже'
+  }).value('Grades', {
+    1: '1 класс',
+    2: '2 класс',
+    3: '3 класс',
+    4: '4 класс',
+    5: '5 класс',
+    6: '6 класс',
+    7: '7 класс',
+    8: '8 класс',
+    9: '9 класс',
+    10: '10 класс',
+    11: '11 класс',
+    12: 'студенты',
+    13: 'остальные'
+  }).value('Subjects', {
+    all: {
+      1: 'математика',
+      2: 'физика',
+      3: 'химия',
+      4: 'биология',
+      5: 'информатика',
+      6: 'русский',
+      7: 'литература',
+      8: 'обществознание',
+      9: 'история',
+      10: 'английский',
+      11: 'география'
+    },
+    full: {
+      1: 'Математика',
+      2: 'Физика',
+      3: 'Химия',
+      4: 'Биология',
+      5: 'Информатика',
+      6: 'Русский язык',
+      7: 'Литература',
+      8: 'Обществознание',
+      9: 'История',
+      10: 'Английский язык',
+      11: 'География'
+    },
+    dative: {
+      1: 'математике',
+      2: 'физике',
+      3: 'химии',
+      4: 'биологии',
+      5: 'информатике',
+      6: 'русскому языку',
+      7: 'литературе',
+      8: 'обществознанию',
+      9: 'истории',
+      10: 'английскому языку',
+      11: 'географии'
+    },
+    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин', 'Г'],
+    three_letters: {
+      1: 'МАТ',
+      2: 'ФИЗ',
+      3: 'ХИМ',
+      4: 'БИО',
+      5: 'ИНФ',
+      6: 'РУС',
+      7: 'ЛИТ',
+      8: 'ОБЩ',
+      9: 'ИСТ',
+      10: 'АНГ',
+      11: 'ГЕО'
+    },
+    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf', 'geo']
+  }).value('Branches', {
+    1: {
+      code: 'TRG',
+      full: 'Тургеневская',
+      short: 'ТУР',
+      address: 'Мясницкая 40с1',
+      color: '#FBAA33'
+    },
+    2: {
+      code: 'PVN',
+      full: 'Проспект Вернадского',
+      short: 'ВЕР',
+      address: '',
+      color: '#EF1E25'
+    },
+    3: {
+      code: 'BGT',
+      full: 'Багратионовская',
+      short: 'БАГ',
+      address: '',
+      color: '#019EE0'
+    },
+    5: {
+      code: 'IZM',
+      full: 'Измайловская',
+      short: 'ИЗМ',
+      address: '',
+      color: '#0252A2'
+    },
+    6: {
+      code: 'OPL',
+      full: 'Октябрьское поле',
+      short: 'ОКТ',
+      address: '',
+      color: '#B61D8E'
+    },
+    7: {
+      code: 'RPT',
+      full: 'Рязанский Проспект',
+      short: 'РЯЗ',
+      address: '',
+      color: '#B61D8E'
+    },
+    8: {
+      code: 'VKS',
+      full: 'Войковская',
+      short: 'ВОЙ',
+      address: '',
+      color: '#029A55'
+    },
+    9: {
+      code: 'ORH',
+      full: 'Орехово',
+      short: 'ОРЕ',
+      address: '',
+      color: '#029A55'
+    },
+    11: {
+      code: 'UJN',
+      full: 'Южная',
+      short: 'ЮЖН',
+      address: '',
+      color: '#ACADAF'
+    },
+    12: {
+      code: 'PER',
+      full: 'Перово',
+      short: 'ПЕР',
+      address: '',
+      color: '#FFD803'
+    },
+    13: {
+      code: 'KLG',
+      full: 'Калужская',
+      short: 'КЛЖ',
+      address: 'Научный проезд 8с1',
+      color: '#C07911'
+    },
+    14: {
+      code: 'BRT',
+      full: 'Братиславская',
+      short: 'БРА',
+      address: '',
+      color: '#B1D332'
+    },
+    15: {
+      code: 'MLD',
+      full: 'Молодежная',
+      short: 'МОЛ',
+      address: '',
+      color: '#0252A2'
+    },
+    16: {
+      code: 'VLD',
+      full: 'Владыкино',
+      short: 'ВЛА',
+      address: '',
+      color: '#ACADAF'
+    }
+  });
+
+}).call(this);
+
+(function() {
+  var apiPath, updateMethod;
+
+  angular.module('Egerep').factory('Marker', function($resource) {
+    return $resource(apiPath('markers'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Notification', function($resource) {
+    return $resource(apiPath('notifications'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Account', function($resource) {
+    return $resource(apiPath('accounts'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('PlannedAccount', function($resource) {
+    return $resource(apiPath('periods/planned'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Review', function($resource) {
+    return $resource(apiPath('reviews'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Archive', function($resource) {
+    return $resource(apiPath('archives'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Attachment', function($resource) {
+    return $resource(apiPath('attachments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('RequestList', function($resource) {
+    return $resource(apiPath('lists'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Request', function($resource) {
+    return $resource(apiPath('requests'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      transfer: {
+        method: 'POST',
+        url: apiPath('requests', 'transfer')
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  }).factory('Sms', function($resource) {
+    return $resource(apiPath('sms'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Comment', function($resource) {
+    return $resource(apiPath('comments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Client', function($resource) {
+    return $resource(apiPath('clients'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('User', function($resource) {
+    return $resource(apiPath('users'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Tutor', function($resource) {
+    return $resource(apiPath('tutors'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      deletePhoto: {
+        url: apiPath('tutors', 'photo'),
+        method: 'DELETE'
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  });
+
+  apiPath = function(entity, additional) {
+    if (additional == null) {
+      additional = '';
+    }
+    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
+  };
+
+  updateMethod = function() {
+    return {
+      update: {
+        method: 'PUT'
+      }
+    };
+  };
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('ApiService', function($http) {
+    this.metro = function(fun, data) {
+      return $http.post("api/metro/" + fun, data);
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('AttachmentService', function(AttachmentStates) {
+    this.AttachmentStates = AttachmentStates;
+    this.getState = function(attachment) {
+      if (attachment.archive) {
+        return 'ended';
+      } else {
+        if (attachment.forecast) {
+          return 'inprogress';
+        } else {
+          return 'new';
+        }
+      }
+    };
+    this.getStatus = function(attachment) {
+      return this.AttachmentStates[this.getState(attachment)];
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('BranchService', function(Branches) {
+    this.branches = Branches;
+    this.getNameWithColor = function(branch_id) {
+      var curBranch;
+      curBranch = this.branches[branch_id];
+      return '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="svg-metro"><circle fill="' + curBranch.color + '" r="6" cx="7" cy="7"></circle></svg>' + curBranch.full;
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('PhoneService', function($rootScope, $http) {
+    this.info = function(number) {
+      return $http.post('api/command/mango-stats', {
+        number: number
+      });
+    };
+    this.call = function(number) {
+      return location.href = "sip:" + number.replace(/[^0-9]/g, '');
+    };
+    this.isMobile = function(number) {
+      return number && (parseInt(number[4]) === 9 || parseInt(number[1]) === 9);
+    };
+    this.clean = function(number) {
+      return number.replace(/[^0-9]/gim, "");
+    };
+    this.format = function(number) {
+      if (!number) {
+        return;
+      }
+      number = this.clean(number);
+      return '+' + number.substr(0, 1) + ' (' + number.substr(1, 3) + ') ' + number.substr(4, 3) + '-' + number.substr(7, 2) + '-' + number.substr(9, 2);
+    };
+    this.sms = function(number) {
+      $rootScope.sms_number = number;
+      return $('#sms-modal').modal('show');
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('PusherService', function($http) {
+    var init;
+    this.bind = function(channel, callback) {
+      if (this.pusher === void 0) {
+        init();
+      }
+      return this.channel.bind("App\\Events\\" + channel, callback);
+    };
+    init = (function(_this) {
+      return function() {
+        _this.pusher = new Pusher('2d212b249c84f8c7ba5c', {
+          encrypted: true,
+          cluster: 'eu'
+        });
+        return _this.channel = _this.pusher.subscribe('egerep');
+      };
+    })(this);
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('RecommendationService', function(Recommendations, RecommendationTypes) {
+    this.get = function(tutor, grade) {
+      var recommendation;
+      recommendation = this.getRecommendation(tutor, grade);
+      recommendation.type_text = RecommendationTypes[recommendation.type];
+      return recommendation;
+    };
+    this.getRecommendation = function(tutor, grade) {
+      var month;
+      month = moment().format('M');
+      if (grade !== 10) {
+        if (month >= 7 && month <= 10) {
+          if (tutor.meeting_count >= 2) {
+            return Recommendations[1];
+          } else {
+            if (tutor.meeting_count === 1) {
+              return Recommendations[2];
+            } else {
+              if (tutor.active_clients_count >= 2) {
+                return Recommendations[3];
+              } else {
+                return Recommendations[4];
+              }
+            }
+          }
+        } else {
+          if (month >= 11 || month <= 2) {
+            if (tutor.meeting_count >= 2) {
+              return Recommendations[5];
+            } else {
+              if (tutor.meeting_count === 1) {
+                return Recommendations[6];
+              } else {
+                if (tutor.active_clients_count >= 2) {
+                  return Recommendations[7];
+                } else {
+                  return Recommendations[8];
+                }
+              }
+            }
+          } else {
+            if (tutor.meeting_count >= 2) {
+              return Recommendations[9];
+            } else {
+              return Recommendations[10];
+            }
+          }
+        }
+      } else {
+        if (tutor.meeting_count >= 2) {
+          return Recommendations[11];
+        } else {
+          if (tutor.meeting_count === 1) {
+            return Recommendations[12];
+          } else {
+            if (tutor.active_clients_count >= 2) {
+              return Recommendations[13];
+            } else {
+              return Recommendations[14];
+            }
+          }
+        }
+      }
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('SvgMap', function() {
+    this.show = function() {
+      $('#svg-modal').modal('show');
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('TutorService', function($http) {
+    this.translit = {
+      'А': 'A',
+      'Б': 'B',
+      'В': 'V',
+      'Г': 'G',
+      'Д': 'D',
+      'Е': 'E',
+      'Ё': 'E',
+      'Ж': 'Gh',
+      'З': 'Z',
+      'И': 'I',
+      'Й': 'Y',
+      'К': 'K',
+      'Л': 'L',
+      'М': 'M',
+      'Н': 'N',
+      'О': 'O',
+      'П': 'P',
+      'Р': 'R',
+      'С': 'S',
+      'Т': 'T',
+      'У': 'U',
+      'Ф': 'F',
+      'Х': 'H',
+      'Ц': 'C',
+      'Ч': 'Ch',
+      'Ш': 'Sh',
+      'Щ': 'Sch',
+      'Ъ': 'Y',
+      'Ы': 'Y',
+      'Ь': 'Y',
+      'Э': 'E',
+      'Ю': 'Yu',
+      'Я': 'Ya',
+      'а': 'a',
+      'б': 'b',
+      'в': 'v',
+      'г': 'g',
+      'д': 'd',
+      'е': 'e',
+      'ё': 'e',
+      'ж': 'gh',
+      'з': 'z',
+      'и': 'i',
+      'й': 'y',
+      'к': 'k',
+      'л': 'l',
+      'м': 'm',
+      'н': 'n',
+      'о': 'o',
+      'п': 'p',
+      'р': 'r',
+      'с': 's',
+      'т': 't',
+      'у': 'u',
+      'ф': 'f',
+      'х': 'h',
+      'ц': 'c',
+      'ч': 'ch',
+      'ш': 'sh',
+      'щ': 'sch',
+      'ъ': 'y',
+      'ы': 'y',
+      'ь': 'y',
+      'э': 'e',
+      'ю': 'yu',
+      'я': 'ya'
+    };
+    this.default_tutor = {
+      gender: "male",
+      branches: [],
+      phones: [],
+      subjects: [],
+      grades: [],
+      svg_map: [],
+      markers: [],
+      state: 0,
+      in_egecentr: 0
+    };
+    this.getFiltered = function(search_data) {
+      return $http.post('api/tutors/filtered', search_data);
+    };
+    this.select = function(search_data) {
+      return $http.post('api/tutors/select', search_data);
+    };
+    this.getDebtMap = function(search_data) {
+      return $http.post('api/debt/map', search_data);
+    };
+    this.getDebtors = function() {
+      return $http.get('api/debt');
+    };
+    this.generateLogin = function(tutor) {
+      var i, len, letter, login, ref;
+      login = '';
+      ref = tutor.last_name.toLowerCase();
+      for (i = 0, len = ref.length; i < len; i++) {
+        letter = ref[i];
+        login += this.translit[letter];
+      }
+      login = login.slice(0, 3);
+      login += '_' + this.translit[tutor.first_name.toLowerCase()[0]] + this.translit[tutor.middle_name.toLowerCase()[0]];
+      return login;
+    };
+    this.generatePassword = function() {
+      return Math.floor(10000000 + Math.random() * 89999999);
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('UserService', function(User, $rootScope, $timeout) {
+    var system_user;
+    this.users = User.query();
+    $timeout((function(_this) {
+      return function() {
+        return _this.current_user = $rootScope.$$childTail.user;
+      };
+    })(this));
+    system_user = {
+      color: '#999999',
+      login: 'system',
+      id: 0
+    };
+    this.get = function(user_id) {
+      return this.getUser(user_id);
+    };
+    this.getUser = function(user_id) {
+      return _.findWhere(this.users, {
+        id: parseInt(user_id)
+      }) || system_user;
+    };
+    this.getLogin = function(user_id) {
+      return this.getUser(parseInt(user_id)).login;
+    };
+    this.getColor = function(user_id) {
+      return this.getUser(parseInt(user_id)).color;
+    };
+    this.getWithSystem = function(only_active) {
+      var users;
+      if (only_active == null) {
+        only_active = true;
+      }
+      users = this.getAll(only_active);
+      users.unshift(system_user);
+      return users;
+    };
+    this.getAll = function(only_active) {
+      if (only_active == null) {
+        only_active = true;
+      }
+      if (only_active) {
+        return _.filter(this.users, function(user) {
+          return user.rights.length && user.rights.indexOf('35') === -1;
+        });
+      } else {
+        return this.users;
+      }
+    };
+    this.toggle = function(entity, user_id, Resource) {
+      var new_user_id, obj;
+      if (Resource == null) {
+        Resource = false;
+      }
+      new_user_id = entity[user_id] ? 0 : this.current_user.id;
+      if (Resource) {
+        return Resource.update((
+          obj = {
+            id: entity.id
+          },
+          obj["" + user_id] = new_user_id,
+          obj
+        ), function() {
+          return entity[user_id] = new_user_id;
+        });
+      } else {
+        return entity[user_id] = new_user_id;
+      }
+    };
+    this.getBannedUsers = function() {
+      return _.filter(this.users, function(user) {
+        return user.rights.length && user.rights.indexOf('35') !== -1;
+      });
+    };
+    this.getBannedHaving = function(condition_obj) {
+      return _.filter(this.users, function(user) {
+        return user.rights.indexOf('35') !== -1 && condition_obj && condition_obj[user.id];
+      });
+    };
+    return this;
   });
 
 }).call(this);
