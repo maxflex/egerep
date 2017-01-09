@@ -35,13 +35,21 @@
     <div class="col-sm-3">
         {{-- <ng-select object='TutorStates' model='state' none-text='статус'></ng-select> --}}
         <select class="form-control" ng-model='user_id' ng-change="changeUser()" id='change-user'>
-            <option value="">пользователь</option>
-            <option disabled>──────────────</option>
-            <option
-                ng-repeat="user in UserService.getWithSystem()"
-                value="@{{ user.id }}"
-                data-content="<span style='color: @{{ user.color || 'black' }}'>@{{ user.login }} @{{ $var }}</span><small class='text-muted'>@{{ user_counts[user.id] || '' }}</small>"
-            ></option>
+            <option value=''>пользователь</option>
+        	<option disabled>──────────────</option>
+        	<option
+        		ng-repeat="user in UserService.getWithSystem()"
+        		ng-show='user_counts[user.id]'
+        		value="@{{ user.id }}"
+        		data-content="<span style='color: @{{ user.color || 'black' }}'>@{{ user.login }}</span><small class='text-muted'>@{{ user_counts[user.id] || '' }}</small>"
+        	></option>
+        	<option disabled ng-show="UserService.getBannedHaving(user_counts).length">──────────────</option>
+        	<option
+        		ng-show='user_counts[user.id]'
+                ng-repeat="user in UserService.getBannedUsers()"
+        		value="@{{ user.id }}"
+        		data-content="<span style='color: black'>@{{ user.login }}</span><small class='text-muted'>@{{ user_counts[user.id] || '' }}</small>"
+        	></option>
         </select>
     </div>
     <div class="col-sm-3">

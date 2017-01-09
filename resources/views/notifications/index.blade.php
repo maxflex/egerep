@@ -27,15 +27,7 @@
     </div>
 
     <div>
-        <select ng-highlight class="form-control selectpicker" ng-model='search.user_id' ng-change="filter()" id='change-user'>
-            <option value="" data-subtext="@{{ counts.user_id[''] || '' }}">пользователь</option>
-            <option disabled>──────────────</option>
-            <option
-                    ng-repeat="user in UserService.getWithSystem()"
-                    value="@{{ user.id }}"
-                    data-content="<span style='color: @{{ user.color || 'black' }}'>@{{ user.login }}</span><small class='text-muted'>@{{ counts.user_id[user.id] || '' }}</small>"
-            ></option>
-        </select>
+        @include('modules.user-select')
     </div>
     <div>
         <select ng-highlight class="form-control selectpicker" ng-model='search.type' ng-change="filter()" id='change-type'>
