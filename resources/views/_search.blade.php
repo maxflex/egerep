@@ -16,7 +16,7 @@
                     </div>
                     <div v-else>
                         <a :href="row.link" target="_blank" v-html="'репетитор ' + row.last_name + ' ' + row.first_name + ' ' + row.middle_name">репетитор
-                            <span v-if='row.first_name'>@{{ row.last_name + ' ' + row.first_name + ' ' + row.middle_name }}</span>
+                            <span v-if="row.first_name != ''">@{{ row.last_name + ' ' + row.first_name + ' ' + row.middle_name }}</span>
                             <span v-else>имя не указано</span>
                         </a>
                     </div>
