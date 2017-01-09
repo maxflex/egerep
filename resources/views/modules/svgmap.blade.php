@@ -4,7 +4,7 @@
             <div class="modal-body">
                 <div class="row">
                     <svg-map selected="tutor.svg_map" selectable></svg-map>
-                    <div class="col-sm-3 text-center">
+                    <div class="col-sm-3 text-center svg-save">
                         <button class="btn btn-default" ng-click="svgSave()">сохранить</button>
                     </div>
                 </div>
