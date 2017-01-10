@@ -111,7 +111,8 @@
                                     <span>Расчет создан:</span>
                                     @{{ account.user_login }} @{{ formatDateTime(account.created_at) }}
                                 </div>
-                                <div class="mbs">
+                                <div class="mbs" style='position: relative'>
+                                    <div class="blocker-div" ng-show="account.confirmed && !{{ allowed(\Shared\Rights::ER_EDIT_ACCOUNTS, true) }}"></div>
                                     <span>Действия:</span>
                                     <span class="link-like margin-right" ng-click="changeDateDialog($index)">изменить дату встречи</span>
                                     <span class="link-like text-danger margin-right"  ng-click="remove(account)">удалить встречу</span>

@@ -11,6 +11,7 @@
             <td>Доход</td>
             <td>Долг</td>
             <td>Метод</td>
+            <td>Статус</td>
         </tr>
         </thead>
         <tbody>
@@ -39,6 +40,12 @@
             </td>
             <td>
                 <span ng-show='period.received > 0'>@{{ PaymentMethods[period.payment_method] }}</span>
+            </td>
+            <td>
+                <span ng-class="{
+                    'text-danger': !period.confirmed,
+                    'text-success': period.confirmed,
+                }">@{{ period.confirmed ? 'подтверждено' : 'не подтверждено' }}</span>
             </td>
         </tr>
         </tbody>

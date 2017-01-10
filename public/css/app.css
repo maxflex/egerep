@@ -29209,7 +29209,7 @@ a {
       text-align: left; }
     .accounts-table tr td .account-guard {
       z-index: 1000;
-      height: 100%;
+      height: 60px;
       width: 420px;
       position: absolute;
       left: 260px;
