@@ -79,7 +79,9 @@ class User extends Model
      */
     public static function worldwideAccess()
     {
-        return allowed(\Shared\Rights::WORLDWIDE_ACCESS) || User::fromOffice();
+        return User::fromOffice() || User::whereId(User::fromSession()->id)
+                ->whereRaw('FIND_IN_SET(' . \Shared\Rights::WORLDWIDE_ACCESS . ', rights)')
+                ->exists();
     }
 
     public static function logout()
