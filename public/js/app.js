@@ -3580,7 +3580,6 @@
     });
     $scope.svgSave = function() {
       $('#svg-modal').modal('hide');
-      $scope.form_changed = true;
     };
     $scope.yearDifference = function(year) {
       return moment().format("YYYY") - year;
