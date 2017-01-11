@@ -33,7 +33,7 @@ class VariablesProvider extends ServiceProvider
             }
             $view->with([
                 'notifications_count' => \App\Models\Notification::countUnapproved(),
-                'missed_calls_count'  => \App\Models\Service\Call::countMissed()
+                'missed_calls_count'  => 0 // временно убираем \App\Models\Service\Call::countMissed()
             ]);
         });
     }
