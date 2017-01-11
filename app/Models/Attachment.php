@@ -417,7 +417,7 @@ class Attachment extends Model
         foreach(array_merge(['', 0], User::active()->pluck('id')->all()) as $user_id) {
             $new_search = clone $search;
             $new_search->user_id = $user_id;
-            $counts['user_id'][$user_id] = static::notificationSearch($new_search)->count();
+            $counts['user'][$user_id] = static::notificationSearch($new_search)->count();
         }
         foreach(['', 'new', 'inprogress', 'ended'] as $state) {
             $new_search = clone $search;
