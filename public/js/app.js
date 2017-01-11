@@ -4458,6 +4458,9 @@
           return $interval.cancel($scope.interval);
         };
         $scope.initAudio = function(recording_id) {
+          if ($scope.is_playing) {
+            $scope.stop();
+          }
           $scope.audio = new Audio(recodringLink(recording_id));
           $scope.current_time = 0;
           $scope.prc = 0;

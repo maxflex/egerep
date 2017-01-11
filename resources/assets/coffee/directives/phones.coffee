@@ -90,6 +90,7 @@ angular.module('Egerep').directive 'phones', ->
 
         # инициализируем аудио
         $scope.initAudio = (recording_id) ->
+            $scope.stop() if $scope.is_playing
             $scope.audio = new Audio recodringLink(recording_id)
             $scope.current_time = 0
             $scope.prc = 0
