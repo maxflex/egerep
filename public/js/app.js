@@ -2849,11 +2849,11 @@
             }
           } else if (e.code === 'Enter') {
             if (this.active > 0) {
-              window.open(this.links[this.active]);
+              window.location = this.links[this.active];
             }
           } else {
             if (this.query !== '') {
-              if (this.oldquery !== this.query) {
+              if (this.oldquery !== this.query && this.query.length > 2) {
                 this.loadData();
               }
               this.oldquery = this.query;

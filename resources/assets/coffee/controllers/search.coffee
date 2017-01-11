@@ -62,9 +62,13 @@ $(document).ready ->
             this.lists = []
             this.results = 0
       , 150
-      scroll: -> #метод скролит по необходимости до нужной части результата поиска
+
+      # метод скролит по необходимости до нужной части результата поиска
+      scroll: ->
         $('#searchResult').scrollTop((this.active - 4) * 30)
-      keyup: (e) -> #обработка события набора текста
+
+      # обработка события набора текста
+      keyup: (e) ->
         if e.code == 'ArrowUp'
           e.preventDefault();
           if this.active > 0
@@ -77,10 +81,10 @@ $(document).ready ->
           if this.active > 4
             this.scroll()
         else if e.code == 'Enter'
-          window.open this.links[this.active] if this.active > 0
+          window.location = this.links[this.active] if this.active > 0
         else
           if this.query isnt ''
-            if this.oldquery != this.query
+            if this.oldquery != this.query and this.query.length > 2
               # this.loading = true
               this.loadData()
             this.oldquery = this.query
