@@ -20,9 +20,12 @@ class ContractController extends Controller
         if (! allowed(\Shared\Rights::SHOW_CONTRACT)) {
             return view('errors.not_allowed');
         }
+        $contract_html = Settings::get('contract_html');
+        $contract_html = str_replace('[salary]', User::fromSession()->salary, $contract_html);
+        $contract_html = str_replace('[salary / 2]', round(User::fromSession()->salary / 2), $contract_html);
         return view('contract.index')->with(
             ngInit([
-                'contract_html'  => Settings::get('contract_html'),
+                'contract_html'  => $contract_html,
                 'contract_date'  => Settings::get('contract_date'),
             ])
         );
