@@ -82,49 +82,42 @@ angular.module('Egerep').directive 'phones', ->
               if $scope.audio
                   $scope.current_time = angular.copy $scope.audio.currentTime
                   $scope.prc = (($scope.current_time * 100) /  $scope.audio.duration).toFixed(2)
-                  if parseInt($scope.prc) == 100
-                      $scope.is_playing_stage = 'pause'
-                      $scope.intervalCancel()
-            , 100
+                  $scope.stop() if parseInt($scope.prc) == 100
+            , 10
 
         $scope.intervalCancel = () ->
             $interval.cancel $scope.interval
 
-
-        #инициализируем аудио
+        # инициализируем аудио
         $scope.initAudio = (recording_id) ->
-            if $scope.audio
-                $scope.audio.pause()
-                $scope.audio = null
-
             $scope.audio = new Audio recodringLink(recording_id)
-            $scope.audio.play()
-            $scope.is_playing = recording_id
-            $scope.is_playing_stage = 'play'
             $scope.current_time = 0
-            $scope.intervalStart()
+            $scope.prc = 0
+            $scope.is_playing_stage = 'start'
+            $scope.is_playing = recording_id
 
-
-        #ставим на паузу
-        $scope.pause = () ->
+        # ставим на паузу
+        $scope.pause = ->
             $scope.intervalCancel()
             $scope.audio.pause() if $scope.audio
             $scope.is_playing_stage = 'pause'
 
-        #воспроизводим звук
-        $scope.play = (start) ->
-            if start
-                $scope.audio.currentTime = start
-            $scope.audio.play()
-            $scope.is_playing_stage = 'play'
-            $scope.intervalStart()
+        # воспроизводим звук
+        $scope.play = (recording_id) ->
+            $scope.initAudio(recording_id) if not $scope.isPlaying(recording_id)
+            if $scope.is_playing_stage is 'play'
+                $scope.pause()
+            else
+                $scope.audio.play()
+                $scope.is_playing_stage = 'play'
+                $scope.intervalStart()
 
-        #указатель воспроизведения
+        # указатель воспроизведения
         $scope.isPlaying = (recording_id) ->
             $scope.is_playing is recording_id
 
-        #полная остановка процесса воспроизведения
-        $scope.stop = (recording_id) ->
+        # полная остановка процесса воспроизведения
+        $scope.stop = ->
             $scope.prc = 0
             $scope.is_playing = null
             $scope.audio.pause()
@@ -132,7 +125,7 @@ angular.module('Egerep').directive 'phones', ->
             $scope.is_playing_stage = 'stop'
             $scope.intervalCancel()
 
-        #прокрутка звука
+        # прокрутка
         $scope.setCurentTime = (e) ->
             width = angular.element e.target
                     .width()

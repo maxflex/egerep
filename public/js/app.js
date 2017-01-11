@@ -4449,26 +4449,20 @@
               $scope.current_time = angular.copy($scope.audio.currentTime);
               $scope.prc = (($scope.current_time * 100) / $scope.audio.duration).toFixed(2);
               if (parseInt($scope.prc) === 100) {
-                $scope.is_playing_stage = 'pause';
-                return $scope.intervalCancel();
+                return $scope.stop();
               }
             }
-          }, 100);
+          }, 10);
         };
         $scope.intervalCancel = function() {
           return $interval.cancel($scope.interval);
         };
         $scope.initAudio = function(recording_id) {
-          if ($scope.audio) {
-            $scope.audio.pause();
-            $scope.audio = null;
-          }
           $scope.audio = new Audio(recodringLink(recording_id));
-          $scope.audio.play();
-          $scope.is_playing = recording_id;
-          $scope.is_playing_stage = 'play';
           $scope.current_time = 0;
-          return $scope.intervalStart();
+          $scope.prc = 0;
+          $scope.is_playing_stage = 'start';
+          return $scope.is_playing = recording_id;
         };
         $scope.pause = function() {
           $scope.intervalCancel();
@@ -4477,18 +4471,22 @@
           }
           return $scope.is_playing_stage = 'pause';
         };
-        $scope.play = function(start) {
-          if (start) {
-            $scope.audio.currentTime = start;
+        $scope.play = function(recording_id) {
+          if (!$scope.isPlaying(recording_id)) {
+            $scope.initAudio(recording_id);
           }
-          $scope.audio.play();
-          $scope.is_playing_stage = 'play';
-          return $scope.intervalStart();
+          if ($scope.is_playing_stage === 'play') {
+            return $scope.pause();
+          } else {
+            $scope.audio.play();
+            $scope.is_playing_stage = 'play';
+            return $scope.intervalStart();
+          }
         };
         $scope.isPlaying = function(recording_id) {
           return $scope.is_playing === recording_id;
         };
-        $scope.stop = function(recording_id) {
+        $scope.stop = function() {
           $scope.prc = 0;
           $scope.is_playing = null;
           $scope.audio.pause();
