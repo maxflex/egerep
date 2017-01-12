@@ -11,6 +11,10 @@ var elixir = require('laravel-elixir');
  |
  */
 
+fileFromBower = function(file) {
+    return 'resources/assets/bower/' + file
+}
+
  // Include JS from bower
  jsFromBower = function(scripts) {
      bower_scripts = []
@@ -27,6 +31,7 @@ elixir(function(mix) {
             proxy: 'localhost:8080'
         })
         .sass('app.scss')
+        .copy(fileFromBower('egerep-svg-metro/views/map.svg'), 'public/img/svg/map.svg')
         .coffee(['resources/assets/coffee/*.coffee', 'resources/assets/coffee/*/*.coffee'])
         .version(['css/app.css', 'js/app.js'])
         .scripts(jsFromBower([

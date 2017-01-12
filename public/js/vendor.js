@@ -51254,9 +51254,18 @@ angular.module('svgmap', []).directive('svgMap', function() {
       };
       $scope.show_quick_selects = false;
       render = function() {
+        if ('string' === typeof $scope.selected) {
+          $scope.selected = $scope.selected.split(',');
+        }
         deselectAll();
         if ($scope.selected && $scope.selected.length && _.isArray($scope.selected)) {
-          return selectAll();
+          selectAll();
+        }
+        if ($attrs.hasOwnProperty('selectable')) {
+          bindClick() && ($scope.show_quick_selects = true);
+        }
+        if ($attrs.hasOwnProperty('scalable')) {
+          return bindPinch() && ($scope.is_scalable = true);
         }
       };
       selectAll = function() {
@@ -51397,10 +51406,9 @@ angular.module('svgmap', []).directive('svgMap', function() {
           minScale: 1.2,
           maxScale: 5,
           contain: 'automatic',
-          panOnlyWhenZoomed: true,
-          animate: false
+          panOnlyWhenZoomed: true
         });
-        return $element.panzoom('zoom', 2.5, {
+        return $element.panzoom('zoom', 1.5, {
           silent: true
         });
       };
@@ -51471,18 +51479,7 @@ angular.module('svgmap', []).directive('svgMap', function() {
         }
         return results;
       };
-      return (function() {
-        if ('string' === typeof $scope.selected) {
-          $scope.selected = $scope.selected.split(',');
-        }
-        render();
-        if ($attrs.hasOwnProperty('selectable')) {
-          bindClick() && ($scope.show_quick_selects = true);
-        }
-        if ($attrs.hasOwnProperty('scalable')) {
-          return bindPinch();
-        }
-      })();
+      return render();
     }
   };
 });
