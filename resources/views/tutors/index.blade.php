@@ -17,8 +17,8 @@
 
 @section('content')
 
-<div class="row mb">
-    <div class="col-sm-3">
+<div class="row flex-list">
+    <div>
         {{-- <ng-select object='TutorStates' model='state' none-text='статус'></ng-select> --}}
         <select class="form-control" ng-model='state' ng-change="changeState()" id='change-state'>
             <option value="">статус</option>
@@ -32,7 +32,7 @@
             </option>
         </select>
     </div>
-    <div class="col-sm-3">
+    <div>
         {{-- <ng-select object='TutorStates' model='state' none-text='статус'></ng-select> --}}
         <select class="form-control" ng-model='user_id' ng-change="changeUser()" id='change-user'>
             <option value=''>пользователь</option>
@@ -52,7 +52,7 @@
         	></option>
         </select>
     </div>
-    <div class="col-sm-3">
+    <div>
         <select class="form-control" ng-model='published_state' ng-change="changePublishedSate()" id='change-published'>
             <option value="">все</option>
             <option disabled>──────────────</option>
@@ -63,8 +63,15 @@
             >@{{ label }}</option>
         </select>
     </div>
-
-    <div class="col-sm-3">
+    <div>
+        <select class="form-control" ng-model='egecentr_source' ng-change="changeSource()" id='change-source'>
+            <option value="">источник</option>
+            <option disabled>──────────────</option>
+            <option data-subtext="@{{ source_counts[0] || '' }}" value="0">ЕГЭ-Репетитор</option>
+            <option data-subtext="@{{ source_counts[1] || '' }}" value="1">ЕГЭ-Центр</option>
+        </select>
+    </div>
+    <div>
         <select class="form-control" ng-model='errors_state' ng-change="changeErrorsState()" id='change-errors'>
             <option value="">все</option>
             <option disabled>──────────────</option>
