@@ -272,4 +272,10 @@ class ExternalController extends Controller
         }
         exit("100"); /* Важно наличие этого блока, иначе наша система посчитает, что в вашем обработчике сбой */
     }
+
+    public function mangoStats($request)
+    {
+        // просто return some_data не смог хендлить в egecrm
+        echo \App\Models\Api\Mango::getStats($request->number);
+    }
 }
