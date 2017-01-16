@@ -137,8 +137,8 @@ class GraphRecalc extends Command
         $p2 = max($from, $to);
         \DB::insert("INSERT INTO distances (`from`, `to`, `distance`) VALUES (?, ?, ?)
             ON DUPLICATE KEY UPDATE distance = VALUES(distance)", [$p1, $p2, $distance]);
-        // не дублируем точки
-        // \DB::insert("INSERT INTO distances (`from`, `to`, `distance`) VALUES (?, ?, ?)
-        //     ON DUPLICATE KEY UPDATE distance = VALUES(distance)", [$p2, $p1, $distance]);
+        // не дублируем точки – update 2017 – надо дублировать точки, иначе на egerep-web неправильно сортирует по удаленности от метро
+        \DB::insert("INSERT INTO distances (`from`, `to`, `distance`) VALUES (?, ?, ?)
+            ON DUPLICATE KEY UPDATE distance = VALUES(distance)", [$p2, $p1, $distance]);
     }
 }
