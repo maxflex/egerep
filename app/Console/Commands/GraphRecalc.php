@@ -130,9 +130,9 @@ class GraphRecalc extends Command
     private static function updateDistance($from, $to, $distance) {
         // если точка назначения равна точке отправления,
         // то не считать
-        if ($from == $to) {
-            return;
-        }
+        // if ($from == $to) {
+        //     return;
+        // }
         $p1 = min($from, $to);
         $p2 = max($from, $to);
         \DB::insert("INSERT INTO distances (`from`, `to`, `distance`) VALUES (?, ?, ?)
