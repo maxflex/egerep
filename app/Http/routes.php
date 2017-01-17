@@ -7,7 +7,6 @@ Route::get('logout', 'LoginController@logout');
 Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
     Route::controller('metro', 'MetroController');
     Route::post('external/{function}', 'ExternalController@exec'); // external API controller | DEPRICATED?
-    Route::post('_external/{function}', 'ApiExternalController@exec'); // external API controller | DEPRICATED?
     Route::post('search', 'SearchController@search'); // external API controller | DEPRICATED?
 });
 
