@@ -45,7 +45,7 @@ class ExternalController extends Controller
 
     public function exec($function, Request $request)
     {
-        $this->$function($request);
+        return $this->$function($request);
     }
 
     public function requestNew($data)
@@ -275,7 +275,6 @@ class ExternalController extends Controller
 
     public function mangoStats($request)
     {
-        // просто return some_data не смог хендлить в egecrm
-        echo \App\Models\Api\Mango::getStats($request->number);
+        return \App\Models\Api\Mango::getStats($request->number);
     }
 }
