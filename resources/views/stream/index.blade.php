@@ -76,16 +76,16 @@
                     </td>
                     <td width="30%">
                         <div ng-show="s.action == 'filter'">
+                            <div ng-show="s.subjects.length">
+                                <span ng-repeat='subject_id in s.subjects'>
+                                    @{{ Subjects.all[subject_id] }}@{{ $last ? '' : ', '}}
+                                </span>
+                            </div>
                             <div>
                                 @{{ s.place ? findById(places, s.place).title : 'неважно где' }}
                             </div>
                             <div ng-show='s.sort'>
                                 по @{{ findById(sort, s.sort).title }}
-                            </div>
-                            <div ng-show="s.subjects.length">
-                                <span ng-repeat='subject_id in s.subjects'>
-                                    @{{ Subjects.all[subject_id] }}@{{ $last ? '' : ', '}}
-                                </span>
                             </div>
                             <div ng-show="s.station_id">
                                 @{{ findById(stations, s.station_id).title }}

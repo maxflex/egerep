@@ -39,5 +39,5 @@ angular
                 $scope.counts = response.data.counts
                 $scope.data   = response.data.data
                 $scope.stream = response.data.data.data
-                $rootScope.frontend_loading = false
+                $rootScope.frontend_loading = false 
                 refreshCounts()
