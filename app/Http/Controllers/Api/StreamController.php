@@ -17,6 +17,6 @@ class StreamController extends Controller
      */
     public function index()
     {
-        return Stream::orderBy('id', 'desc')->paginate(50);
+        return Stream::with('tutor')->orderBy('id', 'desc')->paginate(50);
     }
 }

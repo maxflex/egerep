@@ -3835,3 +3835,19 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
 .modal-dialog.dialog-narrow {
   width: 400px;
 }
+#stream-data {
+	.mobile-cell {
+		padding: 0.15em;
+		font-size: 1.7em;
+	}
+	table {
+		width: 100%;
+		font-size: 1em;
+		td:first-child {
+			width: 25%;
+		}
+		td:last-child {
+			padding-left:8px;
+		}
+	}
+}

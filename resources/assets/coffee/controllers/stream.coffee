@@ -1,6 +1,6 @@
 angular
     .module 'Egerep'
-    .controller 'StreamIndex', ($rootScope, $scope, $timeout, $http, Subjects) ->
+    .controller 'StreamIndex', ($rootScope, $scope, $timeout, $http, Sort, Places, Subjects) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
