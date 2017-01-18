@@ -32314,6 +32314,18 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
 .modal-dialog.dialog-narrow {
   width: 400px; }
 
+#stream-data .mobile-cell {
+  padding: 0.15em;
+  font-size: 1.7em; }
+
+#stream-data table {
+  width: 100%;
+  font-size: 1em; }
+  #stream-data table td:first-child {
+    width: 15%; }
+  #stream-data table td:last-child {
+    padding-left: 8px; }
+
 .ios7-switch {
   display: inline-block;
   position: relative;

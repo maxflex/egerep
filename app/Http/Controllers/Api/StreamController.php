@@ -17,6 +17,10 @@ class StreamController extends Controller
      */
     public function index()
     {
-        return Stream::with('tutor')->orderBy('id', 'desc')->paginate(50);
+        $search = isset($_COOKIE['stream']) ? json_decode($_COOKIE['stream']) : (object)[];
+        return [
+            'data'   => Stream::search($search)->paginate(50),
+            'counts' => Stream::counts($search)
+        ];
     }
 }

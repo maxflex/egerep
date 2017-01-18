@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use DB;
 
 class StreamController extends Controller
 {
@@ -17,6 +18,8 @@ class StreamController extends Controller
         return view('stream.index')->with(
             ngInit([
                 'page'     => $request->page,
+                'actions'  => DB::table('stream')->orderBy('action', 'asc')->groupBy('action')->pluck('action'),
+                'types'    => DB::table('stream')->orderBy('type', 'asc')->groupBy('type')->pluck('type'),
                 'sort'     => dbFactory('sort')->get(),
                 'places'   => dbFactory('places')->get(),
                 'stations' => dbFactory('stations')->get(),
