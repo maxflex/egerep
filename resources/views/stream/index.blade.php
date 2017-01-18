@@ -61,11 +61,11 @@
                             </span>
                         </div>
                         <div ng-show="s.station_id">
-                            метро: 
+                            метро:
                             @{{ findById(stations, s.station_id).title }}
                         </div>
                     </td>
-                    <td swidth="10%">
+                    <td width="10%">
                         @{{ formatDateTime(s.created_at) }}
                     </td>
                 </tr>
