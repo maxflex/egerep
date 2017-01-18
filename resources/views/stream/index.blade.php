@@ -48,11 +48,11 @@
                     <td width="30%">
                         <div>
                             место:
-                            @{{ s.place ? findById(Places, s.place).title : 'неважно где' }}
+                            @{{ s.place ? findById(places, s.place).title : 'неважно где' }}
                         </div>
                         <div ng-show='s.sort'>
                             сортировка:
-                            по @{{ findById(Sort, s.sort).title }}
+                            по @{{ findById(sort, s.sort).title }}
                         </div>
                         <div ng-show="s.subjects.length">
                             предметы:
