@@ -22,7 +22,7 @@
             <tbody>
                 <tr ng-repeat="s in stream">
                     <td class="mobile-cell" width="1%">
-                        <i ng-show="s.mobile" class="fa fa-mobile" aria-hidden="true" style='font-size: 14px; vertical-align: middle'></i>
+                        <i ng-show="s.mobile" class="fa fa-mobile" aria-hidden="true" style='font-size: 14px'></i>
                     </td>
                     <td width="10%">
                         @{{ s.google_id }}
@@ -40,7 +40,7 @@
                         @{{ s.position }}
                     </td>
                     <td width="3%">
-                        @{{ s.search }}
+                        <span ng-show='s.search'>@{{ s.search }}</span>
                     </td>
                     <td width="2%">
                         @{{ s.page }}
