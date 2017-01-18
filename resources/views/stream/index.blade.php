@@ -22,7 +22,7 @@
             <tbody>
                 <tr ng-repeat="s in stream">
                     <td class="mobile-cell" width="1%">
-                        <i ng-show="s.mobile" class="fa fa-mobile" aria-hidden="true"></i>
+                        <i ng-show="s.mobile" class="fa fa-mobile" aria-hidden="true" style='font-size: 14px; vertical-align: middle'></i>
                     </td>
                     <td width="10%">
                         @{{ s.google_id }}
@@ -46,30 +46,24 @@
                         @{{ s.page }}
                     </td>
                     <td width="30%">
-                        <table>
-                            <tr>
-                                <td>место:</td>
-                                <td>@{{ s.place ? findById(Places, s.place).title : 'неважно где' }}</td>
-                            </tr>
-                            <tr ng-show='s.sort'>
-                                <td>сортировка:</td>
-                                <td>по @{{ findById(Sort, s.sort).title }}</td>
-                            </tr>
-                            <tr ng-show="s.subjects.length">
-                                <td>предметы:</td>
-                                <td>
-                                    <span ng-repeat='subject_id in s.subjects'>
-                                        @{{ Subjects.all[subject_id] }}@{{ $last ? '' : ', '}}
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr ng-show="s.station_id">
-                                <td>метро:</td>
-                                <td>
-                                    @{{ findById(stations, s.station_id).title }}
-                                </td>
-                            </tr>
-                        </table>
+                        <div>
+                            место:
+                            @{{ s.place ? findById(Places, s.place).title : 'неважно где' }}
+                        </div>
+                        <div ng-show='s.sort'>
+                            сортировка:
+                            по @{{ findById(Sort, s.sort).title }}
+                        </div>
+                        <div ng-show="s.subjects.length">
+                            предметы:
+                            <span ng-repeat='subject_id in s.subjects'>
+                                @{{ Subjects.all[subject_id] }}@{{ $last ? '' : ', '}}
+                            </span>
+                        </div>
+                        <div ng-show="s.station_id">
+                            метро: 
+                            @{{ findById(stations, s.station_id).title }}
+                        </div>
                     </td>
                     <td swidth="10%">
                         @{{ formatDateTime(s.created_at) }}
