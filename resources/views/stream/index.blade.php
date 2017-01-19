@@ -23,12 +23,12 @@
         </select>
     </div>
     <div>
-        <select ng-model='search.type' class='selectpicker' ng-change='filter()' none-selected-text='тип действия'>
-            <option value="" data-subtext="@{{ counts.type[''] || '' }}">тип действия</option>
+        <select ng-model='search.testy' class='selectpicker' ng-change='filter()' none-selected-text='тип действия'>
+            <option data-subtext="@{{ counts.testy[''] || '' }}" value=''>тип действия</option>
             <option disabled>──────────────</option>
-            <option ng-repeat='type in types' ng-show="counts.type[type]"
-                data-subtext="@{{ counts.type[type] || '' }}"
-                value="@{{type}}">@{{ type }}</option>
+            <option ng-repeat='t in types' ng-show="counts.type[t]"
+                data-subtext="@{{ counts.type[t] || '' }}"
+                value="@{{ t }}">@{{ t }}</option>
         </select>
     </div>
 </div>
