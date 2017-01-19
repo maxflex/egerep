@@ -45,7 +45,7 @@
                 <td>позиция</td>
                 <td>поиск</td>
                 <td>страница</td>
-                <td>серп</td>
+                <td>конфигурация</td>
                 <td>время</td>
             </thead>
             <tbody>
@@ -57,7 +57,8 @@
                         @{{ s.google_id }}
                     </td>
                     <td width="8%">
-                        @{{ s.action }}
+                        <span ng-show='!s.referer'>@{{ s.action }}</span>
+                        <a ng-show='s.referer' href='s.referer'>@{{ s.action }}</a>
                     </td>
                     <td width="8%">
                         @{{ s.type  }}
@@ -66,7 +67,7 @@
                         <a ng-show="s.tutor_id" ng-href="tutors/@{{ s.tutor_id }}/edit">@{{ s.tutor_id  }}</a>
                     </td>
                     <td width="3%">
-                        @{{ s.position }}
+                        @{{ s.position }}<span ng-show='s.depth'>⟶@{{ s.depth }}</span>
                     </td>
                     <td width="3%">
                         <span ng-show='s.search'>@{{ s.search }}</span>
