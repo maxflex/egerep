@@ -23,7 +23,7 @@
         </select>
     </div>
     <div>
-        <select ng-model='search.testy' class='selectpicker' ng-change='filter()' none-selected-text='тип действия'>
+        <select ng-model='search.type' class='selectpicker' ng-change='filter()' none-selected-text='тип действия'>
             <option data-subtext="@{{ counts.testy[''] || '' }}" value=''>тип действия</option>
             <option disabled>──────────────</option>
             <option ng-repeat='t in types' ng-show="counts.type[t]"
