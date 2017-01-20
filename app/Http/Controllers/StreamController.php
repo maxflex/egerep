@@ -19,7 +19,7 @@ class StreamController extends Controller
             ngInit([
                 'page'     => $request->page,
                 'actions'  => DB::table('stream')->orderBy('action', 'asc')->groupBy('action')->pluck('action'),
-                'types'    => DB::table('stream')->orderBy('type', 'asc')->groupBy('type')->pluck('type'),
+                'types'    => DB::table('stream')->orderBy('type', 'asc')->groupBy('type')->whereNotNull('type')->pluck('type'),
                 'sort'     => dbFactory('sort')->get(),
                 'places'   => dbFactory('places')->get(),
                 'stations' => dbFactory('stations')->get(),
