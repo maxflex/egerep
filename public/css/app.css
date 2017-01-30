@@ -32327,10 +32327,10 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
     padding-left: 8px; }
 
 .table-blackborder {
-  width: auto;
-  padding: 2px 5px 2px !important; }
+  width: auto; }
   .table-blackborder td {
     border: 1px solid black;
+    padding: 2px 5px 2px !important;
     text-align: center; }
     .table-blackborder td:first-child {
       border-left: none;
@@ -32344,7 +32344,8 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
   writing-mode: vertical-lr;
   -webkit-transform: rotate(180deg);
   transform: rotate(180deg);
-  text-align: left; }
+  text-align: left;
+  height: 50px; }
 
 .ios7-switch {
   display: inline-block;

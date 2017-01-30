@@ -3854,9 +3854,9 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
 
 .table-blackborder {
     width: auto;
-    padding: 2px 5px 2px !important;
     & td {
         border: 1px solid black;
+        padding: 2px 5px 2px !important;
         text-align: center;
         &:first-child {
             border-left: none;
@@ -3875,4 +3875,5 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
     writing-mode: vertical-lr;
     transform: rotate(180deg);
     text-align: left;
+    height: 50px;
 }
