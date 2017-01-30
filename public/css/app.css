@@ -32326,6 +32326,25 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
   #stream-data table td:last-child {
     padding-left: 8px; }
 
+.table-blackborder {
+  width: auto; }
+  .table-blackborder td {
+    border: 1px solid black;
+    text-align: center; }
+    .table-blackborder td:first-child {
+      border-left: none;
+      text-align: left;
+      padding-right: 5px !important; }
+    .table-blackborder td:last-child {
+      border-right: none; }
+  .table-blackborder tr:last-child td {
+    border-bottom: none; }
+
+.vertical-text {
+  writing-mode: vertical-lr;
+  -webkit-transform: rotate(180deg);
+  transform: rotate(180deg); }
+
 .ios7-switch {
   display: inline-block;
   position: relative;

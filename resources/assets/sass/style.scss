@@ -3851,3 +3851,27 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
 		}
 	}
 }
+
+.table-blackborder {
+    width: auto;
+    & td {
+        border: 1px solid black;
+        text-align: center;
+        &:first-child {
+            border-left: none;
+            text-align: left;
+            padding-right: 5px !important;
+        }
+        &:last-child {
+            border-right: none;
+        }
+    }
+    & tr:last-child td {
+        border-bottom: none;
+    }
+}
+
+.vertical-text {
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+}

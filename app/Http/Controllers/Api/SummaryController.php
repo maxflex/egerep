@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\Console\Commands\CalcSummary;
 use App\Models\Account;
 use App\Models\Attachment;
+use App\Models\User;
 use App\Models\Tutor;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use DB;
 
 class SummaryController extends Controller
@@ -329,6 +331,43 @@ class SummaryController extends Controller
 
     public function users(Request $request)
     {
+        $return = [];
+        if ($request->type == 'months') {
+            // начинаем смотреть от этой даты и вперед
+            $date = fromDotDate($request->date_from);
+            $end_date = fromDotDate($request->date_to);
+            do {
+                $new_request = clone $request;
+                $new_request['date_from'] = dateFormat($date, true);
+
+                // если дата конца месяца больше даты конца фильтра,
+                // то устанавливаем дату конца из фильтра – иначе дату конца месяца итерации
+                $end_of_month = Carbon::parse($date)->lastOfMonth();
+                if ($end_of_month->toDateString() > $end_date) {
+                    $new_request['date_to'] = dateFormat($end_date, true);
+                } else {
+                    $new_request['date_to'] = $end_of_month->format('d.m.Y');
+                }
+                $return['data'][Carbon::parse($date)->format('m.y')] = $this->_users($new_request);
+                // переходим на начало следующего месяца
+                $date = Carbon::parse($date)->addMonth()->firstOfMonth()->toDateString();
+            } while ($date < $end_date);
+        } else {
+            foreach($request->user_ids as $user_id) {
+                $new_request = clone $request;
+                $new_request['user_ids'] = [$user_id];
+                $return['data'][User::whereId($user_id)->value('login')] = $this->_users($new_request);
+            }
+        }
+        $return['commissions'] = $this->_users($request, true);
+        return $return;
+    }
+
+    /**
+     *
+     */
+    public function _users(Request $request, $commissions = false)
+    {
         @extract(array_filter($request->all()));
 
         $return = [];
@@ -347,7 +386,6 @@ class SummaryController extends Controller
             $attachments_query->where('attachments.created_at', '<=', fromDotDate($date_to) . ' 23:59:59');
         }
 
-//        $attachments_query_without_user = clone $attachments_query;
         $commission_query = self::cloneQuery($attachments_query)->join('account_datas', function($join) {
             $join->on('attachments.tutor_id', '=', 'account_datas.tutor_id')
                 ->on('attachments.client_id', '=', 'account_datas.client_id');
@@ -359,11 +397,23 @@ class SummaryController extends Controller
             $commission_query->whereIn('attachments.user_id', $user_ids);
         }
 
+        // так как это общее для всех – возвращаем только когда нужно
+        if ($commissions) {
+            return self::cloneQuery($commission_query)->select(
+                'account_datas.date',
+                DB::raw('round(sum(if(commission > 0, commission, ' . Account::DEFAULT_COMMISSION . ' * sum))) as `sum`')
+            )->groupBy(DB::raw("DATE_FORMAT(account_datas.date, '%Y-%m')"))->get();
+        }
+
         foreach(\App\Models\Request::$states as $request_state) {
             $return['requests'][$request_state] = self::cloneQuery($request_query)->searchByState($request_state)->count();
         }
 
         $return['requests']['total'] = $request_query->count();
+
+        // "доля отказов" без учета "обоснованный отказ" и "подтвержденный обоснованный отказ"
+        $denominator = $return['requests']['total'] - $return['requests']['reasoned_deny'] - $return['requests']['checked_reasoned_deny'];
+        $return['requests']['deny_percentage'] = $denominator > 0 ? round($return['requests']['deny'] * 100 / $denominator) : 0;
 
         $return['attachments'] = [
             'total'    => self::cloneQuery($attachments_query)->count(),
@@ -376,14 +426,12 @@ class SummaryController extends Controller
                 'three_or_more_lessons' => self::cloneQuery($attachments_query)->archived()->hasLessonsWithMissing('>=3')->count(),
             ],
         ];
-        foreach(\App\Models\User::real()->pluck('id')->all() as $id) {
-            $return['attachments']['users'][$id] = self::cloneQuery($attachments_query)->whereUserId($id)->count();
-        }
 
-        $return['commissions'] = self::cloneQuery($commission_query)->select(
-            'account_datas.date',
-            DB::raw('round(sum(if(commission > 0, commission, ' . Account::DEFAULT_COMMISSION . ' * sum))) as `sum`')
-        )->groupBy(DB::raw("DATE_FORMAT(account_datas.date, '%Y-%m')"))->get();
+        // доля от стыковок
+        $denominator = $return['attachments']['total'];
+        $return['attachments']['archived']['no_lessons_percentage'] = $denominator > 0 ? round($return['attachments']['archived']['no_lessons'] * 100 / $denominator) : 0;
+        $return['attachments']['archived']['one_lesson_percentage'] = $denominator > 0 ? round($return['attachments']['archived']['one_lesson'] * 100 / $denominator) : 0;
+        $return['attachments']['archived']['two_lessons_percentage'] = $denominator > 0 ? round($return['attachments']['archived']['two_lessons'] * 100 / $denominator) : 0;
 
         //
         // ЭФФЕКТИВНОСТЬ
@@ -392,13 +440,6 @@ class SummaryController extends Controller
                         + (0.65 * $return['attachments']['newest'])
                         + (0.1 * $return['attachments']['archived']['one_lesson'])
                         + (0.15 * $return['attachments']['archived']['two_lessons']);
-
-//        $denominator = 0;
-//        foreach (self::cloneQuery($attachments_query)->select('tutor_id', 'client_id')->groupBy('tutor_id', 'client_id')->get() as $a) {
-//            $denominator += (self::cloneQuery($attachments_query)->where('tutor_id', $a->tutor_id)->where('client_id', $a->client_id)->count()
-//                            / self::cloneQuery($attachments_query_without_user)->where('tutor_id', $a->tutor_id)->where('client_id', $a->client_id)->count());
-//        }
-//        $denominator += $denied_requests->count();
 
         $attachments_with_request_list = self::cloneQuery($attachments_query)->join('request_lists as rl', 'request_list_id', '=', 'rl.id')->without(['review', 'archive']);
         $denominator = 0;

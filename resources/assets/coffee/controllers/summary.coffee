@@ -6,7 +6,10 @@ angular
         $timeout ->
             $scope.search = {}
             $scope.search.user_ids = [$scope.user.id.toString()] if not $scope.allowed_all
-            $timeout -> $('#change-user').selectpicker 'refresh'
+            $scope.search.type = 'months' if not $scope.search.type
+            # for debug $scope.search.date_from = '01.05.2016'
+            # for debug $scope.search.date_to = '31.07.2016'
+            $timeout -> $('#change-user, #change-type').selectpicker 'refresh'
         , 500
 
         $scope.update = ->
