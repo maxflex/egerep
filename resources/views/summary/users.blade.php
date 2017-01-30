@@ -27,18 +27,27 @@
                     </div>
                 </div>
                 <div class="col-sm-12">
-                    <select ng-disabled='!allowed_all' class="form-control selectpicker" multiple id='change-user'
-                        ng-model='search.user_ids' data-none-selected-text="пользователь">
-                        <option
-                            ng-repeat="user in UserService.getAll()"
-                            value="@{{ user.id }}"
-                            data-content="<span style='color: @{{ user.color || 'black' }}'>@{{ user.login }}</span>"
-                        ></option>
-                        <option
-                                ng-repeat="user in UserService.getBannedUsers()"
+                    <div class="form-group">
+                        <select ng-disabled='!allowed_all' class="form-control selectpicker" multiple id='change-user'
+                            ng-model='search.user_ids' data-none-selected-text="пользователь">
+                            <option
+                                ng-repeat="user in UserService.getAll()"
                                 value="@{{ user.id }}"
                                 data-content="<span style='color: @{{ user.color || 'black' }}'>@{{ user.login }}</span>"
-                        ></option>
+                            ></option>
+                            <option
+                                    ng-repeat="user in UserService.getBannedUsers()"
+                                    value="@{{ user.id }}"
+                                    data-content="<span style='color: @{{ user.color || 'black' }}'>@{{ user.login }}</span>"
+                            ></option>
+                        </select>
+                    </div>
+                </div>
+                <div class='col-sm-12'>
+                    <select class='form-control selectpicker' id='change-type'
+                        ng-model='search.type' data-none-selected-text='по месяцам'>
+                        <option value='months'>по месяцам</option>
+                        <option value='users'>по пользователям</option>
                     </select>
                 </div>
                 <div class="col-sm-12" style='margin-top: 8px'>

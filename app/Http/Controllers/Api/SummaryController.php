@@ -347,7 +347,23 @@ class SummaryController extends Controller
             $attachments_query->where('attachments.created_at', '<=', fromDotDate($date_to) . ' 23:59:59');
         }
 
-//        $attachments_query_without_user = clone $attachments_query;
+        if (isset($type)) {
+            switch ($type) {
+                case 'months':
+                    $request_query->groupBy(DB::raw('year(requests.created_at)'))
+                        ->groupBy(\DB::raw('month(requests.created_at)'))
+                        ->addSelect(\DB::raw('year(requests.created_at) as year', 'month(requests.created_at) as month'));
+                    $attachments_query->groupBy(\DB::raw('year(attachments.created_at)'))
+                        ->groupBy(\DB::raw('month(attachments.created_at)'))
+                        ->addSelect(\DB::raw('year(attachments.created_at) as year, month(attachments.created_at) as month'));
+                    break;
+                case 'users':
+                    $request_query->groupBy(\DB::raw('requests.user_id'))->addSelect('requests.user_id');
+                    $attachments_query->groupBy(\DB::raw('attachments.user_id'))->addSelect('attachments.user_id');
+                    break;
+            }
+        }
+
         $commission_query = self::cloneQuery($attachments_query)->join('account_datas', function($join) {
             $join->on('attachments.tutor_id', '=', 'account_datas.tutor_id')
                 ->on('attachments.client_id', '=', 'account_datas.client_id');
@@ -376,9 +392,9 @@ class SummaryController extends Controller
                 'three_or_more_lessons' => self::cloneQuery($attachments_query)->archived()->hasLessonsWithMissing('>=3')->count(),
             ],
         ];
-        foreach(\App\Models\User::real()->pluck('id')->all() as $id) {
-            $return['attachments']['users'][$id] = self::cloneQuery($attachments_query)->whereUserId($id)->count();
-        }
+//        foreach(\App\Models\User::real()->pluck('id')->all() as $id) {
+//            $return['attachments']['users'][$id] = self::cloneQuery($attachments_query)->whereUserId($id)->count();
+//        }
 
         $return['commissions'] = self::cloneQuery($commission_query)->select(
             'account_datas.date',
