@@ -32327,14 +32327,14 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
     padding-left: 8px; }
 
 .table-blackborder {
-  width: auto; }
+  width: auto;
+  padding: 2px 5px 2px !important; }
   .table-blackborder td {
     border: 1px solid black;
     text-align: center; }
     .table-blackborder td:first-child {
       border-left: none;
-      text-align: left;
-      padding-right: 5px !important; }
+      text-align: left; }
     .table-blackborder td:last-child {
       border-right: none; }
   .table-blackborder tr:last-child td {
@@ -32343,7 +32343,8 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
 .vertical-text {
   writing-mode: vertical-lr;
   -webkit-transform: rotate(180deg);
-  transform: rotate(180deg); }
+  transform: rotate(180deg);
+  text-align: left; }
 
 .ios7-switch {
   display: inline-block;
