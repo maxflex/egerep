@@ -99,7 +99,13 @@ class ClientsController extends Controller
     {
         $client = Client::find($id);
         $client->update($request->input());
-        return $client->fresh();
+        $client = $client->fresh();
+        $client->requests->each(function ($request) {
+            $request->lists->each(function ($list) {
+                $list->append(['tutors']);
+            });
+        });
+        return $client;
     }
 
     /**
