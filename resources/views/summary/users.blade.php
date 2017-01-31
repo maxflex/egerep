@@ -43,7 +43,7 @@
                         </select>
                     </div>
                 </div>
-                <div class='col-sm-12'>
+                <div class="col-sm-12">
                     <select class='form-control selectpicker' id='change-type'
                         ng-model='search.type' data-none-selected-text='по месяцам'>
                         <option value='months'>по месяцам</option>
@@ -59,30 +59,139 @@
 
     <div class="row" ng-if='stats'>
         <div class="col-sm-12">
-            <div class="result-line">Всего обработано заявок – @{{ stats.requests.total }}:</div>
-            <div ng-repeat="(key, name) in RequestStates">
-                @{{ name }} – @{{ stats.requests[key] }}
-            </div>
-
-            <div class="result-line">Всего стыковок – @{{ stats.attachments.total }}:</div>
-            <div>новых – @{{ stats.attachments.newest }}</div>
-            <div>рабочих – @{{ stats.attachments.active }}</div>
-            <div>завершенных (занятий нет) – @{{ stats.attachments.archived.no_lessons }}</div>
-            <div>завершенных (1 занятие) – @{{ stats.attachments.archived.one_lesson }}</div>
-            <div>завершенных (2 занятия) – @{{ stats.attachments.archived.two_lessons }}</div>
-            <div>завершенных (3 и более занятий) – @{{ stats.attachments.archived.three_or_more_lessons }}</div>
-
-            <div class="result-line">Распределение стыковок по пользователям:</div>
-            <div ng-repeat='(user_id, count) in stats.attachments.users' ng-show='count'>
-                @{{ UserService.getLogin(user_id) }} – @{{ count }}
-            </div>
-
-            <div class="result-line">Эффективность:</div>
-            <div>Общая конверсия заявок в покупающего клиента – @{{ stats.efficency.conversion | number }}</div>
-            <div>Средний прогноз среди рабочих и завершенных (3+) – @{{ stats.efficency.forecast | number }} руб.</div>
-            <div>Средняя заявка – @{{ stats.efficency.request_avg | number }} руб.</div>
-            <div>Средняя стыковка – @{{ stats.efficency.attachment_avg | number }} руб.</div>
-            <div>Общая комиссия – @{{ stats.efficency.total_commission | number }} руб.</div>
+            <table class='table table-divlike table-blackborder'>
+                <tr>
+                    <td></td>
+                    <td ng-repeat='(title, s) in stats.data' style='width: 40px'>
+                        <span class="vertical-text">@{{ title }}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        всего обработано заявок
+                    </td>
+                    <td ng-repeat='s in stats.data'>
+                        @{{ s.requests.total | hideZero }}
+                    </td>
+                </tr>
+                <tr ng-repeat="(key, name) in RequestStates">
+                    <td>
+                        @{{ name }}
+                    </td>
+                    <td ng-repeat='s in stats.data'>
+                        @{{ s.requests[key] | hideZero }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        доля отказов
+                    </td>
+                    <td ng-repeat='s in stats.data'>
+                        @{{ s.requests.deny_percentage | hideZero }}<span ng-show='s.requests.deny_percentage | hideZero'>%</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        всего стыковок
+                    </td>
+                    <td ng-repeat='s in stats.data'>
+                        @{{ s.attachments.total | hideZero }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        новых
+                    </td>
+                    <td ng-repeat='s in stats.data'>
+                        @{{ s.attachments.newest | hideZero }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        рабочих
+                    </td>
+                    <td ng-repeat='s in stats.data'>
+                        @{{ s.attachments.active | hideZero }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        завершенных (занятий нет)
+                    </td>
+                    <td ng-repeat='s in stats.data'>
+                        @{{ s.attachments.archived.no_lessons | hideZero }}
+                        <span class='text-gray' ng-show='s.attachments.archived.no_lessons | hideZero'><br>@{{ s.attachments.archived.no_lessons_percentage }}%</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        завершенных (1 занятие)
+                    </td>
+                    <td ng-repeat='s in stats.data'>
+                        @{{ s.attachments.archived.one_lesson | hideZero }}
+                        <span class='text-gray' ng-show='s.attachments.archived.one_lesson | hideZero'><br>@{{ s.attachments.archived.one_lesson_percentage }}%</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        завершенных (2 занятия)
+                    </td>
+                    <td ng-repeat='s in stats.data'>
+                        @{{ s.attachments.archived.two_lessons | hideZero }}
+                        <span class='text-gray' ng-show='s.attachments.archived.two_lessons | hideZero'><br>@{{ s.attachments.archived.two_lessons_percentage }}%</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        завершенных (3 и более занятий)
+                    </td>
+                    <td ng-repeat='s in stats.data'>
+                        @{{ s.attachments.archived.three_or_more_lessons | hideZero }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        общая конверсия заявок в покупающего клиента
+                    </td>
+                    <td ng-repeat='s in stats.data'>
+                        @{{ s.efficency.conversion | hideZero | number }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        средний прогноз среди рабочих и завершенных (3+)
+                    </td>
+                    <td ng-repeat='s in stats.data'>
+                        @{{ s.efficency.forecast | hideZero | number }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        средняя заявка
+                    </td>
+                    <td ng-repeat='s in stats.data'>
+                        @{{ s.efficency.request_avg | hideZero | number }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        средняя стыковка
+                    </td>
+                    <td ng-repeat='s in stats.data'>
+                        @{{ s.efficency.attachment_avg | hideZero | number }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        общая комиссия
+                    </td>
+                    <td ng-repeat='s in stats.data'>
+                        @{{ s.efficency.total_commission | hideZero | number }}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-sm-12">
             <div class="result-line">Распределение комиссии по месяцам:</div>
             <div ng-repeat='commission in stats.commissions'>
                 <span style='display: inline-block; width: 150px'>@{{ monthYear(commission.date) }}</span> @{{ commission.sum | number }}
