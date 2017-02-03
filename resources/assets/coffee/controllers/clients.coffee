@@ -62,6 +62,21 @@ angular
                     $scope.client = response;
                     $scope.loadMarkers()
                     $scope.ajaxEnd()
+                    $timeout ->
+                        reselect()
+
+        reselect = ->
+            if $scope.selected_request
+                _.each $scope.client.requests, (request) ->
+                    $scope.selectRequest request, true if $scope.selected_request.id is request.id
+
+            if $scope.selected_list
+                _.each $scope.selected_request.lists, (list) ->
+                    $scope.setList list, true if $scope.selected_list.id is list.id
+
+            if $scope.selected_attachment
+                _.each $scope.selected_list.attachments, (attachment) ->
+                    $scope.selectAttachment attachment if $scope.selected_attachment.id is attachment.id
 
         # Save everything
         $scope.save = ->
@@ -134,6 +149,7 @@ angular
                 Archive.save
                     attachment_id: $scope.selected_attachment.id
                 , (response) ->
+                    rebindMasks()
                     $scope.selected_attachment.archive = response
 
         $scope.toggleReview = ->
@@ -161,17 +177,17 @@ angular
         $scope.addList = ->
             $scope.dialog('add-subject')
 
-        $scope.setList = (list) ->
+        $scope.setList = (list, update) ->
             $scope.selected_list = list
             $scope.showListMap() if $scope.list_map
-            delete $scope.selected_attachment
+            delete $scope.selected_attachment if not update
 
         $scope.listExists = (subject_id) ->
             _.findWhere($scope.selected_request.lists, {subject_id: parseInt(subject_id)}) isnt undefined
 
-        $scope.selectRequest = (request) ->
+        $scope.selectRequest = (request, update) ->
             $scope.selected_request = request
-            delete $scope.selected_list
+            delete $scope.selected_list if not update
 
         $scope.addListSubject = ->
             RequestList.save
