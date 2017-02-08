@@ -198,9 +198,9 @@
             </div>
 
             <div style="margin-top: 20px; ">
-                <span ng-show="!stats.efficency.data.length && !explaination_loading" ng-click="getExplanation()" class="link-like">показать расшифровку</span>
+                <span ng-show="!stats.efficency.length && !explaination_loading" ng-click="getExplanation()" class="link-like">показать расшифровку</span>
                 <span ng-show="explaination_loading" class="link-like">загрузка данных...</span>
-                <table ng-show="!explaination_loading && stats.efficency.data.length" class="table" style="font-size: 0.8em;">
+                <table ng-show="!explaination_loading && stats.efficency.length" class="table" style="font-size: 0.8em;">
                     <thead class="bold">
                     <tr>
                         <td align="left">Cтыковка</td>
@@ -216,7 +216,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat-start="request in stats.efficency.data" ng-if="!request.attachments.length">
+                        <tr ng-repeat-start="request in stats.efficency" ng-if="!request.attachments.length">
                             <td align="left" colspan="6" width="44%"></td>
                             <td width='20%'>
                                 @{{ UserService.getLogin(request.user_id) }}

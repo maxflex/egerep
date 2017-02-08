@@ -24,7 +24,7 @@ angular
             $http.post 'api/summary/users/explain', $scope.search
             .then (response) ->
                 $rootScope.explaination_loading = false
-                $scope.stats.efficency.data = response.data
+                $scope.stats.efficency = response.data
 
         $scope.monthYear = (date) ->
             date = date.split(".")
@@ -33,7 +33,7 @@ angular
             moment(date).format('MMMM YYYY')
 
         $scope.sumEfficency = ->
-            sum = _.reduce $scope.stats.efficency.data, (sum, request) ->
+            sum = _.reduce $scope.stats.efficency, (sum, request) ->
                 _.each request.attachments, (attachment) ->
                     sum += attachment.rate
                 sum
@@ -42,7 +42,7 @@ angular
             sum.toFixed(2)
 
         $scope.sumShare = ->
-            sum = _.reduce $scope.stats.efficency.data, (sum, request) ->
+            sum = _.reduce $scope.stats.efficency, (sum, request) ->
                 if request.attachments.length
                     _.each request.attachments, (attachment) ->
                         sum += attachment.share
