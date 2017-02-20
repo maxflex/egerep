@@ -176,17 +176,17 @@
             <textarea class="md-input" ng-model="tutor.price"></textarea>
         </md-input-container>
 
-        <section class='green-section'>
+        <section>
             <div class="row">
                 <div class="col-sm-6">
                     <div class="row">
-                        <div class="col-sm-4">
+                        <div class="col-sm-5">
                             <md-input-container class="md-block" style="margin-top: 20px">
-                                <label>Опубликованная цена</label>
+                                <label>Опубликованная цена <published-field></label>
                                 <textarea class="md-input digits-only" ng-model="tutor.public_price"></textarea>
                             </md-input-container>
                         </div>
-                        <div class="col-sm-3" style="text-align:right;">
+                        <div class="col-sm-2" style="text-align:right;">
                             <span class="ng-grey" style="position: relative; top: 27px" ng-show='tutor.public_price > 0'>
                                 <ng-pluralize count='tutor.public_price' when="{
                                                                              'one': 'рубль',
@@ -213,7 +213,7 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <md-input-container class="md-block" style="margin-top: 20px">
-                                <label>Минимальная стоимость выезда</label>
+                                <label>Минимальная стоимость выезда <published-field></label>
                                 <textarea class="md-input digits-only" ng-model="tutor.departure_price"></textarea>
                             </md-input-container>
                         </div>
@@ -230,22 +230,22 @@
                 </div>
             </div>
             <md-input-container class="md-block" style="margin: 20px 0 0">
-                <label>Опубликованное описание</label>
+                <label>Опубликованное описание <published-field></label>
                 <textarea class="md-input" ng-model="tutor.public_desc"></textarea>
             </md-input-container>
         </section>
 
         <h4>ОБЩИЕ СВЕДЕНИЯ</h4>
         <md-input-container class="md-block" style="margin-top: 20px">
-            <label>Образование (вуз, факультет, аспирантура, с годами)</label>
+            <label>Образование (вуз, факультет, аспирантура, с годами) <published-field></label>
             <textarea class="md-input" ng-model="tutor.education"></textarea>
         </md-input-container>
         <md-input-container class="md-block" style="margin-top: 20px">
-            <label>Степени, разряды, заслуги</label>
+            <label>Степени, разряды, заслуги <published-field></label>
             <textarea class="md-input" ng-model="tutor.achievements"></textarea>
         </md-input-container>
         <md-input-container class="md-block" style="margin-top: 20px">
-            <label>Опыт работы преподавателем в учебных заведениях, настоящее место работы</label>
+            <label>Опыт работы преподавателем в учебных заведениях, настоящее место работы <published-field></label>
             <textarea class="md-input" ng-model="tutor.experience"></textarea>
         </md-input-container>
         {{--<md-input-container class="md-block" style="margin-top: 20px">--}}
@@ -261,7 +261,7 @@
             <textarea class="md-input" ng-model="tutor.students_category"></textarea>
         </md-input-container>
         <md-input-container class="md-block" style="margin-top: 20px">
-            <label>Предпочтения по предметам, опыт подготовки к ЕГЭ и ОГЭ</label>
+            <label>Предпочтения по предметам, опыт подготовки к ЕГЭ и ОГЭ <published-field></label>
             <textarea class="md-input" ng-model="tutor.preferences"></textarea>
         </md-input-container>
         <md-input-container class="md-block" style="margin-top: 20px">
@@ -288,11 +288,11 @@
                 <textarea class="md-input" ng-model="tutor.comment_extended"></textarea>
             </md-input-container>
 
-            <section class='blue-section'>
+            <section>
                 <div class="row">
                     <div class="col-sm-12">
                         <md-input-container class="md-block" style="margin-top: 20px; margin-bottom: 0">
-                            <label>Опубликованное описание на сайте ЕГЭ-Центра</label>
+                            <label>Опубликованное описание на сайте ЕГЭ-Центра <published-field in-ege-centr></label>
                             <textarea class="md-input" ng-model="tutor.description"></textarea>
                         </md-input-container>
                     </div>

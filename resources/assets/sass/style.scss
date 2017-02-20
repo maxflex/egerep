@@ -3877,3 +3877,19 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
     text-align: left;
     height: 50px;
 }
+
+.published-field {
+	display: none;
+	padding: 0 4px 1px;
+	background: $green_main;
+	color: #fff;
+	border-radius: 4px;
+
+	&.in-ege-centr{
+		background: $blue;
+	}
+
+	.md-input-has-value &, .md-input-focused & {
+		display: inline-block;
+	}
+}

@@ -1,0 +1,1 @@
+<span class='published-field' ng-class='{"in-ege-centr" : inEgeCentr}'>опубликовано</span>

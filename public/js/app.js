@@ -266,27 +266,6 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').factory('Model', function($resource) {
-    return $resource('api/models/:id', {}, {
-      update: {
-        method: 'PUT'
-      }
-    });
-  }).controller("ModelsIndex", function($scope, $timeout, Model) {
-    return $scope.models = Model.query();
-  }).controller("ModelsForm", function($scope, $timeout, $interval, Model) {
-    return $timeout(function() {
-      if ($scope.id > 0) {
-        return $scope.model = Model.get({
-          id: $scope.id
-        });
-      }
-    });
-  });
-
-}).call(this);
-
-(function() {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   angular.module('Egerep').controller('AccountsHiddenCtrl', function($scope, Grades, Attachment) {
@@ -1254,7 +1233,7 @@
       return $scope.current_page = $scope.page;
     });
   }).controller("ClientsForm", function($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, AttachmentStates, ReviewScores, Archive, Review, ApiService, UserService, RecommendationService, AttachmentService, AttachmentVisibility, Marker, YesNo, Checked) {
-    var bindDroppable, bindTutorMarkerEvents, filterMarkers, rebindDraggable, repaintChosen, saveSelectedList, showClientOnMap, showTutorsOnMap, unsetAllMarkers, unsetSelected;
+    var bindDroppable, bindTutorMarkerEvents, filterMarkers, rebindDraggable, repaintChosen, reselect, saveSelectedList, showClientOnMap, showTutorsOnMap, unsetAllMarkers, unsetSelected;
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
     $scope.is_dragging_teacher = false;
@@ -1279,8 +1258,34 @@
       return $scope.client.$update().then(function(response) {
         $scope.client = response;
         $scope.loadMarkers();
-        return $scope.ajaxEnd();
+        $scope.ajaxEnd();
+        return $timeout(function() {
+          return reselect();
+        });
       });
+    };
+    reselect = function() {
+      if ($scope.selected_request) {
+        _.each($scope.client.requests, function(request) {
+          if ($scope.selected_request.id === request.id) {
+            return $scope.selectRequest(request, true);
+          }
+        });
+      }
+      if ($scope.selected_list) {
+        _.each($scope.selected_request.lists, function(list) {
+          if ($scope.selected_list.id === list.id) {
+            return $scope.setList(list, true);
+          }
+        });
+      }
+      if ($scope.selected_attachment) {
+        return _.each($scope.selected_list.attachments, function(attachment) {
+          if ($scope.selected_attachment.id === attachment.id) {
+            return $scope.selectAttachment(attachment);
+          }
+        });
+      }
     };
     $scope.save = function() {
       filterMarkers();
@@ -1361,6 +1366,7 @@
         return Archive.save({
           attachment_id: $scope.selected_attachment.id
         }, function(response) {
+          rebindMasks();
           return $scope.selected_attachment.archive = response;
         });
       }
@@ -1401,21 +1407,25 @@
     $scope.addList = function() {
       return $scope.dialog('add-subject');
     };
-    $scope.setList = function(list) {
+    $scope.setList = function(list, update) {
       $scope.selected_list = list;
       if ($scope.list_map) {
         $scope.showListMap();
       }
-      return delete $scope.selected_attachment;
+      if (!update) {
+        return delete $scope.selected_attachment;
+      }
     };
     $scope.listExists = function(subject_id) {
       return _.findWhere($scope.selected_request.lists, {
         subject_id: parseInt(subject_id)
       }) !== void 0;
     };
-    $scope.selectRequest = function(request) {
+    $scope.selectRequest = function(request, update) {
       $scope.selected_request = request;
-      return delete $scope.selected_list;
+      if (!update) {
+        return delete $scope.selected_list;
+      }
     };
     $scope.addListSubject = function() {
       RequestList.save({
@@ -2946,7 +2956,7 @@
       $rootScope.explaination_loading = true;
       return $http.post('api/summary/users/explain', $scope.search).then(function(response) {
         $rootScope.explaination_loading = false;
-        return $scope.stats.efficency.data = response.data;
+        return $scope.stats.efficency = response.data;
       });
     };
     $scope.monthYear = function(date) {
@@ -2957,7 +2967,7 @@
     };
     $scope.sumEfficency = function() {
       var sum;
-      sum = _.reduce($scope.stats.efficency.data, function(sum, request) {
+      sum = _.reduce($scope.stats.efficency, function(sum, request) {
         _.each(request.attachments, function(attachment) {
           return sum += attachment.rate;
         });
@@ -2967,7 +2977,7 @@
     };
     $scope.sumShare = function() {
       var sum;
-      sum = _.reduce($scope.stats.efficency.data, function(sum, request) {
+      sum = _.reduce($scope.stats.efficency, function(sum, request) {
         if (request.attachments.length) {
           _.each(request.attachments, function(attachment) {
             return sum += attachment.share;
@@ -3827,6 +3837,376 @@
 }).call(this);
 
 (function() {
+  angular.module('Egerep').factory('Model', function($resource) {
+    return $resource('api/models/:id', {}, {
+      update: {
+        method: 'PUT'
+      }
+    });
+  }).controller("ModelsIndex", function($scope, $timeout, Model) {
+    return $scope.models = Model.query();
+  }).controller("ModelsForm", function($scope, $timeout, $interval, Model) {
+    return $timeout(function() {
+      if ($scope.id > 0) {
+        return $scope.model = Model.get({
+          id: $scope.id
+        });
+      }
+    });
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').value('Approved', {
+    0: 'не подтвержден',
+    1: 'подтвержден'
+  }).value('Confirmed', {
+    0: 'подтвердить',
+    1: 'подтверждено'
+  }).value('Months', {
+    1: 'январь',
+    2: 'февраль',
+    3: 'март',
+    4: 'апрель',
+    5: 'май',
+    6: 'июнь',
+    7: 'июль',
+    8: 'август',
+    9: 'сентябрь',
+    10: 'октябрь',
+    11: 'ноябрь',
+    12: 'декабрь'
+  }).value('Notify', ['напомнить', 'не напоминать']).value('AttachmentErrors', {
+    1: 'в стыковке не указан класс',
+    2: 'в стыковке не указан предмет',
+    3: 'не указаны условия стыковки',
+    4: 'дата архивации должна быть позже даты стыковки',
+    5: 'не указаны детали архивации',
+    6: 'прогноз и занятия не сочетаются',
+    7: 'прогноз и занятия не сочетаются',
+    8: 'при наличии занятий к проводке стыковка не может быть скрыта',
+    9: 'дата архивации не совпадает с датой последнего занятия',
+    10: 'возможно стыковку можно скрыть',
+    11: 'возможно стыковку можно скрыть',
+    12: 'в скрытой стыковке дата архивации должна совпадать с датой последнего занятия',
+    13: 'в скрытой стыковке без занятий между датами стыковки и архивации должно быть 7 дней',
+    14: 'если архивация отсутствует, стыковка не может быть скрыта',
+    15: 'стыковка, у которой дата архивации позже даты последнего расчета не может быть скрыта',
+    16: 'слишком маленький прогноз',
+    17: 'слишком большой прогноз'
+  }).value('ReviewErrors', {
+    1: 'не стоит оценка к отзыву',
+    2: 'нет подписи к опубликованному отзыву',
+    3: 'нет текста отзыва к опубликованному отзыву'
+  }).value('TutorErrors', {
+    1: 'нет оригинала фото',
+    2: 'нет обрезанного фото',
+    3: 'цена не установлена',
+    4: 'нет меток и выезда'
+  }).value('LogTypes', {
+    create: 'создание',
+    update: 'обновление',
+    "delete": 'удаление'
+  }).value('Recommendations', {
+    1: {
+      text: 'У этого репетитора уже было несколько расчетов, поэтому ему можно доверить длительное обучение, требующееся данному клиенту',
+      type: 0
+    },
+    2: {
+      text: 'У этого репетитора был всего 1 расчет и ему можно доверить длительное обучение, но лучше поискать более проверенные варианты',
+      type: 1
+    },
+    3: {
+      text: 'С этим репетитором не было встреч и есть клиенты, за которых он еще не рассчитался. Отдавать этого клиента категорически нельзя',
+      type: 2
+    },
+    4: {
+      text: 'С этим репетитором не было встреч и у него нет активных клиентов. Отдавать ему клиента можно, но только в крайнем случае',
+      type: 1
+    },
+    5: {
+      text: 'У этого репетитора уже было несколько расчетов, поэтому ему можно доверить данного клиента',
+      type: 0
+    },
+    6: {
+      text: 'У этого репетитора был всего 1 расчет, то есть у него средний кредитный рейтинг. Если более проверенных репетиторов нет, ему можно доверить этого клиента',
+      type: 1
+    },
+    7: {
+      text: 'С этим репетитором не было встреч и есть клиенты, за которых он еще не рассчитался. Отдавать этого репетитора можно в самом крайнем случае',
+      type: 2
+    },
+    8: {
+      text: 'С этим репетитором не было встреч и у него нет активных клиентов. Риск сотрудничества средний, поэтому работать с репетитором можно, если нет других вариантов',
+      type: 1
+    },
+    9: {
+      text: 'У этого репетитора высокий кредитный рейтинг, но конец учебного года лучше использовать для проверки неизвестных репетиторов',
+      type: 1
+    },
+    10: {
+      text: 'Этому репетитору мы не доверяем, но сейчас отличное время для его проверки. Если сотрудничество будет успешным, то мы будем рекомендовать в следующем году как проверенного. Если он не заплатит, то невыплаты будут минимальными и репетитора мы закроем навсегда, в чем великая польза.',
+      type: 0
+    },
+    11: {
+      text: 'С 10-классниками нужно быть особенно аккуратными и этот репетитор в данном случае рекомендован',
+      type: 0
+    },
+    12: {
+      text: 'С этим репетитором была всего 1 встреча, поэтому давать его ученику 10 класса будет риском. Сделайте все, чтобы избежать этого, но если не получается – давать можно',
+      type: 1
+    },
+    13: {
+      text: 'С этим репетитором не было встреч и есть клиенты, за которых он еще не рассчитался. Нужно сделать все, чтобы 10-классник его не получил, так как 10 классы всегда продолжают заниматься и в 11 классе. Давать этого репетитора категорически нельзя',
+      type: 2
+    },
+    14: {
+      text: 'Этот репетитор для компании новый. Давать 10-класснику можно, но в самом крайнем случае',
+      type: 2
+    }
+  }).value('RecommendationTypes', ['очень рекомендован', 'средне рекомендован', 'не рекомендован']).value('DebtTypes', {
+    0: 'не доплатил',
+    1: 'переплатил'
+  }).value('Weekdays', {
+    0: 'пн',
+    1: 'вт',
+    2: 'ср',
+    3: 'чт',
+    4: 'пт',
+    5: 'сб',
+    6: 'вс'
+  }).value('Destinations', {
+    r_k: 'репетитор едет к клиенту',
+    k_r: 'клиент едет к репетитору'
+  }).value('Workplaces', {
+    0: 'не активен в системе ЕГЭ-Центре',
+    1: 'активен в системе ЕГЭ-Центра',
+    2: 'ведет занятия в ЕГЭ-Центре',
+    3: 'ранее работал в ЕГЭ-Центре'
+  }).value('Genders', {
+    male: 'мужской',
+    female: 'женский'
+  }).value('YesNo', {
+    0: 'нет',
+    1: 'да'
+  }).value('TutorStates', {
+    0: 'не установлено',
+    1: 'на проверку',
+    2: 'к закрытию',
+    3: 'закрыто',
+    4: 'к одобрению',
+    5: 'одобрено'
+  }).value('TutorPublishedStates', {
+    0: 'не опубликован',
+    1: 'опубликован'
+  }).value('PaymentMethods', {
+    0: 'стандартный расчет',
+    1: 'яндекс.деньги',
+    2: 'перевод на карту'
+  }).value('ArchiveStates', {
+    impossible: 'невозможно',
+    possible: 'возможно'
+  }).value('ReviewStates', {
+    unpublished: 'не опубликован',
+    published: 'опубликован'
+  }).value('Existance', ['созданные', 'требующие создания']).value('Presence', [['есть', 'отсутствует'], ['есть', 'нет']]).value('AttachmentVisibility', {
+    0: 'показано',
+    1: 'скрыто'
+  }).value('AttachmentStates', {
+    "new": 'новые',
+    inprogress: 'рабочие',
+    ended: 'завершенные'
+  }).value('AttachmentState', {
+    "new": 'новый',
+    inprogress: 'рабочий',
+    ended: 'завершенный'
+  }).value('Checked', ['не проверено', 'проверено']).value('ReviewScores', {
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+    6: 6,
+    7: 7,
+    8: 8,
+    9: 9,
+    10: 10,
+    11: 'отзыв не собирать',
+    12: 'отзыв собрать позже'
+  }).value('Grades', {
+    1: '1 класс',
+    2: '2 класс',
+    3: '3 класс',
+    4: '4 класс',
+    5: '5 класс',
+    6: '6 класс',
+    7: '7 класс',
+    8: '8 класс',
+    9: '9 класс',
+    10: '10 класс',
+    11: '11 класс',
+    12: 'студенты',
+    13: 'остальные'
+  }).value('Subjects', {
+    all: {
+      1: 'математика',
+      2: 'физика',
+      3: 'химия',
+      4: 'биология',
+      5: 'информатика',
+      6: 'русский',
+      7: 'литература',
+      8: 'обществознание',
+      9: 'история',
+      10: 'английский',
+      11: 'география'
+    },
+    full: {
+      1: 'Математика',
+      2: 'Физика',
+      3: 'Химия',
+      4: 'Биология',
+      5: 'Информатика',
+      6: 'Русский язык',
+      7: 'Литература',
+      8: 'Обществознание',
+      9: 'История',
+      10: 'Английский язык',
+      11: 'География'
+    },
+    dative: {
+      1: 'математике',
+      2: 'физике',
+      3: 'химии',
+      4: 'биологии',
+      5: 'информатике',
+      6: 'русскому языку',
+      7: 'литературе',
+      8: 'обществознанию',
+      9: 'истории',
+      10: 'английскому языку',
+      11: 'географии'
+    },
+    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин', 'Г'],
+    three_letters: {
+      1: 'МАТ',
+      2: 'ФИЗ',
+      3: 'ХИМ',
+      4: 'БИО',
+      5: 'ИНФ',
+      6: 'РУС',
+      7: 'ЛИТ',
+      8: 'ОБЩ',
+      9: 'ИСТ',
+      10: 'АНГ',
+      11: 'ГЕО'
+    },
+    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf', 'geo']
+  }).value('Branches', {
+    1: {
+      code: 'TRG',
+      full: 'Тургеневская',
+      short: 'ТУР',
+      address: 'Мясницкая 40с1',
+      color: '#FBAA33'
+    },
+    2: {
+      code: 'PVN',
+      full: 'Проспект Вернадского',
+      short: 'ВЕР',
+      address: '',
+      color: '#EF1E25'
+    },
+    3: {
+      code: 'BGT',
+      full: 'Багратионовская',
+      short: 'БАГ',
+      address: '',
+      color: '#019EE0'
+    },
+    5: {
+      code: 'IZM',
+      full: 'Измайловская',
+      short: 'ИЗМ',
+      address: '',
+      color: '#0252A2'
+    },
+    6: {
+      code: 'OPL',
+      full: 'Октябрьское поле',
+      short: 'ОКТ',
+      address: '',
+      color: '#B61D8E'
+    },
+    7: {
+      code: 'RPT',
+      full: 'Рязанский Проспект',
+      short: 'РЯЗ',
+      address: '',
+      color: '#B61D8E'
+    },
+    8: {
+      code: 'VKS',
+      full: 'Войковская',
+      short: 'ВОЙ',
+      address: '',
+      color: '#029A55'
+    },
+    9: {
+      code: 'ORH',
+      full: 'Орехово',
+      short: 'ОРЕ',
+      address: '',
+      color: '#029A55'
+    },
+    11: {
+      code: 'UJN',
+      full: 'Южная',
+      short: 'ЮЖН',
+      address: '',
+      color: '#ACADAF'
+    },
+    12: {
+      code: 'PER',
+      full: 'Перово',
+      short: 'ПЕР',
+      address: '',
+      color: '#FFD803'
+    },
+    13: {
+      code: 'KLG',
+      full: 'Калужская',
+      short: 'КЛЖ',
+      address: 'Научный проезд 8с1',
+      color: '#C07911'
+    },
+    14: {
+      code: 'BRT',
+      full: 'Братиславская',
+      short: 'БРА',
+      address: '',
+      color: '#B1D332'
+    },
+    15: {
+      code: 'MLD',
+      full: 'Молодежная',
+      short: 'МОЛ',
+      address: '',
+      color: '#0252A2'
+    },
+    16: {
+      code: 'VLD',
+      full: 'Владыкино',
+      short: 'ВЛА',
+      address: '',
+      color: '#ACADAF'
+    }
+  });
+
+}).call(this);
+
+(function() {
   angular.module('Egerep').directive('comments', function() {
     return {
       restrict: 'E',
@@ -4592,6 +4972,19 @@
 }).call(this);
 
 (function() {
+  angular.module('Egerep').directive('publishedField', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/published-field',
+      scope: {
+        inEgeCentr: '@'
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
   angular.module('Egerep').directive('securityNotification', function() {
     return {
       restrict: 'E',
@@ -4744,355 +5137,6 @@
       },
       templateUrl: 'directives/user'
     };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').value('Approved', {
-    0: 'не подтвержден',
-    1: 'подтвержден'
-  }).value('Confirmed', {
-    0: 'подтвердить',
-    1: 'подтверждено'
-  }).value('Months', {
-    1: 'январь',
-    2: 'февраль',
-    3: 'март',
-    4: 'апрель',
-    5: 'май',
-    6: 'июнь',
-    7: 'июль',
-    8: 'август',
-    9: 'сентябрь',
-    10: 'октябрь',
-    11: 'ноябрь',
-    12: 'декабрь'
-  }).value('Notify', ['напомнить', 'не напоминать']).value('AttachmentErrors', {
-    1: 'в стыковке не указан класс',
-    2: 'в стыковке не указан предмет',
-    3: 'не указаны условия стыковки',
-    4: 'дата архивации должна быть позже даты стыковки',
-    5: 'не указаны детали архивации',
-    6: 'прогноз и занятия не сочетаются',
-    7: 'прогноз и занятия не сочетаются',
-    8: 'при наличии занятий к проводке стыковка не может быть скрыта',
-    9: 'дата архивации не совпадает с датой последнего занятия',
-    10: 'возможно стыковку можно скрыть',
-    11: 'возможно стыковку можно скрыть',
-    12: 'в скрытой стыковке дата архивации должна совпадать с датой последнего занятия',
-    13: 'в скрытой стыковке без занятий между датами стыковки и архивации должно быть 7 дней',
-    14: 'если архивация отсутствует, стыковка не может быть скрыта',
-    15: 'стыковка, у которой дата архивации позже даты последнего расчета не может быть скрыта',
-    16: 'слишком маленький прогноз',
-    17: 'слишком большой прогноз'
-  }).value('ReviewErrors', {
-    1: 'не стоит оценка к отзыву',
-    2: 'нет подписи к опубликованному отзыву',
-    3: 'нет текста отзыва к опубликованному отзыву'
-  }).value('TutorErrors', {
-    1: 'нет оригинала фото',
-    2: 'нет обрезанного фото',
-    3: 'цена не установлена',
-    4: 'нет меток и выезда'
-  }).value('LogTypes', {
-    create: 'создание',
-    update: 'обновление',
-    "delete": 'удаление'
-  }).value('Recommendations', {
-    1: {
-      text: 'У этого репетитора уже было несколько расчетов, поэтому ему можно доверить длительное обучение, требующееся данному клиенту',
-      type: 0
-    },
-    2: {
-      text: 'У этого репетитора был всего 1 расчет и ему можно доверить длительное обучение, но лучше поискать более проверенные варианты',
-      type: 1
-    },
-    3: {
-      text: 'С этим репетитором не было встреч и есть клиенты, за которых он еще не рассчитался. Отдавать этого клиента категорически нельзя',
-      type: 2
-    },
-    4: {
-      text: 'С этим репетитором не было встреч и у него нет активных клиентов. Отдавать ему клиента можно, но только в крайнем случае',
-      type: 1
-    },
-    5: {
-      text: 'У этого репетитора уже было несколько расчетов, поэтому ему можно доверить данного клиента',
-      type: 0
-    },
-    6: {
-      text: 'У этого репетитора был всего 1 расчет, то есть у него средний кредитный рейтинг. Если более проверенных репетиторов нет, ему можно доверить этого клиента',
-      type: 1
-    },
-    7: {
-      text: 'С этим репетитором не было встреч и есть клиенты, за которых он еще не рассчитался. Отдавать этого репетитора можно в самом крайнем случае',
-      type: 2
-    },
-    8: {
-      text: 'С этим репетитором не было встреч и у него нет активных клиентов. Риск сотрудничества средний, поэтому работать с репетитором можно, если нет других вариантов',
-      type: 1
-    },
-    9: {
-      text: 'У этого репетитора высокий кредитный рейтинг, но конец учебного года лучше использовать для проверки неизвестных репетиторов',
-      type: 1
-    },
-    10: {
-      text: 'Этому репетитору мы не доверяем, но сейчас отличное время для его проверки. Если сотрудничество будет успешным, то мы будем рекомендовать в следующем году как проверенного. Если он не заплатит, то невыплаты будут минимальными и репетитора мы закроем навсегда, в чем великая польза.',
-      type: 0
-    },
-    11: {
-      text: 'С 10-классниками нужно быть особенно аккуратными и этот репетитор в данном случае рекомендован',
-      type: 0
-    },
-    12: {
-      text: 'С этим репетитором была всего 1 встреча, поэтому давать его ученику 10 класса будет риском. Сделайте все, чтобы избежать этого, но если не получается – давать можно',
-      type: 1
-    },
-    13: {
-      text: 'С этим репетитором не было встреч и есть клиенты, за которых он еще не рассчитался. Нужно сделать все, чтобы 10-классник его не получил, так как 10 классы всегда продолжают заниматься и в 11 классе. Давать этого репетитора категорически нельзя',
-      type: 2
-    },
-    14: {
-      text: 'Этот репетитор для компании новый. Давать 10-класснику можно, но в самом крайнем случае',
-      type: 2
-    }
-  }).value('RecommendationTypes', ['очень рекомендован', 'средне рекомендован', 'не рекомендован']).value('DebtTypes', {
-    0: 'не доплатил',
-    1: 'переплатил'
-  }).value('Weekdays', {
-    0: 'пн',
-    1: 'вт',
-    2: 'ср',
-    3: 'чт',
-    4: 'пт',
-    5: 'сб',
-    6: 'вс'
-  }).value('Destinations', {
-    r_k: 'репетитор едет к клиенту',
-    k_r: 'клиент едет к репетитору'
-  }).value('Workplaces', {
-    0: 'не активен в системе ЕГЭ-Центре',
-    1: 'активен в системе ЕГЭ-Центра',
-    2: 'ведет занятия в ЕГЭ-Центре',
-    3: 'ранее работал в ЕГЭ-Центре'
-  }).value('Genders', {
-    male: 'мужской',
-    female: 'женский'
-  }).value('YesNo', {
-    0: 'нет',
-    1: 'да'
-  }).value('TutorStates', {
-    0: 'не установлено',
-    1: 'на проверку',
-    2: 'к закрытию',
-    3: 'закрыто',
-    4: 'к одобрению',
-    5: 'одобрено'
-  }).value('TutorPublishedStates', {
-    0: 'не опубликован',
-    1: 'опубликован'
-  }).value('PaymentMethods', {
-    0: 'стандартный расчет',
-    1: 'яндекс.деньги',
-    2: 'перевод на карту'
-  }).value('ArchiveStates', {
-    impossible: 'невозможно',
-    possible: 'возможно'
-  }).value('ReviewStates', {
-    unpublished: 'не опубликован',
-    published: 'опубликован'
-  }).value('Existance', ['созданные', 'требующие создания']).value('Presence', [['есть', 'отсутствует'], ['есть', 'нет']]).value('AttachmentVisibility', {
-    0: 'показано',
-    1: 'скрыто'
-  }).value('AttachmentStates', {
-    "new": 'новые',
-    inprogress: 'рабочие',
-    ended: 'завершенные'
-  }).value('AttachmentState', {
-    "new": 'новый',
-    inprogress: 'рабочий',
-    ended: 'завершенный'
-  }).value('Checked', ['не проверено', 'проверено']).value('ReviewScores', {
-    1: 1,
-    2: 2,
-    3: 3,
-    4: 4,
-    5: 5,
-    6: 6,
-    7: 7,
-    8: 8,
-    9: 9,
-    10: 10,
-    11: 'отзыв не собирать',
-    12: 'отзыв собрать позже'
-  }).value('Grades', {
-    1: '1 класс',
-    2: '2 класс',
-    3: '3 класс',
-    4: '4 класс',
-    5: '5 класс',
-    6: '6 класс',
-    7: '7 класс',
-    8: '8 класс',
-    9: '9 класс',
-    10: '10 класс',
-    11: '11 класс',
-    12: 'студенты',
-    13: 'остальные'
-  }).value('Subjects', {
-    all: {
-      1: 'математика',
-      2: 'физика',
-      3: 'химия',
-      4: 'биология',
-      5: 'информатика',
-      6: 'русский',
-      7: 'литература',
-      8: 'обществознание',
-      9: 'история',
-      10: 'английский',
-      11: 'география'
-    },
-    full: {
-      1: 'Математика',
-      2: 'Физика',
-      3: 'Химия',
-      4: 'Биология',
-      5: 'Информатика',
-      6: 'Русский язык',
-      7: 'Литература',
-      8: 'Обществознание',
-      9: 'История',
-      10: 'Английский язык',
-      11: 'География'
-    },
-    dative: {
-      1: 'математике',
-      2: 'физике',
-      3: 'химии',
-      4: 'биологии',
-      5: 'информатике',
-      6: 'русскому языку',
-      7: 'литературе',
-      8: 'обществознанию',
-      9: 'истории',
-      10: 'английскому языку',
-      11: 'географии'
-    },
-    short: ['М', 'Ф', 'Р', 'Л', 'А', 'Ис', 'О', 'Х', 'Б', 'Ин', 'Г'],
-    three_letters: {
-      1: 'МАТ',
-      2: 'ФИЗ',
-      3: 'ХИМ',
-      4: 'БИО',
-      5: 'ИНФ',
-      6: 'РУС',
-      7: 'ЛИТ',
-      8: 'ОБЩ',
-      9: 'ИСТ',
-      10: 'АНГ',
-      11: 'ГЕО'
-    },
-    short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf', 'geo']
-  }).value('Branches', {
-    1: {
-      code: 'TRG',
-      full: 'Тургеневская',
-      short: 'ТУР',
-      address: 'Мясницкая 40с1',
-      color: '#FBAA33'
-    },
-    2: {
-      code: 'PVN',
-      full: 'Проспект Вернадского',
-      short: 'ВЕР',
-      address: '',
-      color: '#EF1E25'
-    },
-    3: {
-      code: 'BGT',
-      full: 'Багратионовская',
-      short: 'БАГ',
-      address: '',
-      color: '#019EE0'
-    },
-    5: {
-      code: 'IZM',
-      full: 'Измайловская',
-      short: 'ИЗМ',
-      address: '',
-      color: '#0252A2'
-    },
-    6: {
-      code: 'OPL',
-      full: 'Октябрьское поле',
-      short: 'ОКТ',
-      address: '',
-      color: '#B61D8E'
-    },
-    7: {
-      code: 'RPT',
-      full: 'Рязанский Проспект',
-      short: 'РЯЗ',
-      address: '',
-      color: '#B61D8E'
-    },
-    8: {
-      code: 'VKS',
-      full: 'Войковская',
-      short: 'ВОЙ',
-      address: '',
-      color: '#029A55'
-    },
-    9: {
-      code: 'ORH',
-      full: 'Орехово',
-      short: 'ОРЕ',
-      address: '',
-      color: '#029A55'
-    },
-    11: {
-      code: 'UJN',
-      full: 'Южная',
-      short: 'ЮЖН',
-      address: '',
-      color: '#ACADAF'
-    },
-    12: {
-      code: 'PER',
-      full: 'Перово',
-      short: 'ПЕР',
-      address: '',
-      color: '#FFD803'
-    },
-    13: {
-      code: 'KLG',
-      full: 'Калужская',
-      short: 'КЛЖ',
-      address: 'Научный проезд 8с1',
-      color: '#C07911'
-    },
-    14: {
-      code: 'BRT',
-      full: 'Братиславская',
-      short: 'БРА',
-      address: '',
-      color: '#B1D332'
-    },
-    15: {
-      code: 'MLD',
-      full: 'Молодежная',
-      short: 'МОЛ',
-      address: '',
-      color: '#0252A2'
-    },
-    16: {
-      code: 'VLD',
-      full: 'Владыкино',
-      short: 'ВЛА',
-      address: '',
-      color: '#ACADAF'
-    }
   });
 
 }).call(this);
