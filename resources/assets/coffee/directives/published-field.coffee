@@ -1,7 +1,7 @@
 angular.module 'Egerep'
 .directive 'publishedField', ->
     restrict: 'E'
-#    replace: true
+    replace: true
     templateUrl: 'directives/published-field'
-    scope:
-        inEgeCentr: '@'
+    controller: ($scope, $attrs) ->
+        $scope.inEgeCentr = $attrs.hasOwnProperty 'inEgeCentr'
