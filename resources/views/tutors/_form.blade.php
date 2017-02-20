@@ -182,7 +182,7 @@
                     <div class="row">
                         <div class="col-sm-5">
                             <md-input-container class="md-block" style="margin-top: 20px">
-                                <label>Опубликованная цена <published-field></label>
+                                <label>Опубликованная цена</label>
                                 <textarea class="md-input digits-only" ng-model="tutor.public_price"></textarea>
                             </md-input-container>
                         </div>
