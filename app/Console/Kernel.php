@@ -49,6 +49,7 @@ class Kernel extends ConsoleKernel
         Commands\ResetMarkers::class,
         Commands\TransferTutorDeparture::class,
         Commands\SvgAddStations::class,
+        Commands\TutorDistancesRecalc::class,
     ];
 
     /**
@@ -61,5 +62,6 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('summary:calc')->dailyAt('02:30');
         $schedule->command('mango:sync')->everyMinute();
+        $schedule->command('tutor_distances:recalc')->dailyAt('03:00');
     }
 }
