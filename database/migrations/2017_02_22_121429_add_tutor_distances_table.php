@@ -19,7 +19,6 @@ class AddTutorDistancesTable extends Migration
             $table->integer('station_id')->unsigned()->index();
             $table->float('marker_minutes')->nullable();
             $table->float('metro_minutes')->nullable();
-            $table->unique(['tutor_id', 'station_id']);
         });
     }
 

@@ -49,13 +49,17 @@ class TutorDistancesRecalc extends Command
 
         foreach ($tutor_ids as $tutor_id) {
             foreach ($station_ids as $station_id) {
-                $distances = static::getDistances($tutor_id, $station_id);
-                \DB::table('tutor_distances')->insert([
-                    'tutor_id'       => $tutor_id,
-                    'station_id'     => $station_id,
-                    'metro_minutes'  => $distances->metro_minutes,
-                    'marker_minutes' => $distances->marker_minutes,
-                ]);
+                foreach (['green', 'red'] as $marker_type) {
+                    $distances = static::getDistances($tutor_id, $station_id, $marker_type);
+                    if ($distances->marker_minutes) {
+                        \DB::table('tutor_distances')->insert([
+                            'tutor_id'       => $tutor_id,
+                            'station_id'     => $station_id,
+                            'marker_minutes' => $distances->marker_minutes,
+                            'marker_type'    => $marker_type
+                        ]);
+                    }
+                }
             }
             $bar->advance();
         }
@@ -63,20 +67,15 @@ class TutorDistancesRecalc extends Command
         $this->info('Distances recalculated');
     }
 
-    private static function getDistances($tutor_id, $station_id) {
+    private static function getDistances($tutor_id, $station_id, $marker_type) {
         return Tutor::whereId($tutor_id)->select(\DB::raw(
             "
-            (select min(distance)
-                from distances
-                where
-                    exists (select 1 from tutor_departures td where td.tutor_id = tutors.id and `from` = td.station_id) and `to` = {$station_id}
-            ) as metro_minutes,
             (select min(d.distance + m.minutes)
                  from markers mr
                  join metros m on m.marker_id = mr.id
                  join distances d on d.from = m.station_id and d.to = {$station_id}
                  where
-                    mr.markerable_id = tutors.id and mr.markerable_type = 'App\\\\Models\\\\Tutor' and mr.type='green'
+                    mr.markerable_id = tutors.id and mr.markerable_type = 'App\\\\Models\\\\Tutor' and mr.type='{$marker_type}'
             ) as marker_minutes
         "))->first();
     }
