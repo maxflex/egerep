@@ -4626,9 +4626,10 @@
   angular.module('Egerep').directive('publishedField', function() {
     return {
       restrict: 'E',
+      replace: true,
       templateUrl: 'directives/published-field',
-      scope: {
-        inEgeCentr: '@'
+      controller: function($scope, $attrs) {
+        return $scope.inEgeCentr = $attrs.hasOwnProperty('inEgeCentr');
       }
     };
   });
