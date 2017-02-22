@@ -42,41 +42,42 @@ class TutorDistancesRecalc extends Command
         \DB::table('tutor_distances')->truncate();
 
 
-        $tutor_ids = \DB::table('tutors')->where('public_desc', '!=', '')->select('id')->pluck('id');
+        $tutor_ids = \DB::table('tutors')->where('public_desc', '!=', '')->pluck('id');
+        $station_ids = Station::pluck('id');
 
-        $this->info(count($tutor_ids));
+        $bar = $this->output->createProgressBar(count($tutor_ids));
+
         foreach ($tutor_ids as $tutor_id) {
-            foreach (Station::all()->pluck('id') as $station_id) {
+            foreach ($station_ids as $station_id) {
                 $distances = static::getDistances($tutor_id, $station_id);
                 \DB::table('tutor_distances')->insert([
-                    'tutor_id'          => $tutor_id,
-                    'station_id'        => $station_id,
-                    'metro_distance'    => $distances->metro_distance,
-                    'marker_distance'   => $distances->marker_distance,
+                    'tutor_id'       => $tutor_id,
+                    'station_id'     => $station_id,
+                    'metro_minutes'  => $distances->metro_minutes,
+                    'marker_minutes' => $distances->marker_minutes,
                 ]);
             }
-            $this->info('tutor:'.$tutor_id);
+            $bar->advance();
         }
+        $bar->finish();
         $this->info('Distances recalculated');
     }
 
     private static function getDistances($tutor_id, $station_id) {
         return Tutor::whereId($tutor_id)->select(\DB::raw(
             "
-            IFNULL(
-                (select min(distance) 
-                from distances 
-                where 
+            (select min(distance)
+                from distances
+                where
                     exists (select 1 from tutor_departures td where td.tutor_id = tutors.id and `from` = td.station_id) and `to` = {$station_id}
-            ), 999999) as metro_distance,
-            IFNULL( 
-                (select min(d.distance + m.minutes) 
-                 from markers mr 
-                 join metros m on m.marker_id = mr.id 
-                 join distances d on d.from = m.station_id and d.to = {$station_id} 
-                 where 
+            ) as metro_minutes,
+            (select min(d.distance + m.minutes)
+                 from markers mr
+                 join metros m on m.marker_id = mr.id
+                 join distances d on d.from = m.station_id and d.to = {$station_id}
+                 where
                     mr.markerable_id = tutors.id and mr.markerable_type = 'App\\\\Models\\\\Tutor' and mr.type='green'
-            ), 999999) as marker_distance
+            ) as marker_minutes
         "))->first();
     }
 }
