@@ -116,7 +116,13 @@ angular.module 'Egerep'
 
         # получить репетиторов, которые выезжают на ближайшую станцию метро клиента
         $scope.intersectingTutors = ->
-            _.where($scope.tutors, { intersecting: true })
+            _.where $scope.tutors, { intersecting: true}
+
+        $scope.sortedIntersectingTutors = ->
+            intersecting            = $scope.intersectingTutors()
+            has_mutual_stations     = _.sortBy(_.filter(intersecting, (tutor) -> tutor.has_mutual_stations), (tutor) -> tutor.minutes)
+            hasnot_mutual_stations  = _.sortBy(_.difference(intersecting, has_mutual_stations), (tutor) -> tutor.minutes)
+            _.union has_mutual_stations, hasnot_mutual_stations
 
         # получить репетиторов, которые НЕ доезжают до ближайшей станции
         $scope.notIntersectingTutors = ->

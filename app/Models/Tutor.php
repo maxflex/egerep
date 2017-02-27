@@ -358,6 +358,26 @@ class Tutor extends Service\Person
         return public_path() . static::UPLOAD_DIR . $this->id . $addon . '.' . $this->photo_extension;
     }
 
+    public function hasMutualStations($client_marker)
+    {
+        $mutual_metro = false;
+        if ($this->markers->count()) {
+            foreach($this->markers as $marker) {
+                # сначала проверяем, есть ли общие ближайшие станции метро
+                foreach (((object)$client_marker)->metros as $metro) {
+                    $mutual_metro = $marker->metros->where('station_id', $metro['station_id'])->first();
+
+                    # если нашлось общее метро
+                    if ($mutual_metro !== null) {
+                        break 2;
+                    }
+                }
+            }
+        }
+
+        return $mutual_metro;
+    }
+
     /**
      * Получить минимальное время между всеми метками репетитора и меткой клиента
      */
@@ -370,20 +390,8 @@ class Tutor extends Service\Person
         $min_minutes = PHP_INT_MAX;
         $client_marker = (object)$client_marker;
 
-        foreach($this->markers as $marker) {
-            # сначала проверяем, есть ли общие ближайшие станции метро
-            foreach ($client_marker->metros as $metro) {
-                $mutual_metro = $marker->metros->where('station_id', $metro['station_id'])->first();
-
-                # если нашлось общее метро
-                if ($mutual_metro !== null) {
-                    break 2;
-                }
-            }
-        }
-
         # если есть общие станции метро
-        if ($mutual_metro) {
+        if ($this->has_mutual_stations) {
             # применяем стандартный метод расчета времени между 2-мя метками
             foreach($this->markers as $marker) {
                 $new_min_minutes = Metro::minutesBetweenMarkers($marker, $client_marker);

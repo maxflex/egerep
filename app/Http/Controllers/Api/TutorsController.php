@@ -229,6 +229,7 @@ class TutorsController extends Controller
             $tutor->append(['clients_count', 'meeting_count', 'svg_map']);
 
             # Получить минуты
+            $tutor->has_mutual_stations = $tutor->hasMutualStations($request->client_marker);
             $tutor->minutes = $tutor->getMinutes($request->client_marker);
          }
 

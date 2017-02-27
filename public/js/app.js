@@ -266,27 +266,6 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').factory('Model', function($resource) {
-    return $resource('api/models/:id', {}, {
-      update: {
-        method: 'PUT'
-      }
-    });
-  }).controller("ModelsIndex", function($scope, $timeout, Model) {
-    return $scope.models = Model.query();
-  }).controller("ModelsForm", function($scope, $timeout, $interval, Model) {
-    return $timeout(function() {
-      if ($scope.id > 0) {
-        return $scope.model = Model.get({
-          id: $scope.id
-        });
-      }
-    });
-  });
-
-}).call(this);
-
-(function() {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   angular.module('Egerep').controller('AccountsHiddenCtrl', function($scope, Grades, Attachment) {
@@ -825,6 +804,19 @@
       return _.where($scope.tutors, {
         intersecting: true
       });
+    };
+    $scope.sortedIntersectingTutors = function() {
+      var has_mutual_stations, hasnot_mutual_stations, intersecting;
+      intersecting = $scope.intersectingTutors();
+      has_mutual_stations = _.sortBy(_.filter(intersecting, function(tutor) {
+        return tutor.has_mutual_stations;
+      }), function(tutor) {
+        return tutor.minutes;
+      });
+      hasnot_mutual_stations = _.sortBy(_.difference(intersecting, has_mutual_stations), function(tutor) {
+        return tutor.minutes;
+      });
+      return _.union(has_mutual_stations, hasnot_mutual_stations);
     };
     $scope.notIntersectingTutors = function() {
       return _.filter($scope.tutors, function(tutor) {
@@ -3853,6 +3845,27 @@
       $('#gmap-modal').modal('hide');
       filterMarkers();
     };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').factory('Model', function($resource) {
+    return $resource('api/models/:id', {}, {
+      update: {
+        method: 'PUT'
+      }
+    });
+  }).controller("ModelsIndex", function($scope, $timeout, Model) {
+    return $scope.models = Model.query();
+  }).controller("ModelsForm", function($scope, $timeout, $interval, Model) {
+    return $timeout(function() {
+      if ($scope.id > 0) {
+        return $scope.model = Model.get({
+          id: $scope.id
+        });
+      }
+    });
   });
 
 }).call(this);
