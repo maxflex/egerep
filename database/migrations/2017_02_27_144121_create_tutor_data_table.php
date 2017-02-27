@@ -19,6 +19,7 @@ class CreateTutorDataTable extends Migration
             $table->integer('reviews_count');
             $table->text('svg_map')->nullable();
             $table->date('first_attachment_date')->nullable();
+            $table->float('review_avg');
         });
     }
 

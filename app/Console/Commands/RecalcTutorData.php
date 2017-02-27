@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use DB;
+use App\Models\Review;
 
 class RecalcTutorData extends Command
 {
@@ -53,15 +54,44 @@ class RecalcTutorData extends Command
                 'clients_count' => $data->clients_count,
                 'first_attachment_date' => $data->first_attachment_date,
                 'svg_map' => $data->svg_map,
-                // 'reviews_count' => DB::table('reviews')
-                //                     ->join('attachments', 'attachments.id', '=', 'attachment_id')
-                //                     ->join('archives', 'archives.attachment_id', '=', 'attachments.id')
-                //                     ->where('tutor_id', $tutor_id)
-                //                     ->where('reviews.state', 'published')
-                //                     ->whereBetween('score', [1, 10])
+                'reviews_count' => DB::table('reviews')
+                                    ->join('attachments', 'attachments.id', '=', 'attachment_id')
+                                    ->join('archives', 'archives.attachment_id', '=', 'attachments.id')
+                                    ->where('tutor_id', $tutor_id)
+                                    ->where('reviews.state', 'published')
+                                    ->whereBetween('score', [1, 10])->count(),
+                'review_avg' => static::_getReviewAvg($tutor_id),
             ]);
             $bar->advance();
         }
         $bar->finish();
+    }
+
+    private static function _getReviewAvg($tutor_id)
+    {
+        $data = DB::table('tutors')->whereId($tutor_id)->select('lk', 'tb', 'js')->first();
+        $query = Review::join('attachments', 'attachments.id', '=', 'attachment_id')->where('tutor_id', $tutor_id)->whereBetween('score', [1, 10]);
+        $sum = $query->newQuery()->sum('reviews.score');
+        $count = $query->newQuery()->count();
+        switch($data->js) {
+            case 6:
+            case 10: {
+                $js = 8;
+                break;
+            }
+            case 8: {
+                $js = 10;
+                break;
+            }
+            case 7: {
+                $js = 9;
+                break;
+            }
+            default: {
+                $js = $data->js;
+            }
+        }
+        $avg = (4 * (($data->lk + $data->tb + $js) / 3) + $sum)/(4 + $count);
+        return $avg;
     }
 }
