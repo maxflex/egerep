@@ -40,7 +40,7 @@ class TutorDistancesRecalc extends Command
     public function handle()
     {
         \DB::table('tutor_distances')->truncate();
-
+        ini_set('memory_limit', -1);
 
         $tutor_ids = \DB::table('tutors')->where('public_desc', '!=', '')->pluck('id');
         $station_ids = Station::pluck('id');
@@ -50,13 +50,13 @@ class TutorDistancesRecalc extends Command
         foreach ($tutor_ids as $tutor_id) {
             foreach ($station_ids as $station_id) {
                 foreach (['green', 'red'] as $marker_type) {
-                    $distances = static::getDistances($tutor_id, $station_id, $marker_type);
-                    if ($distances->marker_minutes) {
+                    $minutes = static::getMinutes($tutor_id, $station_id, $marker_type);
+                    if ($minutes) {
                         \DB::table('tutor_distances')->insert([
-                            'tutor_id'       => $tutor_id,
-                            'station_id'     => $station_id,
-                            'marker_minutes' => $distances->marker_minutes,
-                            'marker_type'    => $marker_type
+                            'tutor_id'    => $tutor_id,
+                            'station_id'  => $station_id,
+                            'minutes'     => $minutes,
+                            'marker_type' => $marker_type
                         ]);
                     }
                 }
@@ -67,7 +67,7 @@ class TutorDistancesRecalc extends Command
         $this->info('Distances recalculated');
     }
 
-    private static function getDistances($tutor_id, $station_id, $marker_type) {
+    private static function getMinutes($tutor_id, $station_id, $marker_type) {
         return Tutor::whereId($tutor_id)->select(\DB::raw(
             "
             (select min(d.distance + m.minutes)
@@ -76,7 +76,7 @@ class TutorDistancesRecalc extends Command
                  join distances d on d.from = m.station_id and d.to = {$station_id}
                  where
                     mr.markerable_id = tutors.id and mr.markerable_type = 'App\\\\Models\\\\Tutor' and mr.type='{$marker_type}'
-            ) as marker_minutes
-        "))->first();
+            ) as minutes
+        "))->value('minutes');
     }
 }
