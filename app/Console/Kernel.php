@@ -50,6 +50,7 @@ class Kernel extends ConsoleKernel
         Commands\TransferTutorDeparture::class,
         Commands\SvgAddStations::class,
         Commands\TutorDistancesRecalc::class,
+        Commands\RecalcTutorData::class,
     ];
 
     /**
