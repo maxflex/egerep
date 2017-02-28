@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use DB;
 use App\Models\Review;
+use App\Models\Tutor;
 
 class RecalcTutorData extends Command
 {
@@ -61,6 +62,7 @@ class RecalcTutorData extends Command
                                     ->where('reviews.state', 'published')
                                     ->whereBetween('score', [1, 10])->count(),
                 'review_avg' => static::_getReviewAvg($tutor_id),
+                'photo_exists' => static::_photoExists($tutor_id),
             ]);
             $bar->advance();
         }
@@ -93,5 +95,15 @@ class RecalcTutorData extends Command
         }
         $avg = (4 * (($data->lk + $data->tb + $js) / 3) + $sum)/(4 + $count);
         return $avg;
+    }
+
+    private static function _photoExists($tutor_id)
+    {
+        $photo_extension = DB::table('tutors')->whereId($tutor_id)->value('photo_extension');
+        if ($photo_extension) {
+            $filename = public_path() . Tutor::UPLOAD_DIR . $tutor_id . '.' . $photo_extension;
+            return file_exists($filename);
+        }
+        return false;
     }
 }
