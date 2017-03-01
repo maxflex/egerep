@@ -50,6 +50,7 @@ class Kernel extends ConsoleKernel
         Commands\TransferTutorDeparture::class,
         Commands\SvgAddStations::class,
         Commands\TutorDistancesRecalc::class,
+        Commands\RecalcTutorData::class,
     ];
 
     /**
@@ -62,6 +63,9 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('summary:calc')->dailyAt('02:30');
         $schedule->command('mango:sync')->everyMinute();
+
+        // вспомогательные таблицы для ege-repetitor.ru
         $schedule->command('tutor_distances:recalc')->dailyAt('03:00');
+        $schedule->command('recalc:tutor_data')->dailyAt('03:30');
     }
 }
