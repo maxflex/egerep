@@ -13,7 +13,7 @@
     <span ng-show='_tutor.departure_price > 0'>+ выезд от @{{ _tutor.departure_price }} р.</span>
 </div>
 <div class="info-line">
-    <plural count='_tutor.clients_count' type='student' none-text='учеников нет'></plural>
+    <plural count='_tutor.data.clients_count' type='student' none-text='учеников нет'></plural>
     <span class='remove-space' ng-hide="_tutor.margin === null">, M@{{_tutor.margin}}</span>
     <span class='remove-space'>
         , <plural count='_tutor.meeting_count' type='meeting' none-text='встреч нет'></plural>

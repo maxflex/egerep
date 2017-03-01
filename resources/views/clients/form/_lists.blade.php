@@ -56,7 +56,7 @@
                             </span>
                         </td>
                         <td style='width: 10%'>
-                            <plural count='tutor.clients_count' type='client' none-text='клиентов нет' hide-zero></plural>
+                            <plural count='tutor.data.clients_count' type='client' none-text='клиентов нет' hide-zero></plural>
                             <span ng-hide="tutor.margin === null">(M@{{ tutor.margin }})</span>
                         </td>
                         <td style='width: 10%'>

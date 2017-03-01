@@ -125,6 +125,11 @@ class Tutor extends Service\Person
 
     // ->whereRaw("date_end > DATE_SUB((SELECT date_end FROM accounts WHERE tutor_id=" . $this->id . " ORDER BY date_end DESC LIMIT 1), INTERVAL 60 DAY)");
 
+    public function data()
+    {
+        return $this->hasOne('App\Models\TutorData');
+    }
+
     // ------------------------------------------------------------------------
 
     public function getSvgMapAttribute()
@@ -404,13 +409,16 @@ class Tutor extends Service\Person
             foreach($this->markers as $marker) {
                 foreach($marker->metros as $tutor_metro) {
                     foreach($client_marker->metros as $client_metro) {
-                        # время от метки репетитора до ближайшей станции репетитора
-                        $new_min_minutes = $tutor_metro->minutes;
+                        # время от метки репетитора до станции клиента
+                        $distance = DB::table('tutor_distances')
+                                                ->where('tutor_id', $this->id)
+                                                ->where('station_id', $client_metro['station_id'])
+                                                ->where('marker_type', 'green')
+                                                ->select('minutes')->first();
 
-                        # время от ближайшей станции репетитора до ближайшей станции ученика
-                        $new_min_minutes += Metro::minutesBetweenMetros($tutor_metro->station_id, $client_metro['station_id']);
+                        $new_min_minutes = $distance ? $distance->minutes : PHP_INT_MAX;
 
-                        # время от ближайшей станции ученика до метки ученика
+                        # время от станции ученика до метки ученика
                         $new_min_minutes += $client_metro['minutes'];
 
                         if ($new_min_minutes < $min_minutes) {

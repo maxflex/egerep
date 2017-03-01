@@ -786,7 +786,7 @@
           return $scope.client.markers.forEach(function(client_marker) {
             return client_marker.metros.forEach(function(client_metro) {
               var ref;
-              if (ref = client_metro.station_id, indexOf.call(marker.tutor.svg_map, ref) >= 0) {
+              if (ref = client_metro.station_id, indexOf.call(marker.tutor.data.svg_map, ref) >= 0) {
                 marker.intersecting = true;
                 marker.tutor.intersecting = true;
               }

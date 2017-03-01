@@ -122,7 +122,11 @@ class TutorsController extends Controller
          extract(array_filter($request->search));
 
          // анализируем только не закрытых преподавателей с метками
-         $query = Tutor::has('markers');
+         $query = Tutor::has('markers')
+                    ->with(['data' => function($query) {
+                                        $query->select(['tutor_id', 'svg_map', 'clients_count']);
+                    }])
+                    ->where('public_desc', '<>', '');
 
          if (isset($id)) {
              $query->where('id', $id);
@@ -201,7 +205,7 @@ class TutorsController extends Controller
                $query->where('type', 'green');
              }]);
          } else {
-             # если "Клиент едет к репетитору", то только репетиторы с картой выезда
+             # если "Репетитор едет к клиенту", то только репетиторы с картой выезда
              $query->whereExists(function ($query) {
                  $query->selectRaw('1')
                        ->from('tutor_departures as td')
@@ -226,7 +230,7 @@ class TutorsController extends Controller
 
          foreach($tutors as $tutor) {
             # Количество учеников, Количество встреч
-            $tutor->append(['clients_count', 'meeting_count', 'svg_map']);
+            $tutor->append(['meeting_count']);
 
             # Получить минуты
             $tutor->has_mutual_stations = $tutor->hasMutualStations($request->client_marker);
@@ -240,7 +244,12 @@ class TutorsController extends Controller
      {
          @extract(array_filter($request->search));
 
-         $query = Tutor::with('markers');
+         $query = Tutor::with([
+             'markers',
+             'data'     => function($query) {
+                                $query->select(['tutor_id', 'svg_map', 'clients_count']);
+                           }
+         ]);
 
          if (isset($markers)) {
              if ($markers == 1) {
@@ -342,7 +351,7 @@ class TutorsController extends Controller
 
          foreach($tutors as $tutor) {
             # Количество учеников, Количество встреч
-            $tutor->append(['clients_count', 'meeting_count', 'svg_map']);
+            $tutor->append(['meeting_count']);
          }
 
          return $tutors;

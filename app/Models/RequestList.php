@@ -45,7 +45,12 @@ class RequestList extends Model
 
     public function getTutorsAttribute()
     {
-        $tutors = Tutor::with(['markers'])->whereIn('id', $this->tutor_ids)->get([
+        $tutors = Tutor::with(['markers'])
+            ->with([
+                'data' => function($query) {
+                            $query->select(['tutor_id', 'clients_count', 'svg_map']);
+            }])
+            ->whereIn('id', $this->tutor_ids)->get([
             'id',
             'first_name',
             'last_name',
@@ -62,7 +67,7 @@ class RequestList extends Model
             'public_price',
             'departure_price',
             DB::raw("(select count(*) from tutor_departures td where td.tutor_id = tutors.id) as departure_possible")
-        ])->append(['clients_count', 'meeting_count', 'active_clients_count', 'last_account_info', 'svg_map']);
+        ])->append(['meeting_count', 'active_clients_count', 'last_account_info']);
         $client_marker_id = DB::table('request_lists')
             ->join('requests', 'request_lists.request_id', '=', 'requests.id')
             ->join('markers', function($join) {
