@@ -26,4 +26,17 @@ class StreamController extends Controller
             ])
         );
     }
+
+    public function configurations()
+    {
+        $data = DB::table('stream')->select('action', 'type', 'mobile')->groupBy('action', 'type', 'mobile')->get();
+        foreach($data as &$d) {
+            $d->created_at = DB::table('stream')->where('action', $d->action)->where('type', $d->type)->where('mobile', $d->mobile)->orderBy('created_at', 'desc')->value('created_at');
+        }
+        return view('stream.configurations')->with(
+            ngInit([
+                'data'     => $data,
+            ])
+        );
+    }
 }

@@ -2,8 +2,11 @@
 @section('title', 'Стрим')
 @section('controller', 'StreamIndex')
 
-@section('content')
+@section('title-right')
+    <a href='stream/configurations'>проверка работоспособности конфигураций</a>
+@stop
 
+@section('content')
 <div class="row flex-list">
     <div>
         <select ng-model='search.mobile' class='selectpicker' ng-change='filter()'>
