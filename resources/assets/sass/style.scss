@@ -1041,10 +1041,11 @@ md-input-container {
 body {
 	padding-top: 20px !important;
 	overflow-x: hidden;
-	background-image: url("../img/background/geometry-75.png");
+	background-image: url("../img/background/math.jpg");
     background-repeat: repeat;
 	height: auto !important;
-	background-size: 250px 250px;
+    background-size: 50%;
+	// background-size: 250px 250px;
 	// background-color: #eee;
     // font-family: Ubuntu !important;
 }

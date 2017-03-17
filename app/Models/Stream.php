@@ -53,6 +53,14 @@ class Stream extends Model
             $query->where('type', $search->type);
         }
 
+        if (isset($search->date_start)) {
+            $query->where('created_at', '>=', fromDotDate($search->date_start) . ' 00:00:00');
+        }
+
+        if (isset($search->date_end)) {
+            $query->where('created_at', '<=', fromDotDate($search->date_end) . ' 23:59:59');
+        }
+
         return $query;
     }
 }

@@ -2,8 +2,11 @@
 @section('title', 'Стрим')
 @section('controller', 'StreamIndex')
 
-@section('content')
+@section('title-right')
+    <a href='stream/configurations'>проверка работоспособности конфигураций</a>
+@stop
 
+@section('content')
 <div class="row flex-list">
     <div>
         <select ng-model='search.mobile' class='selectpicker' ng-change='filter()'>
@@ -30,6 +33,24 @@
                 data-subtext="@{{ counts.type[t] || '' }}"
                 value="@{{ t }}">@{{ t }}</option>
         </select>
+    </div>
+    <div>
+        <div class="form-group">
+            <div class="input-group custom">
+              <span class="input-group-addon">начало –</span>
+              <input type="text" readonly ng-change='filter()'
+                  class="form-control bs-date-clear pointer" ng-model="search.date_start">
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="form-group">
+            <div class="input-group custom">
+              <span class="input-group-addon">конец –</span>
+              <input type="text" readonly ng-change='filter()'
+                  class="form-control bs-date-clear pointer" ng-model="search.date_end">
+            </div>
+        </div>
     </div>
 </div>
 

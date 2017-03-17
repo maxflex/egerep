@@ -14,6 +14,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/', 'RequestsController@index');
 
     Route::get('stream', 'StreamController@index');
+    Route::get('stream/configurations', 'StreamController@configurations');
 
     Route::get('calls/missed', 'CallsController@missed');
     Route::resource('calls', 'CallsController');
