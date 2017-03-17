@@ -220,3 +220,26 @@
         curl_close($ch);
         if( $httpCode == 200 ){return true;}
     }
+
+    // @todo это неправильно – subjects хранится в двух местах: в factory и здесь
+    function getSubjectString($subject_ids)
+    {
+        $subject_ids = explode(',', $subject_ids);
+        $subject_ids = array_filter($subject_ids);
+        $subjects = [
+            1   => 'МАТ',
+            2   => 'ФИЗ',
+            3   => 'ХИМ',
+            4   => 'БИО',
+            5   => 'ИНФ',
+            6   => 'РУС',
+            7   => 'ЛИТ',
+            8   => 'ОБЩ',
+            9   => 'ИСТ',
+            10  => 'АНГ',
+            11  => 'ГЕО'
+        ];
+        return implode('+', array_map(function($subject_id) use ($subjects) {
+            return $subjects[$subject_id];
+        }, $subject_ids));
+    }

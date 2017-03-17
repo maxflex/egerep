@@ -85,6 +85,8 @@ class Tutor extends Service\Person
     const NO_PHOTO   = 'no-profile-img.gif';
     const USER_TYPE  = 'TEACHER';
 
+    const STATES = ['не установлено', 'на проверку', 'к закрытию', 'закрыто', 'к одобрению', 'одобрено'];
+
     // ------------------------------------------------------------------------
 
     public function accounts()

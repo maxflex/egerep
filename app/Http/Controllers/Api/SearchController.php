@@ -71,7 +71,7 @@ class SearchController extends Controller
             ];
 
             # поиск по по предователям
-            $tutorsDB = DB::table('tutors')->select('id', 'first_name', 'last_name', 'middle_name');
+            $tutorsDB = DB::table('tutors')->select('id', 'first_name', 'last_name', 'middle_name', 'subjects', 'state');
             foreach ($queryArray as $word) {
                 $tutorsDB->where(function ($query) use ($word, $fieldsSearchTutors) {
                     foreach ($fieldsSearchTutors as $field) {
@@ -81,10 +81,13 @@ class SearchController extends Controller
                 });
             }
 
-            $tutors = $tutorsDB->take(30)
+            $tutors = collect($tutorsDB->take(30)
                 ->orderBy('id')
                 ->take(30)
-                ->get();
+                ->get())->each(function($tutor) {
+                    $tutor->state_text = Tutor::STATES[$tutor->state];
+                    $tutor->subjects = getSubjectString($tutor->subjects);
+                });
 
             return [
                 'clients' => $clients,

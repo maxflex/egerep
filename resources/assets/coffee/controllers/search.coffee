@@ -67,6 +67,11 @@ $(document).ready ->
       scroll: ->
         $('#searchResult').scrollTop((this.active - 4) * 30)
 
+      getStateClass: (state) ->
+        obj = {}
+        obj["tutor-state-#{state}"] = true
+        obj
+
       # обработка события набора текста
       keyup: (e) ->
         if e.code == 'ArrowUp'

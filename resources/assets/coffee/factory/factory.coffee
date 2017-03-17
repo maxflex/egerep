@@ -125,13 +125,6 @@ angular.module('Egerep')
     .value 'YesNo',
         0: 'нет'
         1: 'да'
-    .value 'TutorStates',
-        0: 'не установлено'
-        1: 'на проверку'
-        2: 'к закрытию'
-        3: 'закрыто'
-        4: 'к одобрению'
-        5: 'одобрено'
 
     .value 'TutorPublishedStates',
         0: 'не опубликован'
