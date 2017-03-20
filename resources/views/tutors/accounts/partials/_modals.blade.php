@@ -104,7 +104,7 @@
                 <div class="mbs">
                     Клиент: @{{ selected_client.address ? selected_client.address : 'Адрес не заполнен' }}<span ng-repeat="phone in selected_client.phones">,
                         <span class="underline-hover inline-block"
-                            ng-click="PhoneService.call(popup_attachment.client[phone_field])"
+                            ng-click="PhoneService.call(phone)"
                             ng-class="{'phone-duplicate-new': popup_attachment.client.duplicate}"
                         >@{{ PhoneService.format(phone) }}</span></span>
                 </div>
