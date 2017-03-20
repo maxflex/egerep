@@ -16,8 +16,8 @@
                     </div>
                     <div v-else style='display: flex; align-items: baseline'>
                         <div style='flex: 3'>
-                            <a v-if="row.first_name" :href="row.link" v-html="'репетитор ' + row.last_name + ' ' + row.first_name + ' ' + row.middle_name"></a>
-                            <a v-else :href="row.link" v-html="'репетитор имя не указано'"></a>
+                            <a target="_blank" v-if="row.first_name" :href="row.link" v-html="'репетитор ' + row.last_name + ' ' + row.first_name + ' ' + row.middle_name"></a>
+                            <a target="_blank" v-else :href="row.link" v-html="'репетитор имя не указано'"></a>
                         </div>
                         <div style='flex: 1'>
                             <span style='color: #333' v-html='row.subjects'></span>
