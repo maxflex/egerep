@@ -253,7 +253,7 @@
             {{--<textarea class="md-input" ng-model="tutor.current_work"></textarea>--}}
         {{--</md-input-container>--}}
         <md-input-container class="md-block" style="margin-top: 20px">
-            <label>Опыт работы репетитором</label>
+            <label>Опыт работы репетитором <published-field></label>
             <textarea class="md-input" ng-model="tutor.tutoring_experience"></textarea>
         </md-input-container>
         <md-input-container class="md-block" style="margin-top: 20px">
@@ -292,7 +292,7 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <md-input-container class="md-block" style="margin-top: 20px; margin-bottom: 0">
-                            <label>Опубликованное описание на сайте ЕГЭ-Центра <published-field in-ege-centr></label>
+                            <label>Опубликованное описание на сайте ЕГЭ-Центра <published-field in-ege-centr="1"></label>
                             <textarea class="md-input" ng-model="tutor.description"></textarea>
                         </md-input-container>
                     </div>
