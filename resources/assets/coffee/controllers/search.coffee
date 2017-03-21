@@ -85,8 +85,12 @@ $(document).ready ->
             this.active++
           if this.active > 4
             this.scroll()
-        else if e.code == 'Enter'
-          window.location = this.links[this.active] if this.active > 0
+        else if e.code == 'Enter' and this.active > 0
+          url = this.links[this.active]
+          if url.indexOf('tutors') is 0
+            window.open(url, '_blank')
+          else
+            window.location = url
         else
           if this.query isnt ''
             if this.oldquery != this.query and this.query.length > 2
