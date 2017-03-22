@@ -106,10 +106,10 @@ class SummaryController extends Controller
     private function getByDay($type, $page)
     {
         $date = new \DateTime('today');
-        $skip_days = $page * 500;
+        $skip_days = $page * 30;
 
         $end_date   = clone $date->sub(new \DateInterval("P{$skip_days}D"));
-        $start_date = clone $date->sub(new \DateInterval('P500D'));
+        $start_date = clone $date->sub(new \DateInterval('P30D'));
 
         $return = [];
         while ($start_date < $end_date) {

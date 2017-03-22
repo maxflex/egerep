@@ -10,7 +10,7 @@ use App\Http\Controllers\Controller;
 
 class SummaryController extends Controller
 {
-    const PER_PAGE = 500;
+    const PER_PAGE = 30;
 
     /**
      * string $filter       days|weeks|month|year.
