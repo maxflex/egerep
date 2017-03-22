@@ -40,6 +40,7 @@ class UpdateDebtsTable extends Command
      */
     public function handle()
     {
+        ini_set('memory_limit', '-1');
         $t = microtime(true);
         DB::table('debts')->truncate();
 
