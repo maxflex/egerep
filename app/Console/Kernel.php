@@ -51,6 +51,7 @@ class Kernel extends ConsoleKernel
         Commands\SvgAddStations::class,
         Commands\TutorDistancesRecalc::class,
         Commands\RecalcTutorData::class,
+        Commands\UpdateDebtsTable::class,
     ];
 
     /**
