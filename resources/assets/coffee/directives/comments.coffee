@@ -61,10 +61,7 @@ angular.module('Egerep').directive 'comments', ->
                         $(@).blur()
 
                 .on 'blur', (e) ->
-                    $timeout ->
-                        _.find($scope.comments, {id: comment.id}).is_being_edited = false
-                        $scope.$apply()
-                    , 100
+                    _.find($scope.comments, {id: comment.id})?.is_being_edited = false
                     if element.attr 'contenteditable'
                         console.log old_text
                         element.removeAttr('contenteditable').html old_text
