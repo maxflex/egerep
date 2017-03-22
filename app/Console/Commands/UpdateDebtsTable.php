@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use DB;
 use App\Models\Attachment;
+use App\Models\Service\Settings;
 
 class UpdateDebtsTable extends Command
 {
@@ -75,6 +76,7 @@ class UpdateDebtsTable extends Command
         }
         $bar->finish();
         $this->info("\nFinished in " . round(microtime(true) - $t, 2) . "s");
+        Settings::set('debt_table_updated', now());
     }
 
     /**
