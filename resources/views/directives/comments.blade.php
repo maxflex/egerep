@@ -6,14 +6,15 @@
 		<div ng-repeat="comment in getComments() | orderBy:'created_at'" id='comment-@{{ comment.id }}' data-comment-id='@{{ comment.id }}'>
 			<div class='comment-div'>
 				<span style="color: @{{ UserService.getColor(comment.user_id) }}" class="comment-login">@{{ UserService.getLogin(comment.user_id) }} <span class='comment-time'>@{{ formatDateTime(comment.created_at) }}:</span></span>
-				<div class='comment-line' ng-click="edit(comment, $event)">@{{comment.comment}}</div>
+				<div class='comment-line' ng-click="edit(comment, $event)">@{{ comment.comment }}</div>
+                <span class="opacity-pointer text-danger" style='margin-left: 5px'
+                    ng-click="remove(comment.id)" ng-show='comment.is_being_edited'>удалить</span>
 			</div>
 		</div>
 	</div>
     <div style="height: 25px">
 		<span ng-hide='start_commenting' class="pointer no-margin-right comment-add"
             ng-click='startCommenting($event)'>комментировать</span>
-        <div class="drop-delete-pad" id='comment-delete-@{{ entityType }}-@{{ entityId }}' ng-show='is_dragging' style="margin-left: 8px">удалить</div>
 		<span class="comment-add-hidden" ng-show='start_commenting'>
 			<span class="comment-add-login comment-login" style="color: @{{ user.color }}">
 			@{{ user.login }}: </span>
