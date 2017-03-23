@@ -237,7 +237,7 @@ class SummaryController extends Controller
         $debt = DB::table('debts')
                         ->whereRaw("date >= '{$start}'")
                         ->whereRaw("date <= '{$end}'")
-                        ->sum('sum');
+                        ->sum('debt');
 
         $data = [
             'requests' => [
