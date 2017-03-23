@@ -27,9 +27,9 @@ class Debt extends Model
         }
 
         # для статистики
-        if ($date_start !== null) {
-            $query->where('date', '>=', $date_start);
-        }
+        // if ($date_start !== null) {
+        //     $query->where('date', '>=', $date_start);
+        // }
         if ($date_end !== null) {
             $query->where('date', '<=', $date_end);
         }
