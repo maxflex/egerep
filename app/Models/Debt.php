@@ -10,8 +10,9 @@ class Debt extends Model
 
     /**
      * Посчитать дебет преподавателя
+     * $date_start/$date_end – сколько должен на текущий момент времени
      */
-    public static function tutor($tutor_id, $date_start = null, $date_end = null)
+    public static function tutor($date_start = null, $date_end = null)
     {
         # получаем последнюю встречу
         $query = Account::where('tutor_id', $tutor_id);
@@ -27,9 +28,9 @@ class Debt extends Model
         }
 
         # для статистики
-        // if ($date_start !== null) {
-        //     $query->where('date', '>=', $date_start);
-        // }
+        if ($date_start !== null) {
+            $query->where('date', '>=', $date_start);
+        }
         if ($date_end !== null) {
             $query->where('date', '<=', $date_end);
         }
@@ -42,15 +43,13 @@ class Debt extends Model
      */
     public static function total($date_start = null, $date_end = null)
     {
-        $tutor_ids = self::groupBy('tutor_id')->pluck('tutor_id');
+        $tutor_ids = self::join('tutors', 'tutors.id', '=', 'debts.tutor_id')
+            ->where('tutors.debtor', 0)->groupBy('debts.tutor_id')->pluck('debts.tutor_id');
 
         $sum = 0;
 
         foreach ($tutor_ids as $tutor_id) {
-            // добавить join в получение tutor_ids
-            if (! \DB::table('tutors')->whereId($tutor_id)->value('debtor')) {
-                $sum += Debt::tutor($tutor_id, $date_start, $date_end);
-            }
+            $sum += Debt::tutor($tutor_id, $date_start, $date_end);
         }
 
         return $sum;

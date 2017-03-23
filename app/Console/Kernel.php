@@ -62,8 +62,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('summary:calc')->dailyAt('02:30');
-        $schedule->command('debts:update')->dailyAt('03:00');
+        $schedule->command('debts:update')->dailyAt('02:30'); // это выполняется примерно полчаса
+        $schedule->command('summary:calc')->dailyAt('03:15'); // затем должно запуститься это
         $schedule->command('mango:sync')->everyMinute();
 
         // вспомогательные таблицы для ege-repetitor.ru

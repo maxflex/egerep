@@ -63,7 +63,7 @@ class UpdateDebtsTable extends Command
 
             $date = $attachment->date;
 
-            while ($date <= $date_end) {
+            while ($date < $date_end) {
                 DB::table('debts')->insert([
                     'date'      => $date,
                     'debt'      => $attachment->forecast / 7 * static::pissimisticCoef($date, $archive_date),
