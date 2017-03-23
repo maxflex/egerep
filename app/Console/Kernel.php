@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Jobs\UpdateDebtsTable;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -62,7 +63,13 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('debts:update')->dailyAt('02:30'); // это выполняется примерно полчаса
+        $schedule->call(function() {
+            $attachments_count = DB::table('attachments')->where('forecast', '>', 0)->count();
+            $steps_count = ceil($attachments_count / UpdateDebtsTable::STEP) - 1;
+            foreach(range(0, $steps_count) as $step) {
+                dispatch(new UpdateDebtsTable($step, $step == $steps_count));
+            }
+        })->dailyAt('02:30'); // это выполняется примерно полчаса
         $schedule->command('summary:calc')->dailyAt('03:15'); // затем должно запуститься это
         $schedule->command('mango:sync')->everyMinute();
 
