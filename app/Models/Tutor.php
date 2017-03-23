@@ -709,4 +709,5 @@ class Tutor extends Service\Person
  		$new_tutor_id = static::where('id_a_pers', $tutor_id)->pluck('id')->first();
  		return $new_tutor_id ? $new_tutor_id : null;
  	}
+
 }

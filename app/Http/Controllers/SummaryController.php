@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Tutor;
+use App\Models\Debt;
 use App\Models\Service\Settings;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -30,8 +31,8 @@ class SummaryController extends Controller
                         ngInit([
                             'page'          => $request->page,
                             'filter'        => $filter,
-                            'total_debt'    => Tutor::totalDebt(),
-                            'debt_updated'  => Settings::get('debt_updated'),
+                            'total_debt'    => Debt::total(),
+                            'debt_updated'  => Settings::get('debt_table_updated'),
                             'type'          => 'total'
                         ])
                     );
@@ -51,8 +52,8 @@ class SummaryController extends Controller
                         ngInit([
                             'page'          => $request->page,
                             'filter'        => $filter,
-                            'total_debt'    => Tutor::totalDebt(),
-                            'debt_updated'  => Settings::get('debt_updated'),
+                            'total_debt'    => Debt::total(),
+                            'debt_updated'  => Settings::get('debt_table_updated'),
                             'type'          => 'payments'
                         ])
                     );
@@ -69,8 +70,8 @@ class SummaryController extends Controller
                         ngInit([
                             'page'          => $request->page,
                             'filter'        => $filter,
-                            'total_debt'    => Tutor::totalDebt(),
-                            'debt_updated'  => Settings::get('debt_updated'),
+                            'total_debt'    => Debt::total(),
+                            'debt_updated'  => Settings::get('debt_table_updated'),
                             'type'          => 'debtors'
                         ])
                     );
@@ -83,8 +84,8 @@ class SummaryController extends Controller
         }
         return view('summary.users')->with(
             ngInit([
-                'total_debt'    => Tutor::totalDebt(),
-                'debt_updated'  => Settings::get('debt_updated'),
+                'total_debt'    => Debt::total(),
+                'debt_updated'  => Settings::get('debt_table_updated'),
                 'allowed_all'   => allowed(\Shared\Rights::ER_SUMMARY_USERS_ALL)
             ])
         );
