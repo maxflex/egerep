@@ -64,7 +64,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->call(function() {
-            $attachments_count = DB::table('attachments')->where('forecast', '>', 0)->count();
+            $attachments_count = \DB::table('attachments')->where('forecast', '>', 0)->count();
             $steps_count = ceil($attachments_count / UpdateDebtsTable::STEP) - 1;
             foreach(range(0, $steps_count) as $step) {
                 dispatch(new UpdateDebtsTable($step, $step == $steps_count));
