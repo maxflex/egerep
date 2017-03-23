@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use DB;
 use App\Jobs\UpdateDebtsTable;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
