@@ -12,7 +12,7 @@ class Debt extends Model
      * Посчитать дебет преподавателя
      * $date_start/$date_end – сколько должен на текущий момент времени
      */
-    public static function tutor($date_start = null, $date_end = null)
+    public static function tutor($tutor_id, $date_start = null, $date_end = null)
     {
         # получаем последнюю встречу
         $query = Account::where('tutor_id', $tutor_id);

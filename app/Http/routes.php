@@ -8,6 +8,12 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
     Route::controller('metro', 'MetroController');
     Route::post('external/{function}', 'ExternalController@exec'); // external API controller | DEPRICATED?
     Route::post('search', 'SearchController@search'); // external API controller | DEPRICATED?
+    Route::get('testy', function() {
+        dispatch(new \App\Jobs\UpdateDebtsTable(1));
+        dispatch(new \App\Jobs\UpdateDebtsTable(2));
+        dispatch(new \App\Jobs\UpdateDebtsTable(3));
+        return 'ok';
+    });
 });
 
 Route::group(['middleware' => ['web']], function () {

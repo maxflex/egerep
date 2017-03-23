@@ -128,6 +128,11 @@ return [
             'prefix'   => '',
         ],
 
+        'redis' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'retry_after' => 90,
+        ],
     ],
 
     /*
