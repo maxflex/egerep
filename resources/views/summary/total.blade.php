@@ -54,11 +54,14 @@
                 <td>
                     <span title="@{{ summary.received.sum | number }} + @{{ (summary.mutual_debts.sum ? summary.mutual_debts.sum : 0) | number }}">
                         @{{ +(summary.received.sum) + +(summary.mutual_debts.sum) | hideZero | number }}
-                        <span class='mutual-debt' ng-show='summary.debt.sum'> + @{{ summary.debt.sum | number }}</span>
                     </span>
                 </td>
                 <td>
                     @{{ summary.commission.sum | hideZero | number }}
+                    <span class='mutual-debt' ng-show='summary.debt.sum'>
+                        <span ng-show='summary.commission.sum'> + </span>
+                        @{{ summary.debts.sum | number }}
+                    </span>
                 </td>
                 <td>
                     @{{ summary.forecast.sum | hideZero | number }}
