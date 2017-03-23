@@ -39,7 +39,7 @@ class Debt extends Model
         $sum = 0;
 
         foreach ($tutor_ids as $tutor_id) {
-            if (! \DB::table('tutors')->whereId($tutorId)->value('debtor')) {
+            if (! \DB::table('tutors')->whereId($tutor_id)->value('debtor')) {
                 $sum += Debt::tutor($tutor_id);
             }
         }
