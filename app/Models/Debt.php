@@ -43,6 +43,7 @@ class Debt extends Model
      */
     public static function total($date_start = null, $date_end = null)
     {
+        \Log::info("{$date_start} – {$date_end}");
         $tutor_ids = self::join('tutors', 'tutors.id', '=', 'debts.tutor_id')
             ->where('tutors.debtor', 0)->groupBy('debts.tutor_id')->pluck('debts.tutor_id');
 

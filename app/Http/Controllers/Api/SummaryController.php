@@ -236,7 +236,7 @@ class SummaryController extends Controller
                         ->sum(DB::raw('if(commission > 0, commission, '.Account::DEFAULT_COMMISSION.'*sum)'));
 
         // дебет из таблицы debts
-        $debts = Debt::total($end);
+        $debts = Debt::total($start, $end);
 
         $data = [
             'requests' => [
