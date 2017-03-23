@@ -6,6 +6,7 @@ use App\Console\Commands\CalcSummary;
 use App\Models\Account;
 use App\Models\Attachment;
 use App\Models\User;
+use App\Models\Debt;
 use App\Models\Tutor;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -235,10 +236,7 @@ class SummaryController extends Controller
                         ->sum(DB::raw('if(commission > 0, commission, '.Account::DEFAULT_COMMISSION.'*sum)'));
 
         // синий дебет из таблицы debts
-        $debts = DB::table('debts')
-                        ->whereRaw("date >= '{$start}'")
-                        ->whereRaw("date <= '{$end}'")
-                        ->sum('debt');
+        $debts = Debt::total($start, $end);
 
         $data = [
             'requests' => [
