@@ -41,6 +41,8 @@ class UpdateDebtsTable extends Job implements ShouldQueue
       */
      public function handle()
      {
+         \Log::info("Step " . ($this->step + 1) . " starting...");
+
          // truncate on first step
          if ($this->step == 0) {
              DB::table('debts')->truncate();
