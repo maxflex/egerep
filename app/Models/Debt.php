@@ -34,12 +34,14 @@ class Debt extends Model
      */
     public static function total()
     {
-        $tutor_ids = self::where('debtor', 0)->groupBy('tutor_id')->pluck('tutor_id');
+        $tutor_ids = self::groupBy('tutor_id')->pluck('tutor_id');
 
         $sum = 0;
 
         foreach ($tutor_ids as $tutor_id) {
-            $sum += Debt::tutor($tutor_id);
+            if (! DB::table('tutors')->whereId($tutorId)->value('debtor')) {
+                $sum += Debt::tutor($tutor_id);
+            }
         }
 
         return $sum;
