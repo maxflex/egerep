@@ -24,7 +24,7 @@ class Debt extends Model
         # или весь дебет, если встреч не было
         $query = Debt::where('tutor_id', $tutor_id);
         if (isset($last_account_date)) {
-            $query->where('date', '>', $last_account_date);
+            $query->where('date', '>=', $last_account_date);
         }
 
         # для статистики
