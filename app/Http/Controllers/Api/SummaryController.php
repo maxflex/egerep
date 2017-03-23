@@ -234,6 +234,11 @@ class SummaryController extends Controller
                         ->whereRaw("date <= '{$end}'")
                         ->sum(DB::raw('if(commission > 0, commission, '.Account::DEFAULT_COMMISSION.'*sum)'));
 
+        $debt = DB::table('debts')
+                        ->whereRaw("date >= '{$start}'")
+                        ->whereRaw("date <= '{$end}'")
+                        ->sum('sum');
+
         $data = [
             'requests' => [
                 'cnt' => $requests
@@ -246,6 +251,9 @@ class SummaryController extends Controller
             ],
             'received' => [
                 'sum' => $received
+            ],
+            'debt' => [
+                'sum' => $debt
             ],
             'mutual_debts' => [
                 'sum' => $mutual_debts

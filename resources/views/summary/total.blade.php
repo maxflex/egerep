@@ -54,6 +54,7 @@
                 <td>
                     <span title="@{{ summary.received.sum | number }} + @{{ (summary.mutual_debts.sum ? summary.mutual_debts.sum : 0) | number }}">
                         @{{ +(summary.received.sum) + +(summary.mutual_debts.sum) | hideZero | number }}
+                        <span class='mutual-debt' ng-show='summary.debt.sum'>@{{ summary.debt.sum | number }}</span>
                     </span>
                 </td>
                 <td>
