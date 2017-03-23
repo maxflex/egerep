@@ -9,8 +9,6 @@ use App\Models\Service\Settings;
 
 class UpdateDebtsTable extends Command
 {
-    const BATCH_STEP = 1000;
-
     /**
      * The name and signature of the console command.
      *
@@ -47,41 +45,36 @@ class UpdateDebtsTable extends Command
         DB::table('debts')->truncate();
 
         $this->line('Getting attachments...');
-        $count = DB::table('attachments')->where('forecast', '>', 0)->count();
-        $step = 0;
+        $attachments = DB::table('attachments')->where('forecast', '>', 0)->get();
+
+        $bar = $this->output->createProgressBar(count($attachments));
         $now = now(true);
-        $bar = $this->output->createProgressBar($count);
 
-        while (($step * self::BATCH_STEP) < $count) {
-            $attachments = DB::table('attachments')->where('forecast', '>', 0)->skip(self::BATCH_STEP * $step)->take(self::BATCH_STEP)->get();
-            foreach($attachments as $attachment) {
-                $query = DB::table('archives')->where('attachment_id', $attachment->id);
-                // check if attachment exists
-                if ($query->exists()) {
-                    $date_end = $query->value('date');
-                    $archive_date = $date_end;
-                } else {
-                    $date_end = $now;
-                    $archive_date = null;
-                }
-
-                $date = $attachment->date;
-
-                while ($date <= $date_end) {
-                    DB::table('debts')->insert([
-                        'date'      => $date,
-                        'debt'      => $attachment->forecast / 7 * static::pissimisticCoef($date, $archive_date),
-                        'tutor_id'  => $attachment->tutor_id,
-                        'client_id' => $attachment->client_id,
-                    ]);
-                    $date = (new \DateTime($date))->modify('+1 day')->format('Y-m-d');
-                }
-
-                $bar->advance();
+        foreach($attachments as $attachment) {
+            $query = DB::table('archives')->where('attachment_id', $attachment->id);
+            // check if attachment exists
+            if ($query->exists()) {
+                $date_end = $query->value('date');
+                $archive_date = $date_end;
+            } else {
+                $date_end = $now;
+                $archive_date = null;
             }
-            $step++;
-        }
 
+            $date = $attachment->date;
+
+            while ($date <= $date_end) {
+                DB::table('debts')->insert([
+                    'date'      => $date,
+                    'debt'      => $attachment->forecast / 7 * static::pissimisticCoef($date, $archive_date),
+                    'tutor_id'  => $attachment->tutor_id,
+                    'client_id' => $attachment->client_id,
+                ]);
+                $date = (new \DateTime($date))->modify('+1 day')->format('Y-m-d');
+            }
+
+            $bar->advance();
+        }
         $bar->finish();
         $this->info("\nFinished in " . round(microtime(true) - $t, 2) . "s");
         Settings::set('debt_table_updated', now());
