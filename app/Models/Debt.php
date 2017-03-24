@@ -61,6 +61,6 @@ class Debt extends Model
         $tutor_ids = self::join('tutors', 'tutors.id', '=', 'debts.tutor_id')
             ->where('tutors.debtor', 0)->groupBy('debts.tutor_id')->pluck('debts.tutor_id');
 
-        return self::whereIn('tutor_id', $tutor_ids)->where('date', '>=', $date_start)->where('date', '<', $date_end)->sum('debt');
+        return self::whereIn('tutor_id', $tutor_ids)->where('date', '>=', $date_start)->where('date', '<=', $date_end)->sum('debt');
     }
 }
