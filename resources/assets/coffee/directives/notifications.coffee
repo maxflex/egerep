@@ -9,46 +9,41 @@ angular.module('Egerep').directive 'notifications', ->
     controller: ($rootScope, $scope, $timeout, Notification, Notify) ->
         $scope.show_max = 4                         # сколько комментов показывать в свернутом режиме
         $scope.show_all_notifications = false       # показать все напоминания?
-        $scope.is_dragging = false                  # комментарий перетаскивается
         $scope.Notification = Notification
         $scope.Notify = Notify
 
-        bindDraggableAndMask = (notification_id) ->
-            element = $("#notification-#{notification_id}")
-            element.draggable
-                revert: 'invalid'
-                activeClass: 'drag-active'
-                start: (e, ui) ->
-                    $scope.is_dragging = true
-                    $scope.$apply()
-                stop: (e, ui) ->
-                    $scope.is_dragging = false
-                    $scope.$apply()
-            element.find('.notification-date-add').mask 'd9.y9.y9', {clearIfNotMatch: true}
+        bindDateMask = (notification_id) ->
+            $("#notification-#{notification_id}")
+                .find('.notification-date-add')
+                .mask 'd9.y9.y9', {clearIfNotMatch: true}
 
         $timeout ->
             $scope.notifications.forEach (notification) ->
-                bindDraggableAndMask(notification.id)
-            $("#notification-delete-#{$scope.entityType}-#{$scope.entityId}").droppable
-                tolerance: 'pointer'
-                hoverClass: 'hovered'
-                drop: (e, ui) ->
-                    $scope.remove($(ui.draggable).data('notification-id'))
+                bindDateMask notification.id
         , 2000
 
         $scope.showAllNotifications = ->
             $scope.show_all_notifications = true
             $timeout ->
                 $scope.notifications.forEach (notification) ->
-                    bindDraggableAndMask(notification.id)
+                    bindDateMask notification.id
 
         $scope.getNotifications = ->
             if ($scope.show_all_notifications or $scope.notifications.length <= $scope.show_max) then $scope.notifications else _.last($scope.notifications, $scope.show_max - 1)
 
         # передобавляет contenteditable, хотя он есть всегда
-        $scope.hack = (event) ->
+        $scope.hack = (notification, event) ->
+            $scope.setEditing notification
             $(event.target).attr('contenteditable', true).focus()
             return
+
+        $scope.setEditing = (notification) ->
+            $timeout ->
+                notification.is_being_edited = true
+            , 100
+        $scope.unsetEditing = (notification) ->
+            _.find($scope.notifications, {id: notification.id})?.is_being_edited = false
+            console.log 'blue'
 
         $scope.toggle = (notification) ->
             $rootScope.toggleEnumServer(notification, 'approved', Notify, Notification)
@@ -59,7 +54,7 @@ angular.module('Egerep').directive 'notifications', ->
                 entity_type: $scope.entityType
                 entity_id: newVal
             , ->
-                $rootScope.loaded_notifications++ if $scope.trackLoading
+                $timeout -> $scope.$apply()
 
         $scope.formatDateTime = (date) ->
             moment(date).format "DD.MM.YY в HH:mm"
@@ -111,6 +106,7 @@ angular.module('Egerep').directive 'notifications', ->
             if event.keyCode is 27
                 window.getSelection().removeAllRanges()
                 $(event.target).blur()
+                return
 
         notificate = (event) ->
             parent          = $(event.target).parents('div').first()
@@ -139,7 +135,7 @@ angular.module('Egerep').directive 'notifications', ->
                     new_notification.approved = 0
                     $scope.notifications.push new_notification
                     $timeout ->
-                        bindDraggableAndMask(new_notification.id)
+                        bindDateMask new_notification.id
             $scope.endNotificationing(comment_element, date_element)
 
 
@@ -156,7 +152,7 @@ angular.module('Egerep').directive 'notifications', ->
                     new_date = $rootScope.formatDate moment('20' + convertDate date).add {day : add_days} # '20' чтобы  16 => 2016
                     date_node.val new_date
 
-        $scope.submitNotification = (event) ->
+        $scope.submitNotification = (notification, event) ->
             handleDateKeycodes event
 
             if event.keyCode is 13
@@ -181,4 +177,4 @@ angular.module('Egerep').directive 'notifications', ->
                     new_notification.approved = 1
                     $scope.notifications.push new_notification
                     $timeout ->
-                        bindDraggableAndMask(new_notification.id)
+                        bindDateMask new_notification.id
