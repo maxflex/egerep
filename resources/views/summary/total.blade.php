@@ -56,24 +56,24 @@
                 @if (allowed(\Shared\Rights::ER_SUMMARY_FIELDS))
                 <td>
                     <span title="@{{ summary.received.sum | number }} + @{{ (summary.mutual_debts.sum ? summary.mutual_debts.sum : 0) | number }}">
-                        @{{ +(summary.received.sum) + +(summary.mutual_debts.sum) | hideZero | number }}
+                        @{{ +(summary.received.sum) + +(summary.mutual_debts.sum) | hideZero | number:0 }}
                     </span>
                 </td>
                 <td>
-                    @{{ summary.commission.sum | hideZero | number }}
+                    @{{ summary.commission.sum | hideZero | number:0 }}
                     <span class='mutual-debt' ng-show='summary.debts.sum'>
                         <span ng-show='summary.commission.sum'> + </span>
-                        @{{ summary.debts.sum | number }}
+                        @{{ summary.debts.sum | number:0 }}
                     </span>
                 </td>
                 <td>
-                    @{{ summary.forecast.sum | hideZero | number }}
+                    @{{ summary.forecast.sum | hideZero | number:0 }}
                 </td>
                 <td>
-                    @{{ summary.debt.sum | hideZero | number }}
+                    @{{ summary.debt.sum | hideZero | number:0 }}
                 </td>
                 <td>
-                    @{{ +(debt_sum) - +(summary.debts.sum) | hideZero | number }}
+                    @{{ +(summary.total_debts.sum) - +(summary.debts.sum) | hideZero | number:0 }}
                 </td>
                 @endif
                 <td>@{{ summary.active_attachments.sum }}</td>

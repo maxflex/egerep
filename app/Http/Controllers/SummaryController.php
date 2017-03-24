@@ -32,7 +32,6 @@ class SummaryController extends Controller
                             'page'          => $request->page,
                             'filter'        => $filter,
                             'total_debt'    => Debt::total(),
-                            'debt_sum'      => Debt::sum(),
                             'debt_updated'  => Settings::get('debt_table_updated'),
                             'type'          => 'total'
                         ])
