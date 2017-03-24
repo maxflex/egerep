@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Cache;
 
 class Debt extends Model
 {
@@ -15,15 +16,14 @@ class Debt extends Model
     public static function tutor($tutor_id, $date_start = null, $date_end = null)
     {
         # получаем последнюю встречу
-        $query = Account::where('tutor_id', $tutor_id);
-        if ($query->exists()) {
-            $last_account_date = $query->orderBy('date_end', 'desc')->value('date_end');
-        }
+        $last_account_date = Cache::remember("tutor:{$tutor_id}:last_account_date", 5, function() {
+            return Account::where('tutor_id', $tutor_id)->orderBy('date_end', 'desc')->value('date_end');
+        });
 
         # суммируем дебет с даты последней встречи
         # или весь дебет, если встреч не было
         $query = Debt::where('tutor_id', $tutor_id);
-        if (isset($last_account_date)) {
+        if ($last_account_date !== null) {
             $query->where('date', '>=', $last_account_date);
         }
 
@@ -43,9 +43,11 @@ class Debt extends Model
      */
     public static function total($date_start = null, $date_end = null)
     {
-        \Log::info("{$date_start} – {$date_end}");
-        $tutor_ids = self::join('tutors', 'tutors.id', '=', 'debts.tutor_id')
-            ->where('tutors.debtor', 0)->groupBy('debts.tutor_id')->pluck('debts.tutor_id');
+        // \Log::info("{$date_start} – {$date_end}");
+        $tutor_ids = Cache::remember('debt_tutor_ids', 60, function() {
+            return self::join('tutors', 'tutors.id', '=', 'debts.tutor_id')
+                ->where('tutors.debtor', 0)->groupBy('debts.tutor_id')->pluck('debts.tutor_id');
+        });
 
         $sum = 0;
 
@@ -58,8 +60,10 @@ class Debt extends Model
 
     public static function sum($date_start, $date_end)
     {
-        $tutor_ids = self::join('tutors', 'tutors.id', '=', 'debts.tutor_id')
-            ->where('tutors.debtor', 0)->groupBy('debts.tutor_id')->pluck('debts.tutor_id');
+        $tutor_ids = Cache::remember('debt_tutor_ids', 60, function() {
+            return self::join('tutors', 'tutors.id', '=', 'debts.tutor_id')
+                ->where('tutors.debtor', 0)->groupBy('debts.tutor_id')->pluck('debts.tutor_id');
+        });
 
         return self::whereIn('tutor_id', $tutor_ids)->where('date', '>=', $date_start)->where('date', '<=', $date_end)->sum('debt');
     }
