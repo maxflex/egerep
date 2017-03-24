@@ -3942,12 +3942,15 @@
               return $(this).blur();
             }
           }).on('blur', function(e) {
-            var ref;
-            if ((ref = _.find($scope.comments, {
-              id: comment.id
-            })) != null) {
-              ref.is_being_edited = false;
-            }
+            $timeout(function() {
+              var ref;
+              if ((ref = _.find($scope.comments, {
+                id: comment.id
+              })) != null) {
+                ref.is_being_edited = false;
+              }
+              return $scope.$apply();
+            }, 200);
             if (element.attr('contenteditable')) {
               console.log(old_text);
               return element.removeAttr('contenteditable').html(old_text);
@@ -4150,48 +4153,26 @@
         entityType: '@'
       },
       controller: function($rootScope, $scope, $timeout, Notification, Notify) {
-        var bindDraggableAndMask, handleDateKeycodes, notificate, saveEdit;
+        var bindDateMask, handleDateKeycodes, notificate, saveEdit;
         $scope.show_max = 4;
         $scope.show_all_notifications = false;
-        $scope.is_dragging = false;
         $scope.Notification = Notification;
         $scope.Notify = Notify;
-        bindDraggableAndMask = function(notification_id) {
-          var element;
-          element = $("#notification-" + notification_id);
-          element.draggable({
-            revert: 'invalid',
-            activeClass: 'drag-active',
-            start: function(e, ui) {
-              $scope.is_dragging = true;
-              return $scope.$apply();
-            },
-            stop: function(e, ui) {
-              $scope.is_dragging = false;
-              return $scope.$apply();
-            }
-          });
-          return element.find('.notification-date-add').mask('d9.y9.y9', {
+        bindDateMask = function(notification_id) {
+          return $("#notification-" + notification_id).find('.notification-date-add').mask('d9.y9.y9', {
             clearIfNotMatch: true
           });
         };
         $timeout(function() {
-          $scope.notifications.forEach(function(notification) {
-            return bindDraggableAndMask(notification.id);
-          });
-          return $("#notification-delete-" + $scope.entityType + "-" + $scope.entityId).droppable({
-            tolerance: 'pointer',
-            hoverClass: 'hovered',
-            drop: function(e, ui) {
-              return $scope.remove($(ui.draggable).data('notification-id'));
-            }
+          return $scope.notifications.forEach(function(notification) {
+            return bindDateMask(notification.id);
           });
         }, 2000);
         $scope.showAllNotifications = function() {
           $scope.show_all_notifications = true;
           return $timeout(function() {
             return $scope.notifications.forEach(function(notification) {
-              return bindDraggableAndMask(notification.id);
+              return bindDateMask(notification.id);
             });
           });
         };
@@ -4202,8 +4183,22 @@
             return _.last($scope.notifications, $scope.show_max - 1);
           }
         };
-        $scope.hack = function(event) {
+        $scope.hack = function(notification, event) {
+          $scope.setEditing(notification);
           $(event.target).attr('contenteditable', true).focus();
+        };
+        $scope.setEditing = function(notification) {
+          return $timeout(function() {
+            return notification.is_being_edited = true;
+          }, 200);
+        };
+        $scope.unsetEditing = function(notification) {
+          return $timeout(function() {
+            var ref;
+            return (ref = _.find($scope.notifications, {
+              id: notification.id
+            })) != null ? ref.is_being_edited = false : void 0;
+          }, 100);
         };
         $scope.toggle = function(notification) {
           return $rootScope.toggleEnumServer(notification, 'approved', Notify, Notification);
@@ -4213,9 +4208,9 @@
             entity_type: $scope.entityType,
             entity_id: newVal
           }, function() {
-            if ($scope.trackLoading) {
-              return $rootScope.loaded_notifications++;
-            }
+            return $timeout(function() {
+              return $scope.$apply();
+            });
           });
         });
         $scope.formatDateTime = function(date) {
@@ -4278,7 +4273,7 @@
           }
           if (event.keyCode === 27) {
             window.getSelection().removeAllRanges();
-            return $(event.target).blur();
+            $(event.target).blur();
           }
         };
         notificate = function(event) {
@@ -4310,7 +4305,7 @@
             new_notification.approved = 0;
             $scope.notifications.push(new_notification);
             return $timeout(function() {
-              return bindDraggableAndMask(new_notification.id);
+              return bindDateMask(new_notification.id);
             });
           });
           return $scope.endNotificationing(comment_element, date_element);
@@ -4335,7 +4330,7 @@
             }
           }
         };
-        $scope.submitNotification = function(event) {
+        $scope.submitNotification = function(notification, event) {
           handleDateKeycodes(event);
           if (event.keyCode === 13) {
             event.preventDefault();
@@ -4362,7 +4357,7 @@
             new_notification.approved = 1;
             $scope.notifications.push(new_notification);
             return $timeout(function() {
-              return bindDraggableAndMask(new_notification.id);
+              return bindDateMask(new_notification.id);
             });
           });
         };
@@ -4776,6 +4771,106 @@
 }).call(this);
 
 (function() {
+  var apiPath, updateMethod;
+
+  angular.module('Egerep').factory('Marker', function($resource) {
+    return $resource(apiPath('markers'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Notification', function($resource) {
+    return $resource(apiPath('notifications'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Account', function($resource) {
+    return $resource(apiPath('accounts'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('PlannedAccount', function($resource) {
+    return $resource(apiPath('periods/planned'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Review', function($resource) {
+    return $resource(apiPath('reviews'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Archive', function($resource) {
+    return $resource(apiPath('archives'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Attachment', function($resource) {
+    return $resource(apiPath('attachments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('RequestList', function($resource) {
+    return $resource(apiPath('lists'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Request', function($resource) {
+    return $resource(apiPath('requests'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      transfer: {
+        method: 'POST',
+        url: apiPath('requests', 'transfer')
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  }).factory('Sms', function($resource) {
+    return $resource(apiPath('sms'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Comment', function($resource) {
+    return $resource(apiPath('comments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Client', function($resource) {
+    return $resource(apiPath('clients'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('User', function($resource) {
+    return $resource(apiPath('users'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Tutor', function($resource) {
+    return $resource(apiPath('tutors'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      deletePhoto: {
+        url: apiPath('tutors', 'photo'),
+        method: 'DELETE'
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  });
+
+  apiPath = function(entity, additional) {
+    if (additional == null) {
+      additional = '';
+    }
+    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
+  };
+
+  updateMethod = function() {
+    return {
+      update: {
+        method: 'PUT'
+      }
+    };
+  };
+
+}).call(this);
+
+(function() {
   angular.module('Egerep').value('Approved', {
     0: 'не подтвержден',
     1: 'подтвержден'
@@ -5114,106 +5209,6 @@
       color: '#ACADAF'
     }
   });
-
-}).call(this);
-
-(function() {
-  var apiPath, updateMethod;
-
-  angular.module('Egerep').factory('Marker', function($resource) {
-    return $resource(apiPath('markers'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Notification', function($resource) {
-    return $resource(apiPath('notifications'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Account', function($resource) {
-    return $resource(apiPath('accounts'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('PlannedAccount', function($resource) {
-    return $resource(apiPath('periods/planned'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Review', function($resource) {
-    return $resource(apiPath('reviews'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Archive', function($resource) {
-    return $resource(apiPath('archives'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Attachment', function($resource) {
-    return $resource(apiPath('attachments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('RequestList', function($resource) {
-    return $resource(apiPath('lists'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Request', function($resource) {
-    return $resource(apiPath('requests'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      transfer: {
-        method: 'POST',
-        url: apiPath('requests', 'transfer')
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  }).factory('Sms', function($resource) {
-    return $resource(apiPath('sms'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Comment', function($resource) {
-    return $resource(apiPath('comments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Client', function($resource) {
-    return $resource(apiPath('clients'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('User', function($resource) {
-    return $resource(apiPath('users'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Tutor', function($resource) {
-    return $resource(apiPath('tutors'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      deletePhoto: {
-        url: apiPath('tutors', 'photo'),
-        method: 'DELETE'
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  });
-
-  apiPath = function(entity, additional) {
-    if (additional == null) {
-      additional = '';
-    }
-    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
-  };
-
-  updateMethod = function() {
-    return {
-      update: {
-        method: 'PUT'
-      }
-    };
-  };
 
 }).call(this);
 
