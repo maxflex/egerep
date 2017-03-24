@@ -16,7 +16,7 @@ class Debt extends Model
     public static function tutor($tutor_id, $date_start = null, $date_end = null)
     {
         # получаем последнюю встречу
-        $last_account_date = Cache::remember("tutor:{$tutor_id}:last_account_date", 5, function() {
+        $last_account_date = Cache::remember("tutor:{$tutor_id}:last_account_date", 5, function() use ($tutor_id) {
             return Account::where('tutor_id', $tutor_id)->orderBy('date_end', 'desc')->value('date_end');
         });
 
