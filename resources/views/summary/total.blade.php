@@ -27,6 +27,9 @@
                 <td>
                     дебет
                 </td>
+                <td>
+                    сумма
+                </td>
                 @endif
                 <td>
                     рабочих процессов
@@ -68,6 +71,9 @@
                 </td>
                 <td>
                     @{{ summary.debt.sum | hideZero | number }}
+                </td>
+                <td>
+                    @{{ +(debt_sum) - +(summary.debts.sum) | hideZero | number }}
                 </td>
                 @endif
                 <td>@{{ summary.active_attachments.sum }}</td>

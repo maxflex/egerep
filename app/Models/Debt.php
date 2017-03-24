@@ -55,4 +55,12 @@ class Debt extends Model
 
         return $sum;
     }
+
+    public static function sum()
+    {
+        $tutor_ids = self::join('tutors', 'tutors.id', '=', 'debts.tutor_id')
+            ->where('tutors.debtor', 0)->groupBy('debts.tutor_id')->pluck('debts.tutor_id');
+
+        return self::whereIn('tutor_id', $tutor_ids)->sum('debt');
+    }
 }
