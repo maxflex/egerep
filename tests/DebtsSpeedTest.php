@@ -46,12 +46,17 @@ class DebtsSpeedTest extends TestCase
      */
     public function testExample()
     {
-        foreach($this->dates as $index => $date) {
-            if ($index == 1) {
-                break;
-            }
-            Debt::total($date, $date);
-        }
+        $date = '2017-03-20';
+        dump(Debt::total([
+            'date_start' => $date,
+            'date_end' => $date
+        ]));
+        // foreach($this->dates as $index => $date) {
+        //     if ($index == 1) {
+        //         break;
+        //     }
+        //     Debt::total($date, $date);
+        // }
         $this->assertTrue(true);
     }
 }

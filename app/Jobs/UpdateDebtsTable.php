@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use DB;
 use App\Jobs\Job;
+use App\Models\Debt;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -78,6 +79,7 @@ class UpdateDebtsTable extends Job implements ShouldQueue
          // update on last step
          if ($this->is_last_step) {
             Settings::set('debt_table_updated', now());
+            Settings::set('debts_sum', Debt::sum());
          }
          \Log::info("Step " . ($this->step + 1) . " completed");
      }

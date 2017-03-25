@@ -15,7 +15,7 @@ class AddDIndexes extends Migration
         Schema::table('debts', function (Blueprint $table) {
             // $table->index('date');
             // $table->foreign('tutor_id')->references('id')->on('tutors')->onDelete('cascade');
-            $table->index('tutor_id');
+            // $table->index('tutor_id');
         });
     }
 
