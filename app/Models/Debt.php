@@ -22,7 +22,7 @@ class Debt extends Model
             	select tutor_id, max(date_end) as `date` from accounts
             	group by tutor_id
             ) a on a.tutor_id = tutors.id
-            left join debts on (debts.tutor_id = tutors.id and (a.tutor_id is null or a.date >= debts.date))
+            left join debts on (debts.tutor_id = tutors.id and (a.tutor_id is null or debts.date >= a.date))
             where tutors.debtor=0"
                 . (isset($params['date_start']) ? " and debts.date>='" . $params['date_start'] . "'" : '')
                 . (isset($params['date_end'])   ? " and debts.date<='" . $params['date_end'] . "'" : '')
