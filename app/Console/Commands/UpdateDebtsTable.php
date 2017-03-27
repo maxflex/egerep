@@ -78,7 +78,6 @@ class UpdateDebtsTable extends Command
                 ]);
                 $date = (new \DateTime($date))->modify('+1 day')->format('Y-m-d');
             }
-
             $bar->advance();
         }
         $bar->finish();

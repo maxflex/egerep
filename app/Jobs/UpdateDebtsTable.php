@@ -5,6 +5,7 @@ namespace App\Jobs;
 use DB;
 use App\Jobs\Job;
 use App\Models\Debt;
+use App\Models\Account;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -66,6 +67,8 @@ class UpdateDebtsTable extends Job implements ShouldQueue
              }
 
              $date = $attachment->date;
+             // дата последней встречи
+             $last_account_date = Account::where('tutor_id', $attachment->tutor_id)->orderBy('date_end', 'desc')->value('date_end');
 
              while ($date < $date_end) {
                  DB::table('debts')->insert([
@@ -73,6 +76,8 @@ class UpdateDebtsTable extends Job implements ShouldQueue
                      'debt'      => $attachment->forecast / 7 * static::pissimisticCoef($date, $archive_date),
                      'tutor_id'  => $attachment->tutor_id,
                      'client_id' => $attachment->client_id,
+                     'debtor'    => DB::table('tutors')->whereId($attachment->tutor_id)->value('debtor'),
+                     'after_last_meeting' => $last_account_date === null ? 1 : ($date >= $last_account_date),
                  ]);
                  $date = (new \DateTime($date))->modify('+1 day')->format('Y-m-d');
              }

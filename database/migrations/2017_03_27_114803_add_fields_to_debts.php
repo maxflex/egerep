@@ -13,7 +13,7 @@ class AddFieldsToDebts extends Migration
     public function up()
     {
         Schema::table('debts', function (Blueprint $table) {
-            $table->boolean('debts')->default(false)->index();
+            $table->boolean('debtor')->default(false)->index();
             $table->boolean('after_last_meeting')->default(false)->index();
         });
     }
