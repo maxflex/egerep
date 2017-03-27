@@ -64,7 +64,7 @@
                 </td>
                 <td>
                     @{{ summary.commission.sum | hideZero | number:0 }}
-                    <span class='half-black' ng-show='summary.debts.sum'>
+                    <span class='quater-black' ng-show='summary.debts.sum'>
                         <span ng-show='summary.commission.sum'> + </span>
                         @{{ summary.debts.sum | number:0 }}
                     </span>
