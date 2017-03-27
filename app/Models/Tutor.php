@@ -131,10 +131,10 @@ class Tutor extends Service\Person
 
     public function getDebtCalcAttribute()
     {
-        return Debt::sum([
+        return round(Debt::sum([
             'tutor_id' => $this->id,
             'after_last_meeting' => 1
-        ]);
+        ]));
     }
 
     public function getSvgMapAttribute()

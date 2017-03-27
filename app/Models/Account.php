@@ -136,11 +136,11 @@ class Account extends Model
 
     public function getDebtCalcAttribute()
     {
-        return Debt::sum([
+        return round(Debt::sum([
             'tutor_id' => $this->tutor_id,
             'date_start' => $this->date_start,
             'date_end' => $this->date_end,
-        ]);
+        ]));
     }
 
     // ------------------------------------------------------------------------
