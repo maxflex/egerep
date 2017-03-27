@@ -8,6 +8,7 @@ use App\Models\Debt;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Models\Service\Settings;
 
 class UpdateDebtsTable extends Job implements ShouldQueue
 {
