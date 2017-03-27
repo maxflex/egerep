@@ -26,4 +26,29 @@ class Debt extends Model
                 . (isset($params['tutor_id'])   ? " and tutor_id='" . $params['tutor_id'] . "'" : '')
         )[0]->sum;
     }
+
+    /**
+     * Для страницы «сводка по вечным должникам»
+     * для каждого годового промежутка выводится общий дебет по функции Debt::sum
+     * минус (сумма дебетов или переплат последней встречи)
+     */
+    public static function debtors($date_start, $date_end)
+    {
+        $debt_sum = Debt::sum([
+            'after_last_meeting' => 1,
+            'date_start' => $date_start,
+            'date_end' => $date_end,
+            'debtor' => 1,
+        ]);
+
+        return $debt_sum + DB::select("select sum(CASE WHEN debt_type=1 THEN (-1 * debt) ELSE debt END) as `sum` FROM (
+                     SELECT MAX(date_end) as last_account_date, debt, debt_type, tutor_id
+                     FROM accounts WHERE debt IS NOT NULL
+                     GROUP BY tutor_id
+                   ) x
+                   join tutors on x.tutor_id = tutors.id
+                   where last_account_date >='{$date_start}' and last_account_date<='{$date_end}' and tutors.debtor=1
+       ")[0]->sum;
+    }
 }
+// sum(CASE WHEN debt_type=1 THEN ac.debt ELSE (-1 * ac.debt) END) as `sum`
