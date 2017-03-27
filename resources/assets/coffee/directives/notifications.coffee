@@ -44,7 +44,7 @@ angular.module('Egerep').directive 'notifications', ->
         $scope.unsetEditing = (notification) ->
             $timeout ->
                 _.find($scope.notifications, {id: notification.id})?.is_being_edited = false
-            , 100
+            , 150
 
         $scope.toggle = (notification) ->
             $rootScope.toggleEnumServer(notification, 'approved', Notify, Notification)
