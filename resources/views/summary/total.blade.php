@@ -19,23 +19,23 @@
                     получено
                 </td>
                 <td>
+                    прогноз дебета
+                </td>
+                <td>
                     комиссия
                 </td>
                 <td>
-                    прогноз
+                    прогноз в неделю
                 </td>
                 <td>
                     дебет
                 </td>
-                <td>
-                    сумма
-                </td>
                 @endif
                 <td>
-                    рабочих процессов
+                    рабочих
                 </td>
                 <td>
-                    новых процессов
+                    новых
                 </td>
             </tr>
         </thead>
@@ -60,8 +60,11 @@
                     </span>
                 </td>
                 <td>
+                    @{{ +(summary.total_debts.sum) - +(summary.debts.sum) | hideZero | number:0 }}
+                </td>
+                <td>
                     @{{ summary.commission.sum | hideZero | number:0 }}
-                    <span class='mutual-debt' ng-show='summary.debts.sum'>
+                    <span class='half-black' ng-show='summary.debts.sum'>
                         <span ng-show='summary.commission.sum'> + </span>
                         @{{ summary.debts.sum | number:0 }}
                     </span>
@@ -71,9 +74,6 @@
                 </td>
                 <td>
                     @{{ summary.debt.sum | hideZero | number:0 }}
-                </td>
-                <td>
-                    @{{ +(summary.total_debts.sum) - +(summary.debts.sum) | hideZero | number:0 }}
                 </td>
                 @endif
                 <td>@{{ summary.active_attachments.sum }}</td>
