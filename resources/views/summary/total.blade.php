@@ -19,7 +19,7 @@
                     получено
                 </td>
                 <td>
-                    прогноз дебета
+                    прогноз комиссии
                 </td>
                 <td>
                     комиссия
@@ -60,7 +60,7 @@
                     </span>
                 </td>
                 <td>
-                    @{{ +(summary.total_debts.sum) - +(summary.debts.sum) | hideZero | number:0 }}
+                    @{{ summary.total_debts.sum | hideZero | number:0 }}
                 </td>
                 <td>
                     @{{ summary.commission.sum | hideZero | number:0 }}

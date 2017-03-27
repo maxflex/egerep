@@ -249,10 +249,18 @@ class SummaryController extends Controller
                 'sum' => $received
             ],
             'debts' => [
-                'sum' => Debt::sum(['date_start' => $start, 'date_end' => $end])
+                'sum' => Debt::sum([
+                    'date_start' => $start,
+                    'date_end' => $end,
+                    'after_last_meeting' => 1,
+                ])
             ],
             'total_debts' => [
-                'sum' => Debt::sumNoAccounts($start, $end)
+                'sum' => Debt::sum([
+                    'date_start' => $start,
+                    'date_end' => $end,
+                    'after_last_meeting' => 0,
+                ])
             ],
             'mutual_debts' => [
                 'sum' => $mutual_debts
