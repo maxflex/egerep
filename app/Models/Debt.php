@@ -17,16 +17,11 @@ class Debt extends Model
     public static function sum($params = [])
     {
         return DB::select("
-            select sum(debts.debt) as `sum` from tutors
-            left join (
-            	select tutor_id, max(date_end) as `date` from accounts
-            	group by tutor_id
-            ) a on a.tutor_id = tutors.id
-            left join debts on (debts.tutor_id = tutors.id and (a.tutor_id is null or debts.date >= a.date))
-            where tutors.debtor=0"
-                . (isset($params['date_start']) ? " and debts.date>='" . $params['date_start'] . "'" : '')
-                . (isset($params['date_end'])   ? " and debts.date<='" . $params['date_end'] . "'" : '')
-                . (isset($params['tutor_id'])   ? " and tutors.id='" . $params['tutor_id'] . "'" : '')
+            select sum(debt) as `sum` from debts
+            where debtor=0 and after_last_meeting=1"
+                . (isset($params['date_start']) ? " and date>='" . $params['date_start'] . "'" : '')
+                . (isset($params['date_end'])   ? " and date<='" . $params['date_end'] . "'" : '')
+                . (isset($params['tutor_id'])   ? " and tutor_id='" . $params['tutor_id'] . "'" : '')
         )[0]->sum;
     }
 
