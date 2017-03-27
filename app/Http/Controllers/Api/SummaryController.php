@@ -276,7 +276,7 @@ class SummaryController extends Controller
         /** если текущий день -> summary не подсчитан -> считаем текущие значения */
         /** не аддитивные величины **/
         if (new \DateTime($end) >= new \DateTime('today')) {
-            extract(CalcSummary::calcData());
+            extract(CalcSummary::calcData(now(true)));
             foreach (['forecast', 'debt', 'active_attachments', 'new_clients'] as $field) {
                 $data[$field]['sum'] = $$field;
             }
