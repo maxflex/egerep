@@ -67,6 +67,7 @@ class UpdateDebtsTable extends Job implements ShouldQueue
              }
 
              $date = $attachment->date;
+
              // дата последней встречи
              $last_account_date = Account::where('tutor_id', $attachment->tutor_id)->orderBy('date_end', 'desc')->value('date_end');
 
