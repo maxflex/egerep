@@ -325,7 +325,7 @@ class SummaryController extends Controller
     private function _getDebtorsData($start, $end)
     {
         return [
-            'cnt' => Debt::where('date', '>=', $start)->where('date', '<=', $end)->where('debtor', 1)->groupBy('tutor_id')->count(),
+            'cnt' => count(Debt::select(DB::raw(1))->where('date', '>=', $start)->where('date', '<=', $end)->where('debtor', 1)->groupBy('tutor_id')->get()),
             'sum' => Debt::sum([
                 'date_start' => $start,
                 'date_end' => $end,
