@@ -18,7 +18,8 @@ class Debt extends Model
     {
         return DB::select("
             select sum(debt) as `sum` from debts
-            where debtor=" . (isset($params['debtor']) ? $params['debtor'] : 0)
+            where true "
+                . (isset($params['debtor']) ? " and debtor=" . $params['debtor'] : '')
                 . (isset($params['after_last_meeting']) ? " and after_last_meeting=" . $params['after_last_meeting'] : '')
                 . (isset($params['date_start']) ? " and date>='" . $params['date_start'] . "'" : '')
                 . (isset($params['date_end'])   ? " and date<='" . $params['date_end'] . "'" : '')

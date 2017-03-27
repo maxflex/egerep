@@ -253,6 +253,7 @@ class SummaryController extends Controller
                     'date_start' => $start,
                     'date_end' => $end,
                     'after_last_meeting' => 1,
+                    'debtor' => 0,
                 ])
             ],
             'total_debts' => [
@@ -260,6 +261,7 @@ class SummaryController extends Controller
                     'date_start' => $start,
                     'date_end' => $end,
                     'after_last_meeting' => 0,
+                    'debtor' => 0,
                 ])
             ],
             'mutual_debts' => [

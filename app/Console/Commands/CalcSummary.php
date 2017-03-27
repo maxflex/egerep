@@ -38,6 +38,7 @@ class CalcSummary extends Command
     {
         $forecast           = round(Attachment::newOrActive()->sum('forecast') * Attachment::P_COEF);
         $debt               = Debt::sum([
+            'debtor' => 0,
             'date_start' => $date,
             'date_end' => $date,
             'after_last_meeting' => 1,
