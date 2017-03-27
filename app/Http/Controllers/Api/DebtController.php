@@ -133,7 +133,7 @@ class DebtController extends Controller
         }
 
         # выбираем только нужные поля для ускорения запроса
-        $tutors = $query->get([
+        $tutors = $query->addSelect([
             'tutors.id',
             'tutors.first_name',
             'tutors.last_name',
@@ -142,7 +142,7 @@ class DebtController extends Controller
             'tutors.birth_year',
             'tutors.debt_comment',
             'tutors.security_notification',
-        ])->append('last_account_info');
+        ])->get()->append('last_account_info');
 
         return $tutors;
     }
