@@ -3030,9 +3030,6 @@
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
     $scope.debt_updating = false;
-    $scope.getSum = function(summary) {
-      return (parseInt(summary.sum) || 0) + (parseInt(summary.debt_sum) || 0);
-    };
     $scope.updateDebt = function() {
       $scope.debt_updating = true;
       return $http.post('api/command/recalc-debt').then(function(response) {

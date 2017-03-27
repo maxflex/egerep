@@ -129,6 +129,14 @@ class Tutor extends Service\Person
 
     // ------------------------------------------------------------------------
 
+    public function getDebtCalcAttribute()
+    {
+        return Debt::sum([
+            'tutor_id' => $this->id,
+            'after_last_meeting' => 1
+        ]);
+    }
+
     public function getSvgMapAttribute()
     {
         return DB::table('tutor_departures')->where('tutor_id', $this->id)->pluck('station_id');

@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Attachment;
 use App\Models\Tutor;
 use Illuminate\Console\Command;
+use App\Models\Debt;
 use DB;
 
 class CalcSummary extends Command
@@ -33,10 +34,14 @@ class CalcSummary extends Command
         parent::__construct();
     }
 
-    public static function calcData()
+    public static function calcData($date)
     {
         $forecast           = round(Attachment::newOrActive()->sum('forecast') * Attachment::P_COEF);
-        $debt               = Tutor::where('debtor', 0)->sum('debt_calc');
+        $debt               = Debt::sum([
+            'date_start' => $date,
+            'date_end' => $date,
+            'after_last_meeting' => 1,
+        ]);
         $new_clients        = Attachment::newest()->count();
         $active_attachments = Attachment::active()->count();
 
@@ -62,7 +67,7 @@ class CalcSummary extends Command
         $this->line('Starting...');
 
         $date = date('Y-m-d', strtotime('yesterday'));
-        $summary = self::calcData() + compact('date');
+        $summary = self::calcData($date) + compact('date');
 
         DB::table('summaries')->insert($summary);
 

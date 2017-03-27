@@ -60,9 +60,6 @@ angular
         $rootScope.frontend_loading = true
         $scope.debt_updating = false
 
-        $scope.getSum = (summary) ->
-            (parseInt(summary.sum) or 0) + (parseInt(summary.debt_sum) or 0)
-
         $scope.updateDebt = ->
             $scope.debt_updating = true
             $http.post 'api/command/recalc-debt'

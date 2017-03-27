@@ -322,26 +322,14 @@ class SummaryController extends Controller
 
     private function _getDebtorsData($start, $end)
     {
-        return DB::table('tutors')
-            ->join(DB::raw('(
-                SELECT MAX(id) as max_attachment_id, tutor_id
-                FROM attachments
-                GROUP BY tutor_id
-                ) a'), 'a.tutor_id', '=', 'tutors.id')
-            ->join(DB::raw('(
-                SELECT MAX(date) as last_archive_date, attachment_id
-                FROM archives
-                GROUP BY attachment_id
-                ) ar'), 'ar.attachment_id', '=', 'a.max_attachment_id')
-            ->leftJoin(DB::raw('(
-                  SELECT MAX(date_end) as last_account_date, debt_calc as last_account_debt, tutor_id
-                  FROM accounts
-                  GROUP BY tutor_id
-                  ) ac'), 'tutors.id', '=', 'ac.tutor_id')
-            ->where('debtor', 1)
-            ->whereRaw("last_archive_date >= '{$start}'")
-            ->whereRaw("last_archive_date <= '{$end}'")
-            ->select(DB::raw('count(*) as cnt, sum(debt_calc) as sum, sum(last_account_debt) as debt_sum'))->first();
+        return [
+            'cnt' => Debt::where('date', '>=', $start)->where('date', '<=', $end)->where('debtor', 1)->groupBy('tutor_id')->count(),
+            'sum' => Debt::sum([
+                'date_start' => $start,
+                'date_end' => $end,
+                'debtor' => 1,
+            ])
+        ];
     }
 
     public function users(Request $request)

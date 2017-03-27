@@ -133,6 +133,16 @@ class Account extends Model
                  ->where('entity_type', Tutor::USER_TYPE)
                  ->where('id_status', static::MUTUAL_DEBT_STATUS)->first();
     }
+
+    public function getDebtCalcAttribute()
+    {
+        return Debt::sum([
+            'tutor_id' => $this->tutor_id,
+            'date_start' => $this->date_start,
+            'date_end' => $this->date_end,
+        ]);
+    }
+
     // ------------------------------------------------------------------------
 
     protected static function boot()
