@@ -34,7 +34,6 @@ class Kernel extends ConsoleKernel
         Commands\CalcSummary::class,
         Commands\CheckFinishedRequests::class,
         Commands\TransferActiveClients::class,
-        Commands\UpdateRequestUserId::class,
         Commands\ReviewsCreate::class,
         Commands\SetChecked::class,
         Commands\Tutors::class,
@@ -53,7 +52,6 @@ class Kernel extends ConsoleKernel
         Commands\SvgAddStations::class,
         Commands\TutorDistancesRecalc::class,
         Commands\RecalcTutorData::class,
-        Commands\UpdateDebtsTable::class,
     ];
 
     /**
@@ -68,7 +66,10 @@ class Kernel extends ConsoleKernel
             $attachments_count = \DB::table('attachments')->where('forecast', '>', 0)->count();
             $steps_count = ceil($attachments_count / UpdateDebtsTable::STEP) - 1;
             foreach(range(0, $steps_count) as $step) {
-                dispatch(new UpdateDebtsTable($step, $step == $steps_count));
+                dispatch(new UpdateDebtsTable([
+                    'step'         => $step,
+                    'is_last_step' => $step == $steps_count,
+                ]));
             }
         })->dailyAt('02:30'); // это выполняется примерно полчаса
         $schedule->command('summary:calc')->dailyAt('03:15'); // затем должно запуститься это

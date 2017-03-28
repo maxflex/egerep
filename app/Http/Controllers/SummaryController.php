@@ -31,8 +31,8 @@ class SummaryController extends Controller
                         ngInit([
                             'page'          => $request->page,
                             'filter'        => $filter,
-                            'total_debt'    => Settings::get('debts_sum'),
-                            'debt_updated'  => Settings::get('debt_table_updated'),
+                            'debt_sum'      => Settings::get('debt_sum'),
+                            'debt_updated'  => Settings::get('debt_updated'),
                             'type'          => 'total'
                         ])
                     );
@@ -52,8 +52,8 @@ class SummaryController extends Controller
                         ngInit([
                             'page'          => $request->page,
                             'filter'        => $filter,
-                            'total_debt'    => Settings::get('debts_sum'),
-                            'debt_updated'  => Settings::get('debt_table_updated'),
+                            'debt_sum'      => Settings::get('debt_sum'),
+                            'debt_updated'  => Settings::get('debt_updated'),
                             'type'          => 'payments'
                         ])
                     );
@@ -70,8 +70,8 @@ class SummaryController extends Controller
                         ngInit([
                             'page'          => $request->page,
                             'filter'        => $filter,
-                            'total_debt'    => Settings::get('debts_sum'),
-                            'debt_updated'  => Settings::get('debt_table_updated'),
+                            'debt_sum'      => Settings::get('debt_sum'),
+                            'debt_updated'  => Settings::get('debt_updated'),
                             'type'          => 'debtors'
                         ])
                     );
@@ -84,8 +84,8 @@ class SummaryController extends Controller
         }
         return view('summary.users')->with(
             ngInit([
-                'total_debt'    => Settings::get('debts_sum'),
-                'debt_updated'  => Settings::get('debt_table_updated'),
+                'debt_sum'      => Settings::get('debt_sum'),
+                'debt_updated'  => Settings::get('debt_updated'),
                 'allowed_all'   => allowed(\Shared\Rights::ER_SUMMARY_USERS_ALL)
             ])
         );

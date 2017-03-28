@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Events\DebtRecalc;
+use App\Events\RecalcTutorDebt;
 
 class Archive extends Model
 {
@@ -46,29 +46,22 @@ class Archive extends Model
     protected static function boot()
     {
         static::saving(function ($model) {
-            if (!$model->exists) {
+            if (! $model->exists) {
                 $model->date = date('Y-m-d');
                 $model->user_id = User::fromSession()->id;
             }
         });
-
+        static::updated(function($model) {
+            if ($model->changed(['date'])) {
+                event(new RecalcTutorDebt($model->attachment->tutor_id));
+            }
+        });
         static::created(function ($model) {
-            event(new DebtRecalc($model->attachment->tutor_id));
+            event(new RecalcTutorDebt($model->attachment->tutor_id));
         });
         static::deleted(function ($model) {
-            event(new DebtRecalc($model->attachment->tutor_id));
+            event(new RecalcTutorDebt($model->attachment->tutor_id));
         });
-    }
-
-    public function save(array $options = [])
-    {
-        $fire_event = $this->exists && $this->changed(['date']);
-
-        parent::save($options);
-
-        if ($fire_event) {
-            event(new DebtRecalc($this->attachment->tutor_id));
-        }
     }
 
     /**

@@ -96,8 +96,6 @@ class DebtController extends Controller
         $query = Tutor::with(['markers'])->where('debtor', 0);
         $query->select(DB::raw("(select sum(debt) from debts where after_last_meeting=1 and tutor_id=tutors.id) as debt_calc"))
             ->having('debt_calc', '>', 0);
-        //->where('tutors.debt_calc', '>', 0)->where('debtor', 0);
-
 
         if (isset($debt_calc_from)) {
             $query->having('debt_calc', '>=', $debt_calc_from);

@@ -1,7 +1,7 @@
 @extends('app')
 @section('title', 'Итоги')
 @section('title-right')
-    общий дебет на сегодня: @{{ total_debt | number}}, обновлено @{{ formatDateTime(debt_updated) }}
+    общий дебет на сегодня: @{{ debt_sum | number}}, обновлено @{{ formatDateTime(debt_updated) }}
     <span class="glyphicon glyphicon-refresh opacity-pointer" ng-click='updateDebt()' ng-class="{
         'spinning': debt_updating
     }"></span>
@@ -119,7 +119,7 @@
                         завершенных (занятий нет)
                     </td>
                     <td ng-repeat='s in stats.data'>
-                        @{{ s.attachments.archived.no_lessons | hideZero }} 
+                        @{{ s.attachments.archived.no_lessons | hideZero }}
                         <span class='text-gray' ng-show='s.attachments.archived.no_lessons | hideZero'>(@{{ s.attachments.archived.no_lessons_percentage }}%)</span>
                     </td>
                 </tr>

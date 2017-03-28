@@ -4,10 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
-use App\Events\DebtRecalc;
 use App\Events\AttachmentCountChanged;
 use DB;
 use Storage;
+use App\Events\RecalcTutorDebt;
 
 class Attachment extends Model
 {
@@ -270,14 +270,19 @@ class Attachment extends Model
         static::saved(function($model) {
             DB::table('attachments')->where('id', $model->id)->update(['errors' => \App\Models\Helpers\Attachment::errors($model)]);
         });
+        static::updated(function($model) {
+            if ($model->changed(['date', 'forecast'])) {
+                event(new RecalcTutorDebt($model->tutor_id));
+            }
+        });
         static::created(function ($model) {
-            event(new DebtRecalc($model->tutor_id));
             event(new AttachmentCountChanged());
+            event(new RecalcTutorDebt($model->tutor_id));
         });
         static::deleted(function ($model) {
             AccountData::where('tutor_id', $model->tutor_id)->where('client_id', $model->client_id)->delete();
-            event(new DebtRecalc($model->tutor_id));
             event(new AttachmentCountChanged(true));
+            event(new RecalcTutorDebt($model->tutor_id));
         });
     }
 
@@ -286,10 +291,6 @@ class Attachment extends Model
         $fire_event = $this->exists && $this->changed(['date', 'forecast']);
 
         parent::save($options);
-
-        if ($fire_event) {
-            event(new DebtRecalc($this->tutor_id));
-        }
     }
 
     //

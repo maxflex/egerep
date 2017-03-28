@@ -11,19 +11,6 @@ use Illuminate\Support\Facades\Queue;
 class CommandsController extends Controller
 {
     /**
-     * Пересчитать по всем преподам
-     */
-    public function postRecalcDebt(Request $request)
-    {
-        event(new \App\Events\DebtRecalc);
-
-        return [
-            'total_debt'    => \App\Models\Tutor::totalDebt(),
-            'debt_updated'  => now(),
-        ];
-    }
-
-    /**
      * Получить информацию по номеру телефона
      */
     public function postMangoStats(Request $request)

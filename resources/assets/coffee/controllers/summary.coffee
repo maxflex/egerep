@@ -65,8 +65,8 @@ angular
             $http.post 'api/command/recalc-debt'
                 .then (response) ->
                     $scope.debt_updating = false
-                    $scope.debt_updated = response.data.debt_updated
-                    $scope.total_debt   = response.data.total_debt
+                    $scope.debt_updated  = response.data.debt_updated
+                    $scope.debt_sum      = response.data.debt_sum
 
         $timeout ->
             loadSummary $scope.page

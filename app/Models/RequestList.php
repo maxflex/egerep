@@ -55,8 +55,6 @@ class RequestList extends Model
             'tb',
             'lk',
             'js',
-            'debt_calc',
-            'debt_comment',
             'photo_extension',
             'margin',
             'public_price',

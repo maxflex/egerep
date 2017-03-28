@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use App\Events\DebtRecalc;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\AccountData;
 use App\Models\Tutor;
 use App\Models\User;
+use App\Events\RecalcTutorDebt;
 use Carbon\Carbon;
 use DB;
 
@@ -157,25 +157,20 @@ class Account extends Model
             // Delete account data
             $model->accountData()->delete();
         });
-
+        static::updated(function($model) {
+            if ($model->changed(['date_end'])) {
+                // запускаем только если это последний расчет
+                if ($model->id == DB::table('accounts')->where('tutor_id', $model->tutor_id)->orderBy('date_end', 'desc')->value('id')) {
+                    event(new RecalcTutorDebt($model->tutor_id));
+                }
+            }
+        });
         static::created(function ($model) {
-            event(new DebtRecalc($model->tutor_id));
+            event(new RecalcTutorDebt($model->tutor_id));
         });
-
         static::deleted(function ($model) {
-            event(new DebtRecalc($model->tutor_id));
+            event(new RecalcTutorDebt($model->tutor_id));
         });
-    }
-
-    public function save(array $options = [])
-    {
-        $fire_event = $this->exists && $this->changed(['date_end']);
-
-        parent::save($options);
-
-        if ($fire_event) {
-            event(new DebtRecalc($this->tutor_id));
-        }
     }
 
     /**

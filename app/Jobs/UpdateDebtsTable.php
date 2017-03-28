@@ -18,18 +18,21 @@ class UpdateDebtsTable extends Job implements ShouldQueue
     // по сколько запускать за шаг
     const STEP = 2000;
 
-    public $step;
-    public $is_last_step;
+    /**
+     * @int step – если идет полный пересчет, то выполняется в несколько шагов, на первом шаге таблица полностью очищается
+     * @boolean is_last_step – последний шаг полного пересчета, обновить «время пересчета» и сумму дебета в Settings
+     * @int tutor_id – пересчитываем для конкретного препода. в этом случае steps отсутствуют
+     */
+    private $params;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($step, $is_last_step)
+    public function __construct(array $params = [])
     {
-        $this->step = $step;
-        $this->is_last_step = $is_last_step;
+        $this->params = $params;
     }
 
     /**
@@ -44,15 +47,26 @@ class UpdateDebtsTable extends Job implements ShouldQueue
       */
      public function handle()
      {
-         \Log::info("Step " . ($this->step + 1) . " starting...");
-
-         // truncate on first step
-         if ($this->step == 0) {
-             DB::table('debts')->truncate();
+         if (isset($this->params['step'])) {
+             \Log::info("Step " . ($this->params['step'] + 1) . " starting...");
          }
 
-         $attachments = DB::table('attachments')->where('forecast', '>', 0)->skip($this->step * self::STEP)->take(self::STEP)->get();
+         $query = DB::table('attachments')->where('forecast', '>', 0);
 
+         if (isset($this->params['step'])) {
+             // truncate on first step
+             if ($this->params['step'] == 0) {
+                 DB::table('debts')->truncate();
+             }
+             $query->skip($this->params['step'] * self::STEP)->take(self::STEP);
+         }
+
+         if (isset($this->params['tutor_id'])) {
+             DB::table('debts')->where('tutor_id', $this->params['tutor_id'])->delete();
+             $query->where('tutor_id', $this->params['tutor_id']);
+         }
+
+         $attachments = $query->get();
          $now = now(true);
 
          foreach($attachments as $attachment) {
@@ -85,11 +99,17 @@ class UpdateDebtsTable extends Job implements ShouldQueue
              }
          }
          // update on last step
-         if ($this->is_last_step) {
-            Settings::set('debt_table_updated', now());
-            Settings::set('debts_sum', Debt::sum());
+         if (isset($this->params['is_last_step']) && $this->params['is_last_step'] === true) {
+            Settings::set('debt_updated', now());
+            Settings::set('debt_sum', Debt::sum([
+                'debtor' => 0,
+                'after_last_meeting' => 1
+            ]));
          }
-         \Log::info("Step " . ($this->step + 1) . " completed");
+
+         if (isset($this->params['step'])) {
+             \Log::info("Step " . ($this->params['step'] + 1) . " completed");
+         }
      }
 
      /**

@@ -39,8 +39,6 @@ class CalcSummary extends Command
         $forecast           = round(Attachment::newOrActive()->sum('forecast') * Attachment::P_COEF);
         $debt               = Debt::sum([
             'debtor' => 0,
-            'date_start' => $date,
-            'date_end' => $date,
             'after_last_meeting' => 1,
         ]);
         $new_clients        = Attachment::newest()->count();
@@ -63,7 +61,6 @@ class CalcSummary extends Command
     public function handle()
     {
         $this->info('Debt updating');
-        event(new \App\Events\DebtRecalc);
 
         $this->line('Starting...');
 

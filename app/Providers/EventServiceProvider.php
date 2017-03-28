@@ -18,8 +18,8 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\IncomingRequest' => [],
         'App\Events\AttachmentCountChanged' => [],
         'App\Events\PhoneChanged' => [],
-        'App\Events\DebtRecalc' => [],
         'App\Events\LogAction' => [],
+        'App\Events\RecalcTutorDebt' => [],
     ];
 
     /**

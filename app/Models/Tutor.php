@@ -8,6 +8,7 @@ use App\Models\Metro;
 use App\Models\Request;
 use App\Models\Account;
 use App\Events\ResponsibleUserChanged;
+use App\Events\RecalcTutorDebt;
 
 class Tutor extends Service\Person
 {
@@ -162,7 +163,7 @@ class Tutor extends Service\Person
      */
      public function getLastAccountInfoAttribute()
      {
-         return DB::table('accounts')->select('debt', 'debt_type', 'debt_calc', 'date_end')->where('tutor_id', $this->id)->orderBy('date_end', 'desc')->first();
+         return DB::table('accounts')->select('debt', 'debt_type', 'date_end')->where('tutor_id', $this->id)->orderBy('date_end', 'desc')->first();
      }
 
      /**
@@ -441,6 +442,9 @@ class Tutor extends Service\Person
             if ($tutor->changed('responsible_user_id')) {
                 event(new ResponsibleUserChanged($tutor));
             }
+            if ($tutor->changed(['debtor'])) {
+                event(new RecalcTutorDebt($tutor->id));
+            }
         });
 
         static::saved(function($model) {
@@ -670,15 +674,6 @@ class Tutor extends Service\Person
          return Account::select(DB::raw("DATE_SUB(date_end, INTERVAL 60 DAY) as date_limit"))
                             ->where('tutor_id', $this->id)->orderBy('date_end', 'desc')->pluck('date_limit')->first();
      }
-
-     /**
-      * Общий дебет на сегодня
-      */
-     public static function totalDebt()
-     {
-         return DB::table('tutors')->where('debtor', 0)->sum('debt_calc');
-     }
-
 
     /**
      * Возвращаем
