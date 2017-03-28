@@ -33,7 +33,7 @@ class SummaryController extends Controller
                             'filter'        => $filter,
                             'debt_sum'      => Debt::sum([
                                 'debtor' => 0,
-                                'after_last_meething' => 1
+                                'after_last_meeting' => 1
                             ]),
                             'debt_updating' => Settings::get('debt_updating'),
                             'debt_updated'  => Settings::get('debt_updated'),
@@ -58,7 +58,7 @@ class SummaryController extends Controller
                             'filter'        => $filter,
                             'debt_sum'      => Debt::sum([
                                 'debtor' => 0,
-                                'after_last_meething' => 1
+                                'after_last_meeting' => 1
                             ]),
                             'debt_updating' => Settings::get('debt_updating'),
                             'debt_updated'  => Settings::get('debt_updated'),
@@ -80,7 +80,7 @@ class SummaryController extends Controller
                             'filter'        => $filter,
                             'debt_sum'      => Debt::sum([
                                 'debtor' => 0,
-                                'after_last_meething' => 1
+                                'after_last_meeting' => 1
                             ]),
                             'debt_updating' => Settings::get('debt_updating'),
                             'debt_updated'  => Settings::get('debt_updated'),
@@ -98,7 +98,7 @@ class SummaryController extends Controller
             ngInit([
                 'debt_sum'      => Debt::sum([
                     'debtor' => 0,
-                    'after_last_meething' => 1
+                    'after_last_meeting' => 1
                 ]),
                 'debt_updating' => Settings::get('debt_updating'),
                 'debt_updated'  => Settings::get('debt_updated'),

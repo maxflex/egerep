@@ -3,7 +3,7 @@
 @section('title-right')
     общий дебет на сегодня: @{{ debt_sum | number:0 }}, обновлено @{{ formatDateTime(debt_updated) }}
     <span class="glyphicon glyphicon-refresh opacity-pointer" ng-click='updateDebt()' ng-class="{
-        'spinning': debt_updating
+        'spinning': debt_updating == 1
     }"></span>
 @stop
 @section('controller', 'SummaryIndex')
