@@ -32358,6 +32358,10 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
   .md-input-has-value .published-field, .md-input-focused .published-field {
     display: inline-block; }
 
+.full-opacity-disabled {
+  opacity: 1 !important;
+  pointer-events: none !important; }
+
 .ios7-switch {
   display: inline-block;
   position: relative;

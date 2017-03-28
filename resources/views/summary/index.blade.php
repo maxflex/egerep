@@ -1,9 +1,10 @@
 @extends('app')
 @section('title', 'Итоги')
 @section('title-right')
-    общий дебет на сегодня: @{{ debt_sum | number:0 }}, обновлено @{{ formatDateTime(debt_updated) }}
+    <span ng-hide="debt_updating === '1'">общий дебет на сегодня: @{{ debt_sum | number:0 }}, обновлено @{{ formatDateTime(debt_updated) }}</span>
     <span class="glyphicon glyphicon-refresh opacity-pointer" ng-click='updateDebt()' ng-class="{
-        'spinning': debt_updating == 1
+        'spinning': debt_updating === true || debt_updating === '1',
+        'full-opacity-disabled': debt_updating === '1',
     }"></span>
 @stop
 @section('controller', 'SummaryIndex')

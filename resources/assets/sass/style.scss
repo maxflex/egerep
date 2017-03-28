@@ -3894,3 +3894,8 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
 		display: inline-block;
 	}
 }
+
+.full-opacity-disabled {
+    opacity: 1 !important;
+    pointer-events: none !important;
+}
