@@ -106,7 +106,8 @@ angular.module('Egerep').directive 'notifications', ->
                 saveEdit(notification, event)
             if event.keyCode is 27
                 window.getSelection().removeAllRanges()
-                $(event.target).blur()
+                $(event.target).blur().html notification.comment
+
                 return
 
         notificate = (event) ->
@@ -162,6 +163,8 @@ angular.module('Egerep').directive 'notifications', ->
             if event.keyCode is 27
                 window.getSelection().removeAllRanges()
                 $(event.target).blur()
+                $scope.start_notificationing = false
+            return
 
         $scope.defaultNotification = ->
             new_notification = new Notification
