@@ -28,6 +28,6 @@
     </div>
     <div class='double-space-row'></div>
     <div class='mbs'>
-        <span class='link-like' ng-click='accountInfo(client)'>подобнее</span>
+        <span class='link-like' ng-click='accountInfo(client)'>подробнее</span>
     </div>
 </td>
