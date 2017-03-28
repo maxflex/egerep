@@ -9,6 +9,7 @@
 				<div class='new-notification' placeholder="текст напоминания" contenteditable="true"
                      ng-keydown="editNotification(notification, $event)"
                      ng-blur='unsetEditing(notification)'
+                     ng-focus='setEditing(notification)'
                      ng-click='hack(notification, $event)'
                 >@{{notification.comment}}</div>
                 <span>–</span>

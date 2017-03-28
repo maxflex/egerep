@@ -4199,7 +4199,7 @@
             return (ref = _.find($scope.notifications, {
               id: notification.id
             })) != null ? ref.is_being_edited = false : void 0;
-          }, 100);
+          }, 150);
         };
         $scope.toggle = function(notification) {
           return $rootScope.toggleEnumServer(notification, 'approved', Notify, Notification);
