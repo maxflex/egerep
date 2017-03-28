@@ -19,7 +19,7 @@ class DebtController extends Controller
     public function index(Request $request)
     {
         // вечные должники
-        return Tutor::where('debtor', 1)->get()->append('last_account_info');
+        return Tutor::where('debtor', 1)->get()->append('last_account_info', 'debt_calc');
     }
 
     /**
