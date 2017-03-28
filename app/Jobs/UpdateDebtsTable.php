@@ -57,6 +57,7 @@ class UpdateDebtsTable extends Job implements ShouldQueue
              // truncate on first step
              if ($this->params['step'] == 0) {
                  DB::table('debts')->truncate();
+                 Settings::set('debt_updating', 1);
              }
              $query->skip($this->params['step'] * self::STEP)->take(self::STEP);
          }
@@ -101,10 +102,7 @@ class UpdateDebtsTable extends Job implements ShouldQueue
          // update on last step
          if (isset($this->params['is_last_step']) && $this->params['is_last_step'] === true) {
             Settings::set('debt_updated', now());
-            Settings::set('debt_sum', Debt::sum([
-                'debtor' => 0,
-                'after_last_meeting' => 1
-            ]));
+            Settings::set('debt_updating', 0);
          }
 
          if (isset($this->params['step'])) {

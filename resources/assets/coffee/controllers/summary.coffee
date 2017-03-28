@@ -80,6 +80,10 @@ angular
             loadSummary $scope.current_page
             paginate 'summary' + getPrefix() + '/' + $scope.filter, $scope.current_page
 
+        $scope.updateDebt = ->
+            $scope.debt_updating = true
+            $http.post 'api/command/recalc-debt'
+            
         loadSummary = (page) ->
             params  = getPrefix()
             params += '?page='   + page

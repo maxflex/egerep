@@ -7,9 +7,25 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Service\Settings;
 use Illuminate\Support\Facades\Queue;
+use App\Jobs\UpdateDebtsTable;
 
 class CommandsController extends Controller
 {
+    /**
+     * Пересчитать по всем преподам
+     */
+    public function postRecalcDebt(Request $request)
+    {
+        $attachments_count = \DB::table('attachments')->where('forecast', '>', 0)->count();
+        $steps_count = ceil($attachments_count / UpdateDebtsTable::STEP) - 1;
+        foreach(range(0, $steps_count) as $step) {
+            dispatch(new UpdateDebtsTable([
+                'step'         => $step,
+                'is_last_step' => $step == $steps_count,
+            ]));
+        }
+    }
+
     /**
      * Получить информацию по номеру телефона
      */

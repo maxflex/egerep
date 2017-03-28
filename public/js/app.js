@@ -3035,7 +3035,7 @@
       return $http.post('api/command/recalc-debt').then(function(response) {
         $scope.debt_updating = false;
         $scope.debt_updated = response.data.debt_updated;
-        return $scope.total_debt = response.data.total_debt;
+        return $scope.debt_sum = response.data.debt_sum;
       });
     };
     $timeout(function() {
@@ -3050,6 +3050,10 @@
       ajaxStart();
       loadSummary($scope.current_page);
       return paginate('summary' + getPrefix() + '/' + $scope.filter, $scope.current_page);
+    };
+    $scope.updateDebt = function() {
+      $scope.debt_updating = true;
+      return $http.post('api/command/recalc-debt');
     };
     return loadSummary = function(page) {
       var params;
