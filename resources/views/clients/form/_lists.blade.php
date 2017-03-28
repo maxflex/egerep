@@ -46,7 +46,7 @@
                         <td  style='width: 2%'>
                             @{{ tutor.js }}
                         </td>
-                        <td style='width: 15%' ng-init='recommendation = RecommendationService.get(tutor, client.grade)'>
+                        <td style='width: 15%' data-init="@{{recommendation = RecommendationService.get(tutor, client.grade)}}">
                             <span aria-label='@{{ recommendation.text }}' class='hint--bottom-right cursor-default' ng-class="{
                                 'text-success': recommendation.type == 0,
                                 'text-warning': recommendation.type == 1,
