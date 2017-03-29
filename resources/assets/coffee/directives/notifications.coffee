@@ -95,6 +95,9 @@ angular.module('Egerep').directive 'notifications', ->
             Notification.update {id: notification.id},
                 comment: comment
                 date: date
+            , ->
+                notification.comment = comment
+                notification.date    = date
 
         $scope.editNotification = (notification, event) ->
             handleDateKeycodes event
