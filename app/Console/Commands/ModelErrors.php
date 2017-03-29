@@ -9,7 +9,7 @@ use App\Models\Attachment;
 use App\Models\Review;
 use App\Models\Tutor;
 
-class ModelErrors extends Command
+class CalcModelErrors extends Command
 {
     /**
      * The name and signature of the console command.

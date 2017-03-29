@@ -15,7 +15,7 @@ class CalcSummary extends Command
      *
      * @var string
      */
-    protected $signature = 'summary:calc';
+    protected $signature = 'calc:summary';
 
     /**
      * The console command description.

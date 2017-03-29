@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\Station;
 
-class GraphRecalc extends Command
+class RecalcGraph extends Command
 {
     static $places;
     static $places_count;
@@ -19,7 +19,7 @@ class GraphRecalc extends Command
      *
      * @var string
      */
-    protected $signature = 'graph:recalc';
+    protected $signature = 'recalc:graph';
 
     /**
      * The console command description.

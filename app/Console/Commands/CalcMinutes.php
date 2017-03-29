@@ -2,24 +2,24 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Metro;
 use Illuminate\Console\Command;
-use App\Models\Tutor;
 
-class TutorRetina extends Command
+class CalcMinutes extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'tutor:retina';
+    protected $signature = 'calc:metro_minutes';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Оставить только Retina изображения, остальные удалить';
+    protected $description = 'Recalculates minutes to closest stations';
 
     /**
      * Create a new command instance.
@@ -38,15 +38,13 @@ class TutorRetina extends Command
      */
     public function handle()
     {
-        $tutors = Tutor::where('photo_extension', '<>', '')->get();
+        $this->line('Starting...');
 
-        $this->line('Starting: ' . $tutors->count() . ' tutors');
-
-        foreach ($tutors as $tutor) {
-            @unlink($tutor->photoPath());
-            @rename($tutor->photoPath('@2x'), $tutor->photoPath());
+        foreach (Metro::all() as $metro) {
+            $metro->minutes = Metro::metersToMinutes($metro->meters);
+            $metro->save();
         }
 
-        $this->info('Success!');
+        $this->info('Minutes recalculated');
     }
 }

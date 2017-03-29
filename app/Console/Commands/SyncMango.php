@@ -7,14 +7,14 @@ use DB;
 use App\Models\Api\Mango;
 use App\Models\Service\Settings;
 
-class MangoSync extends Command
+class SyncMango extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'mango:sync';
+    protected $signature = 'sync:mango';
 
     /**
      * The console command description.

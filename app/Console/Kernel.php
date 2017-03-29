@@ -15,43 +15,17 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\GraphRecalc::class,
-        Commands\CalculateMinutes::class,
-        Commands\TestTutorQueryTime::class,
-        Commands\TutorRetina::class,
-        Commands\Transfer::class,
-        Commands\TransferTruncate::class,
-        Commands\TransferDebt::class,
-        Commands\AttachmentClientId::class,
-        Commands\TransferAttachmentCreatedAt::class,
-        Commands\ChangeZeroTime::class,
-        Commands\TransferAttachmentFromList::class,
-        Commands\UpdateClientGrade::class,
-        Commands\ForecastCalc::class,
-        Commands\ClientPhonesTransfer::class,
-        Commands\InitDuplicatesTable::class,
-        Commands\TransferSummary::class,
+        Commands\CalcForecast::class,
+        Commands\CalcMinutes::class,
+        Commands\CalcModelErrors::class,
         Commands\CalcSummary::class,
-        Commands\CheckFinishedRequests::class,
-        Commands\TransferActiveClients::class,
-        Commands\ReviewsCreate::class,
-        Commands\SetChecked::class,
-        Commands\Tutors::class,
-        Commands\ModelErrors::class,
         Commands\CalcTutorMargin::class,
-        Commands\SendSMSToOldClients::class,
-        Commands\CallTwoDays::class,
-        Commands\DeleteNotifications::class,
-        Commands\UpdateArchivesChecked::class,
-        Commands\MangoSync::class,
-        Commands\EgecrmTransferCabinet::class,
-        Commands\EgecrmContracts::class,
         Commands\CleanEntityPhones::class,
-        Commands\ResetMarkers::class,
-        Commands\TransferTutorDeparture::class,
-        Commands\SvgAddStations::class,
-        Commands\TutorDistancesRecalc::class,
+        Commands\SyncMango::class,
+        Commands\RecalcGraph::class,
         Commands\RecalcTutorData::class,
+        Commands\RecalcTutorDistances::class,
+        Commands\UpdateClientGrade::class,
     ];
 
     /**
@@ -72,11 +46,11 @@ class Kernel extends ConsoleKernel
         //         ]));
         //     }
         // })->dailyAt('02:30'); // это выполняется примерно полчаса
-        $schedule->command('summary:calc')->dailyAt('03:15'); // затем должно запуститься это
-        $schedule->command('mango:sync')->everyMinute();
+        $schedule->command('calc:summary')->dailyAt('03:15'); // затем должно запуститься это
+        $schedule->command('sync:mango')->everyMinute();
 
         // вспомогательные таблицы для ege-repetitor.ru
-        $schedule->command('tutor_distances:recalc')->dailyAt('03:00');
+        $schedule->command('recalc:tutor_distances')->dailyAt('03:00');
         $schedule->command('recalc:tutor_data')->dailyAt('03:30');
     }
 }

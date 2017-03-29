@@ -6,14 +6,14 @@ use App\Models\Station;
 use App\Models\Tutor;
 use Illuminate\Console\Command;
 
-class TutorDistancesRecalc extends Command
+class RecalcTutorDistances extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'tutor_distances:recalc';
+    protected $signature = 'recalc:tutor_distances';
 
     /**
      * The console command description.

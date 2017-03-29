@@ -14,7 +14,7 @@ class CleanEntityPhones extends Command
      *
      * @var string
      */
-    protected $signature = 'entity:cleanphones';
+    protected $signature = 'clean:entity_phones';
 
     /**
      * The console command description.
