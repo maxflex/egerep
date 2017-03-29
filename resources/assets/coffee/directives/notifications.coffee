@@ -107,6 +107,10 @@ angular.module('Egerep').directive 'notifications', ->
             if event.keyCode is 27
                 window.getSelection().removeAllRanges()
                 $(event.target).blur().html notification.comment
+                if $(event.target).is('input')
+                    $(event.target).siblings('div.new-notification').html notification.comment
+                if $(event.target).is('div.new-notification')
+                    $(event.target).siblings('input').val notification.date
 
                 return
 
@@ -154,7 +158,7 @@ angular.module('Egerep').directive 'notifications', ->
                     new_date = $rootScope.formatDate moment('20' + convertDate date).add {day : add_days} # '20' чтобы  16 => 2016
                     date_node.val new_date
 
-        $scope.submitNotification = (notification, event) ->
+        $scope.submitNotification = (event) ->
             handleDateKeycodes event
 
             if event.keyCode is 13
