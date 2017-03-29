@@ -29,7 +29,7 @@ class Account extends Model
         'data',
         'confirmed',
     ];
-    protected $appends = ['data', 'user_login', 'mutual_debts'];
+    protected $appends = ['data', 'user_login', 'mutual_debts', 'debt_calc'];
 
     // ------------------------------------------------------------------------
 
