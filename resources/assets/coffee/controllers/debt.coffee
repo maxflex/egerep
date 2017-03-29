@@ -4,7 +4,9 @@ angular
         bindArguments($scope, arguments)
 
         # transparent marker opacity
-        TRANSPARENT_MARKER = 0.3
+        TRANSPARENT_DEFAULT     = 0.5
+        TRANSPARENT_SELECTED    = 0.85
+        TRANSPARENT_HAS_PLANNED = 0.5
 
         # differentiate single & double click
         clicks = 0
@@ -115,6 +117,7 @@ angular
                     new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, marker.type)
                     new_marker.metros = marker.metros
                     new_marker.tutor = tutor
+                    new_marker.setOpacity (tutor.planned_account and TRANSPARENT_HAS_PLANNED) or TRANSPARENT_DEFAULT
 
                     # Добавляем маркер на карту
                     new_marker.setMap($scope.map)
@@ -157,7 +160,7 @@ angular
                                 return
                 # paint non-intersecting with half opacity
                 $scope.markers.forEach (marker) ->
-                    marker.setOpacity(TRANSPARENT_MARKER) if not marker.intersecting
+                    marker.setOpacity(TRANSPARENT_DEFAULT) if not marker.intersecting
 
         # получить репетиторов, которые выезжают на ближайшую станцию метро клиента
         $scope.intersectingTutors = ->
@@ -205,9 +208,11 @@ angular
                 if marker.tutor.id in $scope.tutor_ids and not marker.chosen
                     marker.chosen = true
                     marker.setIcon ICON_BLUE
+                    marker.setOpacity (marker.tutor.planned_account and TRANSPARENT_HAS_PLANNED) or TRANSPARENT_SELECTED
                 if marker.tutor.id not in $scope.tutor_ids and marker.chosen
                     marker.chosen = false
                     marker.setIcon getMarkerType(marker.type)
+                    marker.setOpacity (marker.tutor.planned_account and TRANSPARENT_HAS_PLANNED) or TRANSPARENT_DEFAULT
 
 
         $scope.$on 'mapInitialized', (event, map) ->
