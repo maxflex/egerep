@@ -43,12 +43,12 @@
 			<span class="comment-add-login notification-login" style="color: @{{ user.color }}">
 			@{{ user.login }}: </span>
 			<div placeholder="текст напоминания"
-                ng-model='comment'
                 class='new-notification'
                 contenteditable="true"
-                ng-keydown='submitNotification(notification, $event)'></div>
+                ng-keydown='submitNotification($event)'
+            ></div>
             <span class='text-gray'>–</span>
-            <input class="notification-date-add" type="text" placeholder="дата" ng-keydown='submitNotification(notification, $event)'>
+            <input class="notification-date-add" type="text" placeholder="дата" ng-keydown='submitNotification($event)'>
             @{{ date }}
 		</span>
 	</div>
