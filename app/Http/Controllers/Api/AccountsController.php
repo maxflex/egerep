@@ -55,7 +55,7 @@ class AccountsController extends Controller
     public function show(Request $request, $id)
     {
         if (! $request->date_limit) {
-            return Tutor::with(['plannedAccount'])->find($id)->append('last_accounts');
+            return Tutor::with(['plannedAccount'])->find($id)->append(['last_accounts', 'debt_calc']);
         } else {
             return Tutor::plusPeriod($id, $request->date_limit);
         }
