@@ -71,21 +71,24 @@ class UpdateDebtsTable extends Job implements ShouldQueue
          $now = now(true);
 
          foreach($attachments as $attachment) {
-             $query = DB::table('archives')->where('attachment_id', $attachment->id);
-             // check if attachment exists
-             if ($query->exists()) {
-                 $date_end = $query->value('date');
-                 $archive_date = $date_end;
-             } else {
-                 $date_end = $now;
-                 $archive_date = null;
-             }
-
              $date = $attachment->date;
 
              // дата последней встречи
              $last_account_date = Account::where('tutor_id', $attachment->tutor_id)->orderBy('date_end', 'desc')->value('date_end');
              $debtor = DB::table('tutors')->whereId($attachment->tutor_id)->value('debtor');
+             $debtor = $debtor ? ($last_account_date === null ? $debtor : ($date >= $last_account_date)) : 0;
+
+             $query = DB::table('archives')->where('attachment_id', $attachment->id);
+             // check if attachment exists
+             if ($query->exists()) {
+                 $archive_date = $query->value('date');
+                //  если вечный должник, то всегда дата архивации (даже если в будущем)
+                //  если не вечный должник, то если дата архивации в будущем, обрезать по сегодня
+                 $date_end = $debtor ? $archive_date : ($archive_date < $now ? $archive_date : $now);
+             } else {
+                 $date_end = $now;
+                 $archive_date = null;
+             }
 
              while ($date < $date_end) {
                  DB::table('debts')->insert([
