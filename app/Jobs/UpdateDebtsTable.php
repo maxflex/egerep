@@ -75,8 +75,7 @@ class UpdateDebtsTable extends Job implements ShouldQueue
 
              // дата последней встречи
              $last_account_date = Account::where('tutor_id', $attachment->tutor_id)->orderBy('date_end', 'desc')->value('date_end');
-             $debtor = DB::table('tutors')->whereId($attachment->tutor_id)->value('debtor');
-             $debtor = $debtor ? ($last_account_date === null ? $debtor : ($date >= $last_account_date)) : 0;
+             $tutor_debtor = DB::table('tutors')->whereId($attachment->tutor_id)->value('debtor');
 
              $query = DB::table('archives')->where('attachment_id', $attachment->id);
              // check if attachment exists
@@ -84,7 +83,7 @@ class UpdateDebtsTable extends Job implements ShouldQueue
                  $archive_date = $query->value('date');
                 //  если вечный должник, то всегда дата архивации (даже если в будущем)
                 //  если не вечный должник, то если дата архивации в будущем, обрезать по сегодня
-                 $date_end = $debtor ? $archive_date : ($archive_date < $now ? $archive_date : $now);
+                 $date_end = $tutor_debtor ? $archive_date : ($archive_date < $now ? $archive_date : $now);
              } else {
                  $date_end = $now;
                  $archive_date = null;
@@ -96,7 +95,7 @@ class UpdateDebtsTable extends Job implements ShouldQueue
                      'debt'      => $attachment->forecast / 7 * static::pissimisticCoef($date, $archive_date),
                      'tutor_id'  => $attachment->tutor_id,
                      'client_id' => $attachment->client_id,
-                     'debtor'    => $debtor ? ($last_account_date === null ? $debtor : ($date >= $last_account_date)) : 0,
+                     'debtor'    => $tutor_debtor ? ($last_account_date === null ? 1 : ($date >= $last_account_date)) : 0,
                      'after_last_meeting' => $last_account_date === null ? 1 : ($date >= $last_account_date),
                  ]);
                  $date = (new \DateTime($date))->modify('+1 day')->format('Y-m-d');
