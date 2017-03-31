@@ -213,7 +213,7 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <md-input-container class="md-block" style="margin-top: 20px">
-                                <label>Минимальная стоимость выезда <published-field></label>
+                                <label>Минимальная стоимость выезда</label>
                                 <textarea class="md-input digits-only" ng-model="tutor.departure_price"></textarea>
                             </md-input-container>
                         </div>

@@ -217,6 +217,9 @@
 		right: 0;
 		padding: 0 10px;
 		// overflow: scroll;
+		&.debt-map {
+			overflow-x: auto;
+		}
 		&.ng-hide-add, &.ng-hide-remove {
 			transition: all linear .2s;
 		}

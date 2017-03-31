@@ -93,7 +93,7 @@ class DebtController extends Controller
         extract(array_filter($request->input('search')));
 
         // показывать в списке нужно преподавателей, у которых а) дебет не = 0 либо б) расчетный дебет не = 0
-        $query = Tutor::with(['markers'])->where('debtor', 0);
+        $query = Tutor::with(['markers', 'plannedAccount'])->where('debtor', 0);
         $query->select(DB::raw("(select sum(debt) from debts where after_last_meeting=1 and tutor_id=tutors.id) as debt_calc"))
             ->having('debt_calc', '>', 0);
 
