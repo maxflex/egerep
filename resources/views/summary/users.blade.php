@@ -1,11 +1,5 @@
 @extends('app')
 @section('title', 'Итоги')
-@section('title-right')
-    общий дебет на сегодня: @{{ debt_sum | number}}, обновлено @{{ formatDateTime(debt_updated) }}
-    <span class="glyphicon glyphicon-refresh opacity-pointer" ng-click='updateDebt()' ng-class="{
-        'spinning': debt_updating
-    }"></span>
-@stop
 @section('controller', 'SummaryUsers')
 
 @section('content')
