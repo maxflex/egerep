@@ -219,55 +219,7 @@
 		// overflow: scroll;
 		&.debt-map {
 			overflow-x: auto;
-			.hide-clone {
-				opacity:0;
-			}
 		}
-		&.ng-hide-add, &.ng-hide-remove {
-			transition: all linear .2s;
-		}
-		&.ng-hide {
-			right: -250px;
-		}
-		& .ava {
-			height: 65px;
-			width: 52px;
-			vertical-align: top;
-			margin-right: 7px;
-			float: left;
-			border-radius: 4px;
-		}
-		& > div {
-			margin-bottom: 7px;
-			display: inline-block;
-			width: 100%;
-			&.ui-draggable-dragging {
-				background: white;
-				box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-				z-index: 999;
-			}
-		}
-
-		& .info-line {
-		    width: calc(100% - 72px);
-			display: inline-block;
-			float: left;
-		    top: -1px;
-		    position: relative;
-			font-size: 12px;
-			& .glyphicon {
-				top: 3px;
-			}
-		}
-	}
-
-	.temporary-tutor {
-		background: rgba(255, 255, 255, 0.9);
-		width: 350px;
-		top: 0;
-		right: 0;
-		padding: 0 10px;
-		// overflow: scroll;
 		&.ng-hide-add, &.ng-hide-remove {
 			transition: all linear .2s;
 		}

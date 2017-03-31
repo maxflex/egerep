@@ -29416,8 +29416,6 @@ email .input-group {
   padding: 0 10px; }
   .map-tutor-list.debt-map {
     overflow-x: auto; }
-    .map-tutor-list.debt-map .hide-clone {
-      opacity: 0; }
   .map-tutor-list.ng-hide-add, .map-tutor-list.ng-hide-remove {
     transition: all linear .2s; }
   .map-tutor-list.ng-hide {
@@ -29445,41 +29443,6 @@ email .input-group {
     position: relative;
     font-size: 12px; }
     .map-tutor-list .info-line .glyphicon {
-      top: 3px; }
-
-.temporary-tutor {
-  background: rgba(255, 255, 255, 0.9);
-  width: 350px;
-  top: 0;
-  right: 0;
-  padding: 0 10px; }
-  .temporary-tutor.ng-hide-add, .temporary-tutor.ng-hide-remove {
-    transition: all linear .2s; }
-  .temporary-tutor.ng-hide {
-    right: -250px; }
-  .temporary-tutor .ava {
-    height: 65px;
-    width: 52px;
-    vertical-align: top;
-    margin-right: 7px;
-    float: left;
-    border-radius: 4px; }
-  .temporary-tutor > div {
-    margin-bottom: 7px;
-    display: inline-block;
-    width: 100%; }
-    .temporary-tutor > div.ui-draggable-dragging {
-      background: white;
-      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-      z-index: 999; }
-  .temporary-tutor .info-line {
-    width: calc(100% - 72px);
-    display: inline-block;
-    float: left;
-    top: -1px;
-    position: relative;
-    font-size: 12px; }
-    .temporary-tutor .info-line .glyphicon {
       top: 3px; }
 
 .double-input {
