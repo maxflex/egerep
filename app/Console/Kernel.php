@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use DB;
+use App\Models\Debt;
 use App\Jobs\UpdateDebtsTable;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -62,16 +63,25 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->call(function() {
-        //     $attachments_count = \DB::table('attachments')->where('forecast', '>', 0)->count();
-        //     $steps_count = ceil($attachments_count / UpdateDebtsTable::STEP) - 1;
-        //     foreach(range(0, $steps_count) as $step) {
-        //         dispatch(new UpdateDebtsTable([
-        //             'step'         => $step,
-        //             'is_last_step' => $step == $steps_count,
-        //         ]));
-        //     }
-        // })->dailyAt('02:30'); // это выполняется примерно полчаса
+        $schedule->call(function() {
+            // ---------- удалить после проверки ----------
+            DB::table('debts_compare')->insert([
+                'date' => now(true),
+                'debt_before' => Debt::sum([
+                    'after_last_meeting' => 1,
+                    'debtor' => 0
+                ])
+            ]);
+            // ---------- конец ----------
+            $attachments_count = DB::table('attachments')->where('forecast', '>', 0)->count();
+            $steps_count = ceil($attachments_count / UpdateDebtsTable::STEP) - 1;
+            foreach(range(0, $steps_count) as $step) {
+                dispatch(new UpdateDebtsTable([
+                    'step'         => $step,
+                    'is_last_step' => $step == $steps_count,
+                ]));
+            }
+        })->dailyAt('02:30'); // это выполняется примерно полчаса
         $schedule->command('summary:calc')->dailyAt('03:15'); // затем должно запуститься это
         $schedule->command('mango:sync')->everyMinute();
 

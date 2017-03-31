@@ -105,6 +105,15 @@ class UpdateDebtsTable extends Job implements ShouldQueue
          if (isset($this->params['is_last_step']) && $this->params['is_last_step'] === true) {
             Settings::set('debt_updated', now());
             Settings::set('debt_updating', 0);
+            // ---------- удалить после проверки ----------
+            DB::table('debts_compare')->where('date', now(true))->update([
+                'debt_after' => Debt::sum([
+                    'after_last_meeting' => 1,
+                    'debtor' => 0,
+                    'date_end' => (new \DateTime())->modify('-1 day')->format('Y-m-d')
+                ])
+            ]);
+            // ---------- конец ----------
          }
 
          if (isset($this->params['step'])) {
