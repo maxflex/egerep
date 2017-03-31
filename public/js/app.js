@@ -3063,7 +3063,7 @@
       return paginate('summary' + getPrefix() + '/' + $scope.filter, $scope.current_page);
     };
     $scope.updateDebt = function() {
-      $scope.debt_updating = true;
+      $scope.debt_updating = 1;
       return $http.post('api/command/recalc-debt');
     };
     return loadSummary = function(page) {
