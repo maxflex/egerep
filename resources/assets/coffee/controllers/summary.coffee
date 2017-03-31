@@ -81,9 +81,9 @@ angular
             paginate 'summary' + getPrefix() + '/' + $scope.filter, $scope.current_page
 
         $scope.updateDebt = ->
-            $scope.debt_updating = true
+            $scope.debt_updating = 1
             $http.post 'api/command/recalc-debt'
-            
+
         loadSummary = (page) ->
             params  = getPrefix()
             params += '?page='   + page
