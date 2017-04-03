@@ -12,7 +12,7 @@
 
 <div class="row flex-list">
     <div>
-        @include('modules.user-select')
+        @include('modules.user-select-light')
     </div>
     <div>
         <select ng-model='search.type' class='selectpicker' ng-change='filter()'>
@@ -27,7 +27,7 @@
         <select ng-model='search.table' class='selectpicker' ng-change='filter()'>
             <option value="" data-subtext="@{{ counts.table[''] || '' }}">таблица</option>
             <option disabled>──────────────</option>
-            <option ng-repeat='table in tables' ng-show="counts.table[table]"
+            <option ng-repeat='table in tables'
                 data-subtext="@{{ counts.table[table] || '' }}"
                 value="@{{table}}">@{{ table }}</option>
         </select>
@@ -36,7 +36,7 @@
         <select ng-model='search.column' class='selectpicker' ng-change='filter()'>
             <option value="" data-subtext="@{{ counts.column[''] || '' }}">ячейка</option>
             <option disabled>──────────────</option>
-            <option ng-repeat='column in LogColumns' ng-show="counts.column[column]"
+            <option ng-repeat='column in LogColumns'
                 data-subtext="@{{ counts.column[column] || '' }}"
                 value="@{{column}}">@{{ column }}</option>
         </select>

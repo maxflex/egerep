@@ -57,4 +57,14 @@ angular.module 'Egerep'
             _.filter this.users, (user) ->
                 user.rights.indexOf('35') isnt -1 and condition_obj and condition_obj[user.id]
 
+        this.getActiveInAnySystem = ->
+            _.chain(@users).filter (user) ->
+                user.rights.indexOf('35') is -1 or user.rights.indexOf('34') is -1
+            .sortBy('login').value()
+
+        this.getBannedInBothSystems = ->
+            _.chain(@users).filter @users, (user) ->
+                user.rights.indexOf('35') isnt -1 and user.rights.indexOf('34') isnt -1
+            .sortBy('login').value()
+
         this
