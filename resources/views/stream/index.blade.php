@@ -12,15 +12,15 @@
         <select ng-model='search.mobile' class='selectpicker' ng-change='filter()'>
             <option value="" data-subtext="@{{ counts.mobile[''] || '' }}">версия</option>
             <option disabled>──────────────</option>
-            <option data-subtext="@{{ counts.mobile[0] || '' }}" value="0" ng-show="counts.mobile[0]">стационарная</option>
-            <option data-subtext="@{{ counts.mobile[1] || '' }}" value="1" ng-show="counts.mobile[1]">мобильная</option>
+            <option data-subtext="@{{ counts.mobile[0] || '' }}" value="0">стационарная</option>
+            <option data-subtext="@{{ counts.mobile[1] || '' }}" value="1">мобильная</option>
         </select>
     </div>
     <div>
         <select ng-model='search.action' class='selectpicker' ng-change='filter()'>
             <option value="" data-subtext="@{{ counts.action[''] || '' }}">действие</option>
             <option disabled>──────────────</option>
-            <option ng-repeat='action in actions' ng-show="counts.action[action]"
+            <option ng-repeat='action in actions'
                 data-subtext="@{{ counts.action[action] || '' }}"
                 value="@{{action}}">@{{ action }}</option>
         </select>
@@ -29,7 +29,7 @@
         <select ng-model='search.type' class='selectpicker' ng-change='filter()' none-selected-text='тип действия'>
             <option data-subtext="@{{ counts.type[''] || '' }}" value=''>тип действия</option>
             <option disabled>──────────────</option>
-            <option ng-repeat='t in types' ng-show="counts.type[t]"
+            <option ng-repeat='t in types'
                 data-subtext="@{{ counts.type[t] || '' }}"
                 value="@{{ t }}">@{{ t }}</option>
         </select>
