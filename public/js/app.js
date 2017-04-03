@@ -2054,6 +2054,8 @@
     rebindDraggable = function() {
       return $('.temporary-tutor').draggable({
         containment: 'window',
+        appendTo: 'body',
+        helper: 'clone',
         revert: function(valid) {
           if (valid) {
             return true;
@@ -2062,6 +2064,15 @@
           $scope.tutor_ids = _.without($scope.tutor_ids, $scope.dragging_tutor.id);
           $scope.$apply();
           return repaintChosen();
+        },
+        start: function() {
+          $scope.isDragging = true;
+          return $scope.$apply();
+        },
+        stop: function(event, ui) {
+          ui.helper.remove();
+          $scope.isDragging = false;
+          return $scope.$apply();
         }
       });
     };
