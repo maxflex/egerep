@@ -2033,6 +2033,7 @@
     });
     $scope.find = function() {
       $scope.loading = true;
+      $scope.tutor_ids = [];
       return TutorService.getDebtMap({
         search: $scope.search
       }).then(function(response) {
@@ -2057,7 +2058,6 @@
         appendTo: 'body',
         helper: 'clone',
         revert: function(valid) {
-          console.log('revert');
           if (valid) {
             return true;
           }
@@ -2067,12 +2067,10 @@
           return repaintChosen();
         },
         start: function() {
-          console.log('start');
           $scope.isDragging = true;
           return $scope.$apply();
         },
         stop: function(event, ui) {
-          console.log('end');
           ui.helper.remove();
           $scope.isDragging = false;
           return $scope.$apply();
