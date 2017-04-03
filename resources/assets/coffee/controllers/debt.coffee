@@ -92,12 +92,21 @@ angular
         rebindDraggable = ->
             $('.temporary-tutor').draggable
                 containment: 'window'
+                appendTo: 'body'
+                helper: 'clone'
                 revert: (valid) ->
                     return true if valid
                     $scope.tutor_list   = removeById($scope.tutor_list, $scope.dragging_tutor.id)
                     $scope.tutor_ids    = _.without($scope.tutor_ids, $scope.dragging_tutor.id)
                     $scope.$apply()
                     repaintChosen()
+                start: ->
+                    $scope.isDragging = true
+                    $scope.$apply()
+                stop: (event, ui) ->
+                    ui.helper.remove()
+                    $scope.isDragging = false
+                    $scope.$apply()
 
         # remember dragging tutor
         $scope.startDragging = (tutor) ->

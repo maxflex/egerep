@@ -15,7 +15,7 @@
     </map>
 
     <div class="debt-map map-tutor-list">
-        <div ng-repeat='tutor in tutor_list' class='temporary-tutor' ng-mousedown='startDragging(tutor)'>
+        <div ng-class="{'hide-clone': isDragging && tutor == dragging_tutor}" ng-repeat='tutor in tutor_list' class='temporary-tutor' ng-mousedown='startDragging(tutor)'>
             @include('debt.map._tutor', ['tutor' => 'tutor'])
         </div>
         <div ng-if='hovered_tutor'>
