@@ -2033,6 +2033,7 @@
     });
     $scope.find = function() {
       $scope.loading = true;
+      $scope.tutor_ids = [];
       return TutorService.getDebtMap({
         search: $scope.search
       }).then(function(response) {

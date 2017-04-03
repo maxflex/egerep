@@ -73,6 +73,7 @@ angular
 
         $scope.find = ->
             $scope.loading = true
+            $scope.tutor_ids = []
             TutorService.getDebtMap {search: $scope.search}
                 .then (response) ->
                     $scope.tutors = response.data
