@@ -49,6 +49,18 @@ ICON_HOME_BLUE = {
   origin: new google.maps.Point(0, 0)
 };
 
+ICON_SEMI_BLACK = {
+  url: "img/maps/semiblackpin.png",
+  scaledSize: new google.maps.Size(22, 40),
+  origin: new google.maps.Point(0, 0)
+};
+
+ICON_BLACK = {
+  url: "img/maps/blackpin.png",
+  scaledSize: new google.maps.Size(22, 40),
+  origin: new google.maps.Point(0, 0)
+};
+
 ICON_SEARCH = {
   url: "img/maps/bluepin.png",
   scaledSize: new google.maps.Size(22, 40),
@@ -93,6 +105,12 @@ this.getMarkerType = function(type) {
         }
         case 'white': {
             return ICON_WHITE
+        }
+        case 'black': {
+            return ICON_BLACK
+        }
+        case 'semi-black': {
+            return ICON_SEMI_BLACK
         }
     }
 }
