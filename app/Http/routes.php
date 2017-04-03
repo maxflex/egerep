@@ -36,10 +36,34 @@ Route::group(['middleware' => ['web']], function () {
             return redirect()->to('/');
         }
     });
-    Route::get('tutors/old/{id}', function($id) {
-        $tutor = \App\Models\Tutor::where('id_a_pers', $id)->first();
-        return redirect()->to("https://lk.ege-repetitor.ru/tutors/{$tutor->id}/edit");
+
+    Route::get('attachment/{id}', function($id) {
+        $attachment = \App\Models\Attachment::find($id);
+        if ($attachment === null) {
+            return redirect()->to('/');
+        } else {
+            return redirect()->to("https://lk.ege-repetitor.ru/" . $attachment->link);
+        }
     });
+
+    Route::get('archive/{id}', function($id) {
+        $archive = \App\Models\Archive::find($id);
+        if ($archive === null) {
+            return redirect()->to('/');
+        } else {
+            return redirect()->to("https://lk.ege-repetitor.ru/" . $archive->attachment->link);
+        }
+    });
+
+    Route::get('request-list/{id}', function($id) {
+        $request_list = \App\Models\RequestList::find($id);
+        if ($request_list === null) {
+            return redirect()->to('/');
+        } else {
+            return redirect()->to("https://lk.ege-repetitor.ru/requests/" . $request_list->request_id . '/edit#' . $request_list->id);
+        }
+    });
+
     Route::get('tutors/select', 'TutorsController@select');
     Route::resource('tutors', 'TutorsController');
     Route::resource('logs', 'LogsController');
