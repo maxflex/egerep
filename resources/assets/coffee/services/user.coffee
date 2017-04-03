@@ -63,7 +63,7 @@ angular.module 'Egerep'
             .sortBy('login').value()
 
         this.getBannedInBothSystems = ->
-            _.chain(@users).filter @users, (user) ->
+            _.chain(@users).filter (user) ->
                 user.rights.indexOf('35') isnt -1 and user.rights.indexOf('34') isnt -1
             .sortBy('login').value()
 
