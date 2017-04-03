@@ -1966,11 +1966,10 @@
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   angular.module('Egerep').controller('DebtMap', function($scope, $timeout, TutorService, Tutor, Subjects, YesNo) {
-    var TRANSPARENT_DEFAULT, TRANSPARENT_HAS_PLANNED, TRANSPARENT_SELECTED, bindTutorMarkerEvents, clicks, findIntersectingMetros, markerClusterer, rebindDraggable, repaintChosen, showClientOnMap, showTutorsOnMap, unsetAllMarkers;
+    var TRANSPARENT_DEFAULT, TRANSPARENT_HAS_PLANNED, bindTutorMarkerEvents, clicks, findIntersectingMetros, getOpacity, markerClusterer, rebindDraggable, repaintChosen, showClientOnMap, showTutorsOnMap, unsetAllMarkers;
     bindArguments($scope, arguments);
-    TRANSPARENT_DEFAULT = 0.5;
-    TRANSPARENT_SELECTED = 0.85;
     TRANSPARENT_HAS_PLANNED = 0.5;
+    TRANSPARENT_DEFAULT = 1;
     clicks = 0;
     markerClusterer = void 0;
     $scope.mode = 'map';
@@ -2088,10 +2087,10 @@
       $scope.tutors.forEach(function(tutor) {
         return tutor.markers.forEach(function(marker) {
           var new_marker;
-          new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, marker.type);
+          new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, 'semi-black');
           new_marker.metros = marker.metros;
           new_marker.tutor = tutor;
-          new_marker.setOpacity((tutor.planned_account && TRANSPARENT_HAS_PLANNED) || TRANSPARENT_DEFAULT);
+          new_marker.setOpacity(getOpacity(new_marker));
           new_marker.setMap($scope.map);
           bindTutorMarkerEvents(new_marker);
           return $scope.markers.push(new_marker);
@@ -2191,15 +2190,18 @@
         var ref, ref1;
         if ((ref = marker.tutor.id, indexOf.call($scope.tutor_ids, ref) >= 0) && !marker.chosen) {
           marker.chosen = true;
-          marker.setIcon(ICON_BLUE);
-          marker.setOpacity((marker.tutor.planned_account && TRANSPARENT_HAS_PLANNED) || TRANSPARENT_SELECTED);
+          marker.setIcon(ICON_BLACK);
+          marker.setOpacity(getOpacity(marker));
         }
         if ((ref1 = marker.tutor.id, indexOf.call($scope.tutor_ids, ref1) < 0) && marker.chosen) {
           marker.chosen = false;
-          marker.setIcon(getMarkerType(marker.type));
-          return marker.setOpacity((marker.tutor.planned_account && TRANSPARENT_HAS_PLANNED) || TRANSPARENT_DEFAULT);
+          marker.setIcon(ICON_SEMI_BLACK);
+          return marker.setOpacity(getOpacity(marker));
         }
       });
+    };
+    getOpacity = function(marker) {
+      return (marker.tutor.planned_account && TRANSPARENT_HAS_PLANNED) || TRANSPARENT_DEFAULT;
     };
     return $scope.$on('mapInitialized', function(event, map) {
       var INIT_COORDS;

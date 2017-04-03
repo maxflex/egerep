@@ -4,9 +4,8 @@ angular
         bindArguments($scope, arguments)
 
         # transparent marker opacity
-        TRANSPARENT_DEFAULT     = 0.5
-        TRANSPARENT_SELECTED    = 0.85
         TRANSPARENT_HAS_PLANNED = 0.5
+        TRANSPARENT_DEFAULT = 1
 
         # differentiate single & double click
         clicks = 0
@@ -124,10 +123,10 @@ angular
             $scope.tutors.forEach (tutor) ->
                 tutor.markers.forEach (marker) ->
                     # Создаем маркер
-                    new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, marker.type)
+                    new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, 'semi-black')
                     new_marker.metros = marker.metros
                     new_marker.tutor = tutor
-                    new_marker.setOpacity (tutor.planned_account and TRANSPARENT_HAS_PLANNED) or TRANSPARENT_DEFAULT
+                    new_marker.setOpacity getOpacity new_marker
 
                     # Добавляем маркер на карту
                     new_marker.setMap($scope.map)
@@ -217,12 +216,15 @@ angular
             $scope.markers.forEach (marker) ->
                 if marker.tutor.id in $scope.tutor_ids and not marker.chosen
                     marker.chosen = true
-                    marker.setIcon ICON_BLUE
-                    marker.setOpacity (marker.tutor.planned_account and TRANSPARENT_HAS_PLANNED) or TRANSPARENT_SELECTED
+                    marker.setIcon ICON_BLACK
+                    marker.setOpacity getOpacity marker
                 if marker.tutor.id not in $scope.tutor_ids and marker.chosen
                     marker.chosen = false
-                    marker.setIcon getMarkerType(marker.type)
-                    marker.setOpacity (marker.tutor.planned_account and TRANSPARENT_HAS_PLANNED) or TRANSPARENT_DEFAULT
+                    marker.setIcon ICON_SEMI_BLACK
+                    marker.setOpacity getOpacity marker
+
+        getOpacity = (marker) ->
+            (marker.tutor.planned_account and TRANSPARENT_HAS_PLANNED) or TRANSPARENT_DEFAULT
 
 
         $scope.$on 'mapInitialized', (event, map) ->
