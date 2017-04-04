@@ -110,7 +110,7 @@ class UpdateDebtsTable extends Job implements ShouldQueue
                 'debt_after' => Debt::sum([
                     'after_last_meeting' => 1,
                     'debtor' => 0,
-                    'date_end' => (new \DateTime())->modify('-1 day')->format('Y-m-d')
+                    'date_end' => (new \DateTime())->modify('-2 day')->format('Y-m-d')
                 ])
             ]);
             // ---------- конец ----------

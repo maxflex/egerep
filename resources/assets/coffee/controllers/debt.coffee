@@ -216,12 +216,14 @@ angular
             $scope.markers.forEach (marker) ->
                 if marker.tutor.id in $scope.tutor_ids and not marker.chosen
                     marker.chosen = true
-                    marker.setIcon ICON_BLACK
-                    marker.setOpacity getOpacity marker
+                    # marker.setIcon ICON_BLACK
+                    # marker.setOpacity getOpacity marker
                 if marker.tutor.id not in $scope.tutor_ids and marker.chosen
                     marker.chosen = false
-                    marker.setIcon ICON_SEMI_BLACK
-                    marker.setOpacity getOpacity marker
+                if marker.tutor.planned_account
+                    marker.setIcon(ICON_YELLOW)
+                    # marker.setIcon ICON_SEMI_BLACK
+                    # marker.setOpacity getOpacity marker
 
         getOpacity = (marker) ->
             (marker.tutor.planned_account and TRANSPARENT_HAS_PLANNED) or TRANSPARENT_DEFAULT
