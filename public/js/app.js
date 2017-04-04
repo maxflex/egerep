@@ -2096,10 +2096,11 @@
           return $scope.markers.push(new_marker);
         });
       });
-      return markerClusterer = new MarkerClusterer($scope.map, $scope.markers, {
+      markerClusterer = new MarkerClusterer($scope.map, $scope.markers, {
         gridSize: 10,
         imagePath: 'img/maps/clusterer/m'
       });
+      return repaintChosen();
     };
     showClientOnMap = function() {
       return $scope.client.markers.forEach(function(marker) {
