@@ -2200,7 +2200,7 @@
       });
     };
     getOpacity = function(marker) {
-      return (marker.tutor.planned_account && TRANSPARENT_HAS_PLANNED) || TRANSPARENT_DEFAULT;
+      return 1;
     };
     return $scope.$on('mapInitialized', function(event, map) {
       var INIT_COORDS;

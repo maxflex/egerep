@@ -226,7 +226,8 @@ angular
                     # marker.setOpacity getOpacity marker
 
         getOpacity = (marker) ->
-            (marker.tutor.planned_account and TRANSPARENT_HAS_PLANNED) or TRANSPARENT_DEFAULT
+            return 1
+            # (marker.tutor.planned_account and TRANSPARENT_HAS_PLANNED) or TRANSPARENT_DEFAULT
 
 
         $scope.$on 'mapInitialized', (event, map) ->
