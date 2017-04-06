@@ -3010,9 +3010,6 @@
       });
     };
     $scope.monthYear = function(date) {
-      date = date.split(".");
-      date = date.reverse();
-      date = date.join("-");
       return moment(date).format('MMMM YYYY');
     };
     $scope.sumEfficency = function() {

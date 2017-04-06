@@ -27,9 +27,6 @@ angular
                 $scope.stats.efficency = response.data
 
         $scope.monthYear = (date) ->
-            date = date.split(".")
-            date = date.reverse()
-            date = date.join("-")
             moment(date).format('MMMM YYYY')
 
         $scope.sumEfficency = ->

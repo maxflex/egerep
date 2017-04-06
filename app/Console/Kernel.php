@@ -52,6 +52,7 @@ class Kernel extends ConsoleKernel
         Commands\SvgAddStations::class,
         Commands\TutorDistancesRecalc::class,
         Commands\RecalcTutorData::class,
+        Commands\RecalcEfficency::class,
     ];
 
     /**
@@ -78,5 +79,6 @@ class Kernel extends ConsoleKernel
         // вспомогательные таблицы для ege-repetitor.ru
         $schedule->command('tutor_distances:recalc')->dailyAt('03:00');
         $schedule->command('recalc:tutor_data')->dailyAt('03:30');
+        $schedule->command('recalc:efficency')->dailyAt('22:30');
     }
 }

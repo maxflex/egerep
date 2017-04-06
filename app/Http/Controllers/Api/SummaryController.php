@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
+use App\Models\EfficencyData;
 use DB;
 
 class SummaryController extends Controller
@@ -333,145 +334,120 @@ class SummaryController extends Controller
     public function users(Request $request)
     {
         $return = [];
-        if ($request->type == 'months') {
-            // начинаем смотреть от этой даты и вперед
-            $date = fromDotDate($request->date_from);
-            $end_date = fromDotDate($request->date_to);
-            do {
-                $new_request = clone $request;
-                $new_request['date_from'] = dateFormat($date, true);
+        $date_from = fromDotDate($request->date_from ?: Carbon::today()->firstOfMonth()->format('d.m.Y'));
+        $date_to = fromDotDate($request->date_to ?: Carbon::parse($date_from)->lastOfMonth()->format('d.m.Y'));
+        $user_ids = $request->user_ids ?: [];
 
-                // если дата конца месяца больше даты конца фильтра,
-                // то устанавливаем дату конца из фильтра – иначе дату конца месяца итерации
-                $end_of_month = Carbon::parse($date)->lastOfMonth();
-                if ($end_of_month->toDateString() > $end_date) {
-                    $new_request['date_to'] = dateFormat($end_date, true);
-                } else {
-                    $new_request['date_to'] = $end_of_month->format('d.m.Y');
-                }
-                $return['data'][Carbon::parse($date)->format('m.y')] = $this->_users($new_request);
-                // переходим на начало следующего месяца
-                $date = Carbon::parse($date)->addMonth()->firstOfMonth()->toDateString();
-            } while ($date < $end_date);
+        $dataQuery = EfficencyData::whereBetween('date', [$date_from, $date_to])
+                                              ->groupBy('group_key');
+        $total_commission_query = Attachment::query()->without(['archive', 'review'])
+                                            ->select(\DB::raw('round(sum(if(commission > 0, commission, ' . Account::DEFAULT_COMMISSION . ' * sum))) as `sum`'))
+                                            ->whereDate('attachments.created_at', '>=', fromDotDate($date_from))
+                                            ->whereDate('attachments.created_at', '<=', fromDotDate($date_to))
+                                            ->join('account_datas', function($join) {
+                                                $join->on('attachments.tutor_id', '=', 'account_datas.tutor_id')
+                                                     ->on('attachments.client_id', '=', 'account_datas.client_id');
+                                            });
+
+        if (count($user_ids)) {
+            $dataQuery->whereIn('user_id', $user_ids);
+            $total_commission_query->whereIn('attachments.user_id', $user_ids);
+        }
+
+        if ($request->type == 'months') {
+            $dataQuery->select(['date', \DB::raw("date_format(date, '%m.%y') as group_key")]);
+            $commission_query = static::cloneQuery($total_commission_query)->addSelect([
+                \DB::raw("date_format(account_datas.date, '%m.%y') as group_key"),
+            ])->groupBy(\DB::raw('group_key'));
         } else {
-            foreach($request->user_ids as $user_id) {
-                $new_request = clone $request;
-                $new_request['user_ids'] = [$user_id];
-                $return['data'][User::whereId($user_id)->value('login')] = $this->_users($new_request);
+            $dataQuery->select(['user_id', \DB::raw("user_id as group_key")]);
+            $commission_query = static::cloneQuery($total_commission_query)->addSelect([
+                \DB::raw('attachments.user_id as group_key'),
+            ])->groupBy('group_key');
+        }
+
+        // заявки
+        foreach(\App\Models\Request::$states as $request_state) {
+            $dataQuery->addSelect(\DB::raw("sum(requests_{$request_state}) as requests_{$request_state}"));
+        }
+        $dataQuery->addSelect(\DB::raw('sum(requests_total) as requests_total'));
+        $dataQuery->addSelect(\DB::raw('sum(requests_total) as requests_total'));
+
+        // стыковки
+        $dataQuery->addSelect(\DB::raw('sum(attachments_total) as attachments_total'));
+        $dataQuery->addSelect(\DB::raw('sum(attachments_newest) as attachments_newest'));
+        $dataQuery->addSelect(\DB::raw('sum(attachments_active) as attachments_active'));
+        $dataQuery->addSelect(\DB::raw('sum(attachments_archived_no_lessons) as attachments_archived_no_lessons'));
+        $dataQuery->addSelect(\DB::raw('sum(attachments_archived_one_lesson) as attachments_archived_one_lesson'));
+        $dataQuery->addSelect(\DB::raw('sum(attachments_archived_two_lessons) as attachments_archived_two_lessons'));
+        $dataQuery->addSelect(\DB::raw('sum(attachments_archived_three_or_more_lessons) as attachments_archived_three_or_more_lessons'));
+        $dataQuery->addSelect(\DB::raw('sum(conversion_denominator) as conversion_denominator'));
+
+        $dataQuery->addSelect(\DB::raw('sum(forecast) as forecast'));
+
+        $commissions = $commission_query->get()->keyBy('group_key');
+        foreach ($dataQuery->get()->keyBy('group_key') as $group_key => $data) {
+            $total_commission = ($c = $commissions->get($group_key)) ? $c->sum : 0;
+            $request_denominator    = ($data->requests_total - $data->requests_reasoned_deny - $data->requests_checked_reasoned_deny) ?: 1;
+            $attachments_denominator = $data->attachments_total ?: 1;
+
+            $return_data = [
+                'requests'    => [
+                    'total'                 => $data->requests_total,
+                    'new'                   => $data->requests_new,
+                    'awaiting'              => $data->requests_awaiting,
+                    'finished'              => $data->requests_finished,
+                    'deny'                  => $data->requests_deny,
+                    'reasoned_deny'         => $data->requests_reasoned_deny,
+                    'checked_reasoned_deny' => $data->requests_checked_reasoned_deny,
+                    'deny_percentage'       => round($data->requests_deny * 100 / $request_denominator)
+                ],
+                'attachments' => [
+                    'total'     => $data->attachments_total,
+                    'newest'    => $data->attachments_newest,
+                    'active'    => $data->attachments_active,
+                    'archived'  => [
+                        'no_lessons'             => $data->attachments_archived_no_lessons,
+                        'no_lessons_percentage'  => round($data->attachments_archived_no_lessons * 100 / $attachments_denominator),
+                        'one_lesson'             => $data->attachments_archived_one_lesson,
+                        'one_lesson_percentage'  => round($data->attachments_archived_one_lesson * 100 / $attachments_denominator),
+                        'two_lessons'            => $data->attachments_archived_two_lessons,
+                        'two_lessons_percentage' => round($data->attachments_archived_two_lessons * 100 / $attachments_denominator),
+                        'three_or_more_lessons'  => $data->attachments_archived_three_or_more_lessons,
+                    ]
+                ],
+            ];
+
+            // прогноз
+            $forecast_denominator = $return_data['attachments']['active'] + $return_data['attachments']['archived']['three_or_more_lessons'] ?: 1;
+            $forecast_numerator = $data->forecast;
+            $forecast = round($forecast_numerator / $forecast_denominator, 2);
+
+            // эффективность
+            $conversion_numerator = $return_data['attachments']['active'] + $return_data['attachments']['archived']['three_or_more_lessons']
+                + (0.65 * $return_data['attachments']['newest'])
+                + (0.1 * $return_data['attachments']['archived']['one_lesson'])
+                + (0.15 * $return_data['attachments']['archived']['two_lessons']);
+            $conversion_denominator = $data['conversion_denominator'];
+
+            $return_data['efficency'] = [
+                'conversion'       => round($conversion_numerator / ($conversion_denominator ?: 1), 2),
+                'forecast'         => $forecast,
+                'request_avg'      => round(floatval($total_commission) / ($conversion_denominator ?: 1)),
+                'attachment_avg'   => round(floatval($total_commission) / ($return_data['attachments']['total'] ?: 1)),
+                'total_commission' => round($total_commission)
+            ];
+
+            if (is_int($group_key)) { // user_id
+                $return['data'][User::whereId($group_key)->value('login')] = $return_data;
+            } else {
+                $return['data'][$group_key] = $return_data;
             }
         }
-        $return['commissions'] = $this->_users($request, true);
-        return $return;
-    }
 
-    /**
-     *
-     */
-    public function _users(Request $request, $commissions = false)
-    {
-        @extract(array_filter($request->all()));
-
-        $return = [];
-        $request_query = \App\Models\Request::query();
-        $attachments_query = Attachment::query();
-        $request_attachments_without_users = \App\Models\Request::query()
-                    ->join('request_lists as rl', 'rl.request_id', '=', 'requests.id')
-                    ->join('attachments', 'request_list_id', '=', 'rl.id');
-
-        if (isset($date_from)) {
-            $request_query->where('requests.created_at', '>=', fromDotDate($date_from));
-            $attachments_query->where('attachments.created_at', '>=', fromDotDate($date_from));
-        }
-        if (isset($date_to)) {
-            $request_query->where('requests.created_at', '<=', fromDotDate($date_to) . ' 23:59:59');
-            $attachments_query->where('attachments.created_at', '<=', fromDotDate($date_to) . ' 23:59:59');
-        }
-
-        $commission_query = self::cloneQuery($attachments_query)->join('account_datas', function($join) {
-            $join->on('attachments.tutor_id', '=', 'account_datas.tutor_id')
-                ->on('attachments.client_id', '=', 'account_datas.client_id');
-        });
-
-        if (isset($user_ids)) {
-            $request_query->whereIn('requests.user_id', $user_ids);
-            $attachments_query->whereIn('attachments.user_id', $user_ids);
-            $commission_query->whereIn('attachments.user_id', $user_ids);
-        }
-
-        // так как это общее для всех – возвращаем только когда нужно
-        if ($commissions) {
-            return self::cloneQuery($commission_query)->select(
-                'account_datas.date',
-                DB::raw('round(sum(if(commission > 0, commission, ' . Account::DEFAULT_COMMISSION . ' * sum))) as `sum`')
-            )->groupBy(DB::raw("DATE_FORMAT(account_datas.date, '%Y-%m')"))->get();
-        }
-
-        foreach(\App\Models\Request::$states as $request_state) {
-            $return['requests'][$request_state] = self::cloneQuery($request_query)->searchByState($request_state)->count();
-        }
-
-        $return['requests']['total'] = $request_query->count();
-
-        // "доля отказов" без учета "обоснованный отказ" и "подтвержденный обоснованный отказ"
-        $denominator = $return['requests']['total'] - $return['requests']['reasoned_deny'] - $return['requests']['checked_reasoned_deny'];
-        $return['requests']['deny_percentage'] = $denominator > 0 ? round($return['requests']['deny'] * 100 / $denominator) : 0;
-
-        $return['attachments'] = [
-            'total'    => self::cloneQuery($attachments_query)->count(),
-            'newest'   => self::cloneQuery($attachments_query)->newest()->count(),
-            'active'   => self::cloneQuery($attachments_query)->active()->count(),
-            'archived' => [
-                'no_lessons'            => self::cloneQuery($attachments_query)->archived()->hasLessonsWithMissing('=0')->count(),
-                'one_lesson'            => self::cloneQuery($attachments_query)->archived()->hasLessonsWithMissing('=1')->count(),
-                'two_lessons'           => self::cloneQuery($attachments_query)->archived()->hasLessonsWithMissing('=2')->count(),
-                'three_or_more_lessons' => self::cloneQuery($attachments_query)->archived()->hasLessonsWithMissing('>=3')->count(),
-            ],
-        ];
-
-        // доля от стыковок
-        $denominator = $return['attachments']['total'];
-        $return['attachments']['archived']['no_lessons_percentage'] = $denominator > 0 ? round($return['attachments']['archived']['no_lessons'] * 100 / $denominator) : 0;
-        $return['attachments']['archived']['one_lesson_percentage'] = $denominator > 0 ? round($return['attachments']['archived']['one_lesson'] * 100 / $denominator) : 0;
-        $return['attachments']['archived']['two_lessons_percentage'] = $denominator > 0 ? round($return['attachments']['archived']['two_lessons'] * 100 / $denominator) : 0;
-
-        //
-        // ЭФФЕКТИВНОСТЬ
-        //
-        $numerator = $return['attachments']['active'] + $return['attachments']['archived']['three_or_more_lessons']
-                        + (0.65 * $return['attachments']['newest'])
-                        + (0.1 * $return['attachments']['archived']['one_lesson'])
-                        + (0.15 * $return['attachments']['archived']['two_lessons']);
-
-        $attachments_with_request_list = self::cloneQuery($attachments_query)->join('request_lists as rl', 'request_list_id', '=', 'rl.id')->without(['review', 'archive']);
-        $denominator = 0;
-
-        $request_ids = self::cloneQuery($attachments_with_request_list)->pluck('request_id')->unique();
-        $requests = \App\Models\Request ::whereIn('id', $request_ids)->select(['id', 'user_id', 'state'])->get()->toArray();
-        foreach ($requests as $request) {
-            $request_attachments_count = self::cloneQuery($attachments_with_request_list)->where('request_id', $request['id'])->count();
-            $request_attachments_count_without_users = self::cloneQuery($request_attachments_without_users)->where('request_id', $request['id'])->count();
-
-            $denominator += $request_attachments_count / $request_attachments_count_without_users;
-        }
-        $denominator += $return['requests']['deny'];
-
-
-        $total_commission = self::cloneQuery($commission_query)->sum(DB::raw('if(commission > 0, commission, ' . Account::DEFAULT_COMMISSION . ' * sum)'));
-
-
-        $forecast_denominator = self::cloneQuery($attachments_query)->active()->count() + self::cloneQuery($attachments_query)->archived()->hasLessonsWithMissing('>=3')->count();
-        $forecast_numerator = self::cloneQuery($attachments_query)->active()->sum('forecast') + self::cloneQuery($attachments_query)->archived()->hasLessonsWithMissing('>=3')->sum('forecast');
-        $forecast = $forecast_denominator ? round($forecast_numerator / $forecast_denominator, 2) : 0;
-
-
-        $return['efficency'] = [
-            'conversion'       => $denominator ? round($numerator / $denominator, 2) : 0,
-            'forecast'         => $forecast,
-            'request_avg'      => $denominator + $return['requests']['deny'] ? round(floatval($total_commission) / ($denominator + $return['requests']['deny'])) : 0,
-            'attachment_avg'   => $return['attachments']['total'] ? round(floatval($total_commission) / $return['attachments']['total']) : 0,
-            'total_commission' => round($total_commission)
-        ];
-
+        $return['commissions'] = $total_commission_query->addSelect(\DB::raw("date_format(account_datas.date, '%Y-%m') as account_date"))
+                                                        ->groupBy(\DB::raw('account_date'))
+                                                        ->get()->pluck('sum', 'account_date');
         return $return;
     }
 
