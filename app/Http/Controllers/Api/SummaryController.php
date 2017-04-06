@@ -448,13 +448,11 @@ class SummaryController extends Controller
         $return['commissions'] = $total_commission_query->addSelect(\DB::raw("date_format(account_datas.date, '%Y-%m') as account_date"))
                                                         ->groupBy(\DB::raw('account_date'))
                                                         ->get()->pluck('sum', 'account_date');
-        uksort($return['data'], function ($a, $b) {
-            if (is_int($a)) {
-                return $a - $b;
-            } else {
+        if ($request->type == 'months') {
+            uksort($return['data'], function ($a, $b) {
                 return Carbon::createFromFormat('m.y', $a)->lt(Carbon::createFromFormat('m.y', $b)) ? -1 : 1;
-            }
-        });
+            });
+        }
         return $return;
     }
 
