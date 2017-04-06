@@ -61,6 +61,12 @@ ICON_BLACK = {
   origin: new google.maps.Point(0, 0)
 };
 
+ICON_YELLOW = {
+  url: "img/maps/yellowpin.png",
+  scaledSize: new google.maps.Size(22, 40),
+  origin: new google.maps.Point(0, 0)
+};
+
 ICON_SEARCH = {
   url: "img/maps/bluepin.png",
   scaledSize: new google.maps.Size(22, 40),

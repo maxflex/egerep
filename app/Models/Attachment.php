@@ -144,7 +144,7 @@ class Attachment extends Model
 
     public function getLinkAttribute()
     {
-        return "requests/{$this->requestList->request->id}/edit#{$this->requestList->id}#{$this->id}";
+        return "requests/{$this->requestList->request_id}/edit#{$this->requestList->id}#{$this->id}";
     }
 
     // ------------------------------------------------------------------------

@@ -20,7 +20,7 @@ class StreamController extends Controller
         $search = isset($_COOKIE['stream']) ? json_decode($_COOKIE['stream']) : (object)[];
         return [
             'data'   => Stream::search($search)->paginate(50),
-            'counts' => Stream::counts($search)
+            // 'counts' => Stream::counts($search)
         ];
     }
 }

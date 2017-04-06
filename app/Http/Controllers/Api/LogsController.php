@@ -24,29 +24,19 @@ class LogsController extends Controller
             if (in_array    ($log->table, ['attachments', 'archives', 'clients', 'request_lists', 'tutors']) && $log->type != 'delete') {
                 switch ($log->table) {
                     case 'attachments':
-                        if ($attachment = Models\Attachment::find($log->row_id)) {
-                            $log->link = Models\Attachment::without(['archive', 'review'])->find($log->row_id)->link;
-                        }
+                        $log->link = 'attachment/' . $log->row_id;
                         break;
                     case 'archives':
-                        if ($archive = Models\Archive::find($log->row_id)) {
-                            $log->link = Models\Attachment::without(['archive', 'review'])->find($archive->attachment_id)->link;
-                        }
+                        $log->link = 'archive/' . $log->row_id;
                         break;
                     case 'clients':
-                        if (Models\Client::find($log->row_id)) {
-                            $log->link = 'client/' . $log->row_id;
-                        }
+                        $log->link = 'client/' . $log->row_id;
                         break;
                     case 'request_lists':
-                        if ($rl = Models\RequestList::without(['attachments'])->find($log->row_id)) {
-                            $log->link = 'requests/' . $rl->request_id . '/edit#' . $log->row_id;
-                        }
+                        $log->link = 'request-list/' . $log->row_id;
                         break;
                     case 'requests':
-                        if (Models\Request::find($log->row_id)) {
-                            $log->link = 'requests/' . $log->row_id . '/edit';
-                        }
+                        $log->link = 'requests/' . $log->row_id . '/edit';
                         break;
                     case 'tutors':
                         $log->link = 'tutors/' . $log->row_id . '/edit';
@@ -57,7 +47,7 @@ class LogsController extends Controller
         });
 
         return [
-            'counts' => Log::counts($search),
+            // 'counts' => Log::counts($search),
             'data'   => $data,
         ];
         // return Log::search($search)->paginate(30);

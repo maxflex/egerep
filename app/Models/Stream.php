@@ -39,7 +39,7 @@ class Stream extends Model
     public static function search($search)
     {
         $search = filterParams($search);
-        $query = Stream::with('tutor')->orderBy('id', 'desc');
+        $query = Stream::orderBy('id', 'desc');
 
         if (isset($search->mobile)) {
             $query->where('mobile', $search->mobile);
