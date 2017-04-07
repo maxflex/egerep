@@ -9,6 +9,7 @@ use App\Models\Request;
 use App\Models\Account;
 use App\Events\ResponsibleUserChanged;
 use App\Events\RecalcTutorDebt;
+use App\Events\RecalcTutorData;
 
 class Tutor extends Service\Person
 {
@@ -444,6 +445,9 @@ class Tutor extends Service\Person
             }
             if ($tutor->changed(['debtor'])) {
                 event(new RecalcTutorDebt($tutor->id));
+            }
+            if ($tutor->changed(['public_desc'])) {
+                event(new RecalcTutorData($tutor->id));
             }
         });
 

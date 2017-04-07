@@ -14,7 +14,7 @@ class RecalcTutorData extends Command
      *
      * @var string
      */
-    protected $signature = 'recalc:tutor_data';
+    protected $signature = 'recalc:tutor_data {tutor_id?}';
 
     /**
      * The console command description.
@@ -40,8 +40,14 @@ class RecalcTutorData extends Command
      */
     public function handle()
     {
-        DB::table('tutor_data')->truncate();
-        $tutor_ids = DB::table('tutors')->where('public_desc', '!=', '')->pluck('id');
+        $tutors_query = DB::table('tutors')->where('public_desc', '!=', '');
+        if ($updated_tutor_id = $this->argument('tutor_id')) {
+            DB::table('tutor_data')->where('tutor_id', $updated_tutor_id)->delete();
+            $tutors_query->whereId($updated_tutor_id);
+        } else {
+            DB::table('tutor_data')->truncate();
+        }
+        $tutor_ids = $tutors_query->pluck('id');
         $bar = $this->output->createProgressBar(count($tutor_ids));
 
         foreach($tutor_ids as $tutor_id) {
@@ -61,6 +67,7 @@ class RecalcTutorData extends Command
                                     ->where('tutor_id', $tutor_id)
                                     ->where('reviews.state', 'published')
                                     ->whereBetween('score', [1, 10])->count(),
+                'reviews_count_egecrm' => DB::connection('egecrm')->table('teacher_reviews')->where('published', 1)->where('id_teacher', $tutor_id)->count(),
                 'review_avg' => static::_getReviewAvg($tutor_id),
                 'photo_exists' => static::_photoExists($tutor_id),
             ]);
