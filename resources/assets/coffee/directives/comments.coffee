@@ -55,8 +55,11 @@ angular.module('Egerep').directive 'comments', ->
                     console.log old_text
                     if e.keyCode is 13
                         $(@).removeAttr('contenteditable').blur()
-                        comment.comment = $(@).text()
-                        comment.$update()
+                        if $(@).text().length
+                            comment.comment = $(@).text()
+                            comment.$update()
+                        else
+                            $(@).text(comment.comment)
                     if e.keyCode is 27
                         $(@).blur()
 
@@ -73,17 +76,18 @@ angular.module('Egerep').directive 'comments', ->
 
         $scope.submitComment = (event) ->
             if event.keyCode is 13
-                new_comment = new Comment
-                    comment: $scope.comment
-                    user_id: $scope.user.id
-                    entity_id: $scope.entityId
-                    entity_type: $scope.entityType
-                new_comment.$save()
-                    .then (response)->
-                        console.log response
-                        new_comment.user = $scope.user
-                        new_comment.id = response.id
-                        $scope.comments.push new_comment
+                if $scope.comment.length
+                    new_comment = new Comment
+                        comment: $scope.comment
+                        user_id: $scope.user.id
+                        entity_id: $scope.entityId
+                        entity_type: $scope.entityType
+                    new_comment.$save()
+                        .then (response)->
+                            console.log response
+                            new_comment.user = $scope.user
+                            new_comment.id = response.id
+                            $scope.comments.push new_comment
                 $scope.endCommenting()
                 focusModal()
 
