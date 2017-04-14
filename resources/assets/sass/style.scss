@@ -485,6 +485,15 @@
 		}
 	}
 	.accounts-table {
+        & .account-payments {
+            & tr td:first-of-type {
+                padding-left: 0 !important;
+            }
+            & tr td {
+                border: none !important;
+                padding: 1px 3px;
+            }
+        }
 		& input {
 			width: 100px;
 		}
@@ -530,7 +539,8 @@
 					border-right: 1px solid $placeholder_gray;
 				}
 				&.period-end {
-					height: 250px;
+					// height: 250px;
+					height: 350px;
 					border: none;
 					text-align: left;
 				}
@@ -3949,4 +3959,10 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
     opacity: 1 !important;
     pointer-events: none !important;
     cursor: default !important;
+}
+
+#add-account-payment {
+    & .modal-dialog {
+        width: 300px;
+    }
 }

@@ -135,6 +135,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('clients', 'ClientsController');
         Route::resource('users', 'UsersController');
         Route::resource('comments', 'CommentsController');
+        Route::resource('account/payments', 'AccountPaymentsController');
         Route::resource('accounts', 'AccountsController');
         Route::resource('periods/planned', 'PlannedAccountsController');
         Route::resource('sms', 'SmsController');

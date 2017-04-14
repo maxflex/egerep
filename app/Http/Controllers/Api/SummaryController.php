@@ -17,19 +17,6 @@ use DB;
 
 class SummaryController extends Controller
 {
-    private $columns = [
-        'requests',
-        'attachments',
-        'archives',
-        'received',
-        'commission',
-        'forecast',
-        'debt',
-        'mutual_debts',
-        'active_attachments',
-        'new_clients'
-    ];
-
     /**
      * @todo объединить index и payments методы.
      * @todo пока не знаю как роуты менять чтобы можно было объединить:/
@@ -219,17 +206,18 @@ class SummaryController extends Controller
                         ->whereRaw("DATE(created_at) <= '{$end}'")
                         ->count();
 
-        $received = DB::table('accounts')
-                    ->whereRaw("date_end >= '{$start}'")
-                    ->whereRaw("date_end <= '{$end}'")
-                    ->sum('received');
+        $account_payments = DB::table('account_payments')
+                                ->whereRaw("date >= '{$start}'")
+                                ->whereRaw("date <= '{$end}'")
+                                ->sum('sum');
 
-        $mutual_debts = DB::connection('egecrm')->table('payments')
-                        ->where('id_status', Account::MUTUAL_DEBT_STATUS)
-                        ->where('entity_type', Tutor::USER_TYPE)
-                        ->whereRaw("STR_TO_DATE(date, '%d.%c.%Y') >= '{$start}'")
-                        ->whereRaw("STR_TO_DATE(date, '%d.%c.%Y') <= '{$end}'")
-                        ->sum('sum');
+        $mutual_debts = 0;
+        // $mutual_debts = DB::connection('egecrm')->table('payments')
+        //                 ->where('id_status', Account::MUTUAL_DEBT_STATUS)
+        //                 ->where('entity_type', Tutor::USER_TYPE)
+        //                 ->whereRaw("STR_TO_DATE(date, '%d.%c.%Y') >= '{$start}'")
+        //                 ->whereRaw("STR_TO_DATE(date, '%d.%c.%Y') <= '{$end}'")
+        //                 ->sum('sum');
 
         $commission = DB::table('account_datas')
                         ->whereRaw("date >= '{$start}'")
@@ -246,8 +234,8 @@ class SummaryController extends Controller
             'archives' => [
                 'cnt' => $archives
             ],
-            'received' => [
-                'sum' => $received
+            'account_payments' => [
+                'sum' => $account_payments
             ],
             'debts' => [
                 'sum' => Debt::sum([
@@ -298,12 +286,13 @@ class SummaryController extends Controller
 
     private function _getPaymentsData($start, $end)
     {
-        $received = DB::table('accounts')
-                    ->select(DB::raw("sum(received) as sum, payment_method"))
-                    ->whereRaw("date_end >= '{$start}'")
-                    ->whereRaw("date_end <= '{$end}'")
-                    ->groupBy('payment_method')
-                    ->get();
+        $account_payments = DB::table('accounts')
+                        ->select(DB::raw("sum(account_payments.sum) as sum, account_payments.method"))
+                        ->leftJoin('account_payments', 'account_payments.account_id', '=', 'accounts.id')
+                        ->whereRaw("date_end >= '{$start}'")
+                        ->whereRaw("date_end <= '{$end}'")
+                        ->groupBy('account_payments.method')
+                        ->get();
 
         $mutual_debts = DB::connection('egecrm')->table('payments')
                         ->where('id_status', Account::MUTUAL_DEBT_STATUS)
@@ -313,9 +302,9 @@ class SummaryController extends Controller
                         ->sum('sum');
 
         $total = 0;
-        foreach ($received as $elem) {
-            $return['received'][$elem->payment_method] = $elem;
-            $total += $elem->sum;
+        foreach ($account_payments as $payment) {
+            $return['account_payments'][$payment->method] = $payment;
+            $total += $payment->sum;
         }
 
         $return['mutual_debts']['sum'] = $mutual_debts;

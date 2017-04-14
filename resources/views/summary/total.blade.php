@@ -55,8 +55,8 @@
                 </td>
                 @if (allowed(\Shared\Rights::ER_SUMMARY_FIELDS))
                 <td>
-                    <span title="@{{ summary.received.sum | number }} + @{{ (summary.mutual_debts.sum ? summary.mutual_debts.sum : 0) | number }}">
-                        @{{ +(summary.received.sum) + +(summary.mutual_debts.sum) | hideZero | number:0 }}
+                    <span title="@{{ summary.account_payments.sum | number }} + @{{ (summary.mutual_debts.sum ? summary.mutual_debts.sum : 0) | number }}">
+                        @{{ +(summary.account_payments.sum) + +(summary.mutual_debts.sum) | hideZero | number:0 }}
                     </span>
                 </td>
                 <td>

@@ -31,6 +31,12 @@ angular
             load $scope.current_page
             paginate 'periods' + getPrefix(), $scope.current_page
 
+        $scope.getSum = (payments) ->
+            sum = 0
+            payments.forEach (payment) ->
+                sum += payment.sum
+            sum
+
         load = (page) ->
             params = getPrefix()
             params += '?page=' + page

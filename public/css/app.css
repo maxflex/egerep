@@ -29619,6 +29619,11 @@ a {
   float: left;
   margin-bottom: 10px;
   font-size: 14px; }
+  .accounts-table .account-payments tr td:first-of-type {
+    padding-left: 0 !important; }
+  .accounts-table .account-payments tr td {
+    border: none !important;
+    padding: 1px 3px; }
   .accounts-table input {
     width: 100px; }
   .accounts-table .attachment-start {
@@ -29648,7 +29653,7 @@ a {
       padding: 3px 3px;
       border-right: 1px solid #999999; }
     .accounts-table tr td.period-end {
-      height: 250px;
+      height: 350px;
       border: none;
       text-align: left; }
     .accounts-table tr td .account-guard {
@@ -32400,6 +32405,9 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
   opacity: 1 !important;
   pointer-events: none !important;
   cursor: default !important; }
+
+#add-account-payment .modal-dialog {
+  width: 300px; }
 
 .ios7-switch {
   display: inline-block;

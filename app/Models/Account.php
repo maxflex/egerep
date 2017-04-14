@@ -20,7 +20,6 @@ class Account extends Model
     protected $fillable = [
         'date_end',
         'tutor_id',
-        'received',
         'user_id',
         'debt',
         'debt_type',
@@ -30,12 +29,18 @@ class Account extends Model
         'confirmed',
     ];
     protected $appends = ['data', 'user_login', 'mutual_debts', 'debt_calc'];
+    protected $with = ['payments'];
 
     // ------------------------------------------------------------------------
 
     public function tutor()
     {
         return $this->belongsTo('App\Models\Tutor');
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(AccountPayment::class);
     }
 
     /**
@@ -125,13 +130,14 @@ class Account extends Model
 
     public function getMutualDebtsAttribute()
     {
-        return DB::connection('egecrm')
-                 ->table('payments')
-                 ->select('sum')
-                 ->whereRaw("STR_TO_DATE(date, '%d.%c.%Y') = '{$this->date_end}'")
-                 ->where('entity_id', $this->tutor_id)
-                 ->where('entity_type', Tutor::USER_TYPE)
-                 ->where('id_status', static::MUTUAL_DEBT_STATUS)->first();
+        return 0;
+        // return DB::connection('egecrm')
+        //          ->table('payments')
+        //          ->select('sum')
+        //          ->whereRaw("STR_TO_DATE(date, '%d.%c.%Y') = '{$this->date_end}'")
+        //          ->where('entity_id', $this->tutor_id)
+        //          ->where('entity_type', Tutor::USER_TYPE)
+        //          ->where('id_status', static::MUTUAL_DEBT_STATUS)->first();
     }
 
     public function getDebtCalcAttribute()

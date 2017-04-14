@@ -1,11 +1,29 @@
 angular.module('Egerep')
     .controller 'AccountsHiddenCtrl', ($scope, Grades, Attachment) ->
         bindArguments($scope, arguments)
-    .controller 'AccountsCtrl', ($rootScope, $scope, $http, $timeout, Account, PaymentMethods, Archive, Grades, Attachment, AttachmentState, AttachmentStates, Weekdays, PhoneService, AttachmentVisibility, DebtTypes, YesNo, Tutor, ArchiveStates, Checked, PlannedAccount, UserService, TeacherPaymentTypes, Confirmed) ->
+    .controller 'AccountsCtrl', ($rootScope, $scope, $http, $timeout, Account, PaymentMethods, Archive, Grades, Attachment, AttachmentState, AttachmentStates, Weekdays, PhoneService, AttachmentVisibility, DebtTypes, YesNo, Tutor, ArchiveStates, Checked, PlannedAccount, UserService, TeacherPaymentTypes, Confirmed, AccountPayment) ->
         bindArguments($scope, arguments)
         $scope.current_scope  = $scope
         $scope.current_period = 0
         $scope.all_displayed  = false
+
+        $scope.paymentModal = (account, payment = {}) ->
+            $scope.modal_account = account
+            $scope.modal_payment = payment
+            $rootScope.dialog('add-account-payment')
+
+        $scope.editPayment = ->
+            if $scope.modal_payment.id
+                AccountPayment.update $scope.modal_payment
+                $rootScope.closeDialog('add-account-payment')
+            else
+                ajaxStart()
+                $scope.modal_payment.account_id = $scope.modal_account.id
+                AccountPayment.save $scope.modal_payment, (response) ->
+                    $scope.modal_payment.id = response.data.id
+                    $scope.modal_account.payments.push($scope.modal_payment)
+                    ajaxEnd()
+                    $rootScope.closeDialog('add-account-payment')
 
         $scope.updateArchive = (field, set) ->
             # просто update выдавал ошибку field doesnt exists

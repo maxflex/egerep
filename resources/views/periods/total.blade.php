@@ -10,7 +10,6 @@
             <td>Передано</td>
             <td>Доход</td>
             <td>Долг</td>
-            <td>Метод</td>
             <td>Статус</td>
         </tr>
         </thead>
@@ -26,7 +25,7 @@
             <td>@{{ period.user_login }}</td>
             <td>@{{ period.debt_calc | hideZero | number}}</td>
             <td>
-                <span ng-show='period.received > 0'>@{{ period.received | number }}</span>
+                <span ng-show='period.payments.length'>@{{ getSum(period.payments) | number }}</span>
                 <span class='mutual-debt' ng-if="period.mutual_debts">+ @{{ period.mutual_debts.sum }}</span>
             </td>
             <td>
@@ -37,9 +36,6 @@
                         'text-danger': period.debt_type == 0,
                         'text-success': period.debt_type == 1,
                     }">@{{ period.debt }}</span>
-            </td>
-            <td>
-                <span ng-show='period.received > 0'>@{{ PaymentMethods[period.payment_method] }}</span>
             </td>
             <td>
                 <span ng-class="{

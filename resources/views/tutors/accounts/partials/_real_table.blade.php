@@ -70,19 +70,6 @@
                             <div style="position:relative;">
                                 <div class="account-guard" ng-show="account.confirmed && !{{ allowed(\Shared\Rights::ER_EDIT_ACCOUNTS, true) }}"></div>
                                 <div class="mbs">
-                                    <span>Передано (руб.):</span>
-                                    <pencil-input model='account.received'></pencil-input>
-                                    <span ng-show='account.received > 0'>
-                                    – методом
-                                    <span class="link-like" ng-click="toggleEnum(account, 'payment_method', PaymentMethods)">
-                                        @{{ PaymentMethods[account.payment_method] }}
-                                    </span>
-                                </span>
-                                    <span class='mutual-debt' ng-if="account.mutual_debts">
-                                    + @{{ account.mutual_debts.sum }}
-                                </span>
-                                </div>
-                                <div class="mbs">
                                     <span>Итого комиссия за период (руб.):</span>
                                     @{{ totalCommission(account) }}
                                 </div>
@@ -128,10 +115,64 @@
                                     @{{ Confirmed[account.confirmed] }}
                                 </span>
                             </div>
+                            <div class="inline-block">
+                                <b>Платежи:</b>
+                            </div>
+                            <div class="mbs">
+                                <table class='account-payments'>
+                                    <tr ng-repeat='payment in account.payments'>
+                                        <td>@{{ payment.sum }} руб.</td>
+                                        <td>@{{ PaymentMethods[payment.method] }}</td>
+                                        <td>@{{ payment.date }}</td>
+                                        <td>
+                                            <span ng-click='paymentModal(account, payment)' class='link-like'>редактировать</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan='4'>
+                                            <span style='font-weight: normal' class='link-like' ng-click='paymentModal(account)'>добавить платеж</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
+</div>
+
+{{-- ДОБАВЛЕНИЕ ПЛАТЕЖА --}}
+<div id="add-account-payment" class="modal" role="dialog" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">@{{ modal_payment.id ? 'Редактировать' : 'Добавить' }} платеж</h4>
+      </div>
+      <div class="modal-body">
+          <div class="form-group">
+              <input placeholder='передано' type="text" ng-model='modal_payment.sum' class="form-control digits-only">
+          </div>
+          <div class="form-group">
+              <select ng-model='modal_payment.method' class='form-control'>
+                  <option value="">метод расчета</option>
+                  <option disabled>──────────────</option>
+                  <option ng-repeat='(index, method) in PaymentMethods' value="@{{ index }}"
+                    ng-selected="modal_payment.method && modal_payment.method == index">
+                      @{{ method }}
+                  </option>
+              </select>
+          </div>
+          <div class="form-group">
+              <input placeholder='дата' type="text" ng-model='modal_payment.date' class="form-control bs-date">
+          </div>
+      </div>
+      <div class="modal-footer center">
+        <button type="button" class="btn btn-primary" ng-click="editPayment()">
+            @{{ modal_payment.id ? 'редактировать' : 'добавить' }}
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
