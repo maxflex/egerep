@@ -211,6 +211,15 @@
         return \DB::connection('factory')->table($table);
     }
 
+    /**
+      *
+      * EGCRM connection helper
+      */
+     function dbEgecrm($table)
+     {
+         return \DB::connection('egecrm')->table($table);
+     }
+
     function fileExists($url)
     {
         $ch = curl_init($url);

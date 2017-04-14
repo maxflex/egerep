@@ -209,15 +209,9 @@ class SummaryController extends Controller
         $account_payments = DB::table('account_payments')
                                 ->whereRaw("date >= '{$start}'")
                                 ->whereRaw("date <= '{$end}'")
+                                ->sum('sum') + Account::mutualQuery()->whereRaw("date >= '{$start}'")
+                                ->whereRaw("date <= '{$end}'")
                                 ->sum('sum');
-
-        $mutual_debts = 0;
-        // $mutual_debts = DB::connection('egecrm')->table('payments')
-        //                 ->where('id_status', Account::MUTUAL_DEBT_STATUS)
-        //                 ->where('entity_type', Tutor::USER_TYPE)
-        //                 ->whereRaw("STR_TO_DATE(date, '%d.%c.%Y') >= '{$start}'")
-        //                 ->whereRaw("STR_TO_DATE(date, '%d.%c.%Y') <= '{$end}'")
-        //                 ->sum('sum');
 
         $commission = DB::table('account_datas')
                         ->whereRaw("date >= '{$start}'")
@@ -252,9 +246,6 @@ class SummaryController extends Controller
                     'after_last_meeting' => 0,
                     'debtor' => 0,
                 ])
-            ],
-            'mutual_debts' => [
-                'sum' => $mutual_debts
             ],
             'commission' => [
                 'sum' => $commission

@@ -120,11 +120,14 @@
                             </div>
                             <div class="mbs">
                                 <table class='account-payments'>
-                                    <tr ng-repeat='payment in account.payments'>
-                                        <td>@{{ payment.sum }} руб.</td>
-                                        <td>@{{ PaymentMethods[payment.method] }}</td>
-                                        <td>@{{ payment.date }}</td>
-                                        <td>
+                                    <tr ng-repeat='payment in account.all_payments'>
+                                        <td width='100'>@{{ payment.sum }} руб.</td>
+                                        <td width='150'>@{{ payment.method ? PaymentMethods[payment.method] : 'взаимозачёт' }}</td>
+                                        <td width='100'>@{{ payment.date }}</td>
+                                        <td width='200'>
+                                            @{{ UserService.getLogin(payment.user_id) }} @{{ formatDateTime(payment.created_at) }}
+                                        </td>
+                                        <td ng-show='payment.id'>
                                             <span ng-click='paymentModal(account, payment)' class='link-like'>редактировать</span>
                                         </td>
                                     </tr>
@@ -159,7 +162,7 @@
                   <option value="">метод расчета</option>
                   <option disabled>──────────────</option>
                   <option ng-repeat='(index, method) in PaymentMethods' value="@{{ index }}"
-                    ng-selected="modal_payment.method && modal_payment.method == index">
+                    ng-selected="modal_payment.method !== undefined && modal_payment.method == index">
                       @{{ method }}
                   </option>
               </select>

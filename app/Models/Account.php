@@ -14,6 +14,7 @@ class Account extends Model
 {
     // комиссия по умолчанию в процентах
     const DEFAULT_COMMISSION = 0.25;
+
     // id status a взаимозачетов в таблице payments в NEC
     const MUTUAL_DEBT_STATUS = 6;
 
@@ -28,7 +29,7 @@ class Account extends Model
         'data',
         'confirmed',
     ];
-    protected $appends = ['data', 'user_login', 'mutual_debts', 'debt_calc'];
+    protected $appends = ['data', 'user_login', 'mutual_debts', 'debt_calc', 'all_payments'];
     protected $with = ['payments'];
 
     // ------------------------------------------------------------------------
@@ -109,6 +110,21 @@ class Account extends Model
     }
 
     /**
+     * Все платежи (локальные + взаимозачеты)
+     */
+    public function getAllPaymentsAttribute()
+    {
+        $payments = $this->payments->all();
+
+        // приводим в соответствие поля из таблицы egecrm-payments
+        $mutual_payments = dbEgecrm('payments')
+            ->select(DB::raw('entity_id as tutor_id, id_user as user_id, sum, first_save_date as created_at, `date`'))
+            ->where('account_id', $this->id)->get();
+
+        return array_merge($payments, $mutual_payments);
+    }
+
+    /**
      * Итого комиссия за период
      */
     public function getTotalCommissionAttribute()
@@ -138,6 +154,14 @@ class Account extends Model
         //          ->where('entity_id', $this->tutor_id)
         //          ->where('entity_type', Tutor::USER_TYPE)
         //          ->where('id_status', static::MUTUAL_DEBT_STATUS)->first();
+    }
+
+    /**
+     * query для взаимозачетов
+     */
+    public static function mutualQuery()
+    {
+        return dbEgecrm('payments')->where('entity_type', 'TEACHER')->where('id_status', self::MUTUAL_DEBT_STATUS);
     }
 
     public function getDebtCalcAttribute()
