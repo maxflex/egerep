@@ -285,10 +285,7 @@ class SummaryController extends Controller
                         ->groupBy('account_payments.method')
                         ->get();
 
-        $mutual_debts = DB::connection('egecrm')->table('payments')
-                        ->where('id_status', Account::MUTUAL_DEBT_STATUS)
-                        ->where('entity_type', Tutor::USER_TYPE)
-                        ->whereRaw("STR_TO_DATE(date, '%d.%c.%Y') >= '{$start}'")
+        $mutual_debts = Account::mutualQuery()->whereRaw("STR_TO_DATE(date, '%d.%c.%Y') >= '{$start}'")
                         ->whereRaw("STR_TO_DATE(date, '%d.%c.%Y') <= '{$end}'")
                         ->sum('sum');
 

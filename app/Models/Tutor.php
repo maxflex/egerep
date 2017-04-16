@@ -194,7 +194,7 @@ class Tutor extends Service\Person
         return $query
             ->where('date_end', '>=', $this->getDateLimit())
             ->orderBy('date_end', 'asc')
-            ->get()->append('mutual_debts');
+            ->get();
     }
 
     public function getBannedAttribute()
@@ -696,9 +696,6 @@ class Tutor extends Service\Person
                                 ->where('date_end', '<', $account->date_end)
                                 ->where('date_end', '>', date('Y-m-d', strtotime('-7 day', strtotime($account->date_end))))->get();
         }
-        // if ($account) {
-        //     $account->append('mutual_debts');
-        // }
 
         return [
             'left'             => $query->count(),

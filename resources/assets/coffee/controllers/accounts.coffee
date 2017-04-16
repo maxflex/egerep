@@ -20,8 +20,7 @@ angular.module('Egerep')
                 ajaxStart()
                 $scope.modal_payment.account_id = $scope.modal_account.id
                 AccountPayment.save $scope.modal_payment, (response) ->
-                    $scope.modal_payment.id = response.data.id
-                    $scope.modal_account.payments.push($scope.modal_payment)
+                    $scope.modal_account.all_payments.push(response)
                     ajaxEnd()
                     $rootScope.closeDialog('add-account-payment')
 

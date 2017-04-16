@@ -54,8 +54,6 @@ class Kernel extends ConsoleKernel
         Commands\TutorDistancesRecalc::class,
         Commands\RecalcTutorData::class,
         Commands\RecalcEfficency::class,
-        Commands\TransferAccountPayments::class,
-        Commands\OnceMutualPayments::class,
     ];
 
     /**

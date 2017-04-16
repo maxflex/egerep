@@ -29,8 +29,7 @@ class Account extends Model
         'data',
         'confirmed',
     ];
-    protected $appends = ['data', 'user_login', 'mutual_debts', 'debt_calc', 'all_payments'];
-    protected $with = ['payments'];
+    protected $appends = ['data', 'user_login', 'debt_calc', 'all_payments'];
 
     // ------------------------------------------------------------------------
 
@@ -144,24 +143,12 @@ class Account extends Model
         return $total_commission;
     }
 
-    public function getMutualDebtsAttribute()
-    {
-        return 0;
-        // return DB::connection('egecrm')
-        //          ->table('payments')
-        //          ->select('sum')
-        //          ->whereRaw("STR_TO_DATE(date, '%d.%c.%Y') = '{$this->date_end}'")
-        //          ->where('entity_id', $this->tutor_id)
-        //          ->where('entity_type', Tutor::USER_TYPE)
-        //          ->where('id_status', static::MUTUAL_DEBT_STATUS)->first();
-    }
-
     /**
      * query для взаимозачетов
      */
     public static function mutualQuery()
     {
-        return dbEgecrm('payments')->where('entity_type', 'TEACHER')->where('id_status', self::MUTUAL_DEBT_STATUS);
+        return dbEgecrm('payments')->where('entity_type', Tutor::USER_TYPE)->where('id_status', self::MUTUAL_DEBT_STATUS);
     }
 
     public function getDebtCalcAttribute()
