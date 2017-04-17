@@ -2,6 +2,7 @@
 
 namespace App\Models\Helpers;
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 class MutualPayment extends Model
 {
@@ -20,5 +21,10 @@ class MutualPayment extends Model
     {
         return self::query()->whereRaw("STR_TO_DATE(date, '%d.%m.%Y') >= '{$date_start}'")
                 ->whereRaw("STR_TO_DATE(date, '%d.%m.%Y') <= '{$date_end}'");
+    }
+
+    public static function defaultSelect()
+    {
+        return DB::raw('entity_id as tutor_id, id_user as user_id, sum, first_save_date as created_at, `date`, confirmed');
     }
 }

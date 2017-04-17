@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Helpers\MutualPayment;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\AccountData;
 use App\Models\Tutor;
@@ -114,7 +115,7 @@ class Account extends Model
 
         // приводим в соответствие поля из таблицы egecrm-payments
         $mutual_payments = dbEgecrm('payments')
-            ->select(DB::raw('entity_id as tutor_id, id_user as user_id, sum, first_save_date as created_at, `date`, confirmed'))
+            ->select(MutualPayment::defaultSelect())
             ->where('account_id', $this->id)->get();
 
         return array_merge($payments, $mutual_payments);
