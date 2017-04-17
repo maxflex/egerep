@@ -117,7 +117,7 @@ class Account extends Model
 
         // приводим в соответствие поля из таблицы egecrm-payments
         $mutual_payments = dbEgecrm('payments')
-            ->select(DB::raw('entity_id as tutor_id, id_user as user_id, sum, first_save_date as created_at, `date`'))
+            ->select(DB::raw('entity_id as tutor_id, id_user as user_id, sum, first_save_date as created_at, `date`, confirmed'))
             ->where('account_id', $this->id)->get();
 
         return array_merge($payments, $mutual_payments);
@@ -141,14 +141,6 @@ class Account extends Model
         }
 
         return $total_commission;
-    }
-
-    /**
-     * query для взаимозачетов
-     */
-    public static function mutualQuery()
-    {
-        return dbEgecrm('payments')->where('entity_type', Tutor::USER_TYPE)->where('id_status', self::MUTUAL_DEBT_STATUS);
     }
 
     public function getDebtCalcAttribute()

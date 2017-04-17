@@ -301,6 +301,9 @@
       if (payment == null) {
         payment = {};
       }
+      if (payment.confirmed && $scope.user.rights.indexOf('11') === -1) {
+        return;
+      }
       $scope.modal_account = account;
       $scope.modal_payment = payment;
       return $rootScope.dialog('add-account-payment');
@@ -318,6 +321,16 @@
           return $rootScope.closeDialog('add-account-payment');
         });
       }
+    };
+    $scope.removePayment = function(account, payment) {
+      if (payment.confirmed && $scope.user.rights.indexOf('11') === -1) {
+        return;
+      }
+      return AccountPayment["delete"]({
+        id: payment.id
+      }, function() {
+        return account.all_payments = removeById(account.all_payments, payment.id);
+      });
     };
     $scope.updateArchive = function(field, set) {
       var archive, fillable, fillables, j, len;
@@ -722,8 +735,11 @@
         return $scope.hidden_clients_count++;
       }
     };
-    return $scope.toggleConfirmed = function(account) {
+    $scope.toggleConfirmed = function(account) {
       return $rootScope.toggleEnumServer(account, 'confirmed', Confirmed, Account);
+    };
+    return $scope.togglePaymentConfirmed = function(payment) {
+      return $rootScope.toggleEnumServer(payment, 'confirmed', Confirmed, AccountPayment);
     };
   });
 

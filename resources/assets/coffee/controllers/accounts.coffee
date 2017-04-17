@@ -8,6 +8,7 @@ angular.module('Egerep')
         $scope.all_displayed  = false
 
         $scope.paymentModal = (account, payment = {}) ->
+            return if payment.confirmed and $scope.user.rights.indexOf('11') is -1
             $scope.modal_account = account
             $scope.modal_payment = payment
             $rootScope.dialog('add-account-payment')
@@ -23,6 +24,11 @@ angular.module('Egerep')
                     $scope.modal_account.all_payments.push(response)
                     ajaxEnd()
                     $rootScope.closeDialog('add-account-payment')
+
+        $scope.removePayment = (account, payment) ->
+            return if payment.confirmed and $scope.user.rights.indexOf('11') is -1
+            AccountPayment.delete {id: payment.id}, ->
+                account.all_payments = removeById(account.all_payments, payment.id)
 
         $scope.updateArchive = (field, set) ->
             # просто update выдавал ошибку field doesnt exists
@@ -373,3 +379,6 @@ angular.module('Egerep')
 
         $scope.toggleConfirmed = (account) ->
             $rootScope.toggleEnumServer account, 'confirmed', Confirmed, Account
+
+        $scope.togglePaymentConfirmed = (payment) ->
+            $rootScope.toggleEnumServer payment, 'confirmed', Confirmed, AccountPayment

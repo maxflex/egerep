@@ -13,6 +13,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use App\Models\EfficencyData;
+use App\Models\Helpers\MutualPayment;
 use DB;
 
 class SummaryController extends Controller
@@ -209,9 +210,7 @@ class SummaryController extends Controller
         $account_payments = DB::table('account_payments')
                                 ->whereRaw("date >= '{$start}'")
                                 ->whereRaw("date <= '{$end}'")
-                                ->sum('sum') + Account::mutualQuery()->whereRaw("date >= '{$start}'")
-                                ->whereRaw("date <= '{$end}'")
-                                ->sum('sum');
+                                ->sum('sum') + MutualPayment::query()->betweenDates($start, $end)->sum('sum');
 
         $commission = DB::table('account_datas')
                         ->whereRaw("date >= '{$start}'")
@@ -285,9 +284,7 @@ class SummaryController extends Controller
                         ->groupBy('account_payments.method')
                         ->get();
 
-        $mutual_debts = Account::mutualQuery()->whereRaw("STR_TO_DATE(date, '%d.%c.%Y') >= '{$start}'")
-                        ->whereRaw("STR_TO_DATE(date, '%d.%c.%Y') <= '{$end}'")
-                        ->sum('sum');
+        $mutual_debts = MutualPayment::query()->betweenDates($start, $end)->sum('sum');
 
         $total = 0;
         foreach ($account_payments as $payment) {
