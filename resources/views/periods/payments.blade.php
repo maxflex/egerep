@@ -20,24 +20,27 @@
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat='period in periods'>
-            <td><a href="tutors/@{{ period.account.tutor.id }}/accounts">@{{ period.account.tutor.full_name || "имя не указано" }}</a></td>
-            <td>@{{ period.sum | number }}</td>
-            <td>@{{ PaymentMethods[period.method] }}</td>
-            <td>@{{ shortenYear(period.date) }}</td>
+        <tr ng-repeat='payment in payments'>
+            <td><a href="tutors/@{{ payment.tutor_id }}/accounts">
+                <span ng-show='payment.tutor.last_name'>@{{ payment.tutor.last_name }} @{{ payment.tutor.first_name }} @{{ payment.tutor.middle_name }}</span>
+                <span ng-show='!payment.tutor.last_name'>имя не указано</span>
+            </a></td>
+            <td>@{{ payment.sum | number }}</td>
+            <td>@{{ PaymentMethods[payment.method] }}</td>
+            <td>@{{ shortenYear(payment.date) }}</td>
             <td width='20%'>
-                @{{ UserService.getLogin(period.user_id) }} @{{ formatDateTime(period.created_at) }}
+                @{{ UserService.getLogin(payment.user_id) }} @{{ formatDateTime(payment.created_at) }}
             </td>
             <td width='100'>
                 <span @if(allowed(\Shared\Rights::EDIT_PAYMENTS))
                           class="link-like"
-                          ng-click="toggleConfirmed(period, AccountPayment)"
+                          ng-click="toggleConfirmed(payment, AccountPayment)"
                       @endif
                       ng-class="{
-                            'text-danger': !period.confirmed,
-                            'text-success': period.confirmed
+                            'text-danger': !payment.confirmed,
+                            'text-success': payment.confirmed
                           }">
-                    @{{ Confirmed[period.confirmed] }}
+                    @{{ Confirmed[payment.confirmed] }}
                 </span>
             </td>
         </tr>

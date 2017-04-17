@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\AccountPayment;
+use App\Models\Helpers\MutualPayment;
+use DB;
 
 class AccountPaymentsController extends Controller
 {
@@ -15,9 +17,38 @@ class AccountPaymentsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return AccountPayment::with(['account.tutor'])->orderBy('date', 'desc')->paginate(30);
+	    $per_page = 30;
+
+	    // получаем ВСЕ данные из account_payments и egecrm-payments
+	    // мерджим, сортируем по дате и вырезаем пагинацию
+        $account_payments = AccountPayment::orderBy('date', 'desc')->get()->all();
+        $egecrm_payments = MutualPayment::query()->select(MutualPayment::defaultSelect())->orderBy(DB::raw("STR_TO_DATE(date, '%d.%m.%Y')", 'desc'))->get();
+
+        // мердж
+        $data = array_merge($account_payments, $egecrm_payments);
+
+        // сортировка
+		usort($data, function($a, $b) {
+			return fromDotDate($a->date) < fromDotDate($b->date);
+		});
+
+
+		// вырезаем пагинацию
+		$return = array_slice($data, (isset($request->page) ? ($request->page - 1) * $per_page : 0), $per_page);
+
+		// информация о преподе
+		foreach($return as $r) {
+			$r->tutor = DB::table('tutors')->whereId($r->tutor_id)->select('first_name', 'last_name', 'middle_name')->first();
+		}
+
+		return [
+			'data'      => $return,
+			'per_page'  => $per_page,
+			'total'     => count($data),
+			'last_page' => ceil(count($data) / $per_page)
+		];
     }
 
     /**
