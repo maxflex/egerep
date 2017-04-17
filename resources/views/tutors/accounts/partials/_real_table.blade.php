@@ -33,7 +33,7 @@
         </tbody>
     </table>
 
-    <div class="right-table-scroll">
+    <div class="right-table-scroll" ng-class="{'th-padding': !clients.length}">
         <table class='accounts-table'>
             <thead class='small' ng-repeat-start='account in tutor.last_accounts' ng-if='$index == 0'>
                 <tr>
