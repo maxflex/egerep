@@ -301,7 +301,7 @@
       if (payment == null) {
         payment = {};
       }
-      if (payment.confirmed && $scope.user.rights.indexOf('11') === -1) {
+      if (payment.confirmed && $scope.user.rights.indexOf('48') === -1) {
         return;
       }
       $scope.modal_account = account;
@@ -323,13 +323,17 @@
       }
     };
     $scope.removePayment = function(account, payment) {
-      if (payment.confirmed && $scope.user.rights.indexOf('11') === -1) {
+      if (payment.confirmed && $scope.user.rights.indexOf('48') === -1) {
         return;
       }
-      return AccountPayment["delete"]({
-        id: payment.id
-      }, function() {
-        return account.all_payments = removeById(account.all_payments, payment.id);
+      return bootbox.confirm("Вы уверены, что хотите удалить платеж?", function(result) {
+        if (result === true) {
+          return AccountPayment["delete"]({
+            id: payment.id
+          }, function() {
+            return account.all_payments = removeById(account.all_payments, payment.id);
+          });
+        }
       });
     };
     $scope.updateArchive = function(field, set) {
