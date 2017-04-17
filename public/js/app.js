@@ -2545,10 +2545,11 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').controller('PeriodsIndex', function($scope, $timeout, $rootScope, $http, PaymentMethods, DebtTypes, TeacherPaymentTypes, UserService, Confirmed, Account, AccountPayment) {
+  angular.module('Egerep').controller('PeriodsIndex', function($scope, $timeout, $rootScope, $http, PaymentMethods, DebtTypes, TeacherPaymentTypes, UserService, Confirmed, Account, AccountPayment, Approved) {
     var getCommission, getPrefix, load;
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
+    $scope.search = {};
     $timeout(function() {
       load($scope.page);
       return $scope.current_page = $scope.page;
@@ -2587,6 +2588,7 @@
       load($scope.current_page);
       return paginate('periods' + getPrefix(), $scope.current_page);
     };
+    $scope.filter = $scope.pageChanged;
     $scope.getSum = function(payments) {
       var mutual, sum;
       sum = 0;
