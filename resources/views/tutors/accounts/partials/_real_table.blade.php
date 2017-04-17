@@ -127,15 +127,9 @@
                                                 <td width='130'>@{{ payment.id ? PaymentMethods[payment.method] : 'взаимозачёт' }}</td>
                                                 <td width='80'>@{{ payment.date }}</td>
                                                 <td width='100'>
-                                                    <span ng-if="payment.id" @if(allowed(\Shared\Rights::ER_EDIT_PAYMENTS)) class="link-like" ng-click="toggleConfirmed(payment, AccountPayment)" @endif
+                                                    <span @if(allowed(\Shared\Rights::ER_EDIT_PAYMENTS)) class="link-like" ng-click="toggleConfirmed(payment, AccountPayment)" @endif
                                                           ng-class="{
-                                                              'text-danger': !payment.confirmed,
-                                                              'text-success': payment.confirmed
-                                                          }">
-                                                        @{{ Confirmed[payment.confirmed] }}
-                                                    </span>
-                                                    <span ng-if="!payment.id"
-                                                          ng-class="{
+                                                              'link-like': payment.id,
                                                               'text-danger': !payment.confirmed,
                                                               'text-success': payment.confirmed
                                                           }">
@@ -143,10 +137,14 @@
                                                     </span>
                                                 </td>
                                                 <td width='100'>
-                                                    <span ng-show='payment.id' ng-click='paymentModal(account, payment)' class='link-like'>редактировать</span>
+                                                    <span ng-show='payment.id' ng-click='paymentModal(account, payment)' ng-class="{
+                                                        'link-like': (!payment.confirmed || user.rights.indexOf('48') !== -1)
+                                                    }">редактировать</span>
                                                 </td>
                                                 <td width='60'>
-                                                    <span ng-show='payment.id' ng-click='removePayment(account, payment)' class='link-like text-danger'>удалить</span>
+                                                    <span ng-show='payment.id' ng-click='removePayment(account, payment)'  ng-class="{
+                                                        'link-like': (!payment.confirmed || user.rights.indexOf('48') !== -1)
+                                                    }" class='text-danger'>удалить</span>
                                                 </td>
                                                 <td>
                                                     @{{ UserService.getLogin(payment.user_id) }} @{{ formatDateTime(payment.created_at) }}
