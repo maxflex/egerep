@@ -23,7 +23,7 @@
         <tr ng-repeat='payment in periods'>
             <td><a href="tutors/@{{ payment.tutor_id }}/accounts">
                 <span ng-show='payment.tutor.last_name'>@{{ payment.tutor.last_name }} @{{ payment.tutor.first_name }} @{{ payment.tutor.middle_name }}</span>
-                <span ng-show='!payment.tutor.last_name'>имя не указано</span>
+                <span ng-show='!payment.tutor.first_name'>имя не указано</span>
             </a></td>
             <td>@{{ payment.sum | number }}</td>
             <td>@{{ payment.id ? PaymentMethods[payment.method] : 'взаимозачёт' }}</td>
