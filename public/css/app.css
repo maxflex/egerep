@@ -29653,6 +29653,7 @@ a {
       padding: 3px 3px;
       border-right: 1px solid #999999; }
     .accounts-table tr td.period-end {
+      padding: 10px 3px;
       border: none;
       text-align: left; }
     .accounts-table tr td .account-guard {

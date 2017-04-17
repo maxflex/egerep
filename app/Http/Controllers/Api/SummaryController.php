@@ -284,7 +284,7 @@ class SummaryController extends Controller
                         ->groupBy('account_payments.method')
                         ->get();
 
-        $mutual_debts = MutualPayment::betweenDates($start, $end)->sum('sum');
+        $mutual_payments = MutualPayment::betweenDates($start, $end)->sum('sum');
 
         $total = 0;
         foreach ($account_payments as $payment) {
@@ -292,8 +292,8 @@ class SummaryController extends Controller
             $total += $payment->sum;
         }
 
-        $return['mutual_debts']['sum'] = $mutual_debts;
-        $return['total'] = $total + $mutual_debts;
+        $return['mutual_payments']['sum'] = $mutual_payments;
+        $return['total'] = $total + $mutual_payments;
         return $return;
     }
 

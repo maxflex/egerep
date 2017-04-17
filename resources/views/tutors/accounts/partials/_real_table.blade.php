@@ -24,10 +24,10 @@
             </tr>
             <tr>
                 {{-- 21px – высота одного DIV.mbs (16px + 5px margin-bottom) --}}
-                {{-- 4px – padding TD --}}
+                {{-- 20px – padding TD --}}
                 {{-- 25px высота одного payment (+1 – это кнопка «добавить»)--}}
                 {{-- +5px – высоты не сходились --}}
-                <td class="period-end" ng-style="{'height': (7 * 21) + 4 + (25 * (account.all_payments.length + 1)) + 5 + 'px'}">
+                <td class="period-end" ng-style="{'height': (7 * 21) + 20 + (25 * (account.all_payments.length + 1)) + 5 + 'px'}">
                 </td>
             </tr>
         </tbody>

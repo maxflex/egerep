@@ -22,7 +22,7 @@
                     @{{ summary.account_payments[method].sum | hideZero | number }}
                 </td>
                 <td class="text-center">
-                    @{{ summary.mutual_debts.sum | hideZero | number }}
+                    @{{ summary.mutual_payments.sum | hideZero | number }}
                 </td>
                 <td class="left-border text-center">
                     @{{ summary.total | hideZero | number }}

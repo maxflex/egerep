@@ -26,7 +26,7 @@
             <td>@{{ PaymentMethods[period.method] }}</td>
             <td>@{{ shortenYear(period.date) }}</td>
             <td width='20%'>
-                @{{ UserService.getLogin(period.user_id) }}: @{{ formatDateTime(period.created_at) }}
+                @{{ UserService.getLogin(period.user_id) }} @{{ formatDateTime(period.created_at) }}
             </td>
             <td>
                 <span @if(allowed(\Shared\Rights::EDIT_PAYMENTS))

@@ -17,7 +17,7 @@ class AccountPaymentsController extends Controller
      */
     public function index()
     {
-        return AccountPayment::with(['account.tutor'])->paginate(30);
+        return AccountPayment::with(['account.tutor'])->orderBy('date', 'desc')->paginate(30);
     }
 
     /**

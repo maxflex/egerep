@@ -33,9 +33,10 @@ angular
 
         $scope.getSum = (payments) ->
             sum = 0
+            mutual = 0
             payments.forEach (payment) ->
-                sum += payment.sum
-            sum
+                if payment.id then sum += payment.sum else mutual += payment.sum
+            [sum, mutual]
 
         load = (page) ->
             params = getPrefix()
