@@ -1,4 +1,4 @@
-<td ng-repeat='client in clients' width='100'>
+<td ng-repeat='client in clients' width='100' ng-class="{'no-border-right': clients.length < 10}">
     <div class='mbs'>
         <a href='@{{ client.link }}'>@{{ client.name | cut:false:10:'без имени' }}</a>
     </div>
@@ -31,3 +31,4 @@
         <span class='link-like' ng-click='accountInfo(client)'>подробнее</span>
     </div>
 </td>
+{{--<td ng-if="clients.length < 10" width="100%" class="no-border-outline"></td>--}}

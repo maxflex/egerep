@@ -46,7 +46,8 @@
                     <td ng-repeat='client in clients' ng-class="{
                         'attachment-start': date == client.attachment_date,
                         'archive-date': date == client.archive_date,
-                        'double-border-bottom': getDay(date) == 6
+                        'double-border-bottom': getDay(date) == 6,
+                        'no-border-right': clients.length < 10
                     }">
                         <input type="text" class='account-column no-border-outline' id='i-@{{ date }}-@{{ $index }}'
                             ng-focus='selectRow(date)'
@@ -58,6 +59,7 @@
                             }"
                             ng-model='account.data[client.id][date]' title='@{{ formatDate(date) }}'>
                     </td>
+                    {{--<td ng-if="clients.length < 10" width="100%" class="no-border-outline"></td>--}}
                 </tr>
                 <tr>
                     <td ng-if='!clients.length' class="fake-cell"></td>

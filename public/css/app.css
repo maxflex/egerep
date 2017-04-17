@@ -34230,7 +34230,7 @@ a {
     .accounts-table tr td:first-of-type {
       border-left: none;
       text-align: left; }
-    .accounts-table tr td:last-of-type {
+    .accounts-table tr td:last-of-type, .accounts-table tr td.no-border-right {
       border-right: none; }
     .accounts-table tr td.empty-td {
       height: 165px;
