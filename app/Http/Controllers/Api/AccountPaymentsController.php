@@ -20,10 +20,10 @@ class AccountPaymentsController extends Controller
      */
     public function index(Request $request)
     {
-	    $per_page = 30;
+        $per_page = 30;
 
-	    // получаем ВСЕ данные из account_payments и egecrm-payments
-	    // мерджим, сортируем по дате и вырезаем пагинацию
+        // получаем ВСЕ данные из account_payments и egecrm-payments
+        // мерджим, сортируем по дате и вырезаем пагинацию
         $account_payments = AccountPayment::orderBy('date', 'desc')->get()->all();
         $egecrm_payments = MutualPayment::query()->select(MutualPayment::defaultSelect())->orderBy(DB::raw("STR_TO_DATE(date, '%d.%m.%Y')", 'desc'))->get();
 
@@ -31,29 +31,29 @@ class AccountPaymentsController extends Controller
         $data = array_merge($account_payments, $egecrm_payments);
 
         // сортировка
-		usort($data, function($a, $b) {
-			return fromDotDate($a->date) < fromDotDate($b->date);
-		});
+        usort($data, function($a, $b) {
+            return fromDotDate($a->date) < fromDotDate($b->date);
+        });
 
 
-		// вырезаем пагинацию
-		$return = array_slice($data, (isset($request->page) ? ($request->page - 1) * $per_page : 0), $per_page);
+        // вырезаем пагинацию
+        $return = array_slice($data, ($request->page > 0 ? ($request->page - 1) * $per_page : 0), $per_page);
 
-		// информация о преподе
-		foreach($return as $r) {
+        // информация о преподе
+        foreach($return as $r) {
             // если не установлен tutor_id, добавляем
             if (! isset($r->tutor_id)) {
                 $r->tutor_id = Account::whereId($r->account_id)->value('tutor_id');
             }
-			$r->tutor = DB::table('tutors')->whereId($r->tutor_id)->select('first_name', 'last_name', 'middle_name')->first();
-		}
+            $r->tutor = DB::table('tutors')->whereId($r->tutor_id)->select('first_name', 'last_name', 'middle_name')->first();
+        }
 
-		return [
-			'data'      => $return,
-			'per_page'  => $per_page,
-			'total'     => count($data),
-			'last_page' => ceil(count($data) / $per_page)
-		];
+        return [
+            'data'      => $return,
+            'per_page'  => $per_page,
+            'total'     => count($data),
+            'last_page' => ceil(count($data) / $per_page)
+        ];
     }
 
     /**
