@@ -71,7 +71,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('requests/{state_id?}', 'RequestsController@index');
     Route::resource('clients', 'ClientsController');
     Route::get('periods/planned', 'PeriodsController@planned');
-    Route::get('periods/payments', 'PeriodsController@accounts')->name('periods.payments');
+    Route::get('periods/payments', 'PeriodsController@payments')->name('periods.payments');
     Route::resource('periods', 'PeriodsController');
     Route::get('archives', 'ArchivesController@index');
     Route::get('attachments', 'AttachmentsController@index');

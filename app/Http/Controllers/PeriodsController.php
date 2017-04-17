@@ -30,7 +30,7 @@ class PeriodsController extends Controller
         ]));
     }
 
-    public function accounts(Request $request)
+    public function payments(Request $request)
     {
         return view('periods.index')->with(ngInit([
             'type' => 'payments',
