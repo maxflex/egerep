@@ -33,7 +33,7 @@ class PeriodsController extends Controller
     public function accounts(Request $request)
     {
         return view('periods.index')->with(ngInit([
-            'type' => 'accounts',
+            'type' => 'payments',
             'page' => $request->page
         ]));
     }

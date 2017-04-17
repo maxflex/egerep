@@ -1,9 +1,9 @@
-<div ng-if="type == 'accounts'">
+<div ng-if="type == 'total'">
     <div class="row mb">
         <div class="col-sm-12">
             <div class="options-list">
-                <a class="link-like" href="{{ route('periods.index') }}">встречи</a>
-                <span>платежи</span>
+                <span>встречи</span>
+                <a class="link-like" href="{{ route('periods.payments') }}">платежи</a>
             </div>
         </div>
     </div>
@@ -12,26 +12,44 @@
         <thead>
         <tr>
             <td>Преподаватель</td>
-            <td>Сумма</td>
-            <td>Тип расчета</td>
+            <td>Время проводки</td>
             <td>Дата расчета</td>
-            <td>Реквизиты</td>
+            <td>Пользователь</td>
+            <td>Дебет</td>
+            <td>Передано</td>
+            <td>Доход</td>
+            <td>Долг</td>
             <td>Статус</td>
         </tr>
         </thead>
         <tbody>
         <tr ng-repeat='period in periods'>
-            <td><a href="tutors/@{{ period.account.tutor.id }}/accounts">@{{ period.account.tutor.full_name || "имя не указано" }}</a></td>
-            <td>@{{ period.sum | number }}</td>
-            <td>@{{ PaymentMethods[period.method] }}</td>
-            <td>@{{ shortenYear(period.date) }}</td>
-            <td width='20%'>
-                @{{ UserService.getLogin(period.user_id) }}: @{{ formatDateTime(period.created_at) }}
+            <td>
+                <a href="tutors/@{{ period.tutor.id }}/edit">@{{ period.tutor.full_name || "имя не указано" }}</a>
+            </td>
+            <td>@{{ formatDateTime(period.created_at) }}</td>
+            <td>
+                @{{ formatDate(period.date_end) }}
+            </td>
+            <td>@{{ period.user_login }}</td>
+            <td>@{{ period.debt_calc | hideZero | number}}</td>
+            <td>
+                <span ng-show='period.all_payments.length'>@{{ getSum(period.all_payments) | number }}</span>
+                <span class='mutual-debt' ng-if="period.mutual_debts">+ @{{ period.mutual_debts.sum }}</span>
+            </td>
+            <td>
+                @{{ totalCommission(period) | number }}
+            </td>
+            <td>
+                    <span ng-class="{
+                        'text-danger': period.debt_type == 0,
+                        'text-success': period.debt_type == 1,
+                    }">@{{ period.debt }}</span>
             </td>
             <td>
                 <span @if(allowed(\Shared\Rights::ER_EDIT_ACCOUNTS))
-                          class="link-like"
-                          ng-click="toggleConfirmed(period, AccountPayment)"
+                      class="link-like"
+                      ng-click="toggleConfirmed(period, Account)"
                       @endif
                       ng-class="{
                             'text-danger': !period.confirmed,
