@@ -2769,7 +2769,7 @@ white-space: nowrap;
 .link-like {
     color: $green_main;
     text-decoration: none;
-    cursor: pointer;
+    cursor: pointer !important;
     &:hover {
 	    color: darken($green_main, 10);
 	    text-decoration: underline;

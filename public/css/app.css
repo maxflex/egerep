@@ -31480,7 +31480,7 @@ md-input-container textarea {
 .link-like {
   color: #158E51;
   text-decoration: none;
-  cursor: pointer; }
+  cursor: pointer !important; }
   .link-like:hover {
     color: #0e6238;
     text-decoration: underline; }
