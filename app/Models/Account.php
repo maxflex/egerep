@@ -211,11 +211,11 @@ class Account extends Model
     {
         $query = static::query();
 
-        if ($request->confirmed) {
+        if (isset($request->confirmed)) {
             $query->where('confirmed', $request->confirmed);
         }
 
-        if ($request->user_id) {
+        if (isset($request->user_id)) {
             $query->where('user_id', $request->user_id);
         }
 

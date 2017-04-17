@@ -12,7 +12,7 @@
             @include('modules.user-select-light')
         </div>
         <div class="col-sm-3">
-            <select ng-model='search.confirmed' class='selectpicker' ng-change='filter()' ng-class="{'is-selected': search.confirmed != '' }">
+            <select ng-model='search.confirmed' class='selectpicker' ng-change='filter()'>
                 <option value="">все статусы</option>
                 <option disabled>──────────────</option>
                 <option ng-repeat='(id, name) in Confirmed'
