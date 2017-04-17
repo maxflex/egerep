@@ -21,14 +21,36 @@ class AccountPaymentsController extends Controller
     public function index(Request $request)
     {
         $per_page = 30;
-
         // получаем ВСЕ данные из account_payments и egecrm-payments
         // мерджим, сортируем по дате и вырезаем пагинацию
-        $account_payments = AccountPayment::orderBy('date', 'desc')->get()->all();
-        $egecrm_payments = MutualPayment::query()->select(MutualPayment::defaultSelect())->orderBy(DB::raw("STR_TO_DATE(date, '%d.%m.%Y')", 'desc'))->get();
+        $account_payments = AccountPayment::orderBy('date', 'desc');
+        $egecrm_payments = MutualPayment::query()->select(MutualPayment::defaultSelect())->orderBy(DB::raw("STR_TO_DATE(date, '%d.%m.%Y')", 'desc'));
+
+        // фильр по пользователям
+        if (isset($request->user_id) && ! isBlank($request->user_id)) {
+            $account_payments->where('user_id', $request->user_id);
+            $egecrm_payments->where('id_user', $request->user_id);
+        }
+
+        // фильтр по типам расчета
+        if (isset($request->method) && ! isBlank($request->method)) {
+            // взаимозачет
+            if ($request->method == -1) {
+                $account_payments->whereId(-1); // обнуляем результаты $account_payments, останутся только взаимозачёты
+            } else {
+                $egecrm_payments->whereId(-1); // обнуляем результаты $egecrm_payments
+                $account_payments->where('method', $request->method);
+            }
+        }
+
+        // фильтр по статусам платежа
+        if (isset($request->confirmed) && ! isBlank($request->confirmed)) {
+            $account_payments->where('confirmed', $request->confirmed);
+            $egecrm_payments->where('confirmed', $request->confirmed);
+        }
 
         // мердж
-        $data = array_merge($account_payments, $egecrm_payments);
+        $data = array_merge($account_payments->get()->all(), $egecrm_payments->get());
 
         // сортировка
         usort($data, function($a, $b) {
@@ -74,7 +96,7 @@ class AccountPaymentsController extends Controller
      */
     public function store(Request $request)
     {
-        return AccountPayment::create($request->input());
+        return AccountPayment::create($request->input())->fresh();
     }
 
     /**
