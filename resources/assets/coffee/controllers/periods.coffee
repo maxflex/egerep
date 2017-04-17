@@ -28,6 +28,7 @@ angular
 
         $scope.pageChanged = ->
             ajaxStart()
+            $rootScope.frontend_loading = true
             load $scope.current_page
             paginate 'periods' + getPrefix(), $scope.current_page
 
@@ -41,6 +42,10 @@ angular
         load = (page) ->
             params = getPrefix()
             params += '?page=' + page
+
+            $.each $scope.search, (key, value) ->
+                params += "&#{key}=#{value}"
+                console.log(key, value)
 
             $http.get "api/periods#{ params }"
             .then (response) ->

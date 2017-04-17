@@ -8,6 +8,27 @@
         </div>
     </div>
 
+    <div class="row flex-list" style='width: 60%'>
+        <div>
+            @include('modules.user-select-light')
+        </div>
+        <div>
+            <select ng-model='search.method' class='selectpicker' ng-change='filter()'>
+                <option value="">тип расчета</option>
+                <option disabled>──────────────</option>
+                <option ng-repeat='(id, name) in PaymentMethods' value="@{{id}}">@{{ name }}</option>
+                <option value="-1">взаимозачёт</option>
+            </select>
+        </div>
+        <div>
+            <select ng-model='search.confirmed' class='selectpicker' ng-change='filter()'>
+                <option value="">статус</option>
+                <option disabled>──────────────</option>
+                <option ng-repeat='(id, name) in Approved' value="@{{id}}">@{{ name }}</option>
+            </select>
+        </div>
+    </div>
+
     <table class="table summary-table table-hover">
         <thead>
         <tr>
