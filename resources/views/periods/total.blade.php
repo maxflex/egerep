@@ -47,10 +47,16 @@
                     }">@{{ period.debt }}</span>
             </td>
             <td>
-                <span ng-class="{
-                    'text-danger': !period.confirmed,
-                    'text-success': period.confirmed,
-                }">@{{ period.confirmed ? 'подтверждено' : 'не подтверждено' }}</span>
+                <span @if(allowed(\Shared\Rights::ER_EDIT_ACCOUNTS))
+                      class="link-like"
+                      ng-click="toggleConfirmed(period, Account)"
+                      @endif
+                      ng-class="{
+                            'text-danger': !period.confirmed,
+                            'text-success': period.confirmed
+                          }">
+                    @{{ Confirmed[period.confirmed] }}
+                </span>
             </td>
         </tr>
         </tbody>

@@ -1,7 +1,7 @@
 angular
     .module 'Egerep'
 
-    .controller 'PeriodsIndex', ($scope, $timeout, $rootScope, $http, PaymentMethods, DebtTypes, TeacherPaymentTypes, UserService) ->
+    .controller 'PeriodsIndex', ($scope, $timeout, $rootScope, $http, PaymentMethods, DebtTypes, TeacherPaymentTypes, UserService, Confirmed, Account, AccountPayment) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
@@ -47,3 +47,6 @@ angular
                 $rootScope.frontendStop()
                 $scope.data = response.data
                 $scope.periods = $scope.data.data
+
+        $scope.toggleConfirmed = (period, Resource) ->
+            $rootScope.toggleEnumServer period, 'confirmed', Confirmed, Resource

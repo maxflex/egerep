@@ -16,6 +16,7 @@
             <td>Тип расчета</td>
             <td>Дата расчета</td>
             <td>Реквизиты</td>
+            <td>Статус</td>
         </tr>
         </thead>
         <tbody>
@@ -26,6 +27,18 @@
             <td>@{{ shortenYear(period.date) }}</td>
             <td width='20%'>
                 @{{ UserService.getLogin(period.user_id) }}: @{{ formatDateTime(period.created_at) }}
+            </td>
+            <td>
+                <span @if(allowed(\Shared\Rights::ER_EDIT_ACCOUNTS))
+                          class="link-like"
+                          ng-click="toggleConfirmed(period, AccountPayment)"
+                      @endif
+                      ng-class="{
+                            'text-danger': !period.confirmed,
+                            'text-success': period.confirmed
+                          }">
+                    @{{ Confirmed[period.confirmed] }}
+                </span>
             </td>
         </tr>
         </tbody>

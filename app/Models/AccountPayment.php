@@ -11,6 +11,7 @@ class AccountPayment extends Model
         'sum',
         'date',
         'method',
+        'confirmed'
     ];
     protected static $dotDates = ['date'];
 
