@@ -32,7 +32,7 @@
                 @{{ UserService.getLogin(payment.user_id) }} @{{ formatDateTime(payment.created_at) }}
             </td>
             <td width='100'>
-                <span ng-if='payment.id' @if(allowed(\Shared\Rights::EDIT_PAYMENTS))
+                <span ng-if='payment.id' @if(allowed(\Shared\Rights::ER_EDIT_PAYMENTS))
                           class="link-like"
                           ng-click="toggleConfirmed(payment, AccountPayment)"
                       @endif
