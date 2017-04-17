@@ -134,7 +134,7 @@ angular.module('Egerep')
             $scope.closeDialog 'change-account-date'
 
         $scope.remove = (account) ->
-            bootbox.confirm 'Удалить встречу?', (result) ->
+            bootbox.confirm '<b>Удалить встречу?</b> Все платежи встречи будут удалены.', (result) ->
                 if result is true
                     Account.delete {id: account.id}, ->
                         $scope.tutor.last_accounts = removeById($scope.tutor.last_accounts, account.id)

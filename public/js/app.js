@@ -452,7 +452,7 @@
       return $scope.closeDialog('change-account-date');
     };
     $scope.remove = function(account) {
-      return bootbox.confirm('Удалить встречу?', function(result) {
+      return bootbox.confirm('<b>Удалить встречу?</b> Все платежи встречи будут удалены.', function(result) {
         if (result === true) {
           return Account["delete"]({
             id: account.id
