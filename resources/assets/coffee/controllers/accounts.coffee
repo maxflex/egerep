@@ -377,8 +377,5 @@ angular.module('Egerep')
             else
                 $scope.hidden_clients_count++
 
-        $scope.toggleConfirmed = (account) ->
-            $rootScope.toggleEnumServer account, 'confirmed', Confirmed, Account
-
-        $scope.togglePaymentConfirmed = (payment) ->
-            $rootScope.toggleEnumServer payment, 'confirmed', Confirmed, AccountPayment
+        $scope.toggleConfirmed = (model, Resource) ->
+            $rootScope.toggleEnumServer model, 'confirmed', Confirmed, Resource

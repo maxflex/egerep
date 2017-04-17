@@ -26,13 +26,13 @@
                 <span ng-show='!payment.tutor.last_name'>имя не указано</span>
             </a></td>
             <td>@{{ payment.sum | number }}</td>
-            <td>@{{ PaymentMethods[payment.method] }}</td>
+            <td>@{{ payment.id ? PaymentMethods[payment.method] : 'взаимозачёт' }}</td>
             <td>@{{ shortenYear(payment.date) }}</td>
             <td width='20%'>
                 @{{ UserService.getLogin(payment.user_id) }} @{{ formatDateTime(payment.created_at) }}
             </td>
             <td width='100'>
-                <span @if(allowed(\Shared\Rights::EDIT_PAYMENTS))
+                <span ng-if='payment.id' @if(allowed(\Shared\Rights::EDIT_PAYMENTS))
                           class="link-like"
                           ng-click="toggleConfirmed(payment, AccountPayment)"
                       @endif
@@ -40,6 +40,12 @@
                             'text-danger': !payment.confirmed,
                             'text-success': payment.confirmed
                           }">
+                    @{{ Confirmed[payment.confirmed] }}
+                </span>
+                <span ng-if='!payment.id' ng-class="{
+                      'text-danger': !payment.confirmed,
+                      'text-success': payment.confirmed
+                    }">
                     @{{ Confirmed[payment.confirmed] }}
                 </span>
             </td>

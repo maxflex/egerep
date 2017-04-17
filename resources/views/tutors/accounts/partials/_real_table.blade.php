@@ -111,7 +111,7 @@
                                     </div>
                                     <div class="mbs">
                                         <span>Статус проводки:</span>
-                                        <span @if(allowed(\Shared\Rights::ER_EDIT_ACCOUNTS)) class="link-like" ng-click="toggleConfirmed(account)" @endif
+                                        <span @if(allowed(\Shared\Rights::ER_EDIT_ACCOUNTS)) class="link-like" ng-click="toggleConfirmed(account, Account)" @endif
                                               ng-class="{
                                                   'text-danger': !account.confirmed,
                                                   'text-success': account.confirmed
@@ -127,7 +127,7 @@
                                                 <td width='130'>@{{ payment.id ? PaymentMethods[payment.method] : 'взаимозачёт' }}</td>
                                                 <td width='80'>@{{ payment.date }}</td>
                                                 <td width='100'>
-                                                    <span @if(allowed(\Shared\Rights::EDIT_PAYMENTS)) class="link-like" ng-click="togglePaymentConfirmed(payment)" @endif
+                                                    <span @if(allowed(\Shared\Rights::EDIT_PAYMENTS)) class="link-like" ng-click="toggleConfirmed(payment, AccountPayment)" @endif
                                                           ng-class="{
                                                               'text-danger': !payment.confirmed,
                                                               'text-success': payment.confirmed

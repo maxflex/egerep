@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\AccountPayment;
+use App\Models\Account;
 use App\Models\Helpers\MutualPayment;
 use DB;
 
@@ -40,6 +41,10 @@ class AccountPaymentsController extends Controller
 
 		// информация о преподе
 		foreach($return as $r) {
+            // если не установлен tutor_id, добавляем
+            if (! isset($r->tutor_id)) {
+                $r->tutor_id = Account::whereId($r->account_id)->value('tutor_id');
+            }
 			$r->tutor = DB::table('tutors')->whereId($r->tutor_id)->select('first_name', 'last_name', 'middle_name')->first();
 		}
 
