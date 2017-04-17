@@ -59,5 +59,9 @@ angular
                 $scope.data = response.data
                 $scope.periods = $scope.data.data
 
+                $timeout ->
+                    $('.selectpicker').selectpicker('refresh')
+                , 200
+
         $scope.toggleConfirmed = (period, Resource) ->
             $rootScope.toggleEnumServer period, 'confirmed', Confirmed, Resource

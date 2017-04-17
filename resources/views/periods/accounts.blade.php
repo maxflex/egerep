@@ -7,6 +7,19 @@
             </div>
         </div>
     </div>
+    <div class="row period-filters mb-xl">
+        <div class="col-sm-3">
+            @include('modules.user-select-light')
+        </div>
+        <div class="col-sm-3">
+            <select ng-model='search.confirmed' class='selectpicker' ng-change='filter()' ng-class="{'is-selected': search.confirmed != '' }">
+                <option value="">все статусы</option>
+                <option disabled>──────────────</option>
+                <option ng-repeat='(id, name) in Confirmed'
+                        value="@{{id}}">@{{ name }}</option>
+            </select>
+        </div>
+    </div>
 
     <table class="table summary-table table-hover">
         <thead>
