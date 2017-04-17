@@ -129,7 +129,7 @@
                                                 <td width='100'>
                                                     <span @if(allowed(\Shared\Rights::ER_EDIT_PAYMENTS)) class="link-like" ng-click="toggleConfirmed(payment, AccountPayment)" @endif
                                                           ng-class="{
-                                                              'link-like': payment.id,
+                                                              'link-like': (payment.id && user.rights.indexOf('48') !== -1),
                                                               'text-danger': !payment.confirmed,
                                                               'text-success': payment.confirmed
                                                           }">
@@ -137,14 +137,14 @@
                                                     </span>
                                                 </td>
                                                 <td width='100'>
-                                                    <span ng-show='payment.id' ng-click='paymentModal(account, payment)' ng-class="{
+                                                    <span ng-show='payment.id' ng-click='paymentModal(account, payment)' class='text-success default' ng-class="{
                                                         'link-like': (!payment.confirmed || user.rights.indexOf('48') !== -1)
                                                     }">редактировать</span>
                                                 </td>
                                                 <td width='60'>
                                                     <span ng-show='payment.id' ng-click='removePayment(account, payment)'  ng-class="{
                                                         'link-like': (!payment.confirmed || user.rights.indexOf('48') !== -1)
-                                                    }" class='text-danger'>удалить</span>
+                                                    }" class='text-danger default'>удалить</span>
                                                 </td>
                                                 <td>
                                                     @{{ UserService.getLogin(payment.user_id) }} @{{ formatDateTime(payment.created_at) }}
