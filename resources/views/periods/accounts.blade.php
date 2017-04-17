@@ -15,7 +15,7 @@
             <select ng-model='search.confirmed' class='selectpicker' ng-change='filter()'>
                 <option value="">все статусы</option>
                 <option disabled>──────────────</option>
-                <option ng-repeat='(id, name) in Confirmed'
+                <option ng-repeat='(id, name) in Approved'
                         value="@{{id}}">@{{ name }}</option>
             </select>
         </div>
