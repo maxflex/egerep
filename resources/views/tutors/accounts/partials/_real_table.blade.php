@@ -127,7 +127,7 @@
                                                 <td width='130'>@{{ payment.id ? PaymentMethods[payment.method] : 'взаимозачёт' }}</td>
                                                 <td width='80'>@{{ payment.date }}</td>
                                                 <td width='100'>
-                                                    <span @if(allowed(\Shared\Rights::EDIT_PAYMENTS)) class="link-like" ng-click="togglePaymentConfirmed(account)" @endif
+                                                    <span @if(allowed(\Shared\Rights::EDIT_PAYMENTS)) class="link-like" ng-click="togglePaymentConfirmed(payment)" @endif
                                                           ng-class="{
                                                               'text-danger': !payment.confirmed,
                                                               'text-success': payment.confirmed
