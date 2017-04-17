@@ -28,7 +28,7 @@
             <td width='20%'>
                 @{{ UserService.getLogin(period.user_id) }} @{{ formatDateTime(period.created_at) }}
             </td>
-            <td>
+            <td width='100'>
                 <span @if(allowed(\Shared\Rights::EDIT_PAYMENTS))
                           class="link-like"
                           ng-click="toggleConfirmed(period, AccountPayment)"
