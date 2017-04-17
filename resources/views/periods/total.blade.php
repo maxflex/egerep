@@ -1,4 +1,13 @@
 <div ng-if="type == 'total'">
+    <div class="row mb">
+        <div class="col-sm-12">
+            <div class="options-list">
+                <span>встречи</span>
+                <a class="link-like" href="{{ route('periods.accounts') }}">платежи</a>
+            </div>
+        </div>
+    </div>
+
     <table class="table summary-table table-hover">
         <thead>
         <tr>

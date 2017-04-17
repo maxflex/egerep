@@ -13,4 +13,9 @@ class AccountPayment extends Model
         'method',
     ];
     protected static $dotDates = ['date'];
+
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
+    }
 }

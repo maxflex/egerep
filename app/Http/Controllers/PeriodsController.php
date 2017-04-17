@@ -30,6 +30,14 @@ class PeriodsController extends Controller
         ]));
     }
 
+    public function accounts(Request $request)
+    {
+        return view('periods.index')->with(ngInit([
+            'type' => 'accounts',
+            'page' => $request->page
+        ]));
+    }
+
     /**
      * Show the form for creating a new resource.
      *

@@ -5,6 +5,7 @@
 @section('content')
 
     @include('periods.total')
+    @include('periods.accounts')
     @include('periods.planned')
 
     <pagination style="margin-top: 30px"
