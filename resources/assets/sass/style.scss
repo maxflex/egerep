@@ -393,7 +393,7 @@
 
 	.options-list {
 		font-weight: bold;
-		& span {
+		& span, & a {
 			margin-right: 10px;
 			&.link-like {
 				font-weight: normal;

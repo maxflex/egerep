@@ -210,7 +210,7 @@ class SummaryController extends Controller
         $account_payments = DB::table('account_payments')
                                 ->whereRaw("date >= '{$start}'")
                                 ->whereRaw("date <= '{$end}'")
-                                ->sum('sum') + MutualPayment::query()->betweenDates($start, $end)->sum('sum');
+                                ->sum('sum') + MutualPayment::betweenDates($start, $end)->sum('sum');
 
         $commission = DB::table('account_datas')
                         ->whereRaw("date >= '{$start}'")
@@ -284,7 +284,7 @@ class SummaryController extends Controller
                         ->groupBy('account_payments.method')
                         ->get();
 
-        $mutual_debts = MutualPayment::query()->betweenDates($start, $end)->sum('sum');
+        $mutual_debts = MutualPayment::betweenDates($start, $end)->sum('sum');
 
         $total = 0;
         foreach ($account_payments as $payment) {

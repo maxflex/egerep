@@ -29545,9 +29545,9 @@ a {
 
 .options-list {
   font-weight: bold; }
-  .options-list span {
+  .options-list span, .options-list a {
     margin-right: 10px; }
-    .options-list span.link-like {
+    .options-list span.link-like, .options-list a.link-like {
       font-weight: normal; }
 
 .btn.btn-primary {

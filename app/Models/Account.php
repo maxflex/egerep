@@ -15,9 +15,6 @@ class Account extends Model
     // комиссия по умолчанию в процентах
     const DEFAULT_COMMISSION = 0.25;
 
-    // id status a взаимозачетов в таблице payments в NEC
-    const MUTUAL_DEBT_STATUS = 6;
-
     protected $fillable = [
         'date_end',
         'tutor_id',

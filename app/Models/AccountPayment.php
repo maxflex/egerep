@@ -11,6 +11,12 @@ class AccountPayment extends Model
         'sum',
         'date',
         'method',
+        'confirmed'
     ];
     protected static $dotDates = ['date'];
+
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
+    }
 }

@@ -1,4 +1,13 @@
 <div ng-if="type == 'total'">
+    <div class="row mb">
+        <div class="col-sm-12">
+            <div class="options-list">
+                <span>встречи</span>
+                <a class="link-like" href="{{ route('periods.payments') }}">платежи</a>
+            </div>
+        </div>
+    </div>
+
     <table class="table summary-table table-hover">
         <thead>
         <tr>
@@ -38,10 +47,16 @@
                     }">@{{ period.debt }}</span>
             </td>
             <td>
-                <span ng-class="{
-                    'text-danger': !period.confirmed,
-                    'text-success': period.confirmed,
-                }">@{{ period.confirmed ? 'подтверждено' : 'не подтверждено' }}</span>
+                <span @if(allowed(\Shared\Rights::ER_EDIT_ACCOUNTS))
+                      class="link-like"
+                      ng-click="toggleConfirmed(period, Account)"
+                      @endif
+                      ng-class="{
+                            'text-danger': !period.confirmed,
+                            'text-success': period.confirmed
+                          }">
+                    @{{ Confirmed[period.confirmed] }}
+                </span>
             </td>
         </tr>
         </tbody>

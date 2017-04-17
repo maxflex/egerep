@@ -71,6 +71,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('requests/{state_id?}', 'RequestsController@index');
     Route::resource('clients', 'ClientsController');
     Route::get('periods/planned', 'PeriodsController@planned');
+    Route::get('periods/payments', 'PeriodsController@payments')->name('periods.payments');
     Route::resource('periods', 'PeriodsController');
     Route::get('archives', 'ArchivesController@index');
     Route::get('attachments', 'AttachmentsController@index');
@@ -138,6 +139,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('account/payments', 'AccountPaymentsController');
         Route::resource('accounts', 'AccountsController');
         Route::resource('periods/planned', 'PlannedAccountsController');
+        Route::resource('periods/payments', 'AccountPaymentsController');
         Route::resource('sms', 'SmsController');
         Route::resource('periods', 'PeriodsController');
         Route::resource('stream', 'StreamController');
