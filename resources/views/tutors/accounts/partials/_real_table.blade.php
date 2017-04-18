@@ -84,7 +84,10 @@
                                                 <span>Дебет:</span>
                                                 <span>@{{ account.debt_calc }}</span>
                                             </div>
-                                            <div class="mbs">
+                                            <div class="mbs" style='position: relative'>
+                                                @if(! allowed(\Shared\Rights::ER_EDIT_PAYMENTS))
+                                                    <div class="blocker-div" style='height: calc(100% + 5px)'></div>
+                                                @endif
                                                 <span>Задолженность:</span>
                                                 <pencil-input model='account.debt'></pencil-input>
                                                 <span ng-if='account.debt > 0'> – репетитор <span class="link-like-no-color"
