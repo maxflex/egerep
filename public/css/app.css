@@ -29607,13 +29607,15 @@ a {
   -ms-flex-item-align: end;
   align-self: flex-end; }
 
-.accounts-data .mbs {
-  margin-bottom: 5px; }
-  .accounts-data .mbs > span:first-of-type {
-    display: inline-block;
-    width: 260px;
-    font-weight: bold;
-    float: left; }
+.accounts-data {
+  width: 1000px; }
+  .accounts-data .mbs {
+    margin-bottom: 5px; }
+    .accounts-data .mbs > span:first-of-type {
+      display: inline-block;
+      width: 260px;
+      font-weight: bold;
+      float: left; }
 
 .accounts-table {
   float: left;
