@@ -19,6 +19,8 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
 Route::group(['middleware' => ['web']], function () {
     Route::get('/', 'RequestsController@index');
 
+    Route::get('temp/{year}', 'TempController@index');
+
     Route::get('stream', 'StreamController@index');
     Route::get('stream/configurations', 'StreamController@configurations');
 
