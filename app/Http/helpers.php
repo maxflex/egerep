@@ -252,3 +252,39 @@
             return $subjects[$subject_id];
         }, $subject_ids));
     }
+
+    function testy($a, $b)
+    {
+        $x = ceil($a / $b);
+        $y = $a % $b;
+
+        if ($y == 0) {
+            return array_fill(0, $b, $x);
+        }
+
+        $return = [$x];
+
+        if ($b >= 2) {
+            $return[] = $y == 1 ? ($x - 1) : $x;
+        }
+
+        if ($b == 3) {
+            $return[] = $y <= 2 ? ($x - 1) : $x;
+        }
+
+        return $return;
+    }
+
+
+    function testy2($a, $b)
+    {
+        $x = floor($a / $b);
+        $y = $a % $b;
+
+        $return = [];
+        foreach(range(1, $b) as $i) {
+            $return[] = $y-- > 0 ? ($x + 1) : $x;
+        }
+
+        return $return;
+    }
