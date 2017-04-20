@@ -473,6 +473,7 @@
 	}
 
 	.accounts-data {
+        width: 1000px;
 	  	// margin-bottom: 40px;
 		& .mbs {
 			margin-bottom: 5px;
@@ -547,7 +548,7 @@
 				}
 				& .account-guard {
 					z-index: 1000;
-					height: 60px;
+					height: 40px;
 					width: 420px;
 					position: absolute;
 					left:260px;
@@ -2769,7 +2770,7 @@ white-space: nowrap;
 .link-like {
     color: $green_main;
     text-decoration: none;
-    cursor: pointer;
+    cursor: pointer !important;
     &:hover {
 	    color: darken($green_main, 10);
 	    text-decoration: underline;

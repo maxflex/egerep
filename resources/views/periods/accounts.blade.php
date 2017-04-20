@@ -7,6 +7,19 @@
             </div>
         </div>
     </div>
+    <div class="row period-filters mb-xl">
+        <div class="col-sm-3">
+            @include('modules.user-select-light')
+        </div>
+        <div class="col-sm-3">
+            <select ng-model='search.confirmed' class='selectpicker' ng-change='filter()'>
+                <option value="">все статусы</option>
+                <option disabled>──────────────</option>
+                <option ng-repeat='(id, name) in Approved'
+                        value="@{{id}}">@{{ name }}</option>
+            </select>
+        </div>
+    </div>
 
     <table class="table summary-table table-hover">
         <thead>
@@ -25,7 +38,7 @@
         <tbody>
         <tr ng-repeat='period in periods'>
             <td>
-                <a href="tutors/@{{ period.tutor.id }}/edit">@{{ period.tutor.full_name || "имя не указано" }}</a>
+                <a href="tutors/@{{ period.tutor.id }}/accounts">@{{ period.tutor.full_name || "имя не указано" }}</a>
             </td>
             <td>@{{ formatDateTime(period.created_at) }}</td>
             <td>
@@ -35,7 +48,7 @@
             <td>@{{ period.debt_calc | hideZero | number}}</td>
             <td ng-init="_sum = getSum(period.all_payments)">
                 <span ng-show='_sum[0]'>@{{ _sum[0] | number }}</span>
-                <span class='mutual-debt' ng-if="_sum[1]"><span ng-show='_sum[0]'>+</span>@{{ _sum[1] }}</span>
+                <span class='mutual-debt' ng-if="_sum[1]"><span ng-show='_sum[0]'>+</span> @{{ _sum[1] | number }}</span>
             </td>
             <td>
                 @{{ totalCommission(period) | number }}

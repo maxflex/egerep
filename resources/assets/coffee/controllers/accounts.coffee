@@ -8,7 +8,7 @@ angular.module('Egerep')
         $scope.all_displayed  = false
 
         $scope.paymentModal = (account, payment = {}) ->
-            return if payment.confirmed and $scope.user.rights.indexOf('11') is -1
+            return if payment.confirmed and $scope.user.rights.indexOf('48') is -1
             $scope.modal_account = account
             $scope.modal_payment = payment
             $rootScope.dialog('add-account-payment')
@@ -26,9 +26,11 @@ angular.module('Egerep')
                     $rootScope.closeDialog('add-account-payment')
 
         $scope.removePayment = (account, payment) ->
-            return if payment.confirmed and $scope.user.rights.indexOf('11') is -1
-            AccountPayment.delete {id: payment.id}, ->
-                account.all_payments = removeById(account.all_payments, payment.id)
+            return if payment.confirmed and $scope.user.rights.indexOf('48') is -1
+            bootbox.confirm "Вы уверены, что хотите удалить платеж?", (result) ->
+                if result is true
+                    AccountPayment.delete {id: payment.id}, ->
+                        account.all_payments = removeById(account.all_payments, payment.id)
 
         $scope.updateArchive = (field, set) ->
             # просто update выдавал ошибку field doesnt exists
@@ -134,7 +136,7 @@ angular.module('Egerep')
             $scope.closeDialog 'change-account-date'
 
         $scope.remove = (account) ->
-            bootbox.confirm 'Удалить встречу?', (result) ->
+            bootbox.confirm '<b>Удалить встречу?</b> Все платежи встречи будут удалены.', (result) ->
                 if result is true
                     Account.delete {id: account.id}, ->
                         $scope.tutor.last_accounts = removeById($scope.tutor.last_accounts, account.id)
@@ -377,8 +379,5 @@ angular.module('Egerep')
             else
                 $scope.hidden_clients_count++
 
-        $scope.toggleConfirmed = (account) ->
-            $rootScope.toggleEnumServer account, 'confirmed', Confirmed, Account
-
-        $scope.togglePaymentConfirmed = (payment) ->
-            $rootScope.toggleEnumServer payment, 'confirmed', Confirmed, AccountPayment
+        $scope.toggleConfirmed = (model, Resource) ->
+            $rootScope.toggleEnumServer model, 'confirmed', Confirmed, Resource

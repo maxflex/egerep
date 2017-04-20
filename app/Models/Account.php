@@ -206,4 +206,19 @@ class Account extends Model
                 return $cnt;
         }
     }
+
+    public static function search($request)
+    {
+        $query = static::query();
+
+        if (isset($request->confirmed)) {
+            $query->where('confirmed', $request->confirmed);
+        }
+
+        if (isset($request->user_id)) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        return $query;
+    }
 }

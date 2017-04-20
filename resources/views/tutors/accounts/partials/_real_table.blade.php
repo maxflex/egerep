@@ -72,91 +72,101 @@
                 </tr>
                 <tr>
                     <td colspan="10" class='period-end'>
-                        <table class="accounts-data">
-                            <tr>
-                                <td style='border: none; padding: 0'>
-                                    <div style="position:relative;">
-                                        <div class="account-guard" ng-show="account.confirmed && !{{ allowed(\Shared\Rights::ER_EDIT_ACCOUNTS, true) }}"></div>
-                                        <div class="mbs">
-                                            <span>Итого комиссия за период (руб.):</span>
-                                            @{{ totalCommission(account) }}
+                        <div style="width: 50px">
+                            <table class="accounts-data">
+                                <tr>
+                                    <td style='border: none; padding: 0'>
+                                        <div style="position:relative;">
+                                            <div class="account-guard" ng-show="account.confirmed && !{{ allowed(\Shared\Rights::ER_EDIT_ACCOUNTS, true) }}"></div>
+                                            <div class="mbs">
+                                                <span>Итого комиссия за период (руб.):</span>
+                                                @{{ totalCommission(account) }}
+                                            </div>
+                                            <div class="mbs">
+                                                <span>Дебет:</span>
+                                                <span>@{{ account.debt_calc }}</span>
+                                            </div>
+                                            <div class="mbs" style='position: relative'>
+                                                @if(! allowed(\Shared\Rights::ER_EDIT_PAYMENTS))
+                                                    <div class="blocker-div" style='height: calc(100% + 5px)'></div>
+                                                @endif
+                                                <span>Задолженность:</span>
+                                                <pencil-input model='account.debt'></pencil-input>
+                                                <span ng-if='account.debt > 0'> – репетитор <span class="link-like-no-color"
+                                                                                                      ng-class="{
+                                                           'text-danger': account.debt_type == 0,
+                                                           'text-success': account.debt_type == 1,
+                                                       }"
+                                                           ng-click="toggleEnum(account, 'debt_type', DebtTypes)">@{{ DebtTypes[account.debt_type] }}</span>
+                                               </span>
+                                            </div>
+                                            <div class="mbs">
+                                                <span>Комментарий:</span>
+                                                <pencil-input model='account.comment' class='period-comment'></pencil-input>
+                                            </div>
+                                            <div class="mbs">
+                                                <span>Расчет создан:</span>
+                                                @{{ account.user_login }} @{{ formatDateTime(account.created_at) }}
+                                            </div>
+                                            <div class="mbs" style='position: relative'>
+                                                <div class="blocker-div" ng-show="account.confirmed && !{{ allowed(\Shared\Rights::ER_EDIT_ACCOUNTS, true) }}"></div>
+                                                <span>Действия:</span>
+                                                <span class="link-like margin-right" ng-click="changeDateDialog($index)">изменить дату встречи</span>
+                                                <span class="link-like text-danger margin-right"  ng-click="remove(account)">удалить встречу</span>
+                                            </div>
                                         </div>
                                         <div class="mbs">
-                                            <span>Дебет:</span>
-                                            <span>@{{ account.debt_calc }}</span>
+                                            <span>Статус проводки:</span>
+                                            <span @if(allowed(\Shared\Rights::ER_EDIT_ACCOUNTS)) class="link-like" ng-click="toggleConfirmed(account, Account)" @endif
+                                                  ng-class="{
+                                                      'text-danger': !account.confirmed,
+                                                      'text-success': account.confirmed
+                                                  }">
+                                                @{{ Confirmed[account.confirmed] }}
+                                            </span>
                                         </div>
                                         <div class="mbs">
-                                            <span>Задолженность:</span>
-                                            <pencil-input model='account.debt'></pencil-input>
-                                            <span ng-if='account.debt > 0'> – репетитор <span class="link-like-no-color"
-                                                                                                  ng-class="{
-                                                       'text-danger': account.debt_type == 0,
-                                                       'text-success': account.debt_type == 1,
-                                                   }"
-                                                       ng-click="toggleEnum(account, 'debt_type', DebtTypes)">@{{ DebtTypes[account.debt_type] }}</span>
-                                           </span>
+                                            <span>Платежи:</span>
+                                            <table class='account-payments small'>
+                                                <tr ng-repeat='payment in account.all_payments'>
+                                                    <td width='80'>@{{ payment.sum }} руб.</td>
+                                                    <td width='130'>@{{ payment.id ? PaymentMethods[payment.method] : 'взаимозачёт' }}</td>
+                                                    <td width='80'>@{{ payment.date }}</td>
+                                                    <td width='100'>
+                                                        <span @if(allowed(\Shared\Rights::ER_EDIT_PAYMENTS)) class="link-like" ng-click="toggleConfirmed(payment, AccountPayment)" @endif
+                                                              ng-class="{
+                                                                  'link-like': (payment.id && user.rights.indexOf('48') !== -1),
+                                                                  'text-danger': !payment.confirmed,
+                                                                  'text-success': payment.confirmed
+                                                              }">
+                                                            @{{ Confirmed[payment.confirmed] }}
+                                                        </span>
+                                                    </td>
+                                                    <td width='100'>
+                                                        <span ng-show='payment.id' ng-click='paymentModal(account, payment)' class='text-success default' ng-class="{
+                                                            'link-like': (!payment.confirmed || user.rights.indexOf('48') !== -1)
+                                                        }">редактировать</span>
+                                                    </td>
+                                                    <td width='60'>
+                                                        <span ng-show='payment.id' ng-click='removePayment(account, payment)'  ng-class="{
+                                                            'link-like': (!payment.confirmed || user.rights.indexOf('48') !== -1)
+                                                        }" class='text-danger default'>удалить</span>
+                                                    </td>
+                                                    <td>
+                                                        @{{ UserService.getLogin(payment.user_id) }} @{{ formatDateTime(payment.created_at) }}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan='4'>
+                                                        <span style='font-weight: normal' class='link-like' ng-click='paymentModal(account)'>добавить платеж</span>
+                                                    </td>
+                                                </tr>
+                                            </table>
                                         </div>
-                                        <div class="mbs">
-                                            <span>Комментарий:</span>
-                                            <pencil-input model='account.comment' class='period-comment'></pencil-input>
-                                        </div>
-                                        <div class="mbs">
-                                            <span>Расчет создан:</span>
-                                            @{{ account.user_login }} @{{ formatDateTime(account.created_at) }}
-                                        </div>
-                                        <div class="mbs" style='position: relative'>
-                                            <div class="blocker-div" ng-show="account.confirmed && !{{ allowed(\Shared\Rights::ER_EDIT_ACCOUNTS, true) }}"></div>
-                                            <span>Действия:</span>
-                                            <span class="link-like margin-right" ng-click="changeDateDialog($index)">изменить дату встречи</span>
-                                            <span class="link-like text-danger margin-right"  ng-click="remove(account)">удалить встречу</span>
-                                        </div>
-                                    </div>
-                                    <div class="mbs">
-                                        <span>Статус проводки:</span>
-                                        <span @if(allowed(\Shared\Rights::ER_EDIT_ACCOUNTS)) class="link-like" ng-click="toggleConfirmed(account)" @endif
-                                              ng-class="{
-                                                  'text-danger': !account.confirmed,
-                                                  'text-success': account.confirmed
-                                              }">
-                                            @{{ Confirmed[account.confirmed] }}
-                                        </span>
-                                    </div>
-                                    <div class="mbs">
-                                        <span>Платежи:</span>
-                                        <table class='account-payments small'>
-                                            <tr ng-repeat='payment in account.all_payments'>
-                                                <td width='80'>@{{ payment.sum }} руб.</td>
-                                                <td width='130'>@{{ payment.id ? PaymentMethods[payment.method] : 'взаимозачёт' }}</td>
-                                                <td width='80'>@{{ payment.date }}</td>
-                                                <td width='100'>
-                                                    <span @if(allowed(\Shared\Rights::EDIT_PAYMENTS)) class="link-like" ng-click="togglePaymentConfirmed(payment)" @endif
-                                                          ng-class="{
-                                                              'text-danger': !payment.confirmed,
-                                                              'text-success': payment.confirmed
-                                                          }">
-                                                        @{{ Confirmed[payment.confirmed] }}
-                                                    </span>
-                                                </td>
-                                                <td width='100'>
-                                                    <span ng-show='payment.id' ng-click='paymentModal(account, payment)' class='link-like'>редактировать</span>
-                                                </td>
-                                                <td width='60'>
-                                                    <span ng-show='payment.id' ng-click='removePayment(account, payment)' class='link-like text-danger'>удалить</span>
-                                                </td>
-                                                <td>
-                                                    @{{ UserService.getLogin(payment.user_id) }} @{{ formatDateTime(payment.created_at) }}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan='4'>
-                                                    <span style='font-weight: normal' class='link-like' ng-click='paymentModal(account)'>добавить платеж</span>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
                     </td>
                 </tr>
             </tbody>

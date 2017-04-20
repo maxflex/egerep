@@ -1,9 +1,11 @@
 angular
     .module 'Egerep'
 
-    .controller 'PeriodsIndex', ($scope, $timeout, $rootScope, $http, PaymentMethods, DebtTypes, TeacherPaymentTypes, UserService, Confirmed, Account, AccountPayment) ->
+    .controller 'PeriodsIndex', ($scope, $timeout, $rootScope, $http, PaymentMethods, DebtTypes, TeacherPaymentTypes, UserService, Confirmed, Account, AccountPayment, Approved) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
+
+        $scope.search = {}
 
         $timeout ->
             load $scope.page
@@ -28,8 +30,12 @@ angular
 
         $scope.pageChanged = ->
             ajaxStart()
+            $rootScope.frontend_loading = true
             load $scope.current_page
             paginate 'periods' + getPrefix(), $scope.current_page
+
+        # чтобы можно было использовать модуль пользователей
+        $scope.filter = $scope.pageChanged
 
         $scope.getSum = (payments) ->
             sum = 0
@@ -42,12 +48,20 @@ angular
             params = getPrefix()
             params += '?page=' + page
 
+            $.each $scope.search, (key, value) ->
+                params += "&#{key}=#{value}"
+                console.log(key, value)
+
             $http.get "api/periods#{ params }"
             .then (response) ->
                 ajaxEnd()
                 $rootScope.frontendStop()
                 $scope.data = response.data
                 $scope.periods = $scope.data.data
+
+                $timeout ->
+                    $('.selectpicker').selectpicker('refresh')
+                , 200
 
         $scope.toggleConfirmed = (period, Resource) ->
             $rootScope.toggleEnumServer period, 'confirmed', Confirmed, Resource

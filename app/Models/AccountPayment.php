@@ -19,4 +19,13 @@ class AccountPayment extends Model
     {
         return $this->belongsTo(Account::class);
     }
+
+    protected static function boot()
+    {
+        static::saving(function ($model) {
+            if (! $model->exists) {
+                $model->user_id = User::fromSession()->id;
+            }
+        });
+    }
 }
