@@ -526,7 +526,7 @@
 					border-left: none;
 					text-align: left
 				}
-				&:last-of-type {
+				&:last-of-type, &.no-border-right {
 					border-right: none;
 				}
 				&.empty-td {
