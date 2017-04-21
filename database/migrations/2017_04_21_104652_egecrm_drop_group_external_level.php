@@ -16,7 +16,7 @@ class EgecrmDropGroupExternalLevel extends Migration
         // Grades::EXTERNAL = 14
 
         $group_ids = dbEgecrm('groups')->where('level', 5)->pluck('id');
-        dbEgecrm('visit_journal')->whereIn('id_group', $group_ids)->update(['grade' => 14]);
+        // dbEgecrm('visit_journal')->whereIn('id_group', $group_ids)->update(['grade' => 14]);
         dbEgecrm('groups')->whereIn('id', $group_ids)->where('level', 5)->update(['grade' => 14, 'level' => 0]);
     }
 
