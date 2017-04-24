@@ -60,7 +60,6 @@ class Tutor extends Service\Person
         'in_egecentr',
         'video_link',
         'debt_comment',
-        'comment_extended',
         'debtor',
         'errors',
         'security_notification',

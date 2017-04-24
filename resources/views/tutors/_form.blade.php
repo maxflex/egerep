@@ -283,11 +283,6 @@
                 <label>Описание</label>
                 <textarea class="md-input" ng-model="tutor.comment"></textarea>
             </md-input-container>
-            <md-input-container class="md-block" style="margin-top: 20px">
-                <label>Расширенное описание</label>
-                <textarea class="md-input" ng-model="tutor.comment_extended"></textarea>
-            </md-input-container>
-
             <section>
                 <div class="row">
                     <div class="col-sm-12">
