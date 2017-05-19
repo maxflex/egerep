@@ -1,8 +1,27 @@
 angular
     .module 'Egerep'
-    .controller 'LogsIndex', ($rootScope, $scope, $timeout, $http, UserService, LogTypes, LogColumns) ->
+    .controller 'LogsGraph', ($rootScope, $scope, $timeout, $http, LogPeriods, UserService) ->
+        bindArguments($scope, arguments)
+        # $rootScope.frontend_loading = true
+
+        $timeout ->
+            $scope.search = {}
+            $scope.filter()
+
+        $scope.filter = ->
+            $http.get "api/logs/graph?" + $.param($scope.search)
+            .then (response) ->
+                console.log response
+                $scope.data = response.data
+                $rootScope.frontend_loading = false
+
+
+    .controller 'LogsIndex', ($rootScope, $scope, $timeout, $http, UserService, LogTypes) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
+
+        $scope.$watch 'search.table', (newVal, oldVal) ->
+            $scope.search.column = null if ((newVal && oldVal) || (oldVal && not newVal))
 
         $scope.toJson = (data)->
             JSON.parse(data)

@@ -27,16 +27,16 @@
         <select ng-model='search.table' class='selectpicker' ng-change='filter()'>
             <option value="" data-subtext="@{{ counts.table[''] || '' }}">таблица</option>
             <option disabled>──────────────</option>
-            <option ng-repeat='table in tables'
+            <option ng-repeat='(table, data) in tables'
                 data-subtext="@{{ counts.table[table] || '' }}"
                 value="@{{table}}">@{{ table }}</option>
         </select>
     </div>
     <div>
-        <select ng-model='search.column' class='selectpicker' ng-change='filter()'>
+        <select ng-disabled='!search.table' ng-model='search.column' class='selectpicker' ng-change='filter()'>
             <option value="" data-subtext="@{{ counts.column[''] || '' }}">ячейка</option>
             <option disabled>──────────────</option>
-            <option ng-repeat='column in LogColumns'
+            <option ng-repeat='column in tables[search.table]'
                 data-subtext="@{{ counts.column[column] || '' }}"
                 value="@{{column}}">@{{ column }}</option>
         </select>

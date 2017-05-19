@@ -1,7 +1,7 @@
 (function() {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ngAnimate', 'ui.sortable', 'ui.bootstrap', 'angular-ladda', 'mwl.calendar', 'svgmap']).config([
+  angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ngAnimate', 'ui.sortable', 'ui.bootstrap', 'angular-ladda', 'mwl.calendar', 'svgmap', 'chart.js']).config([
     '$compileProvider', function($compileProvider) {
       return $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension|sip):/);
     }
@@ -2410,10 +2410,28 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').controller('LogsIndex', function($rootScope, $scope, $timeout, $http, UserService, LogTypes, LogColumns) {
+  angular.module('Egerep').controller('LogsGraph', function($rootScope, $scope, $timeout, $http, LogPeriods, UserService) {
+    bindArguments($scope, arguments);
+    $timeout(function() {
+      $scope.search = {};
+      return $scope.filter();
+    });
+    return $scope.filter = function() {
+      return $http.get("api/logs/graph?" + $.param($scope.search)).then(function(response) {
+        console.log(response);
+        $scope.data = response.data;
+        return $rootScope.frontend_loading = false;
+      });
+    };
+  }).controller('LogsIndex', function($rootScope, $scope, $timeout, $http, UserService, LogTypes) {
     var load;
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
+    $scope.$watch('search.table', function(newVal, oldVal) {
+      if ((newVal && oldVal) || (oldVal && !newVal)) {
+        return $scope.search.column = null;
+      }
+    });
     $scope.toJson = function(data) {
       return JSON.parse(data);
     };
@@ -5038,6 +5056,10 @@
     10: 10,
     11: 'отзыв не собирать',
     12: 'отзыв собрать позже'
+  }).value('LogPeriods', {
+    1: '6 часов',
+    2: 'сутки',
+    3: 'неделя'
   }).value('Grades', {
     1: '1 класс',
     2: '2 класс',

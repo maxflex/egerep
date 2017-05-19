@@ -25,23 +25,15 @@ class Log extends Model
      */
     public static function getTables()
     {
-        return static::groupBy('table')->orderBy('table', 'asc')->pluck('table')->all();
-    }
+        $tables = static::groupBy('table')->orderBy('table', 'asc')->pluck('table')->all();
 
-    public static function getColumns()
-    {
-        $columns = [];
-        $tables = \DB::select('SHOW TABLES');
-        foreach($tables as $t) {
-            $table_name = $t->Tables_in_egerep;
-            if (! in_array($table_name, static::EXCEPT_TABLES)) {
-                foreach(\Schema::getColumnListing($table_name) as $column) {
-                    $columns[] = $column;
-                }
-            }
+        $return = [];
+
+        foreach(array_diff($tables, static::EXCEPT_TABLES) as $table) {
+            $return[$table] = \Schema::getColumnListing($table);
         }
-        sort($columns);
-        return array_unique($columns);
+
+        return $return;
     }
 
     // public function getDataAttribute()

@@ -80,6 +80,8 @@ elixir(function(mix) {
             'vue-resource/dist/vue-resource.min',
             'phoneapi/dist/js/pusher',
             'js-md5/build/md5.min',
-            'egerep-svg-metro/scripts/svg'
+            'egerep-svg-metro/scripts/svg',
+            'chart.js/dist/Chart.min',
+            'angular-chart.js/dist/angular-chart.min'
         ]).concat(['resources/assets/js/*.js']), 'public/js/vendor.js');
 });
