@@ -437,6 +437,11 @@ class SummaryController extends Controller
     public function explain(Request $request)
     {
         @extract(array_filter($request->all()));
+
+        $date_from  = fromDotDate($request->date_from ?: Carbon::today()->firstOfMonth()->format('d.m.Y'));
+        $date_to    = fromDotDate($request->date_to ?: Carbon::parse($date_from)->lastOfMonth()->format('d.m.Y'));
+        $user_ids   = $request->user_ids ?: [];
+
         $request_query = \App\Models\Request::query();
         $attachments_with_request_list = Attachment::query()->join('request_lists as rl', 'request_list_id', '=', 'rl.id')->without(['review'])->with('tutor');
         $request_attachments_without_users = \App\Models\Request::query()->join('request_lists as rl', 'rl.request_id', '=', 'requests.id')->join('attachments', 'request_list_id', '=', 'rl.id');
@@ -449,7 +454,7 @@ class SummaryController extends Controller
             $request_query->where('created_at', '<=', fromDotDate($date_to) . ' 23:59:59');
             $attachments_with_request_list->where('attachments.created_at', '<=', fromDotDate($date_to) . ' 23:59:59');
         }
-        if (isset($user_ids)) {
+        if (count($user_ids)) {
             $request_query->whereIn('requests.user_id', $user_ids);
             $attachments_with_request_list->whereIn('attachments.user_id', $user_ids);
         }
