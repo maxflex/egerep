@@ -8,8 +8,7 @@ angular
 
         $timeout ->
             $scope.search = {period: '1'}
-            $scope.filter()
-            speRefresh('.selectpicker')
+            $timeout -> $('.selectpicker').selectpicker('refresh')
             ctx = document.getElementById("myChart").getContext('2d')
             $scope.chart = new Chart ctx,
                 type: 'line'
