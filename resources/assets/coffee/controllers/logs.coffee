@@ -30,6 +30,7 @@ angular
                                     unit: 'minute'
                                     minute: 'HH:mm'
                                     hour: 'MM.DD HH:00'
+                                    millisecond: 'MM.DD HH:00'
                         ]
                         yAxes: [
                             ticks:
