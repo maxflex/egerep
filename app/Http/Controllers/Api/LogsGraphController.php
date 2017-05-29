@@ -63,7 +63,7 @@ class LogsGraphController extends Controller
                 'backgroundColor' => $user->color,
                 'borderColor' => hexToRgb($user->color, .75),
                 'label' => $user->login,
-                // 'fill' => false,
+                'fill' => false,
                 'data' => $data,
             ];
         }
