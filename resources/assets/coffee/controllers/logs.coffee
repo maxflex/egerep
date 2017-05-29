@@ -11,8 +11,8 @@ angular
             $timeout ->
                 $('.selectpicker').selectpicker('refresh')
             , 300
-            # $scope.search = {period: '3', user_ids: [69]}
-            # $scope.filter()
+            $scope.search = {period: '3', user_ids: [69]}
+            $scope.filter()
             $scope.chart = new Chart document.getElementById("myChart").getContext('2d'),
                 type: 'line'
                 data:
@@ -34,8 +34,8 @@ angular
                         ]
                         yAxes: [
                             ticks:
-                                # stepSize: 1
                                 beginAtZero: true
+                                userCallback: (label, index, labels) -> return label if Math.floor(label) is label
                             display: true,
                             scaleLabel:
                                 display: true
@@ -53,6 +53,7 @@ angular
                         # если выбраны сутки, то по часам
                         moment(tooltipItem[0].xLabel).format(if $scope.search.period is '3' then 'MM.DD HH:00' else 'HH:mm')
                     $scope.chart.data.datasets = response.data
+                    $scope.chart.options.scales.xAxes[0].time.displayFormats.unit = if $scope.search.period is '3' then 'hour' else 'minute'
                     $scope.chart.update()
                 $scope.loading = false
 
