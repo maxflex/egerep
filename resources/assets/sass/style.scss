@@ -3975,3 +3975,15 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
 .zero-opacity {
     opacity: 0 !important;
 }
+
+.hidden {
+    display: hidden !important
+}
+
+.no-graph-data {
+    position: absolute;
+    top: 320px;
+    text-align: center;
+    width: 97%;
+    color: $placeholder_gray;
+}

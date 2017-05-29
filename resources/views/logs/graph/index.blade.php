@@ -39,4 +39,7 @@
         </div>
         <canvas id="myChart" height='100'></canvas>
     </div>
+    <div ng-show='!chart.data.datasets.length' class='no-graph-data'>
+        нет данных
+    </div>
 @stop

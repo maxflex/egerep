@@ -182,7 +182,7 @@ angular.module('Egerep')
     .value 'LogPeriods',
         1: '6 часов'
         2: 'сутки'
-        3: 'неделя'
+        # 3: 'неделя'
 
     .value 'Grades',
         1: '1 класс'
