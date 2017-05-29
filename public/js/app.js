@@ -2453,7 +2453,6 @@
             yAxes: [
               {
                 ticks: {
-                  stepSize: 1,
                   beginAtZero: true
                 },
                 display: true,
