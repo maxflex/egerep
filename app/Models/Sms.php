@@ -59,7 +59,7 @@ class Sms extends Model
 		$info = [
 			"id_status" => $info[0],
 			"id_smsru"	=> $info[1],
-			// "balance"	=> $info[2],
+			"balance"	=> $info[2],
             "user_id"   => User::fromSession()->id,
 			"message"	=> $params["text"],
 			"number"	=> $params["to"],
