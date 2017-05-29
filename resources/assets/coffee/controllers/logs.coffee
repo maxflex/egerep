@@ -8,9 +8,10 @@ angular
 
         $timeout ->
             $scope.search = {period: '1'}
-            $timeout -> $('.selectpicker').selectpicker('refresh')
-            ctx = document.getElementById("myChart").getContext('2d')
-            $scope.chart = new Chart ctx,
+            $timeout ->
+                $('.selectpicker').selectpicker('refresh')
+            , 300
+            $scope.chart = new Chart document.getElementById("myChart").getContext('2d'),
                 type: 'line'
                 data:
                     datasets: []
