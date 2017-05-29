@@ -26,10 +26,10 @@ fileFromBower = function(file) {
 
 elixir(function(mix) {
     mix
-        .browserSync({
-            port: 8081,
-            proxy: 'localhost:8080'
-        })
+        // .browserSync({
+        //     port: 8081,
+        //     proxy: 'localhost:8080'
+        // })
         .sass('app.scss')
         .copy(fileFromBower('egerep-svg-metro/views/map.svg'), 'public/img/svg/map.svg')
         .coffee(['resources/assets/coffee/*.coffee', 'resources/assets/coffee/*/*.coffee'])

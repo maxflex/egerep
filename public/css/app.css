@@ -32414,6 +32414,9 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
 #add-account-payment .modal-dialog {
   width: 300px; }
 
+.zero-opacity {
+  opacity: 0 !important; }
+
 .ios7-switch {
   display: inline-block;
   position: relative;

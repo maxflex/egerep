@@ -2,18 +2,48 @@ angular
     .module 'Egerep'
     .controller 'LogsGraph', ($rootScope, $scope, $timeout, $http, LogPeriods, UserService) ->
         bindArguments($scope, arguments)
-        # $rootScope.frontend_loading = true
+
+        newDateString = (days) ->
+            moment().add(days, 'd').toDate()
 
         $timeout ->
-            $scope.search = {}
+            $scope.search = {period: '1'}
             $scope.filter()
+            speRefresh('.selectpicker')
+            ctx = document.getElementById("myChart").getContext('2d')
+            $scope.chart = new Chart ctx,
+                type: 'line'
+                data:
+                    datasets: []
+                options:
+                    scales:
+                        xAxes: [
+                            type: 'time'
+                            time:
+                                displayFormats:
+                                    unit: 'minute'
+                                    minute: 'HH:mm',
+                        ]
+                        yAxes: [
+                            ticks:
+                                stepSize: 1
+                                beginAtZero: true
+                            display: true,
+                            scaleLabel:
+                                display: true
+                                labelString: 'действий'
+                        ]
+
 
         $scope.filter = ->
+            $scope.loading = true
             $http.get "api/logs/graph?" + $.param($scope.search)
             .then (response) ->
-                console.log response
-                $scope.data = response.data
-                $rootScope.frontend_loading = false
+                console.log(response)
+                $timeout ->
+                    $scope.chart.data.datasets = response.data
+                    $scope.chart.update()
+                $scope.loading = false
 
 
     .controller 'LogsIndex', ($rootScope, $scope, $timeout, $http, UserService, LogTypes) ->

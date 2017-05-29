@@ -16,20 +16,51 @@ class LogsGraphController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        // период
+        switch($request->period) {
+            case 2:
+                $hours = 24;
+                break;
+            case 3:
+                $hours = (24 * 7);
+                break;
+            default:
+                $hours = 6;
+                break;
+        }
+
         // @todo: сначала получить время последнего действия и отталкиваться от него
-        DB::table('logs')->where('user_id', 69)->whereRaw('created_at > DATE_SUB(NOW(), INTERVAL 6 HOUR)')->select();
+        $data = DB::table('logs')->whereIn('user_id', $request->user_ids)->whereRaw("created_at > DATE_SUB(NOW(), INTERVAL " . $hours . " HOUR)")
+            ->select(DB::raw("user_id, created_at, DATE_FORMAT(`created_at`, '%H:%i') as t, count(*) as c"))
+            ->groupBy(DB::raw("user_id, DATE_FORMAT(`created_at`, '%H:%i')"))
+            ->get();
+
+
+        $by_users = [];
+        foreach($data as $d) {
+            $by_users[$d->user_id][] = [
+                'x' => $d->created_at,
+                'y' => $d->c,
+            ];
+        }
+
+        $return = [];
+
+        foreach($by_users as $user_id => $data) {
+            $user = dbEgecrm('users')->whereId($user_id)->select('login', 'color')->first();
+            $return[] = [
+                'backgroundColor' => $user->color,
+                'borderColor' => $user->color,
+                'label' => $user->login,
+                'fill' => false,
+                'data' => $data,
+            ];
+        }
 
         // за последние 6 часов
-        return [
-            'data' => [
-                [65, 59, 80, 81, 56, 55, 40],
-                [28, 48, 40, 19, 86, 27, 90]
-            ],
-            'labels' => ["January", "February", "March", "April", "May", "June", "July"],
-            'series' => ['Series A', 'Series B'],
-        ];
+        return $return;
     }
 
     /**

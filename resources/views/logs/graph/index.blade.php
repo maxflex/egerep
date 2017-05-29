@@ -10,18 +10,33 @@
 @section('content')
     <div class="row flex-list" style='width: 50%'>
         <div>
-            @include('modules.user-select-light')
+            <select class="form-control selectpicker" multiple ng-change='filter()'
+                ng-model='search.user_ids' data-none-selected-text="пользователь">
+                <option
+                    ng-repeat="user in UserService.getAll()"
+                    value="@{{ user.id }}"
+                    data-content="<span style='color: @{{ user.color || 'black' }}'>@{{ user.login }}</span>"
+                ></option>
+                <option
+                        ng-repeat="user in UserService.getBannedUsers()"
+                        value="@{{ user.id }}"
+                        data-content="<span style='color: @{{ user.color || 'black' }}'>@{{ user.login }}</span>"
+                ></option>
+            </select>
         </div>
         <div>
             <select ng-model='search.period' class='selectpicker' ng-change='filter()'>
-                <option value="" data-subtext="@{{ counts.type[''] || '' }}">период</option>
-                <option disabled>──────────────</option>
                 <option ng-repeat='(id, name) in LogPeriods'
                     data-subtext="@{{ counts.type[id] || '' }}"
                     value="@{{id}}">@{{ name }}</option>
             </select>
         </div>
     </div>
-    
-    <canvas class="chart chart-line" chart-data="data.data" chart-labels="data.labels" chart-series="data.series"></canvas>
+
+    <div style='position: relative' ng-class="{'zero-opacity': !chart.data.datasets.length}">
+        <div class="frontend-loading animate-fadeIn" style='height: 101%; width: 101%' ng-show='loading'>
+            <span>загрузка...</span>
+        </div>
+        <canvas id="myChart" height='100'></canvas>
+    </div>
 @stop
