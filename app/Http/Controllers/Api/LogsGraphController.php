@@ -22,19 +22,28 @@ class LogsGraphController extends Controller
         switch($request->period) {
             case 2:
                 $hours = 24;
+                $group_by = '%H:%i'; // по минутам
                 break;
             case 3:
                 $hours = (24 * 7);
+                $group_by = '%H'; // по часам
                 break;
             default:
                 $hours = 6;
+                $group_by = '%H:%i';
                 break;
         }
 
-        // @todo: сначала получить время последнего действия и отталкиваться от него
-        $data = DB::table('logs')->whereIn('user_id', $request->user_ids)->whereRaw("created_at > DATE_SUB(NOW(), INTERVAL " . $hours . " HOUR)")
+        $query = DB::table('logs')->whereIn('user_id', $request->user_ids);
+
+        // получаем время последнего действия и отталкиваемся от него
+        $new_query = clone $query;
+        $last_action_date = $new_query->orderBy('created_at', 'desc')->value('created_at');
+
+        $data = $query->whereRaw("created_at > DATE_SUB('{$last_action_date}', INTERVAL " . $hours . " HOUR)")
             ->select(DB::raw("user_id, created_at, DATE_FORMAT(`created_at`, '%H:%i') as t, count(*) as c"))
-            ->groupBy(DB::raw("user_id, DATE_FORMAT(`created_at`, '%H:%i')"))
+            ->groupBy(DB::raw("user_id, DATE_FORMAT(`created_at`, '" . $group_by . "')"))
+            ->orderBy('created_at')
             ->get();
 
 
@@ -52,7 +61,7 @@ class LogsGraphController extends Controller
             $user = dbEgecrm('users')->whereId($user_id)->select('login', 'color')->first();
             $return[] = [
                 'backgroundColor' => $user->color,
-                'borderColor' => $user->color,
+                'borderColor' => hexToRgb($user->color, .75),
                 'label' => $user->login,
                 'fill' => false,
                 'data' => $data,

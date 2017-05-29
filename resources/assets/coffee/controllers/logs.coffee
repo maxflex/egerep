@@ -7,22 +7,29 @@ angular
             moment().add(days, 'd').toDate()
 
         $timeout ->
-            $scope.search = {period: '1'}
+            # $scope.search = {period: '1'}
             $timeout ->
                 $('.selectpicker').selectpicker('refresh')
             , 300
+            $scope.search = {period: '3', user_ids: [69]}
+            $scope.filter()
             $scope.chart = new Chart document.getElementById("myChart").getContext('2d'),
                 type: 'line'
                 data:
                     datasets: []
                 options:
+                    tooltips:
+                        callbacks:
+                            title: (tooltipItem, data) ->
+                                moment(tooltipItem[0].xLabel).format('HH:mm')
                     scales:
                         xAxes: [
                             type: 'time'
                             time:
                                 displayFormats:
                                     unit: 'minute'
-                                    minute: 'HH:mm',
+                                    minute: 'HH:mm'
+                                    hour: 'MM.DD HH:00'
                         ]
                         yAxes: [
                             ticks:
@@ -41,6 +48,9 @@ angular
             .then (response) ->
                 console.log(response)
                 $timeout ->
+                    $scope.chart.options.tooltips.callbacks.title = (tooltipItem, data) ->
+                        # если выбраны сутки, то по часам
+                        moment(tooltipItem[0].xLabel).format(if $scope.search.period is '3' then 'MM.DD HH:00' else 'HH:mm')
                     $scope.chart.data.datasets = response.data
                     $scope.chart.update()
                 $scope.loading = false
