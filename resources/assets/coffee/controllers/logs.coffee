@@ -11,8 +11,8 @@ angular
             $timeout ->
                 $('.selectpicker').selectpicker('refresh')
             , 300
-            $scope.search = {period: '3', user_ids: [69]}
-            $scope.filter()
+            # $scope.search = {period: '3', user_ids: [69]}
+            # $scope.filter()
             $scope.chart = new Chart document.getElementById("myChart").getContext('2d'),
                 type: 'line'
                 data:
