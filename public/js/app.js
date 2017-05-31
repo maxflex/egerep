@@ -1,7 +1,7 @@
 (function() {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ngAnimate', 'ui.sortable', 'ui.bootstrap', 'angular-ladda', 'mwl.calendar', 'svgmap', 'chart.js']).config([
+  angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ngAnimate', 'ui.sortable', 'ui.bootstrap', 'angular-ladda', 'mwl.calendar', 'svgmap']).config([
     '$compileProvider', function($compileProvider) {
       return $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension|sip):/);
     }
@@ -2410,83 +2410,7 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').controller('LogsGraph', function($rootScope, $scope, $timeout, $http, LogPeriods, UserService) {
-    var newDateString;
-    bindArguments($scope, arguments);
-    newDateString = function(days) {
-      return moment().add(days, 'd').toDate();
-    };
-    $timeout(function() {
-      $scope.search = {
-        period: '1'
-      };
-      $timeout(function() {
-        return $('.selectpicker').selectpicker('refresh');
-      }, 300);
-      return $scope.chart = new Chart(document.getElementById("myChart").getContext('2d'), {
-        type: 'line',
-        data: {
-          datasets: []
-        },
-        options: {
-          tooltips: {
-            callbacks: {
-              title: function(tooltipItem, data) {
-                return moment(tooltipItem[0].xLabel).format('HH:mm');
-              }
-            }
-          },
-          scales: {
-            xAxes: [
-              {
-                type: 'time',
-                time: {
-                  displayFormats: {
-                    unit: 'minute',
-                    minute: 'HH:mm',
-                    hour: 'MM.DD HH:00',
-                    millisecond: 'MM.DD HH:00'
-                  }
-                }
-              }
-            ],
-            yAxes: [
-              {
-                ticks: {
-                  beginAtZero: true,
-                  userCallback: function(label, index, labels) {
-                    if (Math.floor(label) === label) {
-                      return label;
-                    }
-                  }
-                },
-                display: true,
-                scaleLabel: {
-                  display: true,
-                  labelString: 'действий'
-                }
-              }
-            ]
-          }
-        }
-      });
-    });
-    return $scope.filter = function() {
-      $scope.loading = true;
-      return $http.get("api/logs/graph?" + $.param($scope.search)).then(function(response) {
-        console.log(response);
-        $timeout(function() {
-          $scope.chart.options.tooltips.callbacks.title = function(tooltipItem, data) {
-            return moment(tooltipItem[0].xLabel).format($scope.search.period === '3' ? 'MM.DD HH:00' : 'HH:mm');
-          };
-          $scope.chart.data.datasets = response.data;
-          $scope.chart.options.scales.xAxes[0].time.displayFormats.unit = $scope.search.period === '3' ? 'hour' : 'minute';
-          return $scope.chart.update();
-        });
-        return $scope.loading = false;
-      });
-    };
-  }).controller('LogsIndex', function($rootScope, $scope, $timeout, $http, UserService, LogTypes) {
+  angular.module('Egerep').controller('LogsIndex', function($rootScope, $scope, $timeout, $http, UserService, LogTypes) {
     var load;
     bindArguments($scope, arguments);
     $rootScope.frontend_loading = true;
@@ -2523,12 +2447,59 @@
     $timeout(function() {
       $scope.search = $.cookie("logs") ? JSON.parse($.cookie("logs")) : {};
       load($scope.page);
-      return $scope.current_page = $scope.page;
+      $scope.current_page = $scope.page;
+      return $scope.chart = new Chart(document.getElementById('graph').getContext('2d'), {
+        type: 'line',
+        options: {
+          scales: {
+            xAxes: [
+              {
+                type: 'time',
+                time: {
+                  displayFormats: {
+                    minute: 'HH:mm',
+                    hour: 'MM.DD HH:00',
+                    millisecond: 'MM.DD HH:00'
+                  }
+                }
+              }
+            ],
+            yAxes: [
+              {
+                ticks: {
+                  beginAtZero: true,
+                  userCallback: function(label, index, labels) {
+                    if (Math.floor(label) === label) {
+                      return label;
+                    }
+                  }
+                },
+                display: true,
+                scaleLabel: {
+                  display: true,
+                  labelString: 'действий'
+                }
+              }
+            ]
+          }
+        }
+      });
     });
     $scope.pageChanged = function() {
       $rootScope.frontend_loading = true;
       load($scope.current_page);
       return paginate('logs', $scope.current_page);
+    };
+    $scope.showGraph = function() {
+      $rootScope.dialog('log-graph');
+      return $http.get('api/logs/graph').then(function(response) {
+        console.log(response);
+        return $timeout(function() {
+          $scope.chart.data.labels = response.data.labels;
+          $scope.chart.data.datasets = [response.data.datasets];
+          return $scope.chart.update();
+        });
+      });
     };
     return load = function(page) {
       var params;
@@ -5119,10 +5090,6 @@
     10: 10,
     11: 'отзыв не собирать',
     12: 'отзыв собрать позже'
-  }).value('LogPeriods', {
-    1: '6 часов',
-    2: 'сутки',
-    3: 'неделя'
   }).value('Grades', {
     1: '1 класс',
     2: '2 класс',

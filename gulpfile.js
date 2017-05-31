@@ -82,6 +82,8 @@ elixir(function(mix) {
             'js-md5/build/md5.min',
             'egerep-svg-metro/scripts/svg',
             'chart.js/dist/Chart.min',
-            'angular-chart.js/dist/angular-chart.min'
+            'angular-chart.js/dist/angular-chart.min',
+            'd3/d3.min',
+            'metrics-graphics/dist/metricsgraphics',
         ]).concat(['resources/assets/js/*.js']), 'public/js/vendor.js');
 });

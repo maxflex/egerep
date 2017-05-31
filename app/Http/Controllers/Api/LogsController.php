@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Models;
 use App\Http\Controllers\Controller;
 use App\Models\Service\Log;
+use DB;
 
 class LogsController extends Controller
 {
@@ -21,7 +22,7 @@ class LogsController extends Controller
         $search = isset($_COOKIE['logs']) ? json_decode($_COOKIE['logs']) : (object)[];
         $data = Log::search($search)->paginate(30);
         $data->getCollection()->map(function ($log) {
-            if (in_array    ($log->table, ['attachments', 'archives', 'clients', 'request_lists', 'tutors']) && $log->type != 'delete') {
+            if (in_array($log->table, ['attachments', 'archives', 'clients', 'request_lists', 'tutors']) && $log->type != 'delete') {
                 switch ($log->table) {
                     case 'attachments':
                         $log->link = 'attachment/' . $log->row_id;
@@ -117,5 +118,25 @@ class LogsController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function graph()
+    {
+        $search = isset($_COOKIE['logs']) ? json_decode($_COOKIE['logs']) : (object)[];
+        // ->groupBy(DB::raw("DATE_FORMAT(`created_at`, '%H:%i')"))
+        $data = Log::search($search)->orderBy('created_at', 'asc')->select('created_at')->pluck('created_at');
+
+        // $return = [];
+        // foreach($data as $d) {
+        //     $return[] = [
+        //         'date'  => $d,
+        //         'value' => 1,
+        //     ];
+        // }
+
+        return [
+            'labels'    => $data,
+            'datasets'  => array_fill(0, count($data), 1)
+        ];
     }
 }

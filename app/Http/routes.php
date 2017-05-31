@@ -68,7 +68,6 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::get('tutors/select', 'TutorsController@select');
     Route::resource('tutors', 'TutorsController');
-    Route::resource('logs/graph', 'LogsGraphController');
     Route::resource('logs', 'LogsController');
     Route::resource('requests', 'RequestsController', ['except' => ['index', 'show']]);
     Route::get('requests/{state_id?}', 'RequestsController@index');
@@ -116,7 +115,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('markers', 'MarkersController');
         Route::get('notifications/get', 'NotificationsController@get');
         Route::resource('notifications', 'NotificationsController');
-        Route::resource('logs/graph', 'LogsGraphController');
+        Route::get('logs/graph', 'LogsController@graph');
         Route::resource('logs', 'LogsController');
         Route::get('tutors/list', 'TutorsController@lists');
         Route::post('tutors/filtered', 'TutorsController@filtered');
