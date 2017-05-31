@@ -47,7 +47,13 @@ angular
                                 displayFormats:
                                     minute: 'HH:mm'
                                     hour: 'DD.MM HH:00'
-                                    millisecond: 'DD.MM HH:00'
+                                    millisecond: 'HH:mm:ss'
+                                    second: 'HH:mm:ss',
+                                    day: 'DD.MM',
+                                    week: 'DD.MM',
+                                    month: 'DD.MM.YYYY',
+                                    quarter: 'DD.MM.YYYY',
+                                    year: 'DD.MM.YYYY',
                         ]
                         yAxes: [
                             ticks:

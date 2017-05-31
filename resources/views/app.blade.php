@@ -11,7 +11,6 @@
     @yield('scripts')
     <script src="{{ asset('/js/vendor.js', isProduction()) }}"></script>
     <script src="{{ config('app.url') }}{{ elixir('js/app.js', isProduction()) }}"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     @foreach($js as $script_name)
         <script src="{{ asset('/js/' . $script_name . '.js', isProduction()) }}"></script>
     @endforeach
