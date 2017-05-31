@@ -2508,12 +2508,14 @@
     };
     $scope.showGraph = function() {
       $rootScope.dialog('log-graph');
+      $scope.graph_loading = true;
       return $http.get('api/logs/graph').then(function(response) {
         console.log(response);
         return $timeout(function() {
           $scope.chart.data.labels = response.data.labels;
           $scope.chart.data.datasets = response.data.datasets;
-          return $scope.chart.update();
+          $scope.chart.update();
+          return $scope.graph_loading = false;
         });
       });
     };

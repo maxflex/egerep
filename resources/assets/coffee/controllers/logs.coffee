@@ -74,12 +74,14 @@ angular
 
         $scope.showGraph = ->
             $rootScope.dialog('log-graph')
+            $scope.graph_loading = true
             $http.get('api/logs/graph').then (response) ->
                 console.log(response)
                 $timeout ->
                     $scope.chart.data.labels    = response.data.labels
                     $scope.chart.data.datasets  = response.data.datasets
                     $scope.chart.update()
+                    $scope.graph_loading = false
                 # response.data.forEach (d) ->
                 #     data.push
                 #         date: moment(d).toDate()

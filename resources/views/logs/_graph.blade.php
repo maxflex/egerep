@@ -6,7 +6,12 @@
         <h4 class="modal-title">График</h4>
       </div> --}}
       <div class="modal-body">
-          <canvas id='graph'></canvas>
+          <div class="frontend-loading animate-fadeIn" ng-show='graph_loading'>
+                <span>загрузка...</span>
+            </div>
+          <div ng-class="{'zero-opacity': graph_loading}">
+              <canvas id='graph'></canvas>
+          </div>
       </div>
     </div>
   </div>
