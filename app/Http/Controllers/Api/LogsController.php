@@ -133,10 +133,16 @@ class LogsController extends Controller
         //         'value' => 1,
         //     ];
         // }
+        $user = dbEgecrm('users')->whereId($search->user_id)->select('login', 'color')->first();
 
         return [
             'labels'    => $data,
-            'datasets'  => array_fill(0, count($data), 1)
+            'datasets'  => [[
+                'backgroundColor' => $user->color,
+                'label' => $user->login,
+                'borderWidth' => 0,
+                'data' => array_fill(0, count($data), 1)
+            ]]
         ];
     }
 }

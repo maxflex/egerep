@@ -4,7 +4,7 @@
 
 @section('title-right')
     {{-- style='position: absolute; left: calc(50% - 20px)' --}}
-    <span class='link-like link-white link-reverse' ng-click='showGraph()'>график</span>
+    <span ng-show='search.user_id' class='link-like link-white link-reverse' ng-click='showGraph()'>график</span>
     {{-- нужно поправить функция link_to_route, чтобы она работала с https --}}
     {{-- {{ link_to_route('tutors.create', 'добавить преподавателя') }} --}}
     <span class='ng-hide' ng-show='data !== undefined'>всего результатов: @{{ data.total }}</span>

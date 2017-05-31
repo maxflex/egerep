@@ -32,20 +32,28 @@ angular
             $scope.current_page = $scope.page
 
             $scope.chart = new Chart document.getElementById('graph').getContext('2d'),
-                type: 'line'
+                type: 'bar'
                 options:
+                    tooltips:
+                        callbacks:
+                            title: (tooltipItem, data) ->
+                                moment(tooltipItem[0].xLabel).format('DD.MM.YY HH:mm')
                     scales:
                         xAxes: [
+                            stacked: true
+                            # categoryPercentage: 0.07
                             type: 'time'
                             time:
                                 displayFormats:
                                     minute: 'HH:mm'
-                                    hour: 'MM.DD HH:00'
-                                    millisecond: 'MM.DD HH:00'
+                                    hour: 'DD.MM HH:00'
+                                    millisecond: 'DD.MM HH:00'
                         ]
                         yAxes: [
                             ticks:
                                 beginAtZero: true
+                                mix: 0
+                                max: 2
                                 userCallback: (label, index, labels) -> return label if Math.floor(label) is label
                             display: true,
                             scaleLabel:
@@ -64,7 +72,7 @@ angular
                 console.log(response)
                 $timeout ->
                     $scope.chart.data.labels    = response.data.labels
-                    $scope.chart.data.datasets  = [response.data.datasets]
+                    $scope.chart.data.datasets  = response.data.datasets
                     $scope.chart.update()
                 # response.data.forEach (d) ->
                 #     data.push
