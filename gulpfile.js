@@ -71,7 +71,6 @@ elixir(function(mix) {
             'jquery.cookie/jquery.cookie',
             'moment/moment',
             'moment/locale/ru',
-            'angular-bootstrap-calendar/dist/js/angular-bootstrap-calendar-tpls',
             'jquery-color-animation/jquery.animate-colors-min',
             'ace-builds/src/ace',
             'ace-builds/src/mode-html',
