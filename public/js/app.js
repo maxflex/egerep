@@ -2461,6 +2461,11 @@
           scales: {
             xAxes: [
               {
+                ticks: {
+                  autoSkip: true,
+                  autoSkipPadding: 25,
+                  maxRotation: 0
+                },
                 stacked: true,
                 type: 'time',
                 time: {

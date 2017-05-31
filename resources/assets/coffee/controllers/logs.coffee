@@ -40,6 +40,10 @@ angular
                                 moment(tooltipItem[0].xLabel).format('DD.MM.YY HH:mm')
                     scales:
                         xAxes: [
+                            ticks:
+                                autoSkip: true
+                                autoSkipPadding: 25
+                                maxRotation: 0
                             stacked: true
                             # categoryPercentage: 0.07
                             type: 'time'
