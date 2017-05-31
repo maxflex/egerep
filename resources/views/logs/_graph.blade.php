@@ -5,11 +5,11 @@
       {{-- <div class="modal-header">
         <h4 class="modal-title">График</h4>
       </div> --}}
-      <div class="modal-body">
+      <div class="modal-body" style='box-sizing: border-box'>
           <div class="frontend-loading animate-fadeIn" ng-show='graph_loading'>
                 <span>загрузка...</span>
             </div>
-          <div ng-class="{'zero-opacity': graph_loading}">
+          <div ng-class="{'zero-opacity': graph_loading}" style='box-sizing: border-box'>
               <canvas id='graph'></canvas>
           </div>
       </div>
