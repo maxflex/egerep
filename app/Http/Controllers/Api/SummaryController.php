@@ -336,7 +336,7 @@ class SummaryController extends Controller
         if ($request->type == 'months') {
             $dataQuery->select(['date', \DB::raw("date_format(date, '%m.%y') as group_key")]);
             $commission_query = static::cloneQuery($total_commission_query)->addSelect([
-                \DB::raw("date_format(account_datas.date, '%m.%y') as group_key"),
+                \DB::raw("date_format(attachments.date, '%m.%y') as group_key"),
             ])->groupBy('group_key');
         } else {
             $dataQuery->select(['user_id', \DB::raw("user_id as group_key")]);
@@ -364,6 +364,7 @@ class SummaryController extends Controller
         $dataQuery->addSelect(\DB::raw('sum(forecast) as forecast'));
 
         $commissions = $commission_query->get()->keyBy('group_key');
+
         foreach ($dataQuery->get()->keyBy('group_key') as $group_key => $data) {
             $total_commission = ($c = $commissions->get($group_key)) ? $c->sum : 0;
             $request_denominator    = ($data->requests_total - $data->requests_reasoned_deny - $data->requests_checked_reasoned_deny) ?: 1;

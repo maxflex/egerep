@@ -16,6 +16,10 @@ class Attachment
 
         $errors = [];
 
+        // занятий к проводке+проведено занятий в отчетности
+        // при этом архивация может быть или не быть
+        $x = $attachment->account_data_count;
+
         if (! $attachment->grade) {
             $errors[] = 1;
         }
@@ -36,21 +40,19 @@ class Attachment
         }
 
         if ($archive) {
+            // занятий к проводке+проведено занятий в отчетности
+            // при этом архивация может быть или не быть
+            $x += $archive->total_lessons_missing;
+
             $archive_date = new \DateTime($archive->getClean('date'));
             $last_lesson_date = \App\Models\Attachment::getLastLessonDate($attachment->id);
             $last_meeting_date = $attachment->last_meeting_date;
 
-            if ($archive->getClean('date') <= $attachment->getClean('date')) {
+            if ($archive->getClean('date') < $attachment->getClean('date')) {
                 $errors[] = 4;
             }
             if (empty(trim($archive->comment))) {
                 $errors[] = 5;
-            }
-
-            $x = $archive->total_lessons_missing + $attachment->account_data_count;
-
-            if (! $attachment->forecast && $x) {
-                $errors[] = 6;
             }
 
             if (! $x && $attachment->forecast) {
@@ -92,6 +94,10 @@ class Attachment
             if ($attachment->hide) {
                 $errors[] = 14;
             }
+        }
+
+        if (! $attachment->forecast && $x) {
+            $errors[] = 6;
         }
 
         sort($errors);
