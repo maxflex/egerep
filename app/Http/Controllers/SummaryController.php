@@ -96,12 +96,8 @@ class SummaryController extends Controller
         }
         return view('summary.users')->with(
             ngInit([
-                'debt_sum'      => Debt::sum([
-                    'debtor' => 0,
-                    'after_last_meeting' => 1
-                ]),
-                'debt_updating' => Settings::get('debt_updating'),
-                'debt_updated'  => Settings::get('debt_updated'),
+                'efficency_updating' => Settings::get('efficency_updating'),
+                'efficency_updated'  => Settings::get('efficency_updated'),
                 'allowed_all'   => allowed(\Shared\Rights::ER_SUMMARY_USERS_ALL)
             ])
         );
