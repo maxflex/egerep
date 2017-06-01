@@ -420,7 +420,7 @@ class SummaryController extends Controller
             if (is_int($group_key)) { // user_id
                 // только если всего заявок != 0 и всего стыковок != 0
                 if ($return_data['requests']['total'] > 0 || $return_data['attachments']['total'] > 0) {
-                    $return['data'][User::whereId($group_key)->value('login')] = $return_data;
+                    $return['data'][$group_key == 0 ? 'system' : User::whereId($group_key)->value('login')] = $return_data;
                 }
             } else {
                 $return['data'][$group_key] = $return_data;
@@ -446,7 +446,6 @@ class SummaryController extends Controller
             @$total['requests']['deny'] += $d['requests']['deny'];
             @$total['requests']['reasoned_deny'] += $d['requests']['reasoned_deny'];
             @$total['requests']['checked_reasoned_deny'] += $d['requests']['checked_reasoned_deny'];
-            @$total['requests']['total'] += $d['requests']['total'];
             if ($d['requests']['deny_percentage']) {
                 @$total['deny_percentage_numerator'] += $d['requests']['deny_percentage'];
                 @$total['deny_percentage_denumenator']++;
