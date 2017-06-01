@@ -59,7 +59,7 @@
     </div>
 
     <div class="row" ng-if='stats'>
-        <div class="col-sm-12" style='overflow-x: scroll'>
+        <div class="col-sm-12" style='overflow-x: scroll; margin-top: 20px'>
             <table class='table table-divlike table-blackborder'>
                 <tr>
                     <td></td>
