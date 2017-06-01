@@ -58,7 +58,7 @@
         </div>
     </div>
 
-    <div class="row" ng-if='stats'>
+    <div class="row" ng-if='stats && stats.data'>
         <div class="col-sm-12" style='overflow-x: scroll; margin-top: 20px'>
             <table class='table table-divlike table-blackborder'>
                 <tr>
@@ -258,6 +258,11 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
+    <div class="row" ng-if='stats === null'>
+        <div class="col-sm-12">
+            <p align="center" class='text-gray' style="margin: 100px 0">нет данных</p>
         </div>
     </div>
 @stop

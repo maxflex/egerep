@@ -23,6 +23,9 @@ angular
             .then (response) ->
                 $rootScope.frontend_loading = false
                 $scope.stats = response.data
+            , (error) ->
+                $rootScope.frontend_loading = false
+                $scope.stats = null
 
         $scope.getExplanation = ->
             $rootScope.explaination_loading = true
