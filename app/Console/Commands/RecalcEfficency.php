@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Jobs\RecalcUserEfficency;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
+use App\Models\Service\Settings;
 
 class RecalcEfficency extends Command
 {
