@@ -465,7 +465,7 @@ class SummaryController extends Controller
         $total['efficency']['forecast'] = round($total_efficency['forecast']['numerator'] / ($total_efficency['forecast']['denominator'] ?: 1), 2);
         $total['efficency']['request_avg'] = round(@$total['efficency']['total_commission'] / ($total_efficency['conversion']['denominator'] ?: 1), 2);
         $total['efficency']['attachment_avg'] = round(@$total['efficency']['total_commission'] / (@$total['attachments']['total'] ?: 1), 2);
-        $return['data']['всего'] = $total;
+        $return['data']['всегоasdfsdfsfdsf'] = $total;
         /**** \ВСЕГО ****/
 
         return $return;

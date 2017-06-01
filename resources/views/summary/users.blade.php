@@ -62,9 +62,9 @@
         <div class="col-sm-12" style='overflow-x: scroll; margin-top: 20px'>
             <table class='table table-divlike table-blackborder'>
                 <tr>
-                    <td></td>
+                    <td width='380'></td>
                     <td ng-repeat='(title, s) in stats.data' style='width: 40px'>
-                        <span class="vertical-text">@{{ title }}</span>
+                        <span class="vertical-text" style='height: 60px'>@{{ title }}</span>
                     </td>
                 </tr>
                 <tr>
