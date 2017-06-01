@@ -57,11 +57,6 @@ class RecalcEfficency extends Command
 
         while ($day->toDateString() > self::FIRST_REQUEST_DATE) {
             foreach($user_ids as $user_id) {
-                $data = [
-                    'date'    => $day->toDateString(),
-                    'user_id' => $user_id
-                ];
-
                 $request_query = \App\Models\Request::query();
                 $attachments_query = \App\Models\Attachment::query();
 
@@ -121,6 +116,8 @@ class RecalcEfficency extends Command
                 }
 
                 if ($data['requests_total'] || $data['attachments_total']) {
+                    $data['date'] = $day->toDateString();
+                    $data['user_id'] = $user_id;
                     \App\Models\EfficencyData::create($data);
                 }
             }
