@@ -2,6 +2,13 @@
 @section('title', 'Эффективность')
 @section('controller', 'SummaryUsers')
 
+@section('title-right')
+    <span ng-hide="efficency_updating == 1">обновлено @{{ formatDateTime(efficency_updated) }}</span>
+    <span class="glyphicon glyphicon-refresh opacity-pointer" ng-click='updateEfficency()' ng-class="{
+        'spinning full-opacity-disabled': efficency_updating == 1,
+    }"></span>
+@stop
+
 @section('content')
     <div class="row">
         <div class='col-sm-4' style='width: 320px'>
@@ -114,7 +121,6 @@
                     </td>
                     <td ng-repeat='s in stats.data'>
                         @{{ s.attachments.archived.no_lessons | hideZero }}
-                        <span class='text-gray' ng-show='s.attachments.archived.no_lessons | hideZero'>(@{{ s.attachments.archived.no_lessons_percentage }}%)</span>
                     </td>
                 </tr>
                 <tr>
@@ -123,7 +129,6 @@
                     </td>
                     <td ng-repeat='s in stats.data'>
                         @{{ s.attachments.archived.one_lesson | hideZero }}
-                        <span class='text-gray' ng-show='s.attachments.archived.one_lesson | hideZero'>(@{{ s.attachments.archived.one_lesson_percentage }}%)</span>
                     </td>
                 </tr>
                 <tr>
@@ -132,7 +137,6 @@
                     </td>
                     <td ng-repeat='s in stats.data'>
                         @{{ s.attachments.archived.two_lessons | hideZero }}
-                        <span class='text-gray' ng-show='s.attachments.archived.two_lessons | hideZero'>(@{{ s.attachments.archived.two_lessons_percentage }}%)</span>
                     </td>
                 </tr>
                 <tr>

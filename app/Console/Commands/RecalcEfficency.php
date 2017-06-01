@@ -41,8 +41,10 @@ class RecalcEfficency extends Command
     {
         \DB::table('efficency_data')->truncate();
 
-        $user_ids = \App\Models\User::active()->get()->pluck('id');
+        // системный пользователь тоже нужен, так как много заявок остаются без ответственного
+        $user_ids = array_merge([0], \App\Models\User::real()->get()->pluck('id')->all());
         $bar = $this->output->createProgressBar(count($user_ids));
+        Settings::set('efficency_updating', 1);
 //        foreach([1459, 1367] as $user_id) {
         foreach($user_ids as $user_id) {
             $today = Carbon::today();
@@ -57,7 +59,7 @@ class RecalcEfficency extends Command
                 $attachments_query = \App\Models\Attachment::query();
 
                 $request_query->whereDate('requests.created_at', '=', $calcing_date);
-                $attachments_query->whereDate('attachments.created_at', '=', $calcing_date);
+                $attachments_query->where('attachments.date', $calcing_date);
 
 
                 $request_query->where('requests.user_id', $user_id);
@@ -108,6 +110,8 @@ class RecalcEfficency extends Command
             }
             $bar->advance();
         }
+        Settings::set('efficency_updated', now());
+        Settings::set('efficency_updating', 0);
         $bar->finish();
     }
 

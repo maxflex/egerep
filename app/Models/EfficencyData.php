@@ -12,7 +12,6 @@ class EfficencyData extends Model
     protected $fillable = [
         'date',
         'user_id',
-
         'requests_new',
         'requests_awaiting',
         'requests_finished',
@@ -20,7 +19,6 @@ class EfficencyData extends Model
         'requests_reasoned_deny',
         'requests_checked_reasoned_deny',
         'requests_total',
-
         'attachments_newest',
         'attachments_active',
         'attachments_archived_no_lessons',
@@ -28,11 +26,8 @@ class EfficencyData extends Model
         'attachments_archived_two_lessons',
         'attachments_archived_three_or_more_lessons',
         'attachments_total',
-
         'forecast',
-
         'conversion_denominator',
-
         //'commission',
     ];
 

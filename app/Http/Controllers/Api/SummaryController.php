@@ -312,12 +312,11 @@ class SummaryController extends Controller
         $date_to = fromDotDate($request->date_to ?: Carbon::parse($date_from)->lastOfMonth()->format('d.m.Y'));
         $user_ids = $request->user_ids ?: [];
 
-        $dataQuery = EfficencyData::whereBetween('date', [$date_from, $date_to])
-                                              ->groupBy('group_key');
+        $dataQuery = EfficencyData::whereBetween('date', [$date_from, $date_to])->groupBy('group_key');
         $total_commission_query = Attachment::query()->without(['archive', 'review'])
                                             ->select(\DB::raw('round(sum(if(commission > 0, commission, ' . Account::DEFAULT_COMMISSION . ' * sum))) as `sum`'))
-                                            ->whereDate('attachments.created_at', '>=', fromDotDate($date_from))
-                                            ->whereDate('attachments.created_at', '<=', fromDotDate($date_to))
+                                            ->where('attachments.date', '>=', fromDotDate($date_from))
+                                            ->where('attachments.date', '<=', fromDotDate($date_to))
                                             ->join('account_datas', function($join) {
                                                 $join->on('attachments.tutor_id', '=', 'account_datas.tutor_id')
                                                      ->on('attachments.client_id', '=', 'account_datas.client_id');
@@ -332,7 +331,7 @@ class SummaryController extends Controller
             $dataQuery->select(['date', \DB::raw("date_format(date, '%m.%y') as group_key")]);
             $commission_query = static::cloneQuery($total_commission_query)->addSelect([
                 \DB::raw("date_format(account_datas.date, '%m.%y') as group_key"),
-            ])->groupBy(\DB::raw('group_key'));
+            ])->groupBy('group_key');
         } else {
             $dataQuery->select(['user_id', \DB::raw("user_id as group_key")]);
             $commission_query = static::cloneQuery($total_commission_query)->addSelect([
@@ -356,7 +355,6 @@ class SummaryController extends Controller
         $dataQuery->addSelect(\DB::raw('sum(attachments_archived_two_lessons) as attachments_archived_two_lessons'));
         $dataQuery->addSelect(\DB::raw('sum(attachments_archived_three_or_more_lessons) as attachments_archived_three_or_more_lessons'));
         $dataQuery->addSelect(\DB::raw('sum(conversion_denominator) as conversion_denominator'));
-
         $dataQuery->addSelect(\DB::raw('sum(forecast) as forecast'));
 
         $commissions = $commission_query->get()->keyBy('group_key');
@@ -382,11 +380,8 @@ class SummaryController extends Controller
                     'active'    => $data->attachments_active,
                     'archived'  => [
                         'no_lessons'             => $data->attachments_archived_no_lessons,
-                        'no_lessons_percentage'  => round($data->attachments_archived_no_lessons * 100 / $attachments_denominator),
                         'one_lesson'             => $data->attachments_archived_one_lesson,
-                        'one_lesson_percentage'  => round($data->attachments_archived_one_lesson * 100 / $attachments_denominator),
                         'two_lessons'            => $data->attachments_archived_two_lessons,
-                        'two_lessons_percentage' => round($data->attachments_archived_two_lessons * 100 / $attachments_denominator),
                         'three_or_more_lessons'  => $data->attachments_archived_three_or_more_lessons,
                     ]
                 ],
@@ -413,7 +408,10 @@ class SummaryController extends Controller
             ];
 
             if (is_int($group_key)) { // user_id
-                $return['data'][User::whereId($group_key)->value('login')] = $return_data;
+                // только если всего заявок != 0 и всего стыковок != 0
+                if ($return_data['requests']['total'] > 0 || $return_data['attachments']['total'] > 0) {
+                    $return['data'][User::whereId($group_key)->value('login')] = $return_data;
+                }
             } else {
                 $return['data'][$group_key] = $return_data;
             }
@@ -427,6 +425,12 @@ class SummaryController extends Controller
                 return Carbon::createFromFormat('m.y', $a)->lt(Carbon::createFromFormat('m.y', $b)) ? -1 : 1;
             });
         }
+
+        // всего
+        // $return['data']['всего'] = [
+        //     ''
+        // ]
+
         return $return;
     }
 

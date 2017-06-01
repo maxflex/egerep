@@ -3124,7 +3124,10 @@
   angular.module('Egerep').controller('SummaryUsers', function($scope, $rootScope, $timeout, $http, UserService, RequestStates, AttachmentService) {
     bindArguments($scope, arguments);
     $timeout(function() {
-      $scope.search = {};
+      $scope.search = {
+        date_from: '01.04.2017',
+        date_to: '30.04.2017'
+      };
       if (!$scope.allowed_all) {
         $scope.search.user_ids = [$scope.user.id.toString()];
       }
@@ -3135,6 +3138,10 @@
         return $('#change-user, #change-type').selectpicker('refresh');
       });
     }, 500);
+    $scope.updateEfficency = function() {
+      $scope.efficency_updating = true;
+      return $http.post('api/command/recalc-efficency');
+    };
     $scope.update = function() {
       $rootScope.frontend_loading = true;
       return $http.post('api/summary/users', $scope.search).then(function(response) {

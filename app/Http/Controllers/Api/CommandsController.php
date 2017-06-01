@@ -27,6 +27,14 @@ class CommandsController extends Controller
     }
 
     /**
+     * Пересчитать таблицу efficency_data
+     */
+    public function postRecalcEfficency()
+    {
+        \Artisan::queue('email:send', ['--queue' => 'default']);
+    }
+
+    /**
      * Получить информацию по номеру телефона
      */
     public function postMangoStats(Request $request)
