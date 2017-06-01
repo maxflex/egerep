@@ -4,8 +4,8 @@ angular
         bindArguments($scope, arguments)
 
         $timeout ->
-            # $scope.search = {}
-            $scope.search = {date_from: '01.04.2017', date_to: '30.04.2017'}
+            $scope.search = {}
+            # $scope.search = {date_from: '01.04.2017', date_to: '30.04.2017'}
             $scope.search.user_ids = [$scope.user.id.toString()] if not $scope.allowed_all
             $scope.search.type = 'months' if not $scope.search.type
             # for debug $scope.search.date_from = '01.05.2016'

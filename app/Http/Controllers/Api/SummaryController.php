@@ -308,6 +308,12 @@ class SummaryController extends Controller
     public function users(Request $request)
     {
         $return = [];
+        // для стобца «всего»
+        $total_efficency = [
+            'conversion' => ['numerator' => 0, 'denominator' => 0],
+            'forecast'   => ['numerator' => 0, 'denominator' => 0],
+        ];
+
         $date_from = fromDotDate($request->date_from ?: Carbon::today()->firstOfMonth()->format('d.m.Y'));
         $date_to = fromDotDate($request->date_to ?: Carbon::parse($date_from)->lastOfMonth()->format('d.m.Y'));
         $user_ids = $request->user_ids ?: [];
@@ -389,8 +395,7 @@ class SummaryController extends Controller
 
             // прогноз
             $forecast_denominator = $return_data['attachments']['active'] + $return_data['attachments']['archived']['three_or_more_lessons'] ?: 1;
-            $forecast_numerator = $data->forecast;
-            $forecast = round($forecast_numerator / $forecast_denominator, 2);
+            $forecast = round($data->forecast / $forecast_denominator, 2);
 
             // эффективность
             $conversion_numerator = $return_data['attachments']['active'] + $return_data['attachments']['archived']['three_or_more_lessons']
@@ -398,6 +403,11 @@ class SummaryController extends Controller
                 + (0.1 * $return_data['attachments']['archived']['one_lesson'])
                 + (0.15 * $return_data['attachments']['archived']['two_lessons']);
             $conversion_denominator = $data['conversion_denominator'];
+
+            $total_efficency['conversion']['numerator'] += $conversion_numerator;
+            $total_efficency['conversion']['denominator'] += $conversion_denominator;
+            $total_efficency['forecast']['numerator'] += $data->forecast;
+            $total_efficency['forecast']['denominator'] += $forecast_denominator;
 
             $return_data['efficency'] = [
                 'conversion'       => round($conversion_numerator / ($conversion_denominator ?: 1), 2),
@@ -426,10 +436,38 @@ class SummaryController extends Controller
             });
         }
 
-        // всего
-        // $return['data']['всего'] = [
-        //     ''
-        // ]
+        /**** ВСЕГО ****/
+        $total = [];
+        foreach($return['data'] as $group_key => $d) {
+            @$total['requests']['total'] += $d['requests']['total'];
+            @$total['requests']['new'] += $d['requests']['new'];
+            @$total['requests']['awaiting'] += $d['requests']['awaiting'];
+            @$total['requests']['finished'] += $d['requests']['finished'];
+            @$total['requests']['deny'] += $d['requests']['deny'];
+            @$total['requests']['reasoned_deny'] += $d['requests']['reasoned_deny'];
+            @$total['requests']['checked_reasoned_deny'] += $d['requests']['checked_reasoned_deny'];
+            @$total['requests']['total'] += $d['requests']['total'];
+            if ($d['requests']['deny_percentage']) {
+                @$total['deny_percentage_numerator'] += $d['requests']['deny_percentage'];
+                @$total['deny_percentage_denumenator']++;
+            }
+
+            @$total['attachments']['total'] += $d['attachments']['total'];
+            @$total['attachments']['newest'] += $d['attachments']['newest'];
+            @$total['attachments']['active'] += $d['attachments']['active'];
+            @$total['attachments']['archived']['no_lessons'] += $d['attachments']['archived']['no_lessons'];
+            @$total['attachments']['archived']['one_lesson'] += $d['attachments']['archived']['one_lesson'];
+            @$total['attachments']['archived']['two_lessons'] += $d['attachments']['archived']['two_lessons'];
+            @$total['attachments']['archived']['three_or_more_lessons'] += $d['attachments']['archived']['three_or_more_lessons'];
+            @$total['efficency']['total_commission'] += $d['efficency']['total_commission'];
+        }
+        $total['requests']['deny_percentage'] = round(@$total['deny_percentage_numerator'] / (@$total['deny_percentage_denumenator']) ?: 1, 2);
+        $total['efficency']['conversion'] = round($total_efficency['conversion']['numerator'] / ($total_efficency['conversion']['denominator'] ?: 1), 2);
+        $total['efficency']['forecast'] = round($total_efficency['forecast']['numerator'] / ($total_efficency['forecast']['denominator'] ?: 1), 2);
+        $total['efficency']['request_avg'] = round(@$total['efficency']['total_commission'] / ($total_efficency['conversion']['denominator'] ?: 1), 2);
+        $total['efficency']['attachment_avg'] = round(@$total['efficency']['total_commission'] / (@$total['attachments']['total'] ?: 1), 2);
+        $return['data']['всего'] = $total;
+        /**** \ВСЕГО ****/
 
         return $return;
     }
@@ -452,11 +490,11 @@ class SummaryController extends Controller
 
         if (isset($date_from)) {
             $request_query->where('created_at', '>=', fromDotDate($date_from));
-            $attachments_with_request_list->where('attachments.created_at', '>=', fromDotDate($date_from));
+            $attachments_with_request_list->where('attachments.date', '>=', fromDotDate($date_from));
         }
         if (isset($date_to)) {
             $request_query->where('created_at', '<=', fromDotDate($date_to) . ' 23:59:59');
-            $attachments_with_request_list->where('attachments.created_at', '<=', fromDotDate($date_to) . ' 23:59:59');
+            $attachments_with_request_list->where('attachments.date', '<=', fromDotDate($date_to));
         }
         if (count($user_ids)) {
             $request_query->whereIn('requests.user_id', $user_ids);
