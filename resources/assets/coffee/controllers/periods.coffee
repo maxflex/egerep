@@ -21,6 +21,10 @@ angular
             else
                 return Math.round(parseInt(val) * .25)
 
+        $scope.recalcErrors = ->
+            $scope.account_errors_updating = true
+            $http.post 'api/command/model-errors', {model: 'accounts'}
+
         $scope.totalCommission = (account) ->
             total_commission = 0
             $.each account.data, (index, account_data) ->

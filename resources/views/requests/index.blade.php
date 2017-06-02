@@ -3,6 +3,10 @@
 @section('controller', 'RequestsIndex')
 
 @section('title-right')
+    ошибки обновлены @{{ formatDateTime(request_errors_updated) }}
+    <span class="glyphicon glyphicon-refresh opacity-pointer" ng-click='recalcErrors()' ng-class="{
+        'spinning': request_errors_updating == 1
+    }"></span>
     {{ link_to_route('requests.create', 'добавить заявку') }}
 @endsection
 

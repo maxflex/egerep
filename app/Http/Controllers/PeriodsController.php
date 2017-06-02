@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Models\Service\Settings;
 
 class PeriodsController extends Controller
 {
@@ -18,7 +19,9 @@ class PeriodsController extends Controller
     {
         return view('periods.index')->with(ngInit([
             'type' => 'total',
-            'page' => $request->page
+            'page' => $request->page,
+            'account_errors_updated'  => Settings::get('account_errors_updated'),
+            'account_errors_updating' => Settings::get('account_errors_updating'),
         ]));
     }
 
@@ -26,7 +29,9 @@ class PeriodsController extends Controller
     {
         return view('periods.index')->with(ngInit([
             'type' => 'planned',
-            'page' => $request->page
+            'page' => $request->page,
+            'account_errors_updated'  => Settings::get('account_errors_updated'),
+            'account_errors_updating' => Settings::get('account_errors_updating'),
         ]));
     }
 
@@ -34,7 +39,9 @@ class PeriodsController extends Controller
     {
         return view('periods.index')->with(ngInit([
             'type' => 'payments',
-            'page' => $request->page
+            'page' => $request->page,
+            'account_errors_updated'  => Settings::get('account_errors_updated'),
+            'account_errors_updating' => Settings::get('account_errors_updating'),
         ]));
     }
 

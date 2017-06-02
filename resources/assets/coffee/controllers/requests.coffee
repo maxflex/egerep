@@ -12,6 +12,10 @@ angular
                 request.user_id = data.new_user_id
                 $scope.$apply()
 
+        $scope.recalcErrors = ->
+            $scope.request_errors_updating = true
+            $http.post 'api/command/model-errors', {model: 'requests'}
+
         $scope.howLongAgo = (created_at) ->
             now = moment(Date.now())
             created_at = moment(new Date(created_at).getTime())

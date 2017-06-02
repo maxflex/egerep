@@ -1,6 +1,12 @@
 @extends('app')
 @section('title', 'Периоды')
 @section('controller', 'PeriodsIndex')
+@section('title-right')
+    ошибки обновлены @{{ formatDateTime(account_errors_updated) }}
+    <span class="glyphicon glyphicon-refresh opacity-pointer" ng-click='recalcErrors()' ng-class="{
+        'spinning': account_errors_updating == 1
+    }"></span>
+@stop
 
 @section('content')
 

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Models\Service\Settings;
 
 class RequestsController extends Controller
 {
@@ -22,6 +23,8 @@ class RequestsController extends Controller
             ngInit([
                 'page'  => $request->input('page'),
                 'chosen_state_id' => $state_id,
+                'request_errors_updated'  => Settings::get('request_errors_updated'),
+                'request_errors_updating' => Settings::get('request_errors_updating')
             ])
         );
     }
