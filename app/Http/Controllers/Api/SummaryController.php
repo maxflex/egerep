@@ -444,7 +444,7 @@ class SummaryController extends Controller
             @$total['attachments']['archived']['three_or_more_lessons'] += $d['attachments']['archived']['three_or_more_lessons'];
             @$total['efficency']['total_commission'] += $d['efficency']['total_commission'];
         }
-        $total['requests']['deny_percentage'] = round(@$total['deny_percentage_numerator'] / (@$total['deny_percentage_denumenator']) ?: 1, 2);
+        $total['requests']['deny_percentage'] = round(@$total['deny_percentage_numerator'] / (@$total['deny_percentage_denumenator'] ?: 1), 2);
         $total['efficency']['conversion'] = round($total_efficency['conversion']['numerator'] / ($total_efficency['conversion']['denominator'] ?: 1), 2);
         $total['efficency']['forecast'] = round($total_efficency['forecast']['numerator'] / ($total_efficency['forecast']['denominator'] ?: 1), 2);
         $total['efficency']['request_avg'] = round(@$total['efficency']['total_commission'] / ($total_efficency['conversion']['denominator'] ?: 1), 2);
