@@ -193,8 +193,8 @@
         </div>
         <div class="col-sm-12">
             <div class="result-line">Распределение комиссии по месяцам:</div>
-            <div ng-repeat='commission in stats.commissions'>
-                <span style='display: inline-block; width: 150px'>@{{ monthYear(commission.date) }}</span> @{{ commission.sum | number }}
+            <div ng-repeat='(date, sum) in stats.commissions'>
+                <span style='display: inline-block; width: 150px'>@{{ monthYear(date) }}</span> @{{ sum | number }}
             </div>
 
             <div style="margin-top: 20px; ">

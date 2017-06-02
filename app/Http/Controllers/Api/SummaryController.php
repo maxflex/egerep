@@ -319,13 +319,24 @@ class SummaryController extends Controller
         $user_ids = $request->user_ids ?: [];
 
         $dataQuery = EfficencyData::whereBetween('date', [$date_from, $date_to])->groupBy('group_key');
-
+        $total_commission_query = Attachment::query()->without(['archive', 'review'])
+                                           ->select(\DB::raw('round(sum(if(commission > 0, commission, ' . Account::DEFAULT_COMMISSION . ' * sum))) as `sum`'))
+                                           ->where('attachments.date', '>=', fromDotDate($date_from))
+                                           ->where('attachments.date', '<=', fromDotDate($date_to))
+                                           ->join('account_datas', function($join) {
+                                               $join->on('attachments.tutor_id', '=', 'account_datas.tutor_id')
+                                                    ->on('attachments.client_id', '=', 'account_datas.client_id');
+                                           });
         if (count($user_ids)) {
             $dataQuery->whereIn('user_id', $user_ids);
+            $total_commission_query->whereIn('attachments.user_id', $user_ids);
         }
 
-        $return['commissions'] = self::cloneQuery($dataQuery)->select(DB::raw("date, sum(commission) as `sum`, date_format(date, '%m.%y') as group_key"))
-                                    ->get();
+        // $return['commissions'] = self::cloneQuery($dataQuery)->select(DB::raw("date, sum(commission) as `sum`, date_format(date, '%m.%y') as group_key"))
+        //                             ->get();
+        $return['commissions'] = $total_commission_query->addSelect(\DB::raw("date_format(account_datas.date, '%Y-%m') as account_date"))
+                                                                ->groupBy(\DB::raw('account_date'))
+                                                                ->get()->pluck('sum', 'account_date');
 
         if ($request->type == 'months') {
             $dataQuery->select(['date', \DB::raw("date_format(date, '%m.%y') as group_key")]);
