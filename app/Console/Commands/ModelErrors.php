@@ -7,6 +7,8 @@ use DB;
 use App\Models\Service\Settings;
 use App\Models\Attachment;
 use App\Models\Review;
+use App\Models\Request;
+use App\Models\Account;
 use App\Models\Tutor;
 
 class ModelErrors extends Command
