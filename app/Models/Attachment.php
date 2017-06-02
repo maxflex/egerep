@@ -334,7 +334,7 @@ class Attachment extends Model
             $new_search->hide = $hide;
             $counts['hide'][$hide] = static::search($new_search)->count();
         }
-        foreach(array_merge([''], range(1, 15)) as $error) {
+        foreach(array_merge([''], range(1, 22)) as $error) {
             $new_search = clone $search;
             $new_search->error = $error;
             $counts['error'][$error] = static::search($new_search)->count();
