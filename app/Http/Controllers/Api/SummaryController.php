@@ -315,34 +315,22 @@ class SummaryController extends Controller
         ];
 
         $date_from = fromDotDate($request->date_from ?: Carbon::today()->firstOfMonth()->format('d.m.Y'));
-        $date_to = fromDotDate($request->date_to ?: Carbon::parse($date_from)->lastOfMonth()->format('d.m.Y'));
+        $date_to = fromDotDate($request->date_to ?: Carbon::today()->lastOfMonth()->format('d.m.Y'));
         $user_ids = $request->user_ids ?: [];
 
         $dataQuery = EfficencyData::whereBetween('date', [$date_from, $date_to])->groupBy('group_key');
-        $total_commission_query = Attachment::query()->without(['archive', 'review'])
-                                            ->select(\DB::raw('round(sum(if(commission > 0, commission, ' . Account::DEFAULT_COMMISSION . ' * sum))) as `sum`'))
-                                            ->where('attachments.date', '>=', fromDotDate($date_from))
-                                            ->where('attachments.date', '<=', fromDotDate($date_to))
-                                            ->join('account_datas', function($join) {
-                                                $join->on('attachments.tutor_id', '=', 'account_datas.tutor_id')
-                                                     ->on('attachments.client_id', '=', 'account_datas.client_id');
-                                            });
 
         if (count($user_ids)) {
             $dataQuery->whereIn('user_id', $user_ids);
-            $total_commission_query->whereIn('attachments.user_id', $user_ids);
         }
+
+        $return['commissions'] = self::cloneQuery($dataQuery)->select(DB::raw("date, sum(commission) as `sum`, date_format(date, '%m.%y') as group_key"))
+                                    ->get();
 
         if ($request->type == 'months') {
             $dataQuery->select(['date', \DB::raw("date_format(date, '%m.%y') as group_key")]);
-            $commission_query = static::cloneQuery($total_commission_query)->addSelect([
-                \DB::raw("date_format(attachments.date, '%m.%y') as group_key"),
-            ])->groupBy('group_key');
         } else {
             $dataQuery->select(['user_id', \DB::raw("user_id as group_key")]);
-            $commission_query = static::cloneQuery($total_commission_query)->addSelect([
-                \DB::raw('attachments.user_id as group_key'),
-            ])->groupBy('group_key');
         }
 
         // заявки
@@ -362,11 +350,9 @@ class SummaryController extends Controller
         $dataQuery->addSelect(\DB::raw('sum(attachments_archived_three_or_more_lessons) as attachments_archived_three_or_more_lessons'));
         $dataQuery->addSelect(\DB::raw('sum(conversion_denominator) as conversion_denominator'));
         $dataQuery->addSelect(\DB::raw('sum(forecast) as forecast'));
-
-        $commissions = $commission_query->get()->keyBy('group_key');
+        $dataQuery->addSelect(\DB::raw('sum(commission) as commission'));
 
         foreach ($dataQuery->get()->keyBy('group_key') as $group_key => $data) {
-            $total_commission = ($c = $commissions->get($group_key)) ? $c->sum : 0;
             $request_denominator    = ($data->requests_total - $data->requests_reasoned_deny - $data->requests_checked_reasoned_deny) ?: 1;
             $attachments_denominator = $data->attachments_total ?: 1;
 
@@ -413,9 +399,9 @@ class SummaryController extends Controller
             $return_data['efficency'] = [
                 'conversion'       => round($conversion_numerator / ($conversion_denominator ?: 1), 2),
                 'forecast'         => $forecast,
-                'request_avg'      => round(floatval($total_commission) / ($conversion_denominator ?: 1)),
-                'attachment_avg'   => round(floatval($total_commission) / ($return_data['attachments']['total'] ?: 1)),
-                'total_commission' => round($total_commission)
+                'request_avg'      => round($data->commission / ($conversion_denominator ?: 1)),
+                'attachment_avg'   => round($data->commission / ($return_data['attachments']['total'] ?: 1)),
+                'total_commission' => round($data->commission)
             ];
 
             if (is_int($group_key)) { // user_id
@@ -428,9 +414,6 @@ class SummaryController extends Controller
             }
         }
 
-        $return['commissions'] = $total_commission_query->addSelect(\DB::raw("date_format(account_datas.date, '%Y-%m') as account_date"))
-                                                        ->groupBy(\DB::raw('account_date'))
-                                                        ->get()->pluck('sum', 'account_date');
         if ($request->type == 'months') {
             uksort($return['data'], function ($a, $b) {
                 return Carbon::createFromFormat('m.y', $a)->lt(Carbon::createFromFormat('m.y', $b)) ? -1 : 1;
