@@ -85,7 +85,7 @@ class Attachment
             }
 
             // есть занятия строго после последнего расчета
-            if (self::hasLessons($attachment, '>', $last_meeting_date)) {
+            if ($last_meeting_date && self::hasLessons($attachment, '>', $last_meeting_date)) {
                 $errors[] = 8;
             }
 
