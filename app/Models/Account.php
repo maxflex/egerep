@@ -172,6 +172,9 @@ class Account extends Model
                 }
             }
         });
+        static::saved(function($model) {
+            DB::table('accounts')->where('id', $model->id)->update(['errors' => \App\Models\Helpers\Account::errors($model)]);
+        });
         static::created(function ($model) {
             event(new RecalcTutorDebt($model->tutor_id));
         });
@@ -217,6 +220,10 @@ class Account extends Model
 
         if (isset($request->user_id)) {
             $query->where('user_id', $request->user_id);
+        }
+
+        if (isset($request->error) && $request->error) {
+            $query->whereRaw("FIND_IN_SET({$request->error}, errors)");
         }
 
         return $query;

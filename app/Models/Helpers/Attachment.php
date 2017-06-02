@@ -115,12 +115,12 @@ class Attachment
             }
 
             // занятий к проводке = 0 И дата архивации не совпадает с датой последнего занятия
-            if (! $archive->total_lessons_missing && $archive_date != $last_lesson_date) {
+            if ($last_lesson_date && ! $archive->total_lessons_missing && $archive_date != $last_lesson_date) {
                 $errors[] = 16;
             }
 
             // занятий к проводке = 0 И дата архивации совпадает с датой последнего занятия И стыковка показана
-            if (! $archive->total_lessons_missing && $archive_date == $last_lesson_date && ! $attachment->hide) {
+            if ($last_lesson_date && ! $archive->total_lessons_missing && $archive_date == $last_lesson_date && ! $attachment->hide) {
                 $errors[] = 17;
             }
 

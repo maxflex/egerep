@@ -314,15 +314,15 @@ class SummaryController extends Controller
             'forecast'   => ['numerator' => 0, 'denominator' => 0],
         ];
 
-        $date_from = fromDotDate($request->date_from ?: Carbon::today()->firstOfMonth()->format('d.m.Y'));
+        $date_from = fromDotDate($request->date_from ?: \App\Console\Commands\RecalcEfficency::FIRST_REQUEST_DATE);
         $date_to = fromDotDate($request->date_to ?: Carbon::today()->lastOfMonth()->format('d.m.Y'));
         $user_ids = $request->user_ids ?: [];
 
         $dataQuery = EfficencyData::whereBetween('date', [$date_from, $date_to])->groupBy('group_key');
         $total_commission_query = Attachment::query()->without(['archive', 'review'])
                                            ->select(\DB::raw('round(sum(if(commission > 0, commission, ' . Account::DEFAULT_COMMISSION . ' * sum))) as `sum`'))
-                                           ->where('attachments.date', '>=', fromDotDate($date_from))
-                                           ->where('attachments.date', '<=', fromDotDate($date_to))
+                                           ->where('attachments.date', '>=', $date_from)
+                                           ->where('attachments.date', '<=', $date_to)
                                            ->join('account_datas', function($join) {
                                                $join->on('attachments.tutor_id', '=', 'account_datas.tutor_id')
                                                     ->on('attachments.client_id', '=', 'account_datas.client_id');

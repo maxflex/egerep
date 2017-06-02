@@ -76,10 +76,10 @@
             <option value="">все</option>
             <option disabled>──────────────</option>
             <option
-                    ng-repeat="(state_id, label) in TutorErrors"
-                    data-subtext="@{{ errors_counts[state_id] || '' }}"
-                    value="@{{ state_id }}"
-            >@{{ state_id }}</option>
+                    ng-repeat="(id, name) in TutorErrors"
+                    data-content="<div title='@{{ name }}'>@{{ id }}<small class='text-muted'>@{{ error_counts[id] || '' }}</small></div>"
+                    value="@{{ id }}"
+            ></option>
         </select>
     </div>
 </div>

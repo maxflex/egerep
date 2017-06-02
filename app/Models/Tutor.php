@@ -615,7 +615,7 @@ class Tutor extends Service\Person
     public static function errorsCounts($state, $user_id, $published_state, $egecentr_source)
     {
         $return = [];
-        foreach (range(1, 4) as $error_code) {
+        foreach (range(1, 5) as $error_code) {
             $query = self::addErrorsCondition(self::query(), $error_code);
             static::addSourceCondition($query, $egecentr_source);
             self::addPublishedCondition($query, $published_state);

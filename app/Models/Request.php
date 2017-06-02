@@ -89,6 +89,9 @@ class Request extends Model
                 }
             }
         });
+        static::saved(function($model) {
+            DB::table('requests')->where('id', $model->id)->update(['errors' => \App\Models\Helpers\Request::errors($model)]);
+        });
         static::created(function($model) {
             if ($model->state == 'new') {
                 event(new IncomingRequest($model->id));
@@ -115,7 +118,6 @@ class Request extends Model
 
     /**
      * State counts
-     * @return array [state_id] => state_count
      */
     public static function stateCounts($user_id)
     {
@@ -133,8 +135,24 @@ class Request extends Model
     }
 
     /**
+     * Error counts
+     */
+    public static function errorCounts($user_id)
+    {
+        $return = [];
+        $query = static::query();
+        if ($user_id) {
+            $query->where('user_id', $user_id);
+        }
+        foreach(range(1, 22) as $error) {
+            $return[$error] = cloneQuery($query)->whereRaw("FIND_IN_SET({$error}, errors)")->count();
+        }
+        $return[''] = $query->count();
+        return $return;
+    }
+
+    /**
      * State counts
-     * @return array [user_id] => state_count
      */
     public static function userCounts($state)
     {
@@ -160,6 +178,16 @@ class Request extends Model
     {
         if (isset($user_id) && $user_id !== null) {
             return $query->where('user_id', $user_id);
+        }
+    }
+
+    /**
+     * Search by user id
+     */
+    public function scopeSearchByError($query, $error)
+    {
+        if (isset($error) && $error !== null) {
+            return $query->whereRaw("FIND_IN_SET({$error}, errors)");
         }
     }
 

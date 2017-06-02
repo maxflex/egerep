@@ -76,7 +76,7 @@ class Review extends Model
             $new_search->score = $score;
             $counts['score'][$score] = static::search($new_search)->count();
         }
-        foreach(array_merge([''], range(1, 3)) as $error) {
+        foreach(array_merge([''], range(1, 6)) as $error) {
             $new_search = clone $search;
             $new_search->error = $error;
             $counts['error'][$error] = static::search($new_search)->count();

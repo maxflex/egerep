@@ -1,7 +1,7 @@
 angular
     .module 'Egerep'
 
-    .controller 'PeriodsIndex', ($scope, $timeout, $rootScope, $http, PaymentMethods, DebtTypes, TeacherPaymentTypes, UserService, Confirmed, Account, AccountPayment, Approved) ->
+    .controller 'PeriodsIndex', ($scope, $timeout, $rootScope, $http, PaymentMethods, DebtTypes, TeacherPaymentTypes, UserService, Confirmed, Account, AccountPayment, Approved, AccountErrors) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 

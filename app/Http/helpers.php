@@ -264,3 +264,8 @@
        }
        return 'rgba(' . implode(',', array_values($rgb)) . ')';
     }
+
+    function cloneQuery($q) {
+        $clone = clone $q;
+        return $clone;
+    }

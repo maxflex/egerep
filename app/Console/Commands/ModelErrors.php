@@ -16,7 +16,7 @@ class ModelErrors extends Command
      *
      * @var string
      */
-    protected $signature = 'calc:model_errors {--attachments} {--reviews} {--tutors}';
+    protected $signature = 'calc:model_errors {--attachments} {--reviews} {--tutors} {--requests} {--accounts}';
 
     /**
      * The console command description.
@@ -51,6 +51,14 @@ class ModelErrors extends Command
 
         if ($this->option('tutors')) {
             $this->tutors();
+        }
+
+        if ($this->option('requests')) {
+            $this->requests();
+        }
+
+        if ($this->option('accounts')) {
+            $this->accounts();
         }
     }
 
@@ -104,6 +112,42 @@ class ModelErrors extends Command
 
         Settings::set('tutor_errors_updated', now());
         Settings::set('tutor_errors_updating', 0);
+        $bar->finish();
+    }
+
+    public function requests()
+    {
+        Settings::set('request_errors_updating', 1);
+        $this->info('Getting requests...');
+        $requests = Request::all();
+
+        $bar = $this->output->createProgressBar(count($requests));
+
+        foreach ($requests as $request) {
+            DB::table('requests')->where('id', $request->id)->update(['errors' => \App\Models\Helpers\Request::errors($request)]);
+            $bar->advance();
+        }
+
+        Settings::set('request_errors_updated', now());
+        Settings::set('request_errors_updating', 0);
+        $bar->finish();
+    }
+
+    public function accounts()
+    {
+        Settings::set('account_errors_updating', 1);
+        $this->info('Getting accounts...');
+        $accounts = Account::all();
+
+        $bar = $this->output->createProgressBar(count($accounts));
+
+        foreach ($accounts as $account) {
+            DB::table('accounts')->where('id', $account->id)->update(['errors' => \App\Models\Helpers\Account::errors($account)]);
+            $bar->advance();
+        }
+
+        Settings::set('account_errors_updated', now());
+        Settings::set('account_errors_updating', 0);
         $bar->finish();
     }
 }

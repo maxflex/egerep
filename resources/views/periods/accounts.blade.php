@@ -19,6 +19,15 @@
                         value="@{{id}}">@{{ name }}</option>
             </select>
         </div>
+        <div class="col-sm-3">
+            <select ng-model='search.error' class='selectpicker' ng-change='filter()'>
+                <option value="" data-subtext="@{{ counts.error[''] || '' }}">все</option>
+                <option disabled>──────────────</option>
+                <option ng-repeat='(id, name) in AccountErrors' data-title='test'
+                    data-content="<div title='@{{ name }}'>@{{ id }}<small class='text-muted'>@{{ counts.error[id] || '' }}</small></div>"
+                    value="@{{id}}"></option>
+            </select>
+        </div>
     </div>
 
     <table class="table summary-table table-hover">

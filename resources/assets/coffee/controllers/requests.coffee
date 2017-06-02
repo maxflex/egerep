@@ -1,6 +1,6 @@
 angular
     .module 'Egerep'
-    .controller 'RequestsIndex', ($rootScope, $scope, $timeout, $http, Request, RequestStates, Comment, PhoneService, UserService, Grades, Subjects, PusherService) ->
+    .controller 'RequestsIndex', ($rootScope, $scope, $timeout, $http, Request, RequestStates, Comment, PhoneService, UserService, Grades, Subjects, PusherService, RequestErrors) ->
         bindArguments($scope, arguments)
         _.extend RequestStates, { all : 'все' }
         $rootScope.frontend_loading = true
@@ -52,6 +52,7 @@ angular
             params = '?page=' + page
             params += '&state=' + $scope.chosen_state_id
             params += "&user_id=#{ $scope.user_id }" if $scope.user_id isnt ''
+            params += "&error=#{ $scope.error }" if $scope.error
 
 
             $http.get "api/requests#{ params }"
@@ -70,15 +71,17 @@ angular
             $http.post "api/requests/counts",
                 state: $scope.chosen_state_id
                 user_id: $scope.user_id
+                error: $scope.error
             .then (response) ->
                 $scope.request_state_counts = response.data.request_state_counts
                 $scope.user_counts          = response.data.user_counts
+                $scope.error_counts         = response.data.error_counts
                 console.log 'counts updated'
                 $timeout ->
-                    $('#change-state option, #change-user option').each (index, el) ->
+                    $('#change-state option, #change-user option, #error-counts option').each (index, el) ->
                         $(el).data 'subtext', $(el).attr 'data-subtext'
                         $(el).data 'content', $(el).attr 'data-content'
-                    $('#change-state, #change-user').selectpicker 'refresh'
+                    $('#change-state, #change-user, #error-counts').selectpicker 'refresh'
 
         $scope.hasBannedUsers = ->
             _.filter(UserService.getBannedUsers(), (u) ->

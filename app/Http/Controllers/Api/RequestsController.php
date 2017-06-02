@@ -19,6 +19,7 @@ class RequestsController extends Controller
         return [
             'request_state_counts'  => \App\Models\Request::stateCounts($request->user_id),
             'user_counts'           => \App\Models\Request::userCounts($request->state),
+            'error_counts'           => \App\Models\Request::errorCounts($request->user_id),
         ];
     }
 
@@ -65,7 +66,7 @@ class RequestsController extends Controller
      */
     public function index(Request $request)
     {
-        return \App\Models\Request::searchByState($request->state)->searchByUser($request->user_id)
+        return \App\Models\Request::searchByState($request->state)->searchByUser($request->user_id)->searchByError($request->error)
                                     ->with([
                                         'lists' => function ($query) {
                                             $query->select('id', 'request_id', 'subjects');
