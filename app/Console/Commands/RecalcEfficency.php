@@ -6,6 +6,7 @@ use App\Jobs\RecalcUserEfficency;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
 use App\Models\Service\Settings;
+use App\Models\Account;
 
 class RecalcEfficency extends Command
 {
@@ -87,6 +88,14 @@ class RecalcEfficency extends Command
 
                     $data['forecast'] = static::cloneQuery($attachments_query)->active()->sum('forecast') + static::cloneQuery($attachments_query)->archived()->hasLessonsWithMissing('>=3')->sum('forecast');
 
+                    // коммиссия стыковок
+                    $data['commission'] = static::cloneQuery($attachments_query)->without(['archive', 'review'])
+                                                        ->select(\DB::raw('round(sum(if(commission > 0, commission, ' . Account::DEFAULT_COMMISSION . ' * sum))) as `sum`'))
+                                                        ->join('account_datas', function($join) {
+                                                            $join->on('attachments.tutor_id', '=', 'account_datas.tutor_id')
+                                                                 ->on('attachments.client_id', '=', 'account_datas.client_id');
+                                                        })->value('sum');
+                    
                     // эффективность
                     $attachments_with_request_list = static::cloneQuery($attachments_query)->join('request_lists as rl', 'request_list_id', '=', 'rl.id')->without(['review', 'archive']);
 

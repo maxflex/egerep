@@ -28,7 +28,7 @@ class EfficencyData extends Model
         'attachments_total',
         'forecast',
         'conversion_denominator',
-        //'commission',
+        'commission',
     ];
 
     protected $dates = ['date'];
