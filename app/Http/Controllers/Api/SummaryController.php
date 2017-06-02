@@ -332,8 +332,6 @@ class SummaryController extends Controller
             $total_commission_query->whereIn('attachments.user_id', $user_ids);
         }
 
-        // $return['commissions'] = self::cloneQuery($dataQuery)->select(DB::raw("date, sum(commission) as `sum`, date_format(date, '%m.%y') as group_key"))
-        //                             ->get();
         $return['commissions'] = $total_commission_query->addSelect(\DB::raw("date_format(account_datas.date, '%Y-%m') as account_date"))
                                                                 ->groupBy(\DB::raw('account_date'))
                                                                 ->get()->pluck('sum', 'account_date');

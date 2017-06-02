@@ -74,9 +74,9 @@
         <select ng-model='search.error' class='selectpicker fix-viewport' ng-change='filter()'>
             <option value="" data-subtext="@{{ counts.error[''] || '' }}">все</option>
             <option disabled>──────────────</option>
-            <option ng-repeat='(id, name) in AttachmentErrors'
-                data-subtext="@{{ counts.error[id] || '' }}"
-                value="@{{id}}">@{{ id }}</option>
+            <option ng-repeat='(id, name) in AttachmentErrors' data-title='test'
+                data-content="<div title='@{{ name }}'>@{{ id }}<small class='text-muted'>@{{ counts.error[id] || '' }}</small></div>"
+                value="@{{id}}"></option>
         </select>
     </div>
 </div>
