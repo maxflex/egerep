@@ -58,6 +58,9 @@ class RecalcEfficency extends Command
 
         while ($day->toDateString() > self::FIRST_REQUEST_DATE) {
             foreach($user_ids as $user_id) {
+                // обязательно обнуляем массив
+                $data = [];
+                
                 $request_query = \App\Models\Request::query();
                 $attachments_query = \App\Models\Attachment::query();
 
