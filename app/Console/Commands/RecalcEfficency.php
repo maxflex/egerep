@@ -94,8 +94,8 @@ class RecalcEfficency extends Command
                                                         ->join('account_datas', function($join) {
                                                             $join->on('attachments.tutor_id', '=', 'account_datas.tutor_id')
                                                                  ->on('attachments.client_id', '=', 'account_datas.client_id');
-                                                        })->value('sum');
-                    
+                                                        })->value('sum') ?: 0;
+
                     // эффективность
                     $attachments_with_request_list = static::cloneQuery($attachments_query)->join('request_lists as rl', 'request_list_id', '=', 'rl.id')->without(['review', 'archive']);
 
