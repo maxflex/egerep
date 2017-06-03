@@ -21,18 +21,18 @@ class Review
                 $errors[] = 2;
             }
             // отзыв опубликован + оценка НЕ = от 1 до 10
-            if (! in_array(parseInt($review->score), range(1, 10))) {
+            if (! in_array(intval($review->score), range(1, 10))) {
                 $errors[] = 3;
             }
         } else {
             // оценка = от 6 до 10 + отзыв не опубликован
-            if (in_array(parseInt($review->score), range(6, 10))) {
+            if (in_array(intval($review->score), range(6, 10))) {
                 $errors[] = 6;
             }
         }
 
         // оценка с 1 по 10 + текст отзыва пусто
-        if (in_array(parseInt($review->score), range(1, 10)) && empty(trim($review->comment))) {
+        if (in_array(intval($review->score), range(1, 10)) && empty(trim($review->comment))) {
             $errors[] = 4;
         }
 
