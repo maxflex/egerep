@@ -124,9 +124,6 @@ class RecalcEfficency extends Command
                         $denominator = $request_attachments_count_without_users[$request_id]->attachments_count;
                         $conversion_denominator += $numerator / $denominator;
                     }
-                    if (isset($data['requests_deny'])) {
-                        $conversion_denominator += $data['requests_deny'];
-                    }
                 }
 
                 if ($data['requests_total'] || $data['attachments_total']) {
