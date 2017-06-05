@@ -219,7 +219,7 @@
                         <tr ng-repeat-start="request in stats.efficency" ng-if="!request.attachments.length">
                             <td align="left" colspan="6" width="44%"></td>
                             <td width='20%'>
-                                @{{ UserService.getLogin(request.user_id) }}
+                                @{{ UserService.getLogin(request.user_id) }} @{{ formatDateTime(request.created_at) }}
                             </td>
                             <td><a href="requests/@{{ request.id }}/edit">@{{ request.id }}</a></td>
                             <td>0</td>

@@ -497,7 +497,7 @@ class SummaryController extends Controller
 
         $request_query->where('state', 'deny'); // берем отказные заявки + со стыковками рабочие/заверщенные(3+)
         $request_ids = $request_query->pluck('id')->merge(self::cloneQuery($attachments_with_request_list)->pluck('request_id'))->unique();
-        $requests = \App\Models\Request ::whereIn('id', $request_ids)->select(['id', 'user_id', 'state'])->get()->toArray();
+        $requests = \App\Models\Request ::whereIn('id', $request_ids)->select(['id', 'user_id', 'state', 'created_at'])->get()->toArray();
 
         foreach ($requests as $request) {
             $request['attachments'] = [];

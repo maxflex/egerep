@@ -116,6 +116,7 @@ class Account extends Model
         // приводим в соответствие поля из таблицы egecrm-payments
         $mutual_payments = dbEgecrm('payments')
             ->select(MutualPayment::defaultSelect())
+            ->where('id_status', 6)
             ->where('account_id', $this->id)->get();
 
         return array_merge($payments, $mutual_payments);
