@@ -7,6 +7,7 @@ use Cache;
 use Illuminate\Database\Eloquent\Model;
 use App\Events\IncomingRequest;
 use App\Events\RequestUserChanged;
+use DB;
 
 class Request extends Model
 {
