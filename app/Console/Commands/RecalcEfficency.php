@@ -60,7 +60,8 @@ class RecalcEfficency extends Command
             foreach($user_ids as $user_id) {
                 // обязательно обнуляем массив
                 $data = [];
-                
+                $conversion_denominator = 0;
+
                 $request_query = \App\Models\Request::query();
                 $attachments_query = \App\Models\Attachment::query();
 
@@ -76,6 +77,9 @@ class RecalcEfficency extends Command
                 if ($data['requests_total'] > 0) {
                     foreach (\App\Models\Request::$states as $request_state) {
                         $data['requests_' . $request_state] = static::cloneQuery($request_query)->searchByState($request_state)->count();
+                    }
+                    if (isset($data['requests_deny'])) {
+                        $conversion_denominator += $data['requests_deny'];
                     }
                 }
 
@@ -115,7 +119,6 @@ class RecalcEfficency extends Command
                                                                     ->select(['request_id', \DB::raw('count(a.id) as attachments_count')])
                                                                     ->get()->keyBy('request_id')->all();
 
-                    $conversion_denominator = 0;
                     foreach ($request_ids as $request_id) {
                         $numerator   = $request_attachments_count[$request_id]->attachments_count;
                         $denominator = $request_attachments_count_without_users[$request_id]->attachments_count;
@@ -124,12 +127,12 @@ class RecalcEfficency extends Command
                     if (isset($data['requests_deny'])) {
                         $conversion_denominator += $data['requests_deny'];
                     }
-                    $data['conversion_denominator'] = $conversion_denominator;
                 }
 
                 if ($data['requests_total'] || $data['attachments_total']) {
                     $data['date'] = $day->toDateString();
                     $data['user_id'] = $user_id;
+                    $data['conversion_denominator'] = $conversion_denominator;
                     \App\Models\EfficencyData::create($data);
                 }
             }
