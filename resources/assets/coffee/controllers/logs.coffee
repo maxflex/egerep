@@ -63,12 +63,12 @@ angular
                             ticks:
                                 beginAtZero: true
                                 mix: 0
-                                max: 2
+                                max: 1
                                 userCallback: (label, index, labels) -> return label if Math.floor(label) is label
                             display: true,
                             scaleLabel:
                                 display: true
-                                labelString: 'действий'
+                                # labelString: 'действие'
                         ]
 
         $scope.pageChanged = ->

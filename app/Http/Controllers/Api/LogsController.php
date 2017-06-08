@@ -135,14 +135,51 @@ class LogsController extends Controller
         // }
         $user = dbEgecrm('users')->whereId($search->user_id)->select('login', 'color')->first();
 
+        $red_indexes = [];
+        if (count($data)) {
+            // datasets build
+            $date = new \DateTime($data[0]);
+            foreach($data as $index => $d) {
+                $interval = $date->diff(new \DateTime($d));
+                // если в рамках дня
+                if (($interval->h < 8) || $interval->d || $interval->m) {
+                    // разница в минутах
+                    $difference = ($interval->h * 60) + $interval->i;
+                    if ($difference > 30) {
+                        \Log::info("Difference between " . $date->format("Y-m-d h:i:s") . " and ". $d . " is {$interval->h}h {$interval->i}m");
+                        $red_indexes[] = $index;
+                    }
+                }
+                $date = new \DateTime($d);
+            }
+        }
+
+        // datasets
+        $green_data = array_fill(0, count($data), 0);
+        $red_data = array_fill(0, count($data), 1);
+
+        foreach($red_indexes as $index) {
+            $red_data[$index] = 0;
+            $green_data[$index] = 1;
+        }
+
         return [
             'labels'    => $data,
-            'datasets'  => [[
-                'backgroundColor' => $user->color,
-                'label' => $user->login,
-                'borderWidth' => 0,
-                'data' => array_fill(0, count($data), 1)
-            ]]
+            'datasets'  => [
+                [
+                    'backgroundColor' => 'green',
+                    // 'backgroundColor' => $user->color,
+                    'label' => 'действия вовремя',
+                    'borderWidth' => 0,
+                    'data' => $green_data
+                ],
+                [
+                    'label' => 'действия с опозданием',
+                    'backgroundColor' => 'red',
+                    'borderWidth' => 0,
+                    'data' => $red_data
+                ],
+            ]
         ];
     }
 }
