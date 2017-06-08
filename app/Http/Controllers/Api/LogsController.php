@@ -124,8 +124,7 @@ class LogsController extends Controller
     {
         $search = isset($_COOKIE['logs']) ? json_decode($_COOKIE['logs']) : (object)[];
         // ->groupBy(DB::raw("DATE_FORMAT(`created_at`, '%H:%i')"))
-        $data = Log::search($search)->orderBy('created_at', 'asc')->select('created_at')->pluck('created_at');
-
+        $data = Log::search($search, 'asc')->select('created_at')->pluck('created_at');
         // $return = [];
         // foreach($data as $d) {
         //     $return[] = [
@@ -137,16 +136,19 @@ class LogsController extends Controller
 
         $red_indexes = [];
         if (count($data)) {
-            // datasets build
-            $date = new \DateTime($data[0]);
             foreach($data as $index => $d) {
+                if (! $index) {
+                    $date = new \DateTime($d);
+                    continue; // пропускаем пер
+                }
+                \Log::info('Date:' . $date->format("Y-m-d H:i:s"));
                 $interval = $date->diff(new \DateTime($d));
                 // если в рамках дня
-                if (($interval->h < 8) || $interval->d || $interval->m) {
+                if (($interval->h < 8) && !$interval->d && !$interval->m) {
                     // разница в минутах
                     $difference = ($interval->h * 60) + $interval->i;
                     if ($difference > 30) {
-                        \Log::info("Difference between " . $date->format("Y-m-d h:i:s") . " and ". $d . " is {$interval->h}h {$interval->i}m");
+                        \Log::info("Difference between " . $date->format("Y-m-d H:i:s") . " and ". (new \DateTime($d))->format("Y-m-d H:i:s") . " is {$interval->d}d {$interval->h}h {$interval->i}m");
                         $red_indexes[] = $index;
                     }
                 }
@@ -155,12 +157,12 @@ class LogsController extends Controller
         }
 
         // datasets
-        $green_data = array_fill(0, count($data), 0);
-        $red_data = array_fill(0, count($data), 1);
+        $green_data = array_fill(0, count($data), 1);
+        $red_data = array_fill(0, count($data), 0);
 
         foreach($red_indexes as $index) {
-            $red_data[$index] = 0;
-            $green_data[$index] = 1;
+            $red_data[$index] = 1;
+            $green_data[$index] = 0;
         }
 
         return [

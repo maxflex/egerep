@@ -66,7 +66,7 @@ class Log extends Model
         return $counts;
     }
 
-    public static function search($search)
+    public static function search($search, $order = 'desc')
     {
         $search = filterParams($search);
         $query = Log::query();
@@ -99,6 +99,6 @@ class Log extends Model
             $query->where('row_id', $search->row_id);
         }
 
-        return $query->orderBy('created_at', 'desc');
+        return $query->orderBy('created_at', $order);
     }
 }
