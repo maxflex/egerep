@@ -34,6 +34,10 @@ angular
             $scope.chart = new Chart document.getElementById('graph').getContext('2d'),
                 type: 'bar'
                 options:
+                    legend:
+                        display: false
+                        # fullWidth: false
+                    maintainAspectRatio: false
                     tooltips:
                         callbacks:
                             title: (tooltipItem, data) ->
@@ -81,6 +85,7 @@ angular
             $scope.graph_loading = true
             $http.get('api/logs/graph').then (response) ->
                 console.log(response)
+                $scope.width = response.data.width
                 $timeout ->
                     $scope.chart.data.labels    = response.data.labels
                     $scope.chart.data.datasets  = response.data.datasets

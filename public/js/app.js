@@ -266,925 +266,6 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').directive('comments', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/comments',
-      scope: {
-        user: '=',
-        entityId: '=',
-        trackLoading: '=',
-        entityType: '@'
-      },
-      controller: function($rootScope, $scope, $timeout, Comment, UserService) {
-        var focusModal;
-        $scope.UserService = UserService;
-        $scope.show_max = 4;
-        $scope.show_all_comments = false;
-        $scope.showAllComments = function() {
-          $scope.show_all_comments = true;
-          return focusModal();
-        };
-        $scope.getComments = function() {
-          if ($scope.show_all_comments || $scope.comments.length <= $scope.show_max) {
-            return $scope.comments;
-          } else {
-            return _.last($scope.comments, $scope.show_max - 1);
-          }
-        };
-        $scope.$watch('entityId', function(newVal, oldVal) {
-          return $scope.comments = Comment.query({
-            entity_type: $scope.entityType,
-            entity_id: newVal
-          }, function() {
-            if ($scope.trackLoading) {
-              return $rootScope.loaded_comments++;
-            }
-          });
-        });
-        $scope.formatDateTime = function(date) {
-          return moment(date).format("DD.MM.YY в HH:mm");
-        };
-        $scope.startCommenting = function(event) {
-          $scope.start_commenting = true;
-          return $timeout(function() {
-            return $(event.target).parent().find('input').focus();
-          });
-        };
-        $scope.endCommenting = function() {
-          $scope.comment = '';
-          return $scope.start_commenting = false;
-        };
-        $scope.remove = function(comment_id) {
-          _.find($scope.comments, {
-            id: comment_id
-          }).$remove();
-          return $scope.comments = _.without($scope.comments, _.findWhere($scope.comments, {
-            id: comment_id
-          }));
-        };
-        $scope.edit = function(comment, event) {
-          var element, old_text;
-          old_text = comment.comment;
-          element = $(event.target);
-          comment.is_being_edited = true;
-          element.unbind('keydown').unbind('blur');
-          element.attr('contenteditable', 'true').focus().on('keydown', function(e) {
-            console.log(old_text);
-            if (e.keyCode === 13) {
-              $(this).removeAttr('contenteditable').blur();
-              if ($(this).text().length) {
-                comment.comment = $(this).text();
-                comment.$update();
-              } else {
-                $(this).text(comment.comment);
-              }
-            }
-            if (e.keyCode === 27) {
-              return $(this).blur();
-            }
-          }).on('blur', function(e) {
-            $timeout(function() {
-              var ref;
-              if ((ref = _.find($scope.comments, {
-                id: comment.id
-              })) != null) {
-                ref.is_being_edited = false;
-              }
-              return $scope.$apply();
-            }, 200);
-            if (element.attr('contenteditable')) {
-              console.log(old_text);
-              return element.removeAttr('contenteditable').html(old_text);
-            }
-          });
-        };
-        $scope.submitComment = function(event) {
-          var new_comment;
-          if (event.keyCode === 13) {
-            if ($scope.comment.length) {
-              new_comment = new Comment({
-                comment: $scope.comment,
-                user_id: $scope.user.id,
-                entity_id: $scope.entityId,
-                entity_type: $scope.entityType
-              });
-              new_comment.$save().then(function(response) {
-                console.log(response);
-                new_comment.user = $scope.user;
-                new_comment.id = response.id;
-                return $scope.comments.push(new_comment);
-              });
-            }
-            $scope.endCommenting();
-            focusModal();
-          }
-          if (event.keyCode === 27) {
-            return $(event.target).blur();
-          }
-        };
-        return focusModal = function() {
-          if ($('.modal:visible').length) {
-            $('.modal:visible').focus();
-          }
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('email', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/email',
-      scope: {
-        entity: '='
-      },
-      controller: function($scope) {
-        return $scope.send = function() {
-          return $('#email-modal').modal('show');
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('ngHighlight', function() {
-    return {
-      restrict: 'A',
-      scope: {
-        ngModel: '='
-      },
-      controller: function($scope, $element, $attrs, $timeout) {
-        var refreshInput, refreshSelect;
-        if ($($element).prop('tagName') === 'INPUT') {
-          $($element).on('keyup', function() {
-            return refreshInput(this);
-          });
-          $timeout(function() {
-            return refreshInput($element);
-          }, 500);
-        }
-        if ($($element).prop('tagName') === 'SELECT') {
-          $($element).on('change', function() {
-            return refreshSelect(this);
-          });
-          $timeout(function() {
-            return refreshSelect($element);
-          }, 500);
-        }
-        refreshInput = function(el) {
-          if ($(el).val()) {
-            return $(el).parent().find('input, span').addClass('is-selected');
-          } else {
-            return $(el).parent().find('input, span').removeClass('is-selected');
-          }
-        };
-        return refreshSelect = function(el) {
-          $(el).parent().find('button').removeClass('is-selected');
-          return $(el).parent().find('select > option[value!=""]:selected').parent('select').siblings('button').addClass('is-selected');
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('inputComment', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/input-comment',
-      scope: {
-        entity: '=',
-        commentField: '@'
-      },
-      controller: function($scope, $timeout) {
-        $scope.is_being_commented = false;
-        $scope.blurComment = function() {
-          return $scope.is_being_commented = false;
-        };
-        $scope.focusComment = function() {
-          return $scope.is_being_commented = true;
-        };
-        $scope.startComment = function(event) {
-          $scope.is_being_commented = true;
-          return $timeout(function() {
-            return $(event.target).parent().children('input').focus();
-          });
-        };
-        return $scope.endComment = function(event) {
-          if (event.keyCode === 13) {
-            $(event.target).blur();
-          }
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('metroList', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/metro-list',
-      scope: {
-        markers: '='
-      },
-      controller: function($scope, $element, $attrs) {
-        $scope.inline = $attrs.hasOwnProperty('inline');
-        $scope.one_station = $attrs.hasOwnProperty('oneStation');
-        $scope.short = function(title) {
-          return title.slice(0, 3).toUpperCase();
-        };
-        return $scope.minutes = function(minutes) {
-          return Math.round(minutes);
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('ngMulti', function() {
-    return {
-      restrict: 'E',
-      replace: true,
-      scope: {
-        object: '=',
-        model: '=',
-        noneText: '@'
-      },
-      templateUrl: 'directives/ngmulti',
-      controller: function($scope, $element, $attrs, $timeout) {
-        $scope.highlight = $attrs.hasOwnProperty('highlight');
-        $timeout(function() {
-          return $($element).selectpicker({
-            noneSelectedText: $scope.noneText
-          });
-        });
-        if ($scope.highlight) {
-          return $scope.$watch('model', function(newVal, oldVal) {
-            if (newVal) {
-              return $timeout(function() {
-                $($element).parent().find('button').removeClass('is-selected');
-                return $($element).parent().find('select > option[value!=""]:selected').parent('select').siblings('button').addClass('is-selected');
-              });
-            }
-          });
-        }
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('notifications', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/notifications',
-      scope: {
-        user: '=',
-        entityId: '=',
-        trackLoading: '=',
-        entityType: '@'
-      },
-      controller: function($rootScope, $scope, $timeout, Notification, Notify) {
-        var bindDateMask, handleDateKeycodes, notificate, saveEdit;
-        $scope.show_max = 4;
-        $scope.show_all_notifications = false;
-        $scope.Notification = Notification;
-        $scope.Notify = Notify;
-        bindDateMask = function(notification_id) {
-          return $("#notification-" + notification_id).find('.notification-date-add').mask('d9.y9.y9', {
-            clearIfNotMatch: true
-          });
-        };
-        $timeout(function() {
-          return $scope.notifications.forEach(function(notification) {
-            return bindDateMask(notification.id);
-          });
-        }, 2000);
-        $scope.showAllNotifications = function() {
-          $scope.show_all_notifications = true;
-          return $timeout(function() {
-            return $scope.notifications.forEach(function(notification) {
-              return bindDateMask(notification.id);
-            });
-          });
-        };
-        $scope.getNotifications = function() {
-          if ($scope.show_all_notifications || $scope.notifications.length <= $scope.show_max) {
-            return $scope.notifications;
-          } else {
-            return _.last($scope.notifications, $scope.show_max - 1);
-          }
-        };
-        $scope.hack = function(notification, event) {
-          $scope.setEditing(notification);
-          $(event.target).attr('contenteditable', true).focus();
-        };
-        $scope.setEditing = function(notification) {
-          return $timeout(function() {
-            return notification.is_being_edited = true;
-          }, 200);
-        };
-        $scope.unsetEditing = function(notification) {
-          return $timeout(function() {
-            var ref;
-            return (ref = _.find($scope.notifications, {
-              id: notification.id
-            })) != null ? ref.is_being_edited = false : void 0;
-          }, 150);
-        };
-        $scope.toggle = function(notification) {
-          return $rootScope.toggleEnumServer(notification, 'approved', Notify, Notification);
-        };
-        $scope.$watch('entityId', function(newVal, oldVal) {
-          return $scope.notifications = Notification.query({
-            entity_type: $scope.entityType,
-            entity_id: newVal
-          }, function() {
-            return $timeout(function() {
-              return $scope.$apply();
-            });
-          });
-        });
-        $scope.formatDateTime = function(date) {
-          return moment(date).format("DD.MM.YY в HH:mm");
-        };
-        $scope.startNotificationing = function(event) {
-          $scope.start_notificationing = true;
-          return $timeout(function() {
-            $(event.target).parents('div').first().find('div').focus();
-            return $(event.target).parents('div').first().find('input').mask('d9.y9.y9', {
-              clearIfNotMatch: true
-            });
-          });
-        };
-        $scope.endNotificationing = function(comment_element, date_element) {
-          comment_element.html('');
-          date_element.val('');
-          return $scope.start_notificationing = false;
-        };
-        $scope.remove = function(notification_id) {
-          _.find($scope.notifications, {
-            id: notification_id
-          }).$remove();
-          return $scope.notifications = _.without($scope.notifications, _.findWhere($scope.notifications, {
-            id: notification_id
-          }));
-        };
-        saveEdit = function(notification, event) {
-          var comment, comment_element, date, date_element, parent;
-          event.preventDefault();
-          parent = $(event.target).parents('div').first();
-          comment_element = parent.find('div').last();
-          date_element = parent.find('input');
-          comment = comment_element.text();
-          date = date_element.val();
-          if (date === '' || date.match(/_/)) {
-            console.log('no date', date, date_element);
-            date_element.blur().focus();
-            return;
-          }
-          if (comment === '') {
-            console.log('no comment', comment, comment_element);
-            comment_element.focus();
-            return;
-          }
-          return Notification.update({
-            id: notification.id
-          }, {
-            comment: comment,
-            date: date
-          }, function() {
-            notification.comment = comment;
-            return notification.date = date;
-          });
-        };
-        $scope.editNotification = function(notification, event) {
-          handleDateKeycodes(event);
-          if (event.keyCode === 13) {
-            event.preventDefault();
-            $(event.target).blur();
-            window.getSelection().removeAllRanges();
-            saveEdit(notification, event);
-          }
-          if (event.keyCode === 27) {
-            window.getSelection().removeAllRanges();
-            $(event.target).blur().html(notification.comment);
-            if ($(event.target).is('input')) {
-              $(event.target).siblings('div.new-notification').html(notification.comment);
-            }
-            if ($(event.target).is('div.new-notification')) {
-              $(event.target).siblings('input').val(notification.date);
-            }
-          }
-        };
-        notificate = function(event) {
-          var comment, comment_element, date, date_element, new_notification, parent;
-          parent = $(event.target).parents('div').first();
-          comment_element = parent.find('div').last();
-          date_element = parent.find('input');
-          comment = comment_element.text();
-          date = date_element.val();
-          if (date === '' || date.match(/_/)) {
-            date_element.blur().focus();
-            return;
-          }
-          if (comment === '') {
-            comment_element.focus();
-            return;
-          }
-          new_notification = new Notification({
-            comment: comment,
-            user_id: $scope.user.id,
-            entity_id: $scope.entityId,
-            date: date,
-            entity_type: $scope.entityType
-          });
-          new_notification.$save().then(function(response) {
-            console.log(response);
-            new_notification.user = $scope.user;
-            new_notification.id = response.id;
-            new_notification.approved = 0;
-            $scope.notifications.push(new_notification);
-            return $timeout(function() {
-              return bindDateMask(new_notification.id);
-            });
-          });
-          return $scope.endNotificationing(comment_element, date_element);
-        };
-        handleDateKeycodes = function(event) {
-          var add_days, date, date_node, new_date, ref;
-          if ($(event.target).prop('tagName') === 'DIV') {
-            return;
-          }
-          if ((ref = event.keyCode) === 38 || ref === 40) {
-            event.preventDefault();
-            date_node = $(event.target).parents('div').first().find('input');
-            date = date_node.val();
-            if (date.match(/_/)) {
-              return date_node.val($rootScope.formatDate(moment()));
-            } else {
-              add_days = event.keyCode === 38 ? 1 : -1;
-              new_date = $rootScope.formatDate(moment('20' + convertDate(date)).add({
-                day: add_days
-              }));
-              return date_node.val(new_date);
-            }
-          }
-        };
-        $scope.submitNotification = function(event) {
-          handleDateKeycodes(event);
-          if (event.keyCode === 13) {
-            event.preventDefault();
-            notificate(event);
-          }
-          if (event.keyCode === 27) {
-            window.getSelection().removeAllRanges();
-            $(event.target).blur();
-            $scope.start_notificationing = false;
-          }
-        };
-        return $scope.defaultNotification = function() {
-          var new_notification;
-          new_notification = new Notification({
-            comment: 'стандартное напоминание',
-            user_id: $scope.user.id,
-            entity_id: $scope.entityId,
-            entity_type: $scope.entityType,
-            approved: 1,
-            date: moment(convertDate($scope.$parent.selected_attachment.date)).add(2, 'days').format('DD.MM.YY')
-          });
-          return new_notification.$save().then(function(response) {
-            new_notification.user = $scope.user;
-            new_notification.id = response.id;
-            new_notification.approved = 1;
-            $scope.notifications.push(new_notification);
-            return $timeout(function() {
-              return bindDateMask(new_notification.id);
-            });
-          });
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('pencilInput', function() {
-    return {
-      restrict: 'E',
-      replace: true,
-      templateUrl: 'directives/pencil-input',
-      scope: {
-        model: '='
-      },
-      controller: function($scope, $timeout, $element, $controller) {
-        $scope.is_being_commented = false;
-        $scope.blurComment = function() {
-          return $scope.is_being_commented = false;
-        };
-        $scope.focusComment = function() {
-          return $scope.is_being_commented = true;
-        };
-        $scope.startComment = function(event) {
-          $scope.is_being_commented = true;
-          return $timeout(function() {
-            return $(event.target).parent().children('div').focus();
-          });
-        };
-        return $scope.watchEnter = function(event) {
-          var ref;
-          if ((ref = event.keyCode) === 13 || ref === 27) {
-            if (event.keyCode === 13) {
-              $scope.model = $(event.target).parent().children('div').text();
-            }
-            $(event.target).parent().children('div').text($scope.model);
-            event.preventDefault();
-            $(event.target).blur();
-          }
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('phones', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/phones',
-      scope: {
-        entity: '='
-      },
-      controller: function($scope, $timeout, $rootScope, PhoneService, UserService, $interval) {
-        var recodringLink;
-        $scope.PhoneService = PhoneService;
-        $scope.UserService = UserService;
-        $scope.is_playing_stage = 'stop';
-        $scope.isOpened = false;
-        $rootScope.dataLoaded.promise.then(function(data) {
-          return $scope.level = $scope.entity.phones && $scope.entity.phones.length ? $scope.entity.phones.length : 1;
-        });
-        $scope.nextLevel = function() {
-          return $scope.level++;
-        };
-        $scope.phoneMaskControl = function(event) {
-          var el, phone_id;
-          el = $(event.target);
-          phone_id = el.attr('ng-model').split('.')[1];
-          return $scope.entity[phone_id] = $(event.target).val();
-        };
-        $scope.isFull = function(number) {
-          if (number === void 0 || number === "") {
-            return false;
-          }
-          return !number.match(/_/);
-        };
-        $scope.sms = function(number) {
-          $('#sms-modal').modal('show');
-          return $rootScope.sms_number = number;
-        };
-        $scope.info = function(number) {
-          $scope.api_number = number;
-          $scope.mango_info = null;
-          $('#api-phone-info').modal('show');
-          if ($scope.isOpened === false) {
-            $('#api-phone-info').on('hidden.bs.modal', function() {
-              $scope.isOpened = true;
-              if ($scope.audio) {
-                $scope.audio.pause();
-                $scope.audio = null;
-                $scope.is_playing_stage = 'stop';
-                return $scope.is_playing = null;
-              }
-            });
-          }
-          return PhoneService.info(number).then(function(response) {
-            return $scope.mango_info = response.data;
-          });
-        };
-        $scope.formatDateTime = function(date) {
-          return moment(date).format("DD.MM.YY в HH:mm");
-        };
-        $scope.time = function(seconds) {
-          return moment(0).seconds(seconds).format("mm:ss");
-        };
-        $scope.getNumberTitle = function(number) {
-          if (number === PhoneService.clean($scope.api_number)) {
-            return 'текущий номер';
-          }
-          return number;
-        };
-        recodringLink = function(recording_id) {
-          var api_key, api_salt, sha256, sign, timestamp;
-          api_key = 'goea67jyo7i63nf4xdtjn59npnfcee5l';
-          api_salt = 't9mp7vdltmhn0nhnq0x4vwha9ncdr8pa';
-          timestamp = moment().add(5, 'minute').unix();
-          sha256 = new jsSHA('SHA-256', 'TEXT');
-          sha256.update(api_key + timestamp + recording_id + api_salt);
-          sign = sha256.getHash('HEX');
-          return "https://app.mango-office.ru/vpbx/queries/recording/link/" + recording_id + "/play/" + api_key + "/" + timestamp + "/" + sign;
-        };
-        $scope.intervalStart = function() {
-          return $scope.interval = $interval(function() {
-            if ($scope.audio) {
-              $scope.current_time = angular.copy($scope.audio.currentTime);
-              $scope.prc = (($scope.current_time * 100) / $scope.audio.duration).toFixed(2);
-              if (parseInt($scope.prc) === 100) {
-                return $scope.stop();
-              }
-            }
-          }, 10);
-        };
-        $scope.intervalCancel = function() {
-          return $interval.cancel($scope.interval);
-        };
-        $scope.initAudio = function(recording_id) {
-          if ($scope.is_playing) {
-            $scope.stop();
-          }
-          $scope.audio = new Audio(recodringLink(recording_id));
-          $scope.current_time = 0;
-          $scope.prc = 0;
-          $scope.is_playing_stage = 'start';
-          return $scope.is_playing = recording_id;
-        };
-        $scope.pause = function() {
-          $scope.intervalCancel();
-          if ($scope.audio) {
-            $scope.audio.pause();
-          }
-          return $scope.is_playing_stage = 'pause';
-        };
-        $scope.play = function(recording_id) {
-          if (!$scope.isPlaying(recording_id)) {
-            $scope.initAudio(recording_id);
-          }
-          if ($scope.is_playing_stage === 'play') {
-            return $scope.pause();
-          } else {
-            $scope.audio.play();
-            $scope.is_playing_stage = 'play';
-            return $scope.intervalStart();
-          }
-        };
-        $scope.isPlaying = function(recording_id) {
-          return $scope.is_playing === recording_id;
-        };
-        $scope.stop = function() {
-          $scope.prc = 0;
-          $scope.is_playing = null;
-          $scope.audio.pause();
-          $scope.audio = null;
-          $scope.is_playing_stage = 'stop';
-          return $scope.intervalCancel();
-        };
-        return $scope.setCurentTime = function(e) {
-          var time, width;
-          width = angular.element(e.target).width();
-          $scope.prc = (e.offsetX * 100) / width;
-          time = ($scope.audio.duration * $scope.prc) / 100;
-          return $scope.audio.currentTime = time;
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('plural', function() {
-    return {
-      restrict: 'E',
-      scope: {
-        count: '=',
-        type: '@',
-        noneText: '@',
-        additional: '='
-      },
-      templateUrl: 'directives/plural',
-      controller: function($scope, $element, $attrs, $timeout) {
-        $scope.textOnly = $attrs.hasOwnProperty('textOnly');
-        $scope.hideZero = $attrs.hasOwnProperty('hideZero');
-        return $scope.when = {
-          'age': ['год', 'года', 'лет'],
-          'student': ['ученик', 'ученика', 'учеников'],
-          'minute': ['минуту', 'минуты', 'минут'],
-          'hour': ['час', 'часа', 'часов'],
-          'day': ['день', 'дня', 'дней'],
-          'meeting': ['встреча', 'встречи', 'встреч'],
-          'score': ['балл', 'балла', 'баллов'],
-          'rubbles': ['рубль', 'рубля', 'рублей'],
-          'lesson': ['занятие', 'занятия', 'занятий'],
-          'client': ['клиент', 'клиента', 'клиентов'],
-          'mark': ['оценки', 'оценок', 'оценок'],
-          'request': ['заявка', 'заявки', 'заявок']
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('plus', function() {
-    return {
-      restrict: 'E',
-      scope: {
-        previous: '=',
-        count: '='
-      },
-      templateUrl: 'directives/plus'
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('publishedField', function() {
-    return {
-      restrict: 'E',
-      replace: true,
-      templateUrl: 'directives/published-field',
-      scope: {
-        inEgeCentr: '@'
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('securityNotification', function() {
-    return {
-      restrict: 'E',
-      scope: {
-        tutor: '='
-      },
-      templateUrl: 'directives/security-notification',
-      controller: function($scope, Tutor) {
-        return $scope.toggleNotification = function(index) {
-          var security_notification;
-          security_notification = angular.copy($scope.tutor.security_notification);
-          security_notification[index] = !security_notification[index];
-          return Tutor.update({
-            id: $scope.tutor.id,
-            security_notification: security_notification
-          }, function() {
-            return $scope.tutor.security_notification = angular.copy(security_notification);
-          });
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('ngSelect', function() {
-    return {
-      restrict: 'E',
-      replace: true,
-      scope: {
-        object: '=',
-        model: '=',
-        noneText: '@'
-      },
-      templateUrl: 'directives/ngselect',
-      controller: function($scope, $element, $attrs) {
-        if (!$scope.noneText) {
-          return $scope.model = _.first(Object.keys($scope.object));
-        }
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('sms', function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'directives/sms',
-      scope: {
-        number: '='
-      },
-      controller: function($scope, $timeout, Sms, PusherService) {
-        var scrollDown;
-        PusherService.bind('SmsStatusUpdate', function(data) {
-          return angular.forEach($scope.history, function(val, key) {
-            if (val.id_smsru === data.id_smsru) {
-              val.id_status = data.id_status;
-              $scope.$apply();
-            }
-            return console.log(val, key);
-          });
-        });
-        $scope.mass = false;
-        $scope.smsCount = function() {
-          return SmsCounter.count($scope.message || '').messages;
-        };
-        $scope.send = function() {
-          var sms;
-          if ($scope.message) {
-            $scope.sms_sending = true;
-            ajaxStart();
-            sms = new Sms({
-              message: $scope.message,
-              to: $scope.number,
-              mass: $scope.mass
-            });
-            return sms.$save().then(function(data) {
-              ajaxEnd();
-              $scope.sms_sending = false;
-              $scope.message = '';
-              $scope.history.push(data);
-              return scrollDown();
-            });
-          }
-        };
-        $scope.$watch('number', function(newVal, oldVal) {
-          console.log($scope.$parent.formatDateTime($scope.created_at));
-          if (newVal) {
-            $scope.history = Sms.query({
-              number: newVal
-            });
-          }
-          return scrollDown();
-        });
-        return scrollDown = function() {
-          return $timeout(function() {
-            return $("#sms-history").animate({
-              scrollTop: $(window).height()
-            }, "fast");
-          });
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('tutorPhoto', function() {
-    return {
-      restrict: 'E',
-      replace: true,
-      scope: {
-        tutor: '=',
-        version: '='
-      },
-      templateUrl: 'directives/tutor-photo'
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('userSwitch', function() {
-    return {
-      restrict: 'E',
-      scope: {
-        entity: '=',
-        resource: '=',
-        userId: '@'
-      },
-      templateUrl: 'directives/user-switch',
-      controller: function($scope) {
-        return $scope.UserService = $scope.$parent.UserService;
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('user', function() {
-    return {
-      restrict: 'E',
-      scope: {
-        model: '='
-      },
-      templateUrl: 'directives/user'
-    };
-  });
-
-}).call(this);
-
-(function() {
   angular.module('Egerep').factory('Model', function($resource) {
     return $resource('api/models/:id', {}, {
       update: {
@@ -3370,6 +2451,10 @@
       return $scope.chart = new Chart(document.getElementById('graph').getContext('2d'), {
         type: 'bar',
         options: {
+          legend: {
+            display: false
+          },
+          maintainAspectRatio: false,
           tooltips: {
             callbacks: {
               title: function(tooltipItem, data) {
@@ -3434,6 +2519,7 @@
       $scope.graph_loading = true;
       return $http.get('api/logs/graph').then(function(response) {
         console.log(response);
+        $scope.width = response.data.width;
         return $timeout(function() {
           $scope.chart.data.labels = response.data.labels;
           $scope.chart.data.datasets = response.data.datasets;
@@ -4961,6 +4047,925 @@
       $scope.form_changed = true;
       $('#gmap-modal').modal('hide');
       filterMarkers();
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('comments', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/comments',
+      scope: {
+        user: '=',
+        entityId: '=',
+        trackLoading: '=',
+        entityType: '@'
+      },
+      controller: function($rootScope, $scope, $timeout, Comment, UserService) {
+        var focusModal;
+        $scope.UserService = UserService;
+        $scope.show_max = 4;
+        $scope.show_all_comments = false;
+        $scope.showAllComments = function() {
+          $scope.show_all_comments = true;
+          return focusModal();
+        };
+        $scope.getComments = function() {
+          if ($scope.show_all_comments || $scope.comments.length <= $scope.show_max) {
+            return $scope.comments;
+          } else {
+            return _.last($scope.comments, $scope.show_max - 1);
+          }
+        };
+        $scope.$watch('entityId', function(newVal, oldVal) {
+          return $scope.comments = Comment.query({
+            entity_type: $scope.entityType,
+            entity_id: newVal
+          }, function() {
+            if ($scope.trackLoading) {
+              return $rootScope.loaded_comments++;
+            }
+          });
+        });
+        $scope.formatDateTime = function(date) {
+          return moment(date).format("DD.MM.YY в HH:mm");
+        };
+        $scope.startCommenting = function(event) {
+          $scope.start_commenting = true;
+          return $timeout(function() {
+            return $(event.target).parent().find('input').focus();
+          });
+        };
+        $scope.endCommenting = function() {
+          $scope.comment = '';
+          return $scope.start_commenting = false;
+        };
+        $scope.remove = function(comment_id) {
+          _.find($scope.comments, {
+            id: comment_id
+          }).$remove();
+          return $scope.comments = _.without($scope.comments, _.findWhere($scope.comments, {
+            id: comment_id
+          }));
+        };
+        $scope.edit = function(comment, event) {
+          var element, old_text;
+          old_text = comment.comment;
+          element = $(event.target);
+          comment.is_being_edited = true;
+          element.unbind('keydown').unbind('blur');
+          element.attr('contenteditable', 'true').focus().on('keydown', function(e) {
+            console.log(old_text);
+            if (e.keyCode === 13) {
+              $(this).removeAttr('contenteditable').blur();
+              if ($(this).text().length) {
+                comment.comment = $(this).text();
+                comment.$update();
+              } else {
+                $(this).text(comment.comment);
+              }
+            }
+            if (e.keyCode === 27) {
+              return $(this).blur();
+            }
+          }).on('blur', function(e) {
+            $timeout(function() {
+              var ref;
+              if ((ref = _.find($scope.comments, {
+                id: comment.id
+              })) != null) {
+                ref.is_being_edited = false;
+              }
+              return $scope.$apply();
+            }, 200);
+            if (element.attr('contenteditable')) {
+              console.log(old_text);
+              return element.removeAttr('contenteditable').html(old_text);
+            }
+          });
+        };
+        $scope.submitComment = function(event) {
+          var new_comment;
+          if (event.keyCode === 13) {
+            if ($scope.comment.length) {
+              new_comment = new Comment({
+                comment: $scope.comment,
+                user_id: $scope.user.id,
+                entity_id: $scope.entityId,
+                entity_type: $scope.entityType
+              });
+              new_comment.$save().then(function(response) {
+                console.log(response);
+                new_comment.user = $scope.user;
+                new_comment.id = response.id;
+                return $scope.comments.push(new_comment);
+              });
+            }
+            $scope.endCommenting();
+            focusModal();
+          }
+          if (event.keyCode === 27) {
+            return $(event.target).blur();
+          }
+        };
+        return focusModal = function() {
+          if ($('.modal:visible').length) {
+            $('.modal:visible').focus();
+          }
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('email', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/email',
+      scope: {
+        entity: '='
+      },
+      controller: function($scope) {
+        return $scope.send = function() {
+          return $('#email-modal').modal('show');
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('ngHighlight', function() {
+    return {
+      restrict: 'A',
+      scope: {
+        ngModel: '='
+      },
+      controller: function($scope, $element, $attrs, $timeout) {
+        var refreshInput, refreshSelect;
+        if ($($element).prop('tagName') === 'INPUT') {
+          $($element).on('keyup', function() {
+            return refreshInput(this);
+          });
+          $timeout(function() {
+            return refreshInput($element);
+          }, 500);
+        }
+        if ($($element).prop('tagName') === 'SELECT') {
+          $($element).on('change', function() {
+            return refreshSelect(this);
+          });
+          $timeout(function() {
+            return refreshSelect($element);
+          }, 500);
+        }
+        refreshInput = function(el) {
+          if ($(el).val()) {
+            return $(el).parent().find('input, span').addClass('is-selected');
+          } else {
+            return $(el).parent().find('input, span').removeClass('is-selected');
+          }
+        };
+        return refreshSelect = function(el) {
+          $(el).parent().find('button').removeClass('is-selected');
+          return $(el).parent().find('select > option[value!=""]:selected').parent('select').siblings('button').addClass('is-selected');
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('inputComment', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/input-comment',
+      scope: {
+        entity: '=',
+        commentField: '@'
+      },
+      controller: function($scope, $timeout) {
+        $scope.is_being_commented = false;
+        $scope.blurComment = function() {
+          return $scope.is_being_commented = false;
+        };
+        $scope.focusComment = function() {
+          return $scope.is_being_commented = true;
+        };
+        $scope.startComment = function(event) {
+          $scope.is_being_commented = true;
+          return $timeout(function() {
+            return $(event.target).parent().children('input').focus();
+          });
+        };
+        return $scope.endComment = function(event) {
+          if (event.keyCode === 13) {
+            $(event.target).blur();
+          }
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('metroList', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/metro-list',
+      scope: {
+        markers: '='
+      },
+      controller: function($scope, $element, $attrs) {
+        $scope.inline = $attrs.hasOwnProperty('inline');
+        $scope.one_station = $attrs.hasOwnProperty('oneStation');
+        $scope.short = function(title) {
+          return title.slice(0, 3).toUpperCase();
+        };
+        return $scope.minutes = function(minutes) {
+          return Math.round(minutes);
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('ngMulti', function() {
+    return {
+      restrict: 'E',
+      replace: true,
+      scope: {
+        object: '=',
+        model: '=',
+        noneText: '@'
+      },
+      templateUrl: 'directives/ngmulti',
+      controller: function($scope, $element, $attrs, $timeout) {
+        $scope.highlight = $attrs.hasOwnProperty('highlight');
+        $timeout(function() {
+          return $($element).selectpicker({
+            noneSelectedText: $scope.noneText
+          });
+        });
+        if ($scope.highlight) {
+          return $scope.$watch('model', function(newVal, oldVal) {
+            if (newVal) {
+              return $timeout(function() {
+                $($element).parent().find('button').removeClass('is-selected');
+                return $($element).parent().find('select > option[value!=""]:selected').parent('select').siblings('button').addClass('is-selected');
+              });
+            }
+          });
+        }
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('notifications', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/notifications',
+      scope: {
+        user: '=',
+        entityId: '=',
+        trackLoading: '=',
+        entityType: '@'
+      },
+      controller: function($rootScope, $scope, $timeout, Notification, Notify) {
+        var bindDateMask, handleDateKeycodes, notificate, saveEdit;
+        $scope.show_max = 4;
+        $scope.show_all_notifications = false;
+        $scope.Notification = Notification;
+        $scope.Notify = Notify;
+        bindDateMask = function(notification_id) {
+          return $("#notification-" + notification_id).find('.notification-date-add').mask('d9.y9.y9', {
+            clearIfNotMatch: true
+          });
+        };
+        $timeout(function() {
+          return $scope.notifications.forEach(function(notification) {
+            return bindDateMask(notification.id);
+          });
+        }, 2000);
+        $scope.showAllNotifications = function() {
+          $scope.show_all_notifications = true;
+          return $timeout(function() {
+            return $scope.notifications.forEach(function(notification) {
+              return bindDateMask(notification.id);
+            });
+          });
+        };
+        $scope.getNotifications = function() {
+          if ($scope.show_all_notifications || $scope.notifications.length <= $scope.show_max) {
+            return $scope.notifications;
+          } else {
+            return _.last($scope.notifications, $scope.show_max - 1);
+          }
+        };
+        $scope.hack = function(notification, event) {
+          $scope.setEditing(notification);
+          $(event.target).attr('contenteditable', true).focus();
+        };
+        $scope.setEditing = function(notification) {
+          return $timeout(function() {
+            return notification.is_being_edited = true;
+          }, 200);
+        };
+        $scope.unsetEditing = function(notification) {
+          return $timeout(function() {
+            var ref;
+            return (ref = _.find($scope.notifications, {
+              id: notification.id
+            })) != null ? ref.is_being_edited = false : void 0;
+          }, 150);
+        };
+        $scope.toggle = function(notification) {
+          return $rootScope.toggleEnumServer(notification, 'approved', Notify, Notification);
+        };
+        $scope.$watch('entityId', function(newVal, oldVal) {
+          return $scope.notifications = Notification.query({
+            entity_type: $scope.entityType,
+            entity_id: newVal
+          }, function() {
+            return $timeout(function() {
+              return $scope.$apply();
+            });
+          });
+        });
+        $scope.formatDateTime = function(date) {
+          return moment(date).format("DD.MM.YY в HH:mm");
+        };
+        $scope.startNotificationing = function(event) {
+          $scope.start_notificationing = true;
+          return $timeout(function() {
+            $(event.target).parents('div').first().find('div').focus();
+            return $(event.target).parents('div').first().find('input').mask('d9.y9.y9', {
+              clearIfNotMatch: true
+            });
+          });
+        };
+        $scope.endNotificationing = function(comment_element, date_element) {
+          comment_element.html('');
+          date_element.val('');
+          return $scope.start_notificationing = false;
+        };
+        $scope.remove = function(notification_id) {
+          _.find($scope.notifications, {
+            id: notification_id
+          }).$remove();
+          return $scope.notifications = _.without($scope.notifications, _.findWhere($scope.notifications, {
+            id: notification_id
+          }));
+        };
+        saveEdit = function(notification, event) {
+          var comment, comment_element, date, date_element, parent;
+          event.preventDefault();
+          parent = $(event.target).parents('div').first();
+          comment_element = parent.find('div').last();
+          date_element = parent.find('input');
+          comment = comment_element.text();
+          date = date_element.val();
+          if (date === '' || date.match(/_/)) {
+            console.log('no date', date, date_element);
+            date_element.blur().focus();
+            return;
+          }
+          if (comment === '') {
+            console.log('no comment', comment, comment_element);
+            comment_element.focus();
+            return;
+          }
+          return Notification.update({
+            id: notification.id
+          }, {
+            comment: comment,
+            date: date
+          }, function() {
+            notification.comment = comment;
+            return notification.date = date;
+          });
+        };
+        $scope.editNotification = function(notification, event) {
+          handleDateKeycodes(event);
+          if (event.keyCode === 13) {
+            event.preventDefault();
+            $(event.target).blur();
+            window.getSelection().removeAllRanges();
+            saveEdit(notification, event);
+          }
+          if (event.keyCode === 27) {
+            window.getSelection().removeAllRanges();
+            $(event.target).blur().html(notification.comment);
+            if ($(event.target).is('input')) {
+              $(event.target).siblings('div.new-notification').html(notification.comment);
+            }
+            if ($(event.target).is('div.new-notification')) {
+              $(event.target).siblings('input').val(notification.date);
+            }
+          }
+        };
+        notificate = function(event) {
+          var comment, comment_element, date, date_element, new_notification, parent;
+          parent = $(event.target).parents('div').first();
+          comment_element = parent.find('div').last();
+          date_element = parent.find('input');
+          comment = comment_element.text();
+          date = date_element.val();
+          if (date === '' || date.match(/_/)) {
+            date_element.blur().focus();
+            return;
+          }
+          if (comment === '') {
+            comment_element.focus();
+            return;
+          }
+          new_notification = new Notification({
+            comment: comment,
+            user_id: $scope.user.id,
+            entity_id: $scope.entityId,
+            date: date,
+            entity_type: $scope.entityType
+          });
+          new_notification.$save().then(function(response) {
+            console.log(response);
+            new_notification.user = $scope.user;
+            new_notification.id = response.id;
+            new_notification.approved = 0;
+            $scope.notifications.push(new_notification);
+            return $timeout(function() {
+              return bindDateMask(new_notification.id);
+            });
+          });
+          return $scope.endNotificationing(comment_element, date_element);
+        };
+        handleDateKeycodes = function(event) {
+          var add_days, date, date_node, new_date, ref;
+          if ($(event.target).prop('tagName') === 'DIV') {
+            return;
+          }
+          if ((ref = event.keyCode) === 38 || ref === 40) {
+            event.preventDefault();
+            date_node = $(event.target).parents('div').first().find('input');
+            date = date_node.val();
+            if (date.match(/_/)) {
+              return date_node.val($rootScope.formatDate(moment()));
+            } else {
+              add_days = event.keyCode === 38 ? 1 : -1;
+              new_date = $rootScope.formatDate(moment('20' + convertDate(date)).add({
+                day: add_days
+              }));
+              return date_node.val(new_date);
+            }
+          }
+        };
+        $scope.submitNotification = function(event) {
+          handleDateKeycodes(event);
+          if (event.keyCode === 13) {
+            event.preventDefault();
+            notificate(event);
+          }
+          if (event.keyCode === 27) {
+            window.getSelection().removeAllRanges();
+            $(event.target).blur();
+            $scope.start_notificationing = false;
+          }
+        };
+        return $scope.defaultNotification = function() {
+          var new_notification;
+          new_notification = new Notification({
+            comment: 'стандартное напоминание',
+            user_id: $scope.user.id,
+            entity_id: $scope.entityId,
+            entity_type: $scope.entityType,
+            approved: 1,
+            date: moment(convertDate($scope.$parent.selected_attachment.date)).add(2, 'days').format('DD.MM.YY')
+          });
+          return new_notification.$save().then(function(response) {
+            new_notification.user = $scope.user;
+            new_notification.id = response.id;
+            new_notification.approved = 1;
+            $scope.notifications.push(new_notification);
+            return $timeout(function() {
+              return bindDateMask(new_notification.id);
+            });
+          });
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('pencilInput', function() {
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: 'directives/pencil-input',
+      scope: {
+        model: '='
+      },
+      controller: function($scope, $timeout, $element, $controller) {
+        $scope.is_being_commented = false;
+        $scope.blurComment = function() {
+          return $scope.is_being_commented = false;
+        };
+        $scope.focusComment = function() {
+          return $scope.is_being_commented = true;
+        };
+        $scope.startComment = function(event) {
+          $scope.is_being_commented = true;
+          return $timeout(function() {
+            return $(event.target).parent().children('div').focus();
+          });
+        };
+        return $scope.watchEnter = function(event) {
+          var ref;
+          if ((ref = event.keyCode) === 13 || ref === 27) {
+            if (event.keyCode === 13) {
+              $scope.model = $(event.target).parent().children('div').text();
+            }
+            $(event.target).parent().children('div').text($scope.model);
+            event.preventDefault();
+            $(event.target).blur();
+          }
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('phones', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/phones',
+      scope: {
+        entity: '='
+      },
+      controller: function($scope, $timeout, $rootScope, PhoneService, UserService, $interval) {
+        var recodringLink;
+        $scope.PhoneService = PhoneService;
+        $scope.UserService = UserService;
+        $scope.is_playing_stage = 'stop';
+        $scope.isOpened = false;
+        $rootScope.dataLoaded.promise.then(function(data) {
+          return $scope.level = $scope.entity.phones && $scope.entity.phones.length ? $scope.entity.phones.length : 1;
+        });
+        $scope.nextLevel = function() {
+          return $scope.level++;
+        };
+        $scope.phoneMaskControl = function(event) {
+          var el, phone_id;
+          el = $(event.target);
+          phone_id = el.attr('ng-model').split('.')[1];
+          return $scope.entity[phone_id] = $(event.target).val();
+        };
+        $scope.isFull = function(number) {
+          if (number === void 0 || number === "") {
+            return false;
+          }
+          return !number.match(/_/);
+        };
+        $scope.sms = function(number) {
+          $('#sms-modal').modal('show');
+          return $rootScope.sms_number = number;
+        };
+        $scope.info = function(number) {
+          $scope.api_number = number;
+          $scope.mango_info = null;
+          $('#api-phone-info').modal('show');
+          if ($scope.isOpened === false) {
+            $('#api-phone-info').on('hidden.bs.modal', function() {
+              $scope.isOpened = true;
+              if ($scope.audio) {
+                $scope.audio.pause();
+                $scope.audio = null;
+                $scope.is_playing_stage = 'stop';
+                return $scope.is_playing = null;
+              }
+            });
+          }
+          return PhoneService.info(number).then(function(response) {
+            return $scope.mango_info = response.data;
+          });
+        };
+        $scope.formatDateTime = function(date) {
+          return moment(date).format("DD.MM.YY в HH:mm");
+        };
+        $scope.time = function(seconds) {
+          return moment(0).seconds(seconds).format("mm:ss");
+        };
+        $scope.getNumberTitle = function(number) {
+          if (number === PhoneService.clean($scope.api_number)) {
+            return 'текущий номер';
+          }
+          return number;
+        };
+        recodringLink = function(recording_id) {
+          var api_key, api_salt, sha256, sign, timestamp;
+          api_key = 'goea67jyo7i63nf4xdtjn59npnfcee5l';
+          api_salt = 't9mp7vdltmhn0nhnq0x4vwha9ncdr8pa';
+          timestamp = moment().add(5, 'minute').unix();
+          sha256 = new jsSHA('SHA-256', 'TEXT');
+          sha256.update(api_key + timestamp + recording_id + api_salt);
+          sign = sha256.getHash('HEX');
+          return "https://app.mango-office.ru/vpbx/queries/recording/link/" + recording_id + "/play/" + api_key + "/" + timestamp + "/" + sign;
+        };
+        $scope.intervalStart = function() {
+          return $scope.interval = $interval(function() {
+            if ($scope.audio) {
+              $scope.current_time = angular.copy($scope.audio.currentTime);
+              $scope.prc = (($scope.current_time * 100) / $scope.audio.duration).toFixed(2);
+              if (parseInt($scope.prc) === 100) {
+                return $scope.stop();
+              }
+            }
+          }, 10);
+        };
+        $scope.intervalCancel = function() {
+          return $interval.cancel($scope.interval);
+        };
+        $scope.initAudio = function(recording_id) {
+          if ($scope.is_playing) {
+            $scope.stop();
+          }
+          $scope.audio = new Audio(recodringLink(recording_id));
+          $scope.current_time = 0;
+          $scope.prc = 0;
+          $scope.is_playing_stage = 'start';
+          return $scope.is_playing = recording_id;
+        };
+        $scope.pause = function() {
+          $scope.intervalCancel();
+          if ($scope.audio) {
+            $scope.audio.pause();
+          }
+          return $scope.is_playing_stage = 'pause';
+        };
+        $scope.play = function(recording_id) {
+          if (!$scope.isPlaying(recording_id)) {
+            $scope.initAudio(recording_id);
+          }
+          if ($scope.is_playing_stage === 'play') {
+            return $scope.pause();
+          } else {
+            $scope.audio.play();
+            $scope.is_playing_stage = 'play';
+            return $scope.intervalStart();
+          }
+        };
+        $scope.isPlaying = function(recording_id) {
+          return $scope.is_playing === recording_id;
+        };
+        $scope.stop = function() {
+          $scope.prc = 0;
+          $scope.is_playing = null;
+          $scope.audio.pause();
+          $scope.audio = null;
+          $scope.is_playing_stage = 'stop';
+          return $scope.intervalCancel();
+        };
+        return $scope.setCurentTime = function(e) {
+          var time, width;
+          width = angular.element(e.target).width();
+          $scope.prc = (e.offsetX * 100) / width;
+          time = ($scope.audio.duration * $scope.prc) / 100;
+          return $scope.audio.currentTime = time;
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('plural', function() {
+    return {
+      restrict: 'E',
+      scope: {
+        count: '=',
+        type: '@',
+        noneText: '@',
+        additional: '='
+      },
+      templateUrl: 'directives/plural',
+      controller: function($scope, $element, $attrs, $timeout) {
+        $scope.textOnly = $attrs.hasOwnProperty('textOnly');
+        $scope.hideZero = $attrs.hasOwnProperty('hideZero');
+        return $scope.when = {
+          'age': ['год', 'года', 'лет'],
+          'student': ['ученик', 'ученика', 'учеников'],
+          'minute': ['минуту', 'минуты', 'минут'],
+          'hour': ['час', 'часа', 'часов'],
+          'day': ['день', 'дня', 'дней'],
+          'meeting': ['встреча', 'встречи', 'встреч'],
+          'score': ['балл', 'балла', 'баллов'],
+          'rubbles': ['рубль', 'рубля', 'рублей'],
+          'lesson': ['занятие', 'занятия', 'занятий'],
+          'client': ['клиент', 'клиента', 'клиентов'],
+          'mark': ['оценки', 'оценок', 'оценок'],
+          'request': ['заявка', 'заявки', 'заявок']
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('plus', function() {
+    return {
+      restrict: 'E',
+      scope: {
+        previous: '=',
+        count: '='
+      },
+      templateUrl: 'directives/plus'
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('publishedField', function() {
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: 'directives/published-field',
+      scope: {
+        inEgeCentr: '@'
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('securityNotification', function() {
+    return {
+      restrict: 'E',
+      scope: {
+        tutor: '='
+      },
+      templateUrl: 'directives/security-notification',
+      controller: function($scope, Tutor) {
+        return $scope.toggleNotification = function(index) {
+          var security_notification;
+          security_notification = angular.copy($scope.tutor.security_notification);
+          security_notification[index] = !security_notification[index];
+          return Tutor.update({
+            id: $scope.tutor.id,
+            security_notification: security_notification
+          }, function() {
+            return $scope.tutor.security_notification = angular.copy(security_notification);
+          });
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('ngSelect', function() {
+    return {
+      restrict: 'E',
+      replace: true,
+      scope: {
+        object: '=',
+        model: '=',
+        noneText: '@'
+      },
+      templateUrl: 'directives/ngselect',
+      controller: function($scope, $element, $attrs) {
+        if (!$scope.noneText) {
+          return $scope.model = _.first(Object.keys($scope.object));
+        }
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('sms', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/sms',
+      scope: {
+        number: '='
+      },
+      controller: function($scope, $timeout, Sms, PusherService) {
+        var scrollDown;
+        PusherService.bind('SmsStatusUpdate', function(data) {
+          return angular.forEach($scope.history, function(val, key) {
+            if (val.id_smsru === data.id_smsru) {
+              val.id_status = data.id_status;
+              $scope.$apply();
+            }
+            return console.log(val, key);
+          });
+        });
+        $scope.mass = false;
+        $scope.smsCount = function() {
+          return SmsCounter.count($scope.message || '').messages;
+        };
+        $scope.send = function() {
+          var sms;
+          if ($scope.message) {
+            $scope.sms_sending = true;
+            ajaxStart();
+            sms = new Sms({
+              message: $scope.message,
+              to: $scope.number,
+              mass: $scope.mass
+            });
+            return sms.$save().then(function(data) {
+              ajaxEnd();
+              $scope.sms_sending = false;
+              $scope.message = '';
+              $scope.history.push(data);
+              return scrollDown();
+            });
+          }
+        };
+        $scope.$watch('number', function(newVal, oldVal) {
+          console.log($scope.$parent.formatDateTime($scope.created_at));
+          if (newVal) {
+            $scope.history = Sms.query({
+              number: newVal
+            });
+          }
+          return scrollDown();
+        });
+        return scrollDown = function() {
+          return $timeout(function() {
+            return $("#sms-history").animate({
+              scrollTop: $(window).height()
+            }, "fast");
+          });
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('tutorPhoto', function() {
+    return {
+      restrict: 'E',
+      replace: true,
+      scope: {
+        tutor: '=',
+        version: '='
+      },
+      templateUrl: 'directives/tutor-photo'
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('userSwitch', function() {
+    return {
+      restrict: 'E',
+      scope: {
+        entity: '=',
+        resource: '=',
+        userId: '@'
+      },
+      templateUrl: 'directives/user-switch',
+      controller: function($scope) {
+        return $scope.UserService = $scope.$parent.UserService;
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('user', function() {
+    return {
+      restrict: 'E',
+      scope: {
+        model: '='
+      },
+      templateUrl: 'directives/user'
     };
   });
 

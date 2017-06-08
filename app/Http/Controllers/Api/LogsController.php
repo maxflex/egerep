@@ -156,6 +156,14 @@ class LogsController extends Controller
             }
         }
 
+        // разница в днях между первым и последним действием для определения ширины
+        $width = '100%';
+        if (count($data) >= 2) {
+            // $date из предыдущего foreach последний
+            $difference_in_days = (new \DateTime($data[0]))->diff($date)->d;
+            $width = ($difference_in_days * 500) + 'px';
+        }
+
         // datasets
         $green_data = array_fill(0, count($data), 1);
         $red_data = array_fill(0, count($data), 0);
@@ -166,6 +174,7 @@ class LogsController extends Controller
         }
 
         return [
+            'width'     => $width,
             'labels'    => $data,
             'datasets'  => [
                 [

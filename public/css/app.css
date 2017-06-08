@@ -29339,6 +29339,19 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
   width: 80%;
   margin-top: 7%; }
 
+#log-graph .graph-wrapper {
+  width: 100%;
+  height: 400px;
+  position: relative;
+  overflow-x: scroll;
+  padding-bottom: 20px; }
+
+#log-graph .canvas-wrapper {
+  width: 100%;
+  min-width: 100%;
+  height: 100%;
+  position: relative; }
+
 .ios7-switch {
   display: inline-block;
   position: relative;
