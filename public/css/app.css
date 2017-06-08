@@ -29347,8 +29347,7 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
   padding-bottom: 20px; }
 
 #log-graph .canvas-wrapper {
-  width: 100%;
-  min-width: 100%;
+  min-width: 5000px;
   height: 100%;
   position: relative; }
 

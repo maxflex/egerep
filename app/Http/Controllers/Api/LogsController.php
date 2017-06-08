@@ -124,7 +124,7 @@ class LogsController extends Controller
     {
         $search = isset($_COOKIE['logs']) ? json_decode($_COOKIE['logs']) : (object)[];
         // ->groupBy(DB::raw("DATE_FORMAT(`created_at`, '%H:%i')"))
-        $data = Log::search($search, 'asc')->select('created_at')->pluck('created_at');
+        $data = Log::search($search, 'asc')->select('created_at')->groupBy(DB::raw("DATE_FORMAT(`created_at`, '%Y-%m-%d %H:%i')"))->pluck('created_at');
         // $return = [];
         // foreach($data as $d) {
         //     $return[] = [
@@ -148,7 +148,6 @@ class LogsController extends Controller
                     // разница в минутах
                     $difference = ($interval->h * 60) + $interval->i;
                     if ($difference > 30) {
-                        \Log::info("Difference between " . $date->format("Y-m-d H:i:s") . " and ". (new \DateTime($d))->format("Y-m-d H:i:s") . " is {$interval->d}d {$interval->h}h {$interval->i}m");
                         $red_indexes[] = $index;
                     }
                 }
@@ -157,11 +156,10 @@ class LogsController extends Controller
         }
 
         // разница в днях между первым и последним действием для определения ширины
-        $width = '100%';
         if (count($data) >= 2) {
             // $date из предыдущего foreach последний
             $difference_in_days = (new \DateTime($data[0]))->diff($date)->d;
-            $width = ($difference_in_days * 500) + 'px';
+            $width = ($difference_in_days * 1100) + 'px';
         }
 
         // datasets
@@ -178,7 +176,7 @@ class LogsController extends Controller
             'labels'    => $data,
             'datasets'  => [
                 [
-                    'backgroundColor' => 'green',
+                    'backgroundColor' => 'rgba(21, 142, 82, 1)',
                     // 'backgroundColor' => $user->color,
                     'label' => 'действия вовремя',
                     'borderWidth' => 0,
@@ -188,7 +186,7 @@ class LogsController extends Controller
                     'label' => 'действия с опозданием',
                     'backgroundColor' => 'red',
                     'borderWidth' => 0,
-                    'data' => $red_data
+                    'data' => $red_data,
                 ],
             ]
         ];

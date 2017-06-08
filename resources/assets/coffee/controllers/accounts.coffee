@@ -211,8 +211,8 @@ angular.module('Egerep')
 
         validatePlannedAccount = ->
             valid = true
-            if not (parseInt($scope.tutor.planned_account.is_planned) == 0)
-                if not $scope.tutor.planned_account.user_id > 0
+            if parseInt($scope.tutor.planned_account.is_planned) != 0
+                if ((not $scope.tutor.planned_account.user_id > 0) && ($scope.tutor.planned_account.payment_method == 1))
                     $('#pa-user .bootstrap-select').addClass 'has-error'
                     valid = false
                 else

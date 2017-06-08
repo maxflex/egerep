@@ -42,6 +42,7 @@ angular
                         callbacks:
                             title: (tooltipItem, data) ->
                                 moment(tooltipItem[0].xLabel).format('DD.MM.YY HH:mm')
+                            label: (tooltipItem, data) -> ''
                     scales:
                         xAxes: [
                             ticks:
