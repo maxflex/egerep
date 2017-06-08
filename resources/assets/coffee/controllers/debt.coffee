@@ -139,7 +139,7 @@ angular
                 gridSize: 10
                 # maxZoom: 12
                 imagePath: 'img/maps/clusterer/m'
-            # repaintChosen()
+            repaintChosen()
 
         showClientOnMap = ->
             $scope.client.markers.forEach (marker) ->
