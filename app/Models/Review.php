@@ -124,6 +124,7 @@ class Review extends Model
             });
         }
 
-        return $query->orderBy('created_at', 'desc');
+        // return $query->orderBy('created_at', 'desc');
+        return $query->orderBy(\DB::raw("(SELECT CONCAT(last_name, first_name, middle_name) as name from tutors where tutors.id = attachments.tutor_id)"), 'asc');
     }
 }
