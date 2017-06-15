@@ -41,7 +41,7 @@ class RecalcTutorData extends Command
      */
     public function handle()
     {
-        $tutors_query = DB::table('tutors')->where('public_desc', '!=', '');
+        $tutors_query = DB::table('tutors')->whereRaw("(public_desc <> '' OR (description <> '' AND in_egecentr=2))");
         if ($updated_tutor_id = $this->argument('tutor_id')) {
             DB::table('tutor_data')->where('tutor_id', $updated_tutor_id)->delete();
             $tutors_query->whereId($updated_tutor_id);

@@ -302,9 +302,9 @@ angular.module('Egerep')
             address:'',
             color:'#B61D8E',
         8:
-            code:'VKS',
-            full:'Войковская',
-            short:'ВОЙ',
+            code:'SKL',
+            full:'ЕГЭ-Центр-Сокол',
+            short:'СКЛ',
             address:'',
             color:'#029A55',
         9:
@@ -349,3 +349,9 @@ angular.module('Egerep')
             short:'ВЛА',
             address:'',
             color:'#ACADAF',
+        17:
+            code: 'BEL'
+            full: 'Беляево'
+            short: 'БЕЛ'
+            address: 'ул. Профсоюзная, дом 93А'
+            color: '#C07911'
