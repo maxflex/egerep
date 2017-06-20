@@ -36,9 +36,6 @@
                     <span class="link-like" ng-click="showMap()">метки</span> (@{{ client.markers.length }})
                 </div>
             </div>
-            <div class="col-sm-8">
-                <metro-list markers='client.markers'></metro-list>
-            </div>
         </div>
     </div>
 </div>

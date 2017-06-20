@@ -7,7 +7,9 @@
                 ng-click="selectAttachment(attachment)"
             >@{{ tutors[attachment.tutor_id] }}</span>
             @if($user->allowed(\Shared\Rights::ER_DELETE_ATTACHMENTS))
-                <span class='link-like text-danger show-on-hover' ng-click="removeAttachment()" ng-show='selected_attachment'>удалить стыковку</span>
+                <div class='controls-right'>
+                    <span ng-click="removeAttachment()" ng-show='selected_attachment'>удалить</span>
+                </div>
             @endif
         </div>
     </div>

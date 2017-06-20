@@ -4,10 +4,12 @@
             ng-click="selectRequest(request)"
             ng-class="{'link-like': request !== selected_request}"><span ng-if='request.id'>заявка @{{ request.id }}</span><span ng-if='!request.id'>новая заявка</span></span>
         <a class='link-like link-gray' ng-show="selected_request.id" ng-click='addRequest()'>добавить</a>
-        <a class='link-like show-on-hover' ng-show='selected_request && selected_request.id' ng-click='transferRequest()'>переместить заявку в другого клиента</a>
-        @if($user->allowed(\Shared\Rights::ER_DELETE_REQUESTS))
-            <a class='link-like text-danger show-on-hover' ng-show='selected_request && selected_request.id' ng-click='removeRequest()'>удалить заявку</a>
-        @endif
+        <div class='controls-right'>
+            <a ng-show='selected_request && selected_request.id' ng-click='transferRequest()'>переместить</a>
+            @if($user->allowed(\Shared\Rights::ER_DELETE_REQUESTS))
+                <a ng-show='selected_request && selected_request.id' ng-click='removeRequest()'>удалить</a>
+            @endif
+        </div>
     </div>
 </div>
 

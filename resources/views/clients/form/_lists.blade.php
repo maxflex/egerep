@@ -5,10 +5,12 @@
             ng-class="{'link-like': selected_list !== list}"
             ng-click="setList(list)"
         >список по <sbj ng-repeat='subject_id in list.subjects'>@{{Subjects.dative[subject_id]}}@{{$last ? '' : ' и '}}</sbj></span>
-        <span class="link-like link-gray" ng-click="addList()">добавить список</span>
+        <span class="link-like link-gray" ng-click="addList()">добавить</span>
         <div class="teacher-remove-droppable drop-delete" ng-show='is_dragging_teacher'>удалить репетитора из списка</div>
         @if($user->allowed(\Shared\Rights::ER_DELETE_LISTS))
-            <span class="link-like text-danger show-on-hover" ng-show='selected_list && !selected_list.attachments.length' ng-click="removeList()">удалить список</span>
+            <div class='controls-right'>
+                <span ng-show='selected_list && !selected_list.attachments.length' ng-click="removeList()">удалить</span>
+            </div>
         @endif
     </div>
 </div>

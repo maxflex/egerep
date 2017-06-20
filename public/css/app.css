@@ -26515,7 +26515,7 @@ a {
   font-weight: bold; }
   .options-list span, .options-list a {
     margin-right: 10px; }
-    .options-list span.link-like, .options-list a.link-like {
+    .options-list span.link-like, .options-list .controls-line .controls-right > span, .controls-line .options-list .controls-right > span, .options-list a.link-like, .options-list .controls-line .controls-right > a, .controls-line .options-list .controls-right > a {
       font-weight: normal; }
 
 .btn.btn-primary {
@@ -26866,12 +26866,17 @@ span {
   .controls-line span {
     font-weight: bold;
     margin-right: 20px; }
-    .controls-line span.link-like {
+    .controls-line span.link-like, .controls-line .controls-right > span {
       font-weight: normal; }
-      .controls-line span.link-like span {
+      .controls-line span.link-like span, .controls-line .controls-right > span span {
         font-weight: normal; }
   .controls-line a:not(:last-child) {
     margin-right: 20px; }
+  .controls-line .controls-right {
+    float: right; }
+    .controls-line .controls-right > * {
+      margin-right: 0 !important;
+      margin-left: 20px; }
 
 .tutor-state {
   width: 100%;
@@ -27594,7 +27599,7 @@ body {
 
 .top-links {
   margin-bottom: 20px; }
-  .top-links a, .top-links span.link-like {
+  .top-links a, .top-links span.link-like, .top-links .controls-line .controls-right > span, .controls-line .top-links .controls-right > span {
     margin-right: 15px;
     display: inline-block; }
   .top-links span.active, .top-links a.active {
@@ -28410,14 +28415,14 @@ md-input-container textarea {
 .pagination {
   margin: 0; }
 
-.link-like {
+.link-like, .controls-line .controls-right > * {
   color: #158E51;
   text-decoration: none;
   cursor: pointer !important; }
-  .link-like:hover {
+  .link-like:hover, .controls-line .controls-right > :hover {
     color: #0e6238;
     text-decoration: underline; }
-  .link-like.red {
+  .link-like.red, .controls-line .controls-right > .red {
     color: #a94442; }
 
 .link-like-no-color {
@@ -28426,10 +28431,10 @@ md-input-container textarea {
   .link-like-no-color:hover {
     text-decoration: underline; }
 
-.link-gray {
+.link-gray, .controls-line .controls-right > * {
   color: #999999;
   text-decoration: none; }
-  .link-gray:hover {
+  .link-gray:hover, .controls-line .controls-right > :hover {
     color: #999999 !important;
     text-decoration: underline; }
 
@@ -28488,10 +28493,10 @@ md-input-container textarea {
   .comment-block .glyphicon.text-danger {
     color: #FF809C; }
 
-.link-like.text-danger {
+.link-like.text-danger, .controls-line .controls-right > .text-danger {
   color: #A94442; }
 
-.link-like.text-raw {
+.link-like.text-raw, .controls-line .controls-right > .text-raw {
   color: black; }
 
 .comment-add-field, .notification-date-add {
@@ -29093,7 +29098,7 @@ table.summary-table.left-align tr td {
 .cursor-default {
   cursor: default !important; }
 
-.list-group, .panel-heading, .controls-line a, .controls-line span.link-like, .top-links, .options-list, .nav-tabs-links {
+.list-group, .panel-heading, .controls-line a, .controls-line span.link-like, .controls-line .controls-right > span, .top-links, .options-list, .nav-tabs-links {
   -webkit-font-smoothing: auto !important; }
 
 .vertical-center {
