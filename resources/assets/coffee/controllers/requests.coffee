@@ -35,7 +35,7 @@ angular
             loadRequests 1
             ajaxEnd()
 
-            window.history.pushState('requests/' + state_id.toLowerCase(), '', 'requests/' + state_id.toLowerCase());
+            window.history.pushState('requests/' + state_id.toLowerCase(), '', 'requests/' + state_id.toLowerCase()) if not $scope.errors
 
         extendRequestStates = ->
             $scope.RequestStatesForTabLabel = angular.copy $scope.RequestStates

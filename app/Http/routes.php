@@ -70,6 +70,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::resource('tutors', 'TutorsController');
     Route::resource('logs', 'LogsController');
     Route::resource('requests', 'RequestsController', ['except' => ['index', 'show']]);
+    Route::get('requests/errors', 'RequestsController@errors');
     Route::get('requests/{state_id?}', 'RequestsController@index');
     Route::resource('clients', 'ClientsController');
     Route::get('periods/planned', 'PeriodsController@planned');

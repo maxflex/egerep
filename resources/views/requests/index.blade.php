@@ -3,19 +3,25 @@
 @section('controller', 'RequestsIndex')
 
 @section('title-right')
-    {{-- ошибки обновлены @{{ formatDateTime(request_errors_updated) }}
-    <span class="glyphicon glyphicon-refresh opacity-pointer" ng-click='recalcErrors()' ng-class="{
-        'spinning': request_errors_updating == 1
-    }"></span> --}}
-    <a href='/requests/errors'>ошибки</a>
-    {{ link_to_route('requests.create', 'добавить заявку') }}
+    <span ng-show='errors'>
+        ошибки обновлены @{{ formatDateTime(request_errors_updated) }}
+        <span class="glyphicon glyphicon-refresh opacity-pointer" ng-click='recalcErrors()' ng-class="{
+            'spinning': request_errors_updating == 1
+        }"></span>
+    </span>
+    <span ng-show='!errors'>
+        @if(allowed(\Shared\Rights::ER_REQUEST_ERRORS))
+            <a href='requests/errors'>ошибки</a>
+        @endif
+        {{ link_to_route('requests.create', 'добавить заявку') }}
+    </span>
 @endsection
 
 @section('content')
 <sms number='sms_number'></sms>
 
 <div class="row">
-    <div class="col-sm-10" style='width: 80%'>
+    <div class="col-sm-10" style='width: 80%' ng-show='!errors'>
         <ul class="nav nav-tabs nav-tabs-links request-links" style="margin-top: 7px">
              <li ng-repeat="(state_id, state) in RequestStates" data-id="@{{state_id }}"
                 ng-show="['reasoned_deny', 'deny', 'checked_reasoned_deny'].indexOf(state_id) === -1"
@@ -38,6 +44,17 @@
                 <span class='small-count'>@{{ request_state_counts[state_id] }}</span>
              </li>
         </ul>
+    </div>
+    <div ng-show='errors' class="col-sm-2" style="width: 20%; padding-right: 0">
+        <div ng-show="chosen_state_id == 'all'">
+            <select  ng-model='error' class='selectpicker' ng-change='changeUser()' id='error-counts'>
+                <option value="" data-subtext="@{{ error_counts[''] || '' }}">все</option>
+                <option disabled>──────────────</option>
+                <option ng-repeat='(id, name) in RequestErrors' data-title='test'
+                    data-content="<div title='@{{ name }}'>@{{ id }}<small class='text-muted'>@{{ error_counts[id] || '' }}</small></div>"
+                    value="@{{id}}"></option>
+            </select>
+        </div>
     </div>
     <div class="col-sm-2" style='width: 20%'>
         <select class="form-control" ng-model='user_id' ng-change="changeUser()" id='change-user'>

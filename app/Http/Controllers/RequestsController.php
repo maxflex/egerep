@@ -22,7 +22,27 @@ class RequestsController extends Controller
         return view('requests.index')->with(
             ngInit([
                 'page'  => $request->input('page'),
+                'errors' => false, // страница ошибок?
                 'chosen_state_id' => $state_id,
+            ])
+        );
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function errors(Request $request)
+    {
+        if (! allowed(\Shared\Rights::ER_REQUEST_ERRORS)) {
+            return view('errors.not_allowed');
+        }
+        return view('requests.index')->with(
+            ngInit([
+                'page'  => $request->input('page'),
+                'errors' => true, // страница ошибок?
+                'chosen_state_id' => 'all',
                 'request_errors_updated'  => Settings::get('request_errors_updated'),
                 'request_errors_updating' => Settings::get('request_errors_updating')
             ])

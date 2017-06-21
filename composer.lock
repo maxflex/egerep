@@ -671,7 +671,7 @@
             "source": {
                 "type": "git",
                 "url": "https://mkolyadin@bitbucket.org/mkolyadin/ege-shared.git",
-                "reference": "16403b31ef8a4a877995e04ab32c96a80a6a8f51"
+                "reference": "63959899f01c73c28da2b52ec4eccdc431267213"
             },
             "type": "library",
             "autoload": {
@@ -679,7 +679,7 @@
                     "Shared\\": "src/"
                 }
             },
-            "time": "2017-04-17 13:04:15"
+            "time": "2017-06-21 12:19:37"
         },
         {
             "name": "graham-campbell/throttle",
@@ -2812,12 +2812,12 @@
             "version": "0.9.4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/padraic/mockery.git",
+                "url": "https://github.com/mockery/mockery.git",
                 "reference": "70bba85e4aabc9449626651f48b9018ede04f86b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/padraic/mockery/zipball/70bba85e4aabc9449626651f48b9018ede04f86b",
+                "url": "https://api.github.com/repos/mockery/mockery/zipball/70bba85e4aabc9449626651f48b9018ede04f86b",
                 "reference": "70bba85e4aabc9449626651f48b9018ede04f86b",
                 "shasum": ""
             },
