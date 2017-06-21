@@ -54,6 +54,7 @@ class Kernel extends ConsoleKernel
         Commands\TutorDistancesRecalc::class,
         Commands\RecalcTutorData::class,
         Commands\RecalcEfficency::class,
+        Commands\ConnectStations::class,
     ];
 
     /**
