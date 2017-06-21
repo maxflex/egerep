@@ -4043,7 +4043,8 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
         font-weight: bold;
     }
     &:not(:last-of-type) {
-        border-bottom: 1px solid $placeholder_gray;
+        border-bottom: 1px solid rgba($placeholder_gray, .7);
+        margin-bottom: 20px;
     }
 }
 

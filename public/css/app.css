@@ -29380,7 +29380,8 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
     font-size: 22px;
     font-weight: bold; }
   .request-main-list:not(:last-of-type) {
-    border-bottom: 1px solid #999999; }
+    border-bottom: 1px solid rgba(153, 153, 153, 0.7);
+    margin-bottom: 20px; }
 
 .metrocircle {
   height: 8px;
