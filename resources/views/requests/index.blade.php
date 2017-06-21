@@ -19,7 +19,7 @@
         <ul class="nav nav-tabs nav-tabs-links request-links" style="margin-top: 7px">
              <li ng-repeat="(state_id, state) in RequestStates" data-id="@{{state_id }}"
                 ng-show="['reasoned_deny', 'deny', 'checked_reasoned_deny'].indexOf(state_id) === -1"
-                ng-class="{'active' : chosen_state_id == state_id || !chosen_state_id && state_id == 'new', 'request-status-li': status_id != 'all' && (chosen_state_id != status_id)}"
+                ng-class="{'active' : chosen_state_id == state_id || !chosen_state_id && state_id == 'new' || (['reasoned_deny', 'deny', 'checked_reasoned_deny'].indexOf(chosen_state_id) !== -1 && state_id == 'all_denies'), 'request-status-li': status_id != 'all' && (chosen_state_id != status_id)}"
                 >
                 <a class="list-link" href="#@{{status_id}}" ng-click="changeList(state_id)" data-toggle="tab" aria-expanded="@{{$index == 0}}">
                     @{{ state }}
