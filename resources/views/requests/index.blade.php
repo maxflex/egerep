@@ -15,7 +15,7 @@
 <sms number='sms_number'></sms>
 
 <div class="row">
-    <div class="col-sm-8" style="width: 60%">
+    <div class="col-sm-10" style='width: 80%'>
         <ul class="nav nav-tabs nav-tabs-links request-links" style="margin-top: 7px">
              <li ng-repeat="(state_id, state) in RequestStates" data-id="@{{state_id }}"
                 ng-show="['reasoned_deny', 'deny', 'checked_reasoned_deny'].indexOf(state_id) === -1"
@@ -39,18 +39,7 @@
              </li>
         </ul>
     </div>
-    <div class="col-sm-2" style="width: 20%">
-        <div ng-show="chosen_state_id == 'all'">
-            <select  ng-model='error' class='selectpicker' ng-change='changeUser()' id='error-counts'>
-                <option value="" data-subtext="@{{ error_counts[''] || '' }}">все</option>
-                <option disabled>──────────────</option>
-                <option ng-repeat='(id, name) in RequestErrors' data-title='test'
-                    data-content="<div title='@{{ name }}'>@{{ id }}<small class='text-muted'>@{{ error_counts[id] || '' }}</small></div>"
-                    value="@{{id}}"></option>
-            </select>
-        </div>
-    </div>
-    <div class="col-sm-2" style="width: 20%">
+    <div class="col-sm-2" style='width: 20%'>
         <select class="form-control" ng-model='user_id' ng-change="changeUser()" id='change-user'>
            <option value="">пользователь</option>
            <option disabled>──────────────</option>
