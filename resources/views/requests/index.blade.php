@@ -56,7 +56,7 @@
             </select>
         </div>
     </div>
-    <div class="col-sm-2" style='width: 20%'>
+    <div class="col-sm-2" style='width: 20%' ng-show='!errors'>
         <select class="form-control" ng-model='user_id' ng-change="changeUser()" id='change-user'>
            <option value="">пользователь</option>
            <option disabled>──────────────</option>
@@ -86,7 +86,7 @@
                  <div class="request-left-info">
                      <div>
                          <div>
-                             Ответсвтенный
+                             Ответствтенный
                          </div>
                          <div>
                              <user-switch entity='request' user-id='user_id' resource='Request'></span>

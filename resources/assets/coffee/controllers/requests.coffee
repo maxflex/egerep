@@ -5,7 +5,8 @@ angular
         _.extend RequestStates, { all_denies: 'отказы', all: 'все' }
         $rootScope.frontend_loading = true
 
-        $scope.user_id = localStorage.getItem('requests_index_user_id')
+        $timeout ->
+            $scope.user_id = if $scope.errors then '' else localStorage.getItem('requests_index_user_id')
 
         PusherService.bind 'RequestUserChanged', (data) ->
             if request = findById($scope.requests, data.request_id)
