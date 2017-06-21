@@ -40,65 +40,119 @@ class ConnectStations extends Command
     {
         $tutors = DB::table('tutors')->join('tutor_data', 'tutor_data.tutor_id', '=', 'tutors.id')
             ->whereRaw("length(svg_map) < 749 AND (tutors.public_desc <> '' OR tutors.state = 5)")
-            // ->where('tutors.id', 6)
+            // ->where('tutors.id', 3)
             ->select('tutors.id', 'tutor_data.svg_map')->orderBy('id', 'asc')->get();
 
-        $stations = collect(DB::table('stations')->select('id', 'title')->get())->keyBy('id');
+        $distances = collect(DB::table('graph_distances')->get());
+
+        // $stations = collect(DB::table('stations')->select('id', 'title')->get())->keyBy('id');
 
         $bar = $this->output->createProgressBar(count($tutors));
         $text = '';
 
         foreach($tutors as $tutor) {
+            $bar->advance();
             $svg_map = explode(',', $tutor->svg_map);
+            $added = false;
+            $checked = [];
 
-            // неотмеченные соседи
-            $unchecked_neighbours = [];
-
-            // какие станции надо добавить
-            $new_station_ids = [];
-
-            foreach($svg_map as $station_id) {
-                $neighbours = DB::table('graph_distances')->where('from', $station_id)->orWhere('to', $station_id)->get();
-                foreach($neighbours as $neighbour) {
-                    // соседская станция
-                    $neighbour_station_id = $neighbour->from == $station_id ? $neighbour->to : $neighbour->from;
-
-                    // если соседская станция отмечена – пропускаем
-                    if (in_array($neighbour_station_id, $svg_map)) {
-                        continue;
+            foreach($svg_map as $station_1) {
+                if ($added) {
+                    break;
+                }
+                foreach($svg_map as $station_2) {
+                    if ($added) {
+                        break;
                     }
-
-                    // if ($neighbour_station_id == 87) {
-                    //     $this->error($station_id);
-                    // }
-
-                    // если соседская станция отсутствует
-                    // если соседская станция уже была добавляена в отсутствующие
-                    if (in_array($neighbour_station_id, $unchecked_neighbours)) {
-                        // добавляем в новые
-                        $new_station_ids[] = $neighbour_station_id;
-                    } else {
-                        $unchecked_neighbours[] = $neighbour_station_id;
+                    if ($station_1 != $station_2 && ! in_array(md5(min($station_1, $station_2) . max($station_1, $station_2)), $checked)) {
+                        $checked[] = md5(min($station_1, $station_2) . max($station_1, $station_2));
+                        if (! $this->hasPath($station_1, $station_2, $distances, $svg_map)) {
+                            $text .= $tutor->id . "\n";
+                            // $this->info($tutor->id);
+                            $added = true;
+                        }
                     }
                 }
             }
+        }
+        //  $bar->finish();
 
-            if (count($new_station_ids)) {
-                $text .= "Tutor: {$tutor->id} \n" . implode(', ', array_map(function($station_id) use ($stations) {
-                    return $stations[$station_id]->title;
-                }, $new_station_ids)) . "\n=======================\n";
+        \Storage::put('stations.txt', $text);
+    }
 
-                // $this->info("Tutor {$tutor->id}: ");
-                // $this->line(implode(', ', $new_station_ids));
-                // $this->line("\n\n");
-                $svg_map = array_merge($svg_map, $new_station_ids);
-                sort($svg_map);
-                // DB::table('tutor_data')->where('tutor_id', $tutor->id)->update([
-                //     'svg_map' => implode(',', $svg_map)
-                // ]);
+    /**
+    * Create two sets of nodes:  toDoSet and doneSet
+    * Add the source node to the toDoSet
+    * while (toDoSet is not empty) {
+    *   Remove the first element from toDoList
+    *   Add it to doneList
+    *   foreach (node reachable from the removed node) {
+    *     if (the node equals the destination node) {
+    *        return success
+    *     }
+    *     if (the node is not in doneSet) {
+    *        add it to toDoSet
+    *     }
+    *   }
+    * }
+
+    * return failure.
+    */
+    private function hasPath($station_1, $station_2, $distances, $svg_map)
+    {
+        // $this->error($station_2);
+        $todo = [$station_1];
+        $done = [];
+        // $checked = [];
+        // $step = 1;
+
+        // while (! empty($todo) && $step < 100) {
+        while (! empty($todo)) {
+            // $step++;
+            // $this->info(implode(', ', $todo) . "  | " . implode(', ', $done));
+            $node = array_shift($todo);
+            // if (in_array($node, $done)) {
+            //     continue;
+            // }
+            $done[] = $node;
+
+            // $int = array_intersect($todo, $done);
+            // if (count($int)) {
+            //     dump($int);
+            //     exit();
+            // }
+
+            // dump($this->reachableNodes($distances, $svg_map, $node));
+            foreach($this->reachableNodes($distances, $svg_map, $node) as $reachable_node) {
+                if ($reachable_node == $station_2) {
+                    return true;
+                }
+                if (! in_array($reachable_node, $done) && ! in_array($reachable_node, $todo)) {
+                    $todo[] = $reachable_node;
+                }
             }
         }
 
-        \Storage::put('stations.txt', $text);
+        return false;
+    }
+
+    private function reachableNodes($distances, $svg_map, $node)
+    {
+        $return = [];
+
+        foreach($distances as $distance) {
+            if ($distance->from == $node) {
+                if (in_array($distance->to, $svg_map)) {
+                    $return[] = $distance->to;
+                }
+            } else
+            if ($distance->to == $node) {
+                if (in_array($distance->from, $svg_map)) {
+                    $return[] = $distance->from;
+                }
+            }
+        }
+
+        return $return;
     }
 }
