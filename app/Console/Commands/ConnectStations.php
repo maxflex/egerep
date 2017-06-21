@@ -39,7 +39,7 @@ class ConnectStations extends Command
     public function handle()
     {
         $tutors = DB::table('tutors')->join('tutor_data', 'tutor_data.tutor_id', '=', 'tutors.id')
-            ->whereRaw("length(svg_map) < 749 AND (tutor.public_desc <> '' OR tutor.state = 5)")
+            ->whereRaw("length(svg_map) < 749 AND (tutors.public_desc <> '' OR tutors.state = 5)")
             // ->where('tutors.id', 6)
             ->select('tutors.id', 'tutor_data.svg_map')->orderBy('id', 'asc')->get();
 
