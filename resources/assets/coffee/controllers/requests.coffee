@@ -2,7 +2,7 @@ angular
     .module 'Egerep'
     .controller 'RequestsIndex', ($rootScope, $scope, $timeout, $http, Request, RequestStates, Comment, PhoneService, UserService, Grades, Subjects, PusherService, RequestErrors) ->
         bindArguments($scope, arguments)
-        _.extend RequestStates, { all : 'все' }
+        _.extend RequestStates, { all_denies: 'отказы', all: 'все' }
         $rootScope.frontend_loading = true
 
         $scope.user_id = localStorage.getItem('requests_index_user_id')
@@ -19,9 +19,11 @@ angular
         $scope.howLongAgo = (created_at) ->
             now = moment(Date.now())
             created_at = moment(new Date(created_at).getTime())
+            console.log(created_at)
             days = now.diff(created_at, 'days')
             hours = now.diff(created_at, 'hours') - (days * 24)
-            {days: days, hours: hours}
+            minutes = now.diff(created_at, 'minutes') - (hours * 60)  - (days * 24)
+            {days: days, hours: hours + (days * 24), minutes: minutes}
 
         $scope.changeList = (state_id) ->
             $scope.chosen_state_id = state_id

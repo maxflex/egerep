@@ -36,7 +36,14 @@ class Request extends Model
         'google_id'
     ];
 
+    protected $appends = ['number'];
+
     // ------------------------------------------------------------------------
+
+    public function getNumberAttribute()
+    {
+        return DB::table('requests')->where('client_id', $this->client_id)->where('id', '<=', $this->id)->count();
+    }
 
     public function client()
     {
@@ -131,6 +138,7 @@ class Request extends Model
             $return[$state] = $query->count();
         }
 
+        $return['all_denies'] = $return['deny'] + $return['reasoned_deny'] + $return['checked_reasoned_deny'];
         $return['all'] = array_sum($return);
         return $return;
     }

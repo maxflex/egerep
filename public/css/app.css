@@ -29356,6 +29356,42 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
   height: 100%;
   position: relative; }
 
+.request-main-list {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center; }
+  .request-main-list .request-left-info {
+    -ms-flex: 1;
+    flex: 1; }
+    .request-main-list .request-left-info > div {
+      margin-bottom: 20px; }
+      .request-main-list .request-left-info > div > div {
+        display: inline-block; }
+        .request-main-list .request-left-info > div > div:first-child {
+          width: 150px;
+          vertical-align: top; }
+  .request-main-list .request-right-info {
+    width: 200px;
+    text-align: right;
+    font-size: 22px;
+    font-weight: bold; }
+  .request-main-list:not(:last-of-type) {
+    border-bottom: 1px solid #999999; }
+
+.metrocircle {
+  height: 8px;
+  width: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 4px;
+  top: -1px;
+  position: relative; }
+
+.phone-hint {
+  color: #999999;
+  font-size: 12px; }
+
 .ios7-switch {
   display: inline-block;
   position: relative;

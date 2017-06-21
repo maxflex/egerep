@@ -2724,6 +2724,7 @@
     var extendRequestStates, loadRequests;
     bindArguments($scope, arguments);
     _.extend(RequestStates, {
+      all_denies: 'отказы',
       all: 'все'
     });
     $rootScope.frontend_loading = true;
@@ -2742,14 +2743,17 @@
       });
     };
     $scope.howLongAgo = function(created_at) {
-      var days, hours, now;
+      var days, hours, minutes, now;
       now = moment(Date.now());
       created_at = moment(new Date(created_at).getTime());
+      console.log(created_at);
       days = now.diff(created_at, 'days');
       hours = now.diff(created_at, 'hours') - (days * 24);
+      minutes = now.diff(created_at, 'minutes') - (hours * 60) - (days * 24);
       return {
         days: days,
-        hours: hours
+        hours: hours + (days * 24),
+        minutes: minutes
       };
     };
     $scope.changeList = function(state_id) {
@@ -4275,6 +4279,24 @@
           if (event.keyCode === 13) {
             $(event.target).blur();
           }
+        };
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').directive('metroListFull', function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/metro-list-full',
+      scope: {
+        markers: '='
+      },
+      controller: function($scope, $element, $attrs) {
+        return $scope.minutes = function(minutes) {
+          return Math.round(minutes);
         };
       }
     };

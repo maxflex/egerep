@@ -4016,3 +4016,45 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
         position: relative;
     }
 }
+
+.request-main-list {
+    display: flex;
+    align-items: center;
+    & .request-left-info {
+        flex: 1;
+        & > div {
+            margin-bottom: 20px;
+            & > div {
+                display: inline-block;
+                &:first-child {
+                    width: 150px;
+                    vertical-align: top;
+                }
+            }
+        }
+    }
+    & .request-right-info {
+        width: 200px;
+        text-align: right;
+        font-size: 22px;
+        font-weight: bold;
+    }
+    &:not(:last-of-type) {
+        border-bottom: 1px solid $placeholder_gray;
+    }
+}
+
+.metrocircle {
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 4px;
+    top: -1px;
+    position: relative;
+}
+
+.phone-hint {
+    color: $placeholder_gray;
+    font-size: 12px;
+}
