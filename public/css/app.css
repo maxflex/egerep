@@ -29365,12 +29365,15 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
     -ms-flex: 1;
     flex: 1; }
     .request-main-list .request-left-info > div {
-      margin-bottom: 20px; }
-      .request-main-list .request-left-info > div > div {
-        display: inline-block; }
-        .request-main-list .request-left-info > div > div:first-child {
-          width: 150px;
-          vertical-align: top; }
+      margin-bottom: 20px;
+      display: -ms-flexbox;
+      display: flex; }
+      .request-main-list .request-left-info > div > div:first-child {
+        width: 150px;
+        vertical-align: top; }
+      .request-main-list .request-left-info > div > div:last-child {
+        -ms-flex: 1;
+        flex: 1; }
   .request-main-list .request-right-info {
     width: 200px;
     text-align: right;

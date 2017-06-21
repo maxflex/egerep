@@ -4024,11 +4024,14 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
         flex: 1;
         & > div {
             margin-bottom: 20px;
+            display: flex;
             & > div {
-                display: inline-block;
                 &:first-child {
                     width: 150px;
                     vertical-align: top;
+                }
+                &:last-child {
+                    flex: 1;
                 }
             }
         }
