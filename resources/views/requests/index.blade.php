@@ -3,9 +3,9 @@
 @section('controller', 'RequestsIndex')
 
 @section('title-right')
-    <span ng-show='errors'>
+    <span ng-show='errors' style="margin-right: 0">
         ошибки обновлены @{{ formatDateTime(request_errors_updated) }}
-        <span class="glyphicon glyphicon-refresh opacity-pointer" ng-click='recalcErrors()' ng-class="{
+        <span class="glyphicon glyphicon-refresh opacity-pointer" style='margin-right: 0' ng-click='recalcErrors()' ng-class="{
             'spinning': request_errors_updating == 1
         }"></span>
     </span>
