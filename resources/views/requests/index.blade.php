@@ -16,9 +16,20 @@
 
 <div class="row">
     <div class="col-sm-8" style="width: 60%">
-        <ul class="nav nav-tabs nav-tabs-links request-links" style="margin: 7px 0 40px">
+        <ul class="nav nav-tabs nav-tabs-links request-links" style="margin-top: 7px">
              <li ng-repeat="(state_id, state) in RequestStates" data-id="@{{state_id }}"
                 ng-show="['reasoned_deny', 'deny', 'checked_reasoned_deny'].indexOf(state_id) === -1"
+                ng-class="{'active' : chosen_state_id == state_id || !chosen_state_id && state_id == 'new', 'request-status-li': status_id != 'all' && (chosen_state_id != status_id)}"
+                >
+                <a class="list-link" href="#@{{status_id}}" ng-click="changeList(state_id)" data-toggle="tab" aria-expanded="@{{$index == 0}}">
+                    @{{ state }}
+                </a>
+                <span class='small-count'>@{{ request_state_counts[state_id] }}</span>
+             </li>
+        </ul>
+        <ul class="nav nav-tabs nav-tabs-links request-links" ng-show="chosen_state_id == 'all_denies'">
+             <li ng-repeat="(state_id, state) in RequestStates" data-id="@{{state_id }}"
+                ng-show="['reasoned_deny', 'deny', 'checked_reasoned_deny'].indexOf(state_id) !== -1"
                 ng-class="{'active' : chosen_state_id == state_id || !chosen_state_id && state_id == 'new', 'request-status-li': status_id != 'all' && (chosen_state_id != status_id)}"
                 >
                 <a class="list-link" href="#@{{status_id}}" ng-click="changeList(state_id)" data-toggle="tab" aria-expanded="@{{$index == 0}}">
@@ -60,8 +71,7 @@
     </div>
 </div>
 
-<div>
-
+<div style='margin-top: 40px'>
     <div class='row'>
         <div class='col-sm-12'>
             <div class="request-main-list"

@@ -15,7 +15,7 @@ class Request extends Model
         'невыполненные'                     => 'new',
         'в ожидании'                        => 'awaiting',
         'выполненные'                       => 'finished',
-        'отказы'                            => 'deny',
+        'отказ по вине компании'            => 'deny',
         'обоснованный отказ'                => 'reasoned_deny',
         'подтвержденный обоснованный отказ' => 'checked_reasoned_deny'
     ];
@@ -119,8 +119,13 @@ class Request extends Model
          *  @notice     в списке статусов нет all.
          *              in_array для all нужен.
          */
-        if (isset($state) && in_array($state, self::$states)) {
-            return $query->where('state', $state);
+        if (isset($state)) {
+            if (in_array($state, self::$states)) {
+                return $query->where('state', $state);
+            }
+            if ($state == 'all_denies') {
+                return $query->whereIn('state', ['deny', 'reasoned_deny', 'checked_reasoned_deny']);
+            }
         }
     }
 
