@@ -86,7 +86,7 @@
                  <div class="request-left-info">
                      <div>
                          <div>
-                             Ответствтенный
+                             Ответственный
                          </div>
                          <div>
                              <user-switch entity='request' user-id='user_id' resource='Request'></span>
