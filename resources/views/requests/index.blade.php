@@ -101,16 +101,14 @@
                                  <span ng-if='request.client.markers.length'>
                                      <metro-list-full markers='request.client.markers'></metro-list-full>
                                  </span>
-                                 <span ng-if='!request.client.markers.length'>метки не установлены</span>
-                            </div>
-                             <div style='margin-bottom: 20px'>
+                                 <span ng-if='!request.client.markers.length'>метки не установлены, </span>
                                  <span ng-if='request.client.address'>
                                      @{{ request.client.address }}
                                  </span>
                                  <span ng-if='!request.client.address'>
                                      адрес не заполнен
                                  </span>
-                             </div>
+                            </div>
                              <div ng-show="request.client.phones.length">
                                  <span ng-repeat="phone_field in ['phone', 'phone2', 'phone3', 'phone4']">
                                      <span ng-show="request.client[phone_field]" style='margin-right: 25px'>
