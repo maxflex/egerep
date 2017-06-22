@@ -143,7 +143,7 @@
                              ><a href='requests/@{{request.id}}/edit#@{{ list.id }}'><sbj ng-repeat='subject_id in list.subjects'>@{{Subjects.all[subject_id]}}@{{$last ? '' : ' и '}}</sbj></a></span>
                          </div>
                      </div>
-                     <div style="margin-top: 10px">
+                     <div style="margin-bottom: 12px">
                          <comments entity-type='request' entity-id='request.id' user='{{ $user }}' track-loading='1'></comments>
                      </div>
                  </div>
