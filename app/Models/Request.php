@@ -45,6 +45,11 @@ class Request extends Model
         return DB::table('requests')->where('client_id', $this->client_id)->where('id', '<=', $this->id)->count();
     }
 
+    public function getCommentAttribute()
+    {
+        return preg_replace('#\n+#', "\n", $this->attributes['comment']);
+    }
+
     public function client()
     {
         return $this->belongsTo('App\Models\Client');

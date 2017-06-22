@@ -92,14 +92,22 @@
                              <user-switch entity='request' user-id='user_id' resource='Request'></span>
                          </div>
                      </div>
-                     <div ng-show='request.client.address'>
+                     <div>
                          <div>
                              Клиент
                          </div>
                          <div>
-                             <metro-list-full markers='request.client.markers'></metro-list-full>
-                             @{{ request.client.address }}
-                             <div ng-show="request.client.phones.length" style='margin-top: 10px'>
+                             <span ng-if='request.client.markers.length'>
+                                 <metro-list-full markers='request.client.markers'></metro-list-full>
+                             </span>
+                             <span ng-if='!request.client.markers.length'>метки не установлены, </span>
+                             <span ng-if='request.client.address'>
+                                 @{{ request.client.address }}
+                             </span>
+                             <span ng-if='!request.client.address'>
+                                 адрес не заполнен
+                             </span>
+                             <div ng-show="request.client.phones.length">
                                  <span ng-repeat="phone_field in ['phone', 'phone2', 'phone3', 'phone4']">
                                      <span ng-show="request.client[phone_field]" style='margin-right: 25px'>
                                          <a class='pointer'
@@ -110,6 +118,9 @@
                                         <span class='phone-hint' ng-show="request.client[phone_field + '_comment']">@{{ request.client[phone_field + '_comment'] }}</span>
                                      </span>
                                  </span>
+                             </div>
+                             <div ng-if="!request.client.phones.length">
+                                 телефон не указан
                              </div>
                          </div>
                      </div>
