@@ -49,6 +49,10 @@ class Stream extends Model
             $query->where('action', $search->action);
         }
 
+        if (isset($search->google_id)) {
+            $query->where('google_id', $search->google_id);
+        }
+
         if (isset($search->type)) {
             $query->where('type', $search->type);
         }

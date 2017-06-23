@@ -37,6 +37,14 @@
     <div>
         <div class="form-group">
             <div class="input-group custom">
+              <span class="input-group-addon">ID –</span>
+              <input type="text" ng-keyup='keyFilter($event)' class="form-control" ng-model="search.google_id">
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="form-group">
+            <div class="input-group custom">
               <span class="input-group-addon">начало –</span>
               <input type="text" readonly ng-change='filter()'
                   class="form-control bs-date-clear pointer" ng-model="search.date_start">

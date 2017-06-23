@@ -16,6 +16,9 @@ angular
                 $('.selectpicker').selectpicker 'refresh'
             , 100
 
+        $scope.keyFilter = (event) ->
+            $scope.filter() if event.keyCode is 13
+
         $scope.filter = ->
             $.cookie("stream", JSON.stringify($scope.search), { expires: 365, path: '/' });
             $scope.current_page = 1
