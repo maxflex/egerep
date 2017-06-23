@@ -37,7 +37,7 @@
     <div>
         <div class="form-group">
             <div class="input-group custom">
-              <span class="input-group-addon">ID –</span>
+              <span class="input-group-addon">клиент –</span>
               <input type="text" ng-keyup='keyFilter($event)' class="form-control" ng-model="search.google_id">
             </div>
         </div>
