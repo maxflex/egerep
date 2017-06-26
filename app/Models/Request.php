@@ -31,7 +31,6 @@ class Request extends Model
         'user_id',
         'user_id_created',
         'lists',
-        'id_a_pers',
         'deny_reason',
         'google_id'
     ];

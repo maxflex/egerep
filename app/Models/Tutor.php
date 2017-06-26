@@ -45,7 +45,6 @@ class Tutor extends Service\Person
         'svg_map',
         'subjects',
         'grades',
-        'id_a_pers',
         'departure_price',
         'list_comment',
         'responsible_user_id',
@@ -706,15 +705,4 @@ class Tutor extends Service\Person
             'accounts_in_week' => $accounts_in_week,
         ];
     }
-
-    /**
- 	 * Соответствия межу ID преподавателей
-     * удалить после обновления a-perspektiva.ru
- 	 */
- 	public static function newTutorId($tutor_id)
- 	{
- 		$new_tutor_id = static::where('id_a_pers', $tutor_id)->pluck('id')->first();
- 		return $new_tutor_id ? $new_tutor_id : null;
- 	}
-
 }

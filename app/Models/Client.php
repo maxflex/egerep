@@ -20,7 +20,6 @@ class Client extends Service\Person
         'address',
         'requests',
         'markers',
-        'id_a_pers', // @temp
     ];
 
     public function requests()
