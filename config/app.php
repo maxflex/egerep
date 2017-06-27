@@ -162,6 +162,7 @@ return [
         Barryvdh\Debugbar\ServiceProvider::class,
         'Clockwork\Support\Laravel\ClockworkServiceProvider',
         'GrahamCampbell\Throttle\ThrottleServiceProvider',
+        Arcanedev\LogViewer\LogViewerServiceProvider::class
     ],
 
     /*

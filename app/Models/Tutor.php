@@ -444,13 +444,11 @@ class Tutor extends Service\Person
             if ($tutor->changed(['debtor'])) {
                 event(new RecalcTutorDebt($tutor->id));
             }
-            \Log::info('UPDATED');
             event(new RecalcTutorData($tutor->id));
         });
 
         static::created(function($tutor) {
             event(new RecalcTutorData($tutor->id));
-            \Log::info('CREATED');
         });
 
         static::saved(function($model) {
