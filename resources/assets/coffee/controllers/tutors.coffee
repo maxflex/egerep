@@ -340,6 +340,7 @@ angular
                 $scope.tutor.password = TutorService.generatePassword()
 
         $scope.svgSave = ->
+            $scope.form_changed = true
             $('#svg-modal').modal 'hide'
             return
 
