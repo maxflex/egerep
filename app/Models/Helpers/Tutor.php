@@ -8,27 +8,13 @@ class Tutor
     const PUBLIC_FIELDS = [
         'first_name',
         'middle_name',
-        'subjects',
         'public_desc',
-        'photo_extension',
-        'start_career_year',
-        'birth_year',
-        'lesson_duration',
-        'public_price',
-        'departure_price',
         'education',
         'achievements',
-        'preferences',
         'experience',
         'tutoring_experience',
-        'grades',
-        'gender',
-        'lk',
-        'tb',
-        'js',
-        'video_link',
-        'video_duration',
-        'description',
+        'preferences',
+        'grades'
     ];
 
     /**
@@ -49,9 +35,9 @@ class Tutor
         }
 
         // статус репетитора: опубликован, к одобрению, одобрено, однако не заполнено любое поле, использующиеся на сайте
-        if ($tutor->public_desc || in_array(intval($tutor->state), [4, 5])) {
+        if (! empty(trim($tutor->public_desc)) || in_array(intval($tutor->state), [4, 5])) {
             foreach(self::PUBLIC_FIELDS as $field) {
-                if (! $tutor->{$field}) {
+                if (empty(trim($tutor->{$field}))) {
                     $errors[] = 3;
                     break;
                 }
