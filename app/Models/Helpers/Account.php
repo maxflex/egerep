@@ -17,7 +17,7 @@ class Account
         }
 
         // в расчете не проведено ни одного занятия
-        if (! count($account->account_data)) {
+        if (! $account->accountData()->exists()) {
             $errors[] = 2;
         }
 
