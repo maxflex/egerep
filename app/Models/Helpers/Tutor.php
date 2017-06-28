@@ -37,7 +37,7 @@ class Tutor
         // статус репетитора: опубликован, к одобрению, одобрено, однако не заполнено любое поле, использующиеся на сайте
         if (! empty(trim($tutor->public_desc)) || in_array(intval($tutor->state), [4, 5])) {
             foreach(self::PUBLIC_FIELDS as $field) {
-                if (empty(trim($tutor->{$field}))) {
+                if (empty(trim($tutor->getClean($field)))) {
                     $errors[] = 3;
                     break;
                 }
