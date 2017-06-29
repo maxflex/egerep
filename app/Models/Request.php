@@ -41,7 +41,10 @@ class Request extends Model
 
     public function getNumberAttribute()
     {
-        return DB::table('requests')->where('client_id', $this->client_id)->where('id', '<=', $this->id)->count();
+        if ($this->id) {
+            return DB::table('requests')->where('client_id', $this->client_id)->where('id', '<=', $this->id)->count();
+        }
+        return null;
     }
 
     public function getCommentAttribute()
