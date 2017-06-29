@@ -44,14 +44,9 @@ class Tutor
             }
         }
 
-        // статус репетитора: опубликован, к одобрению, одобрено, однако + в выезде указана хотя бы 1 станция + не указана минимальная цена выезда
-        if (($tutor->public_desc || in_array(intval($tutor->state), [4, 5])) && $tutor->svg_map && ! $tutor->departure_price) {
-            $errors[] = 4;
-        }
-
         // статус репетитора опубликован + у репетитора отустствует фото
-        if ($tutor->public_desc && ! $tutor->has_photo_cropped) {
-            $errors[] = 5;
+        if (! empty(trim($tutor->public_desc)) && ! $tutor->has_photo_cropped) {
+            $errors[] = 4;
         }
 
         sort($errors);
