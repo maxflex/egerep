@@ -104,7 +104,7 @@ class Tutor extends Service\Person
                 $query->where('hide', $hide);
             }
         } else {
-            $query->whereRaw("(attachments.hide = 0 or exists (select 1 from archives where archives.attachment_id = attachments.id and  archives.state = 'possible'))");
+            $query->whereRaw("(attachments.hide = 0)");
         }
         return $query;
     }

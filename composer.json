@@ -22,7 +22,8 @@
         "graham-campbell/throttle": "^5.1",
         "predis/predis": "^1.1",
         "ege-shared":"dev-master",
-        "arcanedev/log-viewer": "^4.3"
+        "arcanedev/log-viewer": "^4.3",
+        "guzzlehttp/guzzle": "^6.3"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
