@@ -56,7 +56,9 @@
     <a href="templates" class="list-group-item">Шаблоны</a>
 @endif
 @if (allowed(\Shared\Rights::SHOW_CONTRACT))
-
     <a href="contract" class="list-group-item">Договор</a>
+@endif
+@if (allowed(\Shared\Rights::EMERGENCY_EXIT))
+    <a href="emergency" class="list-group-item">Экстренный выход</a>
 @endif
 <a href="logout" class="list-group-item">Выход</a>

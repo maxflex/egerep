@@ -17,6 +17,8 @@ Route::group(['middleware' => ['web']], function () {
     });
     Route::get('temp/{year}', 'TempController@index');
 
+    Route::get('emergency', 'EmergencyController@index');
+
     Route::get('stream', 'StreamController@index');
     Route::get('stream/configurations', 'StreamController@configurations');
 

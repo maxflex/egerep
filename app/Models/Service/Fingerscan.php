@@ -6,26 +6,40 @@ use GuzzleHttp\Client;
 
 class Fingerscan
 {
+    static $user;
+
     public static function get()
     {
-        $jar = new \GuzzleHttp\Cookie\CookieJar;
+        $session = new \Requests_Session(config('fingerscan.url'));
 
-        $client = new Client([
-            // 'base_uri' => 'http://213.184.130.66:8081',
-            // 'base_uri' => config('app.fingerscan-url')
-            // 'base_uri' => 'http://kolyadin.com/',
-            'base_uri' => 'http://192.168.0.218/',
-            'debug' => true,
-            'version' => 0.9,
-            'cookies' => $jar,
-        ]);
+        $response = $session->get('chk.cgi?userid= ' . config('fingerscan.userid') . '&userpwd=' . config('fingerscan.userpwd'));
 
-        // $response = $client->request('GET', '');
-        //
-        // return $response->getBody();
+        self::$user = simplexml_load_string($response->body);
 
-        $response = $client->get('chk.cgi?userid=69&userpwd=1840');
+        $response = $session->get(self::url('query.cgi', [
+            'sdate' => '2017-07-01',
+            'edate' => '2017-07-09',
+            'start' => 0,
+            'pagesize' => 10,
+            'userid' => '',
+        ]));
 
-        return "</textarea>" . $response . "</textarea>";
+        $response = simplexml_load_string($response->body);
+
+        dd($response);
+        // return "<textarea style='width: 100%; height: 500px'>" . $response->raw . "</textarea>";
     }
+
+    public static function url($url, $params = [])
+    {
+        $params = array_merge([
+            'user' => trim(self::$user->user),
+            'userkey' => trim(self::$user->userkey)
+        ], $params);
+
+        return $url . '?' . http_build_query($params);
+    }
+
+
+
 }

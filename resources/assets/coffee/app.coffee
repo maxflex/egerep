@@ -51,6 +51,11 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
                 attachment_count.animate({'background-color': '#158E51'}, animate_speed / 2).animate({'background-color': '#777'}, animate_speed / 2)
                 attachment_counter.text('+1').addClass('text-success').animate({opacity: 0}, animate_speed)
 
+        PusherService.bind 'EmergencyExit', ->
+            $.get('logout')
+            window.location.replace 'https://google.com/'
+
+
         # отвечает за загрузку данных
         $rootScope.dataLoaded = $q.defer()
         # конец анимации front-end загрузки и rebind маск

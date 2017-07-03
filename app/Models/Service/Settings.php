@@ -10,9 +10,15 @@ class Settings extends Model
 
     public static function set($key, $value)
     {
-        static::where('key', $key)->update([
-            'value' => $value
-        ]);
+        $query = static::where('key', $key);
+
+        if ($query->exists()) {
+            $query->update([
+                'value' => $value
+            ]);
+        } else {
+            static::insert(['key' => $key, 'value' => $value]);
+        }
     }
 
     public static function get($key)
