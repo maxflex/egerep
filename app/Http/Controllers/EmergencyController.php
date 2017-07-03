@@ -19,6 +19,6 @@ class EmergencyController extends Controller
 
         event(new EmergencyExit);
         User::logout();
-        return 'ok';
+        return redirect('https://google.ru/');
     }
 }
