@@ -43,24 +43,19 @@ class Attachment
             $errors[] = 6;
         }
 
-        // есть занятия при отсутствии расчетов
-        if (! $attachment->accounts()->exists() && self::lessons($attachment)->exists()) {
-            $errors[] = 9;
-        }
-
         // слишком большой или слишком маленький прогноз
         if ($attachment->forecast && ($attachment->forecast < 100 || $attachment->forecast >= 5000)) {
-            $errors[] = 19;
+            $errors[] = 18;
         }
 
         // слишком большая/маленькая стоимость занятия в отчетности
         if (self::lessons($attachment)->whereRaw('(sum >= 19000 OR sum < 500)')->exists()) {
-            $errors[] = 21;
+            $errors[] = 20;
         }
 
         // слишком большая/маленькая комиссия в отчетности
         if (self::lessons($attachment)->where('commission', '>', 0)->whereRaw('(commission >= 2100 OR commission < 100)')->exists()) {
-            $errors[] = 22;
+            $errors[] = 21;
         }
 
         if ($archive) {
@@ -91,47 +86,47 @@ class Attachment
 
             // дата архивации строго раньше даты стыковки
             if ($archive_date < $attachment_date) {
-                $errors[] = 10;
+                $errors[] = 9;
             }
 
             // поле детали архивации пусто
             if (empty(trim($archive->comment))) {
-                $errors[] = 11;
+                $errors[] = 10;
             }
 
             // сумма Х = 0 И дата архивации стоит НЕ через 7 дней после даты стыковки
             if (! $x && $archive_date_obj->diff($attachment_date_obj)->format("%a") != 7) {
-                $errors[] = 12;
+                $errors[] = 11;
             }
 
             // сумма Х = 0 И дата архивации стоит через 7 дней после даты стыковки И стыковка показана
             if (! $x && $archive_date_obj->diff($attachment_date_obj)->format("%a") == 7 && ! $attachment->hide) {
-                $errors[] = 13;
+                $errors[] = 12;
             }
 
             // сумма Х = 0 И прогноз > 0 И архивация есть
             if (! $x && $attachment->forecast) {
-                $errors[] = 14;
+                $errors[] = 13;
             }
 
             // занятий к проводке = 0 И дата архивации не совпадает с датой последнего занятия
             if ($last_lesson_date && ! $archive->total_lessons_missing && $archive_date != $last_lesson_date) {
-                $errors[] = 16;
+                $errors[] = 15;
             }
 
             // занятий к проводке = 0 И дата архивации совпадает с датой последнего занятия И стыковка показана
             if ($last_lesson_date && ! $archive->total_lessons_missing && $archive_date == $last_lesson_date && ! $attachment->hide) {
-                $errors[] = 17;
+                $errors[] = 16;
             }
 
             // разархивация возможна И класс клиента НЕ с 1 по 11
             if ($archive->state == 'possible' && ! in_array($client_grade, range(1, 11))) {
-                $errors[] = 18;
+                $errors[] = 17;
             }
 
             // указано слишком большое значение в занятиях к проводке
             if ($archive->total_lessons_missing >= 100) {
-                $errors[] = 20;
+                $errors[] = 19;
             }
         } else {
             // стыковка скрыта И архивация отсутствует
@@ -144,7 +139,7 @@ class Attachment
 
         // сумма Х > 0 И прогноз = [0 или пусто]
         if (! $attachment->forecast && $x) {
-            $errors[] = 15;
+            $errors[] = 14;
         }
 
         sort($errors);
