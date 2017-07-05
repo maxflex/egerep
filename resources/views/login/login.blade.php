@@ -1,8 +1,6 @@
 @extends('login')
-
-
 @section('content')
-<center ng-app="Login" ng-controller="LoginCtrl">
+<center>
 	<div class="form-signin" autocomplete="off">
 <!-- 		<h2 class="form-signin-heading">Вход в систему</h2> -->
 		<input type="text" id="inputLogin" class="form-control" placeholder="Логин" autofocus ng-model="login" autocomplete="off" ng-keyup="enter($event)">

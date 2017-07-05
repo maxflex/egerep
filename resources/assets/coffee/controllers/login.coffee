@@ -27,8 +27,4 @@ angular
         $scope.checkFields = ->
             $scope.l.start()
             $scope.in_process = true
-            if grecaptcha.getResponse() is ''
-                console.log('execute...')
-                grecaptcha.execute()
-            else
-                $scope.goLogin()
+            if grecaptcha.getResponse() is '' then grecaptcha.execute() else $scope.goLogin()

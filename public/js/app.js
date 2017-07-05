@@ -2416,7 +2416,6 @@
       $scope.l.start();
       $scope.in_process = true;
       if (grecaptcha.getResponse() === '') {
-        console.log('execute...');
         return grecaptcha.execute();
       } else {
         return $scope.goLogin();
