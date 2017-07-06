@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddApprovedToTeacherReviews extends Migration
+class CreateAttendanceTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,8 +12,10 @@ class AddApprovedToTeacherReviews extends Migration
      */
     public function up()
     {
-        Schema::connection('egecrm')->table('teacher_reviews', function (Blueprint $table) {
-            // $table->boolean('approved')->default(false);
+        Schema::create('attendance', function (Blueprint $table) {
+            $table->integer('user_id')->unsigned()->index();
+            $table->datetime('date')->index();
+            $table->unique(['user_id', 'date']);
         });
     }
 
@@ -24,8 +26,6 @@ class AddApprovedToTeacherReviews extends Migration
      */
     public function down()
     {
-        Schema::table('teacher_reviews', function (Blueprint $table) {
-            //
-        });
+        Schema::drop('attendance');
     }
 }

@@ -30,6 +30,7 @@ class Kernel extends ConsoleKernel
         Commands\RecalcTutorData::class,
         Commands\RecalcEfficency::class,
         Commands\ConnectStations::class,
+        Commands\Attendance::class,
     ];
 
     /**
@@ -60,6 +61,9 @@ class Kernel extends ConsoleKernel
             }
         })->dailyAt('02:30'); // это выполняется примерно полчаса
         $schedule->command('summary:calc')->dailyAt('03:15'); // затем должно запуститься это
+
+        $schedule->command('attendance ' . now(true))->dailyAt('23:00');
+        
         $schedule->command('mango:sync')->everyMinute();
 
         // вспомогательные таблицы для ege-repetitor.ru

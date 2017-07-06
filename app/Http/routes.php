@@ -64,6 +64,8 @@ Route::group(['middleware' => ['web']], function () {
         }
     });
 
+    Route::get('attendance', 'AttendanceController@index');
+
     Route::get('tutors/select', 'TutorsController@select');
     Route::resource('tutors', 'TutorsController');
     Route::resource('logs', 'LogsController');
@@ -123,6 +125,8 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('tutors/merge', 'TutorsController@merge');
         Route::delete('tutors/photo/{id}', 'TutorsController@deletePhoto');
         Route::resource('tutors', 'TutorsController');
+
+        Route::post('attendance', 'AttendanceController@get');
 
         Route::post('requests/counts', 'RequestsController@counts');
         Route::post('requests/transfer/{id}', 'RequestsController@transfer');

@@ -269,3 +269,10 @@
         $clone = clone $q;
         return $clone;
     }
+
+    /**
+     * 2017-01-13 12:45:00 => 2017-01-13
+     */
+    function toDate($date) {
+        return explode(' ', $date)[0];
+    }
