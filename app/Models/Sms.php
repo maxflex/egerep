@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Redis;
 
 class Sms extends Model
 {
@@ -60,7 +61,7 @@ class Sms extends Model
 			"id_status" => $info[0],
 			"id_smsru"	=> $info[1],
 			"balance"	=> $info[2],
-            "user_id"   => User::fromSession()->id,
+            "user_id"   => User::loggedIn() ? User::fromSession()->id : 0,
 			"message"	=> $params["text"],
 			"number"	=> $params["to"],
             "mass"      => $mass,
@@ -107,4 +108,15 @@ class Sms extends Model
 			default:  return "неизвестно";
 		}
 	}
+
+    /**
+     */
+    public static function verify($user)
+    {
+        $code = mt_rand(1000, 9999);
+        Redis::set("egerep:codes:{$user->id}", $code, 'EX', 120);
+        Sms::send($user->phone, $code . ' – код для входа в ЛК', false);
+        // cache(["codes:{$user_id}" => $code], 3);
+        return $code;
+    }
 }
