@@ -306,7 +306,7 @@ class Tutor extends Service\Person
      * Получить ID всех клиентов преподавателя для создания списка отчетности
      * $hide – получать только не скрытых клиентов по умолчанию
      */
-    public function getAttachmenClients($hide = 0, $with_lessons_count = false, $get_possible_archives = false)
+    public function getAttachmenClients($hide = 0, $get_possible_archives = false)
     {
         $clients = [];
 
@@ -326,15 +326,11 @@ class Tutor extends Service\Person
                     'grade'                 => $attachment->requestList->request->client->grade,
                     'total_lessons_missing' => $attachment->archive ? $attachment->archive->total_lessons_missing : null,
                     'archive_state'         => $attachment->archive ? $attachment->archive->state : null,
-                    'total_lessons'         => DB::table('account_datas')->where('tutor_id', $attachment->tutor_id)->where('client_id', $attachment->client_id)->count(),
+                    // attachment-refactored
+                    'total_lessons'         => DB::table('account_datas')->where('attachment_id', $attachment->id)->count(),
                     'forecast'              => $attachment->forecast,
                     'state'                 => $attachment->getState(),
                 ];
-                if ($with_lessons_count) {
-                    $client['lessons_count'] = AccountData::where('client_id', $attachment->requestList->request->client_id)
-                                                            ->where('tutor_id', $this->id)
-                                                            ->count();
-                }
                 $clients[] = $client;
             }
         }

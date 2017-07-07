@@ -17,7 +17,7 @@ class AccountsController extends Controller
         if (! allowed(\Shared\Rights::ER_TUTOR_ACCOUNTS)) {
             return view('errors.not_allowed');
         }
-        $data = $this->getData($id, [0, false, true]); // params in array: hidden, with_lesson_count, get_possible_archives
+        $data = $this->getData($id, [0, true]); // params in array: hidden, get_possible_archives
         if ($data === false) {
             return view('tutors.accounts.no_clients');
         }
@@ -26,7 +26,7 @@ class AccountsController extends Controller
 
     public function hidden($id)
     {
-        $data = $this->getData($id, [1, true, false]); // params in array: hidden, with_lesson_count, get_possible_archives
+        $data = $this->getData($id, [1, false]); // params in array: hidden, get_possible_archives
         if (! count($data['clients'])) {
             return view('shared.empty', [
                 'message' => 'у преподавателя нет скрытых клиентов'
@@ -37,10 +37,10 @@ class AccountsController extends Controller
 
     private function getData($id, $attachmentParams = [])
     {
-        list($hidden, $with_lesson_count, $get_possible_archives) = $attachmentParams;
+        list($hidden, $get_possible_archives) = $attachmentParams;
 
         $tutor = Tutor::find($id);
-        $clients = $tutor->getAttachmenClients($hidden, $with_lesson_count, $get_possible_archives);
+        $clients = $tutor->getAttachmenClients($hidden, $get_possible_archives);
         $hidden_clients_count = $tutor->clientsCount(1);
         $visible_clients_count = $tutor->clientsCount(0, true);
 

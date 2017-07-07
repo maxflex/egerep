@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class AccountData extends Model
 {
     protected $fillable = [
-        'tutor_id',
-        'client_id',
+        'attachment_id',
         'date',
         'value',
     ];
