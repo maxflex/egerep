@@ -8,30 +8,48 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use DB;
 use App\Models\Service\Fingerscan;
+use Cache;
 
 class AttendanceController extends Controller
 {
     public function get(Request $request)
     {
-        $month = $request->month;
-        // если выбрали будущий месяц, то показываем статистику за предыдущий год этого месяца
-        $year = $month > date('n') ? date('Y') - 1 : date('Y');
+        $year_months = DB::table('attendance')->select(DB::raw("DATE_FORMAT(`date`,'%Y-%m') as `year_month`"))->orderBy('date', 'asc')->groupBy(DB::raw("DATE_FORMAT(`date`,'%Y-%m')"))->pluck('year_month');
+        $data = [];
 
-        $date = self::generateDates($year, $month);
-
-
-        $data = DB::table('attendance')->whereRaw("(date >= '{$date->start}' AND date <= '{$date->end}')")->get();
-
-        // если текущий месяц, к датам надо добавить текущий день в LIVE
-        if (date('n') == $month) {
-            $today_data = Fingerscan::get(now(true));
-            $data = array_merge($data, $today_data);
+        foreach($year_months as $year_month) {
+            $data[$year_month] = DB::table('attendance')->whereRaw("DATE_FORMAT(`date`,'%Y-%m') = '{$year_month}'")->get();
         }
+
+        // добавить текущий день в LIVE
+        $today_data = Fingerscan::get(now(true));
+        $data[$year_month] = array_merge($data[$year_month], $today_data);
 
         $return = [];
 
-        foreach($data as $d) {
-            $return[$d->user_id][date('j', strtotime($d->date))] = date('H:i', strtotime($d->date));
+
+        foreach($data as $year_month => $year_month_data) {
+            foreach($year_month_data as $d) {
+                // формируем LABEL – разница между 10:00 и временем прихода в формате H:MM
+                $datetime1 = new \DateTime(toDate($d->date) . ' 10:00:00');
+                $datetime2 = new \DateTime($d->date);
+                $interval = $datetime1->diff($datetime2);
+                $label = '';
+                if (! $interval->invert) {
+                    if ($interval->h) {
+                        $label .= $interval->h . ':';
+                    }
+                    if ($interval->i) {
+                        $label .= ($interval->i < 10 && $interval->h) ? ('0' . $interval->i) : $interval->i;
+                    }
+                }
+                $login = Cache::remember("egerep:logins:{$d->user_id}", 1, function() use ($d) {
+                    return dbEgecrm('users')->whereId($d->user_id)->value('login');
+                });
+                if ($login !== null) {
+                    $return[$year_month][$login][date('j', strtotime($d->date))] = $label;
+                }
+            }
         }
 
         return $return;

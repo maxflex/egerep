@@ -4,17 +4,9 @@
 
 @section('content')
 
-<div class="row">
-    <div class="col-sm-2">
-        <select ng-model='month' class='sp'>
-            <option ng-repeat='(id, name) in Months'
-                value="@{{id}}">@{{ name }}</option>
-        </select>
-    </div>
-</div>
-
-<div style='width: 100%; overflow-x: scroll; margin-top: 30px; padding-bottom: 10px'>
-    <table class="accounts-table" ng-show="hasData()">
+<div ng-repeat="(year_month, year_month_data) in data">
+    <h3 class="attachment-stats-year" style='margin-top: 0'>@{{ formatYearMonth(year_month) }}</h3>
+    <table class="accounts-table" style='margin-bottom: 30px'>
         <tbody>
             <tr>
                 <td style="border: none; width: 120px"></td>
@@ -22,23 +14,18 @@
                     @{{ day }}
                 </td>
             </tr>
-            <tr ng-repeat="(user_id, user_data) in data" ng-show="UserService.getLogin(user_id) != 'system'">
+            <tr ng-repeat="(user_login, user_data) in year_month_data">
                     <td style="text-align: left">
-                        @{{ UserService.getLogin(user_id) }}
+                        @{{ user_login }}
                     </td>
                     <td ng-repeat='day in getDays()' style="text-align: center" ng-class="{
+                        'light-green': user_data[day] !== undefined,
                         'light-red': late(user_data[day]),
                     }">
-                    <div style='width: 40px'>
-                        @{{ user_data[day] }}
-                    </div>
+                        <span ng-show='late(user_data[day])'>@{{ user_data[day] }}</span>
                 </td>
             </tr>
         </tbody>
     </table>
-</div>
-
-<div class="row center" ng-show="!frontend_loading && !hasData()" style='padding: 220px 0'>
-    <span class="text-gray">нет данных</span>
 </div>
 @stop
