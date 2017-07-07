@@ -52,9 +52,11 @@ class Fingerscan
             }
         } while (! isset($response->code));
 
+        \Log::info($response->msg);
+        
         // dd($data);
         $data = array_reverse($data);
-        
+
         $return = [];
         // берем первую запись для каждого дня
         foreach($data as $d) {

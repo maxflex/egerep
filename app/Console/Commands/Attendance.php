@@ -42,6 +42,8 @@ class Attendance extends Command
         $date_start = $this->argument('date_start');
         $date_end = $this->argument('date_end') ?: $date_start;
 
+        DB::table('attendance')->whereBetween('date', [$date_start, $date_end])->delete();
+
         foreach(dateRange($date_start, $date_end) as $current_date) {
             $data = Fingerscan::get($current_date);
             foreach($data as $d) {
