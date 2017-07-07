@@ -7,6 +7,7 @@ use GuzzleHttp\Client;
 class Fingerscan
 {
     static $user;
+    static $session;
 
     /**
      * $date – объект с start и end
@@ -16,18 +17,15 @@ class Fingerscan
         $date_obj = new \DateTime($date);
         $date_obj->modify('+1 day');
 
-        $session = new \Requests_Session(config('fingerscan.url'));
-
-        $response = $session->get('chk.cgi?userid= ' . config('fingerscan.userid') . '&userpwd=' . config('fingerscan.userpwd'));
-
-        self::$user = simplexml_load_string($response->body);
+        self::startSession();
 
         $start = 0;
         $pagesize = 10;
         $data = [];
-
+        $step = 0;
         do {
-            $response = $session->get(self::url('query.cgi', [
+            $step++;
+            $response = self::$session->get(self::url('query.cgi', [
                 'userid' => '',
                 'sdate' => $date,
                 'edate' => $date_obj->format('Y-m-d'),
@@ -35,9 +33,16 @@ class Fingerscan
                 'pagesize' => $pagesize, // максимальный 40, как выяснилось
             ]));
 
-            $start += $pagesize;
-
             $response = simplexml_load_string($response->body);
+
+            // bugfix
+            // если возникла ошибка, перезапускаем сессию
+            if (isset($response->code) && @$response->msg != 'end') {
+                self::startSession();
+                continue;
+            }
+
+            $start += $pagesize;
 
             if (! isset($response->code)) {
                 try {
@@ -50,10 +55,10 @@ class Fingerscan
                     }
                 } catch (\ErrorException $e) {}
             }
-        } while (! isset($response->code));
+        } while (@$response->msg != 'end');
 
-        \Log::info($response->msg);
-        
+        \Log::info($response->msg . " | step {$step} ");
+
         // dd($data);
         $data = array_reverse($data);
 
@@ -66,6 +71,13 @@ class Fingerscan
         }
 
         return $return;
+    }
+
+    public static function startSession()
+    {
+        self::$session = new \Requests_Session(config('fingerscan.url'));
+        $response = self::$session->get('chk.cgi?userid= ' . config('fingerscan.userid') . '&userpwd=' . config('fingerscan.userpwd'));
+        self::$user = simplexml_load_string($response->body);
     }
 
     public static function url($url, $params = [])
