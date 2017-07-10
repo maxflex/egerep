@@ -273,20 +273,20 @@ angular.module('Egerep')
                 return Math.round(parseInt(val) * .25)
 
         # всего занятий
-        $scope.totalLessons = (account, client_id) ->
+        $scope.totalLessons = (account, attachment_id) ->
             lessons_count = 0
             $.each $scope.tutor.last_accounts, (index, account) ->
-                lessons_count += $scope.periodLessons(account, client_id)
+                lessons_count += $scope.periodLessons(account, attachment_id)
             lessons_count || null
 
         # всего занятий в периоде
-        $scope.periodLessons = (account, client_id) ->
-            return null if not account.data[client_id]
+        $scope.periodLessons = (account, attachment_id) ->
+            return null if not account.data[attachment_id]
             lessons_count = 0
-            $.each account.data[client_id], (index, value) ->
+            $.each account.data[attachment_id], (index, value) ->
                 lessons_count++ if value
             lessons_count || null
-            # if account.data[client_id] then Object.keys(account.data[client_id]).length else 0
+            # if account.data[attachment_id] then Object.keys(account.data[attachment_id]).length else 0
 
         $scope.totalCommission = (account) ->
             total_commission = 0

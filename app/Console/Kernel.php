@@ -19,7 +19,6 @@ class Kernel extends ConsoleKernel
         Commands\GraphRecalc::class,
         Commands\CalculateMinutes::class,
         Commands\UpdateClientGrade::class,
-        Commands\ForecastCalc::class,
         Commands\InitDuplicatesTable::class,
         Commands\CalcSummary::class,
         Commands\ModelErrors::class,
@@ -63,7 +62,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('summary:calc')->dailyAt('03:15'); // затем должно запуститься это
 
         $schedule->command('attendance ' . now(true))->dailyAt('23:00');
-        
+
         $schedule->command('mango:sync')->everyMinute();
 
         // вспомогательные таблицы для ege-repetitor.ru

@@ -626,21 +626,21 @@
         return Math.round(parseInt(val) * .25);
       }
     };
-    $scope.totalLessons = function(account, client_id) {
+    $scope.totalLessons = function(account, attachment_id) {
       var lessons_count;
       lessons_count = 0;
       $.each($scope.tutor.last_accounts, function(index, account) {
-        return lessons_count += $scope.periodLessons(account, client_id);
+        return lessons_count += $scope.periodLessons(account, attachment_id);
       });
       return lessons_count || null;
     };
-    $scope.periodLessons = function(account, client_id) {
+    $scope.periodLessons = function(account, attachment_id) {
       var lessons_count;
-      if (!account.data[client_id]) {
+      if (!account.data[attachment_id]) {
         return null;
       }
       lessons_count = 0;
-      $.each(account.data[client_id], function(index, value) {
+      $.each(account.data[attachment_id], function(index, value) {
         if (value) {
           return lessons_count++;
         }

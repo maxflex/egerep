@@ -52,12 +52,12 @@
                         <input type="text" class='account-column no-border-outline' id='i-@{{ date }}-@{{ $index }}'
                             ng-focus='selectRow(date)'
                             ng-blur='deselectRow(date)'
-                            ng-keyup='periodsCursor(date, $index, $event, account.data[client.id], date)'
+                            ng-keyup='periodsCursor(date, $index, $event, account.data[client.attachment_id], date)'
                             ng-class="{
                                 'attachment-start': date == client.attachment_date,
                                 'archive-date': date == client.archive_date,
                             }"
-                            ng-model='account.data[client.id][date]' title='@{{ formatDate(date) }}'>
+                            ng-model='account.data[client.attachment_id][date]' title='@{{ formatDate(date) }}'>
                     </td>
                     {{--<td ng-if="clients.length < 10" width="100%" class="no-border-outline"></td>--}}
                 </tr>
@@ -67,7 +67,7 @@
                 <tr>
                     <td ng-if='!clients.length' class="fake-cell"></td>
                     <td ng-repeat='client in clients' class="invisible-td small" style='text-align: center'>
-                        @{{ periodLessons(account, client.id) }}
+                        @{{ periodLessons(account, client.attachment_id) }}
                     </td>
                 </tr>
                 <tr>

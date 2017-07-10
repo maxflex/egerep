@@ -46,10 +46,11 @@ class Account extends Model
      */
     public function accountData()
     {
-        return $this->hasMany('App\Models\AccountData', 'tutor_id', 'tutor_id')
-        //    ->whereRaw("date > DATE_SUB((SELECT date_end FROM accounts WHERE tutor_id=" . $this->tutor_id . " ORDER BY date_end DESC LIMIT 1), INTERVAL 60 DAY)")
-            ->where('date', '>', $this->date_start)
-            ->where('date', '<=', $this->date_end);
+        // attachment-refactored
+        return $this->hasManyThroughCustom(AccountData::class, Attachment::class, 'id', 'attachment_id')
+            ->where('attachments.tutor_id', $this->tutor_id)
+            ->where('account_datas.date', '>', $this->date_start)
+            ->where('account_datas.date', '<=', $this->date_end);
     }
 
     // ------------------------------------------------------------------------
@@ -68,18 +69,19 @@ class Account extends Model
         }
 
         foreach ($this->accountData as $d) {
-            $return[$d->client_id][$d->date] = $d->value;
+            // attachment-refactored
+            $return[$d->id][$d->date] = $d->value;
         }
         return $return;
     }
 
     public function setDataAttribute($value)
     {
-        foreach ($value as $client_id => $data) {
+        // attachment-refactored
+        foreach ($value as $attachment_id => $data) {
             foreach ($data as $date => $value) {
                 AccountData::updateOrCreate([
-                    'client_id' => $client_id,
-                    'tutor_id'  => $this->tutor_id,
+                    'attachment_id' => $attachment_id,
                     'date'      => $date,
                 ], ['value' => $value]);
             }

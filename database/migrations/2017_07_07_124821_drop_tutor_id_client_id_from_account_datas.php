@@ -23,13 +23,6 @@ class DropTutorIdClientIdFromAccountDatas extends Migration
         Schema::table('account_datas', function (Blueprint $table) {
             $table->foreign('attachment_id')->references('id')->on('attachments')->onDelete('cascade');
         });
-
-        // Schema::table('account_datas', function (Blueprint $table) {
-        //     $table->dropColumn('tutor_id');
-        //     $table->dropColumn('client_id');
-        //     $table->dropForeign(['tutor_id']);
-        //     $table->dropForeign(['client_id']);
-        // });
     }
 
     /**
