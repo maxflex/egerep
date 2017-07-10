@@ -46,9 +46,14 @@ class Account extends Model
      */
     public function accountData()
     {
-        return $this->hasMany('App\Models\AccountData', 'tutor_id', 'tutor_id')
-            ->where('date', '>', $this->date_start)
-            ->where('date', '<=', $this->date_end);
+        // return DB::table('account_datas')->join('attachments', 'attachments.id', '=', 'account_datas.attachment_id')
+        //         ->where('attachments.tutor_id', $this->tutor_id)
+        //         ->where('account_datas.date', '>', $this->date_start)
+        //         ->where('account_datas.date', '<=', $this->date_end);
+        return $this->hasManyThroughCustom(AccountData::class, Attachment::class, 'id', 'attachment_id')
+            ->where('attachments.tutor_id', $this->tutor_id)
+            ->where('account_datas.date', '>', $this->date_start)
+            ->where('account_datas.date', '<=', $this->date_end);
     }
 
     // ------------------------------------------------------------------------
