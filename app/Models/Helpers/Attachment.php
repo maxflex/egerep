@@ -159,6 +159,7 @@ class Attachment
      */
     private static function lessons($attachment)
     {
-        return DB::table('account_datas')->where('tutor_id', $attachment->tutor_id)->where('client_id', $attachment->client_id);
+        // attachment-refactored
+        return DB::table('account_datas')->where('attachment_id', $attachment->id);
     }
 }

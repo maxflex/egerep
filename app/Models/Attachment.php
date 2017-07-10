@@ -101,17 +101,14 @@ class Attachment extends Model
 
     public function getAccountDataCountAttribute()
     {
-        return AccountData::where('tutor_id',  $this->tutor_id)
-                          ->where('client_id', $this->client_id)
-                          ->count();
+        // attachment-refactored
+        return AccountData::where('attachment_id',  $this->id)->count();
     }
 
     public function getLastAccountDateAttribute()
     {
-        $account_data = AccountData::where('tutor_id',  $this->tutor_id)
-                          ->where('client_id', $this->client_id)
-                          ->orderBy('date','desc')
-                          ->first();
+        // attachment-refactored
+        $account_data = AccountData::where('attachment_id',  $this->id)->orderBy('date','desc')->first();
 
         if ($account_data) {
             return $account_data->date;
@@ -130,10 +127,8 @@ class Attachment extends Model
 
     public function getFirstAccountDateAttribute()
     {
-        $account_data = AccountData::where('tutor_id',  $this->tutor_id)
-                            ->where('client_id', $this->client_id)
-                            ->orderBy('date')
-                            ->first();
+        // attachment-refactored
+        $account_data = AccountData::where('attachment_id',  $this->id)->orderBy('date')->first();
 
         if ($account_data) {
             return $account_data->date;
@@ -212,7 +207,8 @@ class Attachment extends Model
      */
     public function scopeNoLessons($query)
     {
-        return $query->whereRaw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) = 0');
+        // attachment-refactored
+        return $query->whereRaw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.attachment_id = attachments.id) = 0');
     }
 
     /**
@@ -220,7 +216,8 @@ class Attachment extends Model
      */
     public function scopeHasLessons($query, $lesson_count = '> 0')
     {
-        return $query->whereRaw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) ' . $lesson_count);
+        // attachment-refactored
+        return $query->whereRaw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.attachment_id = attachments.id) ' . $lesson_count);
     }
 
     /**
@@ -228,7 +225,8 @@ class Attachment extends Model
      */
     public function scopeHasLessonsWithMissing($query, $lesson_count = '> 0')
     {
-        return $query->whereRaw('((SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) + IFNULL((SELECT total_lessons_missing FROM archives WHERE archives.attachment_id = attachments.id), 0)) ' . $lesson_count);
+        // attachment-refactored
+        return $query->whereRaw('((SELECT COUNT(*) FROM account_datas ad WHERE ad.attachment_id = attachments.id) + IFNULL((SELECT total_lessons_missing FROM archives WHERE archives.attachment_id = attachments.id), 0)) ' . $lesson_count);
     }
 
     /**
@@ -280,7 +278,8 @@ class Attachment extends Model
             event(new RecalcTutorDebt($model->tutor_id));
         });
         static::deleted(function ($model) {
-            AccountData::where('tutor_id', $model->tutor_id)->where('client_id', $model->client_id)->delete();
+            // attachment-refactored
+            AccountData::where('attachment_id', $model->id)->delete();
             event(new AttachmentCountChanged(true));
             event(new RecalcTutorDebt($model->tutor_id));
         });
@@ -346,13 +345,15 @@ class Attachment extends Model
     {
         $query = static::commonSearch($search);
         $query->leftJoin('archives as a', 'a.attachment_id', '=', 'attachments.id');
+        // attachment-refactored
         $query->addSelect(
             'a.created_at AS archive_date', 'a.total_lessons_missing',
-            \DB::raw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) as lesson_count')
+            \DB::raw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.attachment_id = attachments.id) as lesson_count')
         );
 
+        // attachment-refactored
         if (isset($search->account_data)) {
-           $query->whereRaw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.tutor_id = attachments.tutor_id AND ad.client_id = attachments.client_id) ' . ($search->account_data ? '=' : '>') . 0);
+           $query->whereRaw('(SELECT COUNT(*) FROM account_datas ad WHERE ad.attachment_id = attachments.id) ' . ($search->account_data ? '=' : '>') . 0);
         }
 
         if (isset($search->forecast)) {
@@ -500,14 +501,13 @@ class Attachment extends Model
      */
     public static function getLastLessonDate($attachment_id)
     {
+        // attachment-refactored
         return DB::table('attachments')->join(DB::raw('(
-              SELECT MAX(date) as last_lesson_date, tutor_id, client_id
+              SELECT MAX(date) as last_lesson_date, attachment_id
               FROM account_datas
-              GROUP BY tutor_id, client_id
-          ) ad'), function($join) {
-            $join->on('attachments.tutor_id', '=', 'ad.tutor_id')
-                 ->on('attachments.client_id', '=', 'ad.client_id');
-            })->where('id', $attachment_id)->value('last_lesson_date');
+              GROUP BY attachment_id
+          ) ad'), 'ad.attachment_id', '=', 'attachments.id')
+          ->where('id', $attachment_id)->value('last_lesson_date');
     }
 
     /**

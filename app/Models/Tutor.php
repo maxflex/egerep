@@ -93,7 +93,6 @@ class Tutor extends Service\Person
     {
         // последние 60 дней с момента начальной стыковки
         return $this->hasMany('App\Models\Account');
-        // ->whereRaw("date_end > DATE_SUB((SELECT date_end FROM accounts WHERE tutor_id=" . $this->id . " ORDER BY date_end DESC LIMIT 1), INTERVAL 60 DAY)");
     }
 
     public function attachments($hide = null, $get_possible_archives = false)
