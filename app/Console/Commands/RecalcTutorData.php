@@ -65,7 +65,6 @@ class RecalcTutorData extends Command
                 'svg_map' => $data->svg_map,
                 'reviews_count' => DB::table('reviews')
                                     ->join('attachments', 'attachments.id', '=', 'attachment_id')
-                                    ->join('archives', 'archives.attachment_id', '=', 'attachments.id')
                                     ->where('tutor_id', $tutor_id)
                                     ->where('reviews.state', 'published')
                                     ->whereBetween('score', [1, 10])->count(),
