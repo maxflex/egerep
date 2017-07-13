@@ -46,8 +46,10 @@ class Review extends Model
         static::saved(function($model) {
             \DB::table('reviews')->whereId($model->id)->update(['errors' => \App\Models\Helpers\Review::errors($model)]);
         });
-        static::created(function ($model) {
-            event(new RecalcTutorData($model->attachment->tutor_id));
+        static::updated(function($model) {
+            if ($model->changed(['state', 'score'])) {
+                event(new RecalcTutorData($model->attachment->tutor_id));
+            }
         });
         static::deleted(function ($model) {
             event(new RecalcTutorData($model->attachment->tutor_id));
