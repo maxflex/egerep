@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Attachment;
+use App\Events\RecalcTutorData;
 
 class Review extends Model
 {
@@ -18,6 +19,11 @@ class Review extends Model
     protected static $commaSeparated = ['errors'];
 
     // ------------------------------------------------------------------------
+
+    public function attachment()
+    {
+        return $this->belongsTo(Attachment::class);
+    }
 
     public function getUserLoginAttribute()
     {
@@ -38,7 +44,13 @@ class Review extends Model
             }
         });
         static::saved(function($model) {
-            \DB::table('reviews')->where('id', $model->id)->update(['errors' => \App\Models\Helpers\Review::errors($model)]);
+            \DB::table('reviews')->whereId($model->id)->update(['errors' => \App\Models\Helpers\Review::errors($model)]);
+        });
+        static::created(function ($model) {
+            event(new RecalcTutorData($model->attachment->tutor_id));
+        });
+        static::deleted(function ($model) {
+            event(new RecalcTutorData($model->attachment->tutor_id));
         });
     }
 

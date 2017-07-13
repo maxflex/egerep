@@ -5,6 +5,7 @@ namespace App\Events;
 use App\Events\Event;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Artisan;
 
 class RecalcTutorData extends Event
 {
@@ -17,7 +18,7 @@ class RecalcTutorData extends Event
      */
     public function __construct($tutor_id)
     {
-        \Artisan::call("recalc:tutor_data", ['tutor_id' => $tutor_id]);
+        Artisan::call("recalc:tutor_data", ['tutor_id' => $tutor_id]);
     }
 
     /**

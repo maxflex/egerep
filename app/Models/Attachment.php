@@ -8,6 +8,7 @@ use App\Events\AttachmentCountChanged;
 use DB;
 use Storage;
 use App\Events\RecalcTutorDebt;
+use App\Events\RecalcTutorData;
 
 class Attachment extends Model
 {
@@ -276,12 +277,14 @@ class Attachment extends Model
         static::created(function ($model) {
             event(new AttachmentCountChanged());
             event(new RecalcTutorDebt($model->tutor_id));
+            event(new RecalcTutorData($model->tutor_id));
         });
         static::deleted(function ($model) {
             // attachment-refactored
             AccountData::where('attachment_id', $model->id)->delete();
             event(new AttachmentCountChanged(true));
             event(new RecalcTutorDebt($model->tutor_id));
+            event(new RecalcTutorData($model->tutor_id));
         });
     }
 
