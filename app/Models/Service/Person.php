@@ -26,8 +26,11 @@ class Person extends Model
 
         parent::save($options);
 
-        foreach($events as $event) {
-            event(new PhoneChanged($event[0], $event[1], static::ENTITY_TYPE));
+        // отключаем дубликаты для преподавателей – будет в "ошибках"
+        if (static::ENTITY_TYPE != 'tutor') {
+            foreach($events as $event) {
+                event(new PhoneChanged(cleanNumber($event[0]), cleanNumber($event[1]), static::ENTITY_TYPE));
+            }
         }
     }
 
