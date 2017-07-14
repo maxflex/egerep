@@ -41,15 +41,6 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->call(function() {
-            // ---------- удалить после проверки ----------
-            DB::table('debts_compare')->insert([
-                'date' => now(true),
-                'debt_before' => Debt::sum([
-                    'after_last_meeting' => 1,
-                    'debtor' => 0
-                ])
-            ]);
-            // ---------- конец ----------
             $attachments_count = DB::table('attachments')->where('forecast', '>', 0)->count();
             $steps_count = ceil($attachments_count / UpdateDebtsTable::STEP) - 1;
             foreach(range(0, $steps_count) as $step) {
