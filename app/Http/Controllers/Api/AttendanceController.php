@@ -41,6 +41,8 @@ class AttendanceController extends Controller
                     }
                     if ($interval->i) {
                         $label .= ($interval->i < 10 && $interval->h) ? ('0' . $interval->i) : $interval->i;
+                    } else if ($interval->h) {
+                        $label .= '00';
                     }
                 }
                 $login = Cache::remember("egerep:logins:{$d->user_id}", 1, function() use ($d) {
