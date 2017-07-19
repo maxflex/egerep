@@ -4,6 +4,7 @@ namespace App\Console;
 
 use DB;
 use App\Models\Debt;
+use App\Service\YandexDirect;
 use App\Jobs\UpdateDebtsTable;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -50,6 +51,12 @@ class Kernel extends ConsoleKernel
                 ]));
             }
         })->dailyAt('02:30'); // это выполняется примерно полчаса
+
+        // Исключить неактивные площадки из Yandex.Direct (#1857)
+        $schedule->call(function() {
+            YandexDirect::excludeSites();
+        })->dailyAt('04:00');
+
         $schedule->command('summary:calc')->dailyAt('03:15'); // затем должно запуститься это
 
         $schedule->command('attendance ' . now(true))->dailyAt('23:00');

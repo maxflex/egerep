@@ -24,7 +24,8 @@
         "ege-shared":"dev-master",
         "arcanedev/log-viewer": "^4.3",
         "rmccue/requests": "^1.7",
-        "google/recaptcha": "~1.1"
+        "google/recaptcha": "~1.1",
+        "guzzlehttp/guzzle": "~6.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReportDefinition xmlns="http://api.direct.yandex.com/v5/reports">
+  <SelectionCriteria>
+    <Filter>
+      <Field>CampaignId</Field>
+      <Operator>EQUALS</Operator>
+      <Values>28693312</Values>
+    </Filter>
+  </SelectionCriteria>
+<FieldNames>Placement</FieldNames>
+<FieldNames>Conversions</FieldNames>
+<FieldNames>Clicks</FieldNames>
+<FieldNames>Ctr</FieldNames>
+  <OrderBy>
+    <Field>Placement</Field>
+  </OrderBy>
+  <ReportName>Actual Data</ReportName>
+  <ReportType>CUSTOM_REPORT</ReportType>
+  <DateRangeType>ALL_TIME</DateRangeType>
+  <Format>TSV</Format>
+  <IncludeVAT>YES</IncludeVAT>
+  <IncludeDiscount>YES</IncludeDiscount>
+</ReportDefinition>

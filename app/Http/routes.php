@@ -12,8 +12,8 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
 
 Route::group(['middleware' => ['web']], function () {
     Route::get('/', 'RequestsController@index');
-    Route::get('/fingerscan', function() {
-        return \App\Models\Service\Fingerscan::get();
+    Route::get('/testy', function() {
+        return \App\Service\YandexDirect::excludeSites();
     });
     Route::get('temp/{year}', 'TempController@index');
 
