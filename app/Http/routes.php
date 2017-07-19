@@ -13,7 +13,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api'], function () {
 Route::group(['middleware' => ['web']], function () {
     Route::get('/', 'RequestsController@index');
     Route::get('/testy', function() {
-        return \App\Service\YandexDirect::excludeSites();
+        return \App\Service\YandexDirect::getExludedSites();
     });
     Route::get('temp/{year}', 'TempController@index');
 

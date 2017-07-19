@@ -10,19 +10,27 @@ class YandexDirect
     const TRIALS = 50; // попыток запроса статистики
     const SLEEP  = 2; // секунд между попытками
 
+    const COMPAIGN_ID = 28693312;
+
     // на этих площадках нельзя отключать показы
     const FORBIDDEN = ['mail.ru'];
 
     public static function excludeSites()
     {
-        $sites = self::getSitesToExlude();
+        // какие нужно выключить
+        $sites_to_exclude = self::getSitesToExlude();
+
+        // какие уже выключены
+        $already_excluded = self::getExludedSites();
+
+        $sites = array_unique(array_merge($sites_to_exclude, $already_excluded));
 
         $data = [
             'method' => 'update',
             'params' => [
                 'Campaigns' => [
                     [
-                        'Id' => 28693312,
+                        'Id' => self::COMPAIGN_ID,
                         'ExcludedSites' => ['Items' => $sites]
                     ]
                 ],
@@ -50,6 +58,42 @@ class YandexDirect
         $result = json_decode($result->getBody()->getContents());
 
         dump($result);
+    }
+
+
+    public static function getExludedSites()
+    {
+        $data = [
+            'method' => 'get',
+            'params' => [
+                'SelectionCriteria' => [
+                    'Ids' => [self::COMPAIGN_ID],
+                ],
+                'FieldNames' => ['ExcludedSites']
+            ]
+        ];
+
+        $client = new Client([
+            // Base URI is used with relative requests
+            'base_uri' => 'https://api.direct.yandex.com/json/v5/',
+        ]);
+
+        $result = $client->post('campaigns', [
+            'headers' => [
+                'Accept-Language' => 'ru',
+                'Content-Type' => 'application/json; charset=utf-8',
+                'Authorization' => 'Bearer ' . config('yandex.direct-token'),
+                'Client-Login' => config('yandex.direct-login'),
+            ],
+            'json' => $data,
+        ]);
+
+
+        // dump($result->getBody()->getContents()); exit();
+
+        $result = json_decode($result->getBody()->getContents());
+
+        return $result->result->Campaigns[0]->ExcludedSites->Items;
     }
 
     /**
