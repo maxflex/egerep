@@ -23,7 +23,7 @@ class YandexDirect
         // какие уже выключены
         $already_excluded = self::getExludedSites();
 
-        $sites = array_unique(array_merge($sites_to_exclude, $already_excluded));
+        $sites = array_values(array_unique(array_merge($sites_to_exclude, $already_excluded)));
 
         $data = [
             'method' => 'update',
