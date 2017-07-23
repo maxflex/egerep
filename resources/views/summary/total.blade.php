@@ -13,6 +13,9 @@
                 <td>
                     архиваций
                 </td>
+                <td>
+                    резюме
+                </td>
                 {{-- @rights-refactored --}}
                 @if (allowed(\Shared\Rights::ER_SUMMARY_FIELDS))
                 <td>
@@ -52,6 +55,9 @@
                 </td>
                 <td>
                     @{{ summary.archives.cnt | hideZero }}
+                </td>
+                <td>
+                    @{{ summary.tutors.cnt | hideZero }}
                 </td>
                 @if (allowed(\Shared\Rights::ER_SUMMARY_FIELDS))
                 <td>

@@ -207,6 +207,11 @@ class SummaryController extends Controller
                         ->whereRaw("DATE(created_at) <= '{$end}'")
                         ->count();
 
+        $tutors = DB::table('tutors')
+                        ->whereRaw("DATE(created_at) >= '{$start}'")
+                        ->whereRaw("DATE(created_at) <= '{$end}'")
+                        ->count();
+
         $account_payments = DB::table('account_payments')
                                 ->whereRaw("date >= '{$start}'")
                                 ->whereRaw("date <= '{$end}'")
@@ -226,6 +231,9 @@ class SummaryController extends Controller
             ],
             'archives' => [
                 'cnt' => $archives
+            ],
+            'tutors' => [
+                'cnt' => $tutors
             ],
             'account_payments' => [
                 'sum' => $account_payments
