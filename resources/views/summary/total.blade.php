@@ -5,6 +5,9 @@
                 <td width="150">
                 </td>
                 <td>
+                    резюме
+                </td>
+                <td>
                     заявок
                 </td>
                 <td>
@@ -12,9 +15,6 @@
                 </td>
                 <td>
                     архиваций
-                </td>
-                <td>
-                    резюме
                 </td>
                 {{-- @rights-refactored --}}
                 @if (allowed(\Shared\Rights::ER_SUMMARY_FIELDS))
@@ -48,6 +48,9 @@
                     @{{ date | date:'dd MMMM yyyy' }}
                 </td>
                 <td>
+                    @{{ summary.tutors.cnt | hideZero }}
+                </td>
+                <td>
                     @{{ summary.requests.cnt | hideZero }}
                 </td>
                 <td>
@@ -55,9 +58,6 @@
                 </td>
                 <td>
                     @{{ summary.archives.cnt | hideZero }}
-                </td>
-                <td>
-                    @{{ summary.tutors.cnt | hideZero }}
                 </td>
                 @if (allowed(\Shared\Rights::ER_SUMMARY_FIELDS))
                 <td>

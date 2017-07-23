@@ -134,6 +134,12 @@
         </div>
         <div class="col-sm-4">
             <div class="form-group">
+                <select class="form-control" ng-model="tutor.egecentr_source">
+                    <option value='0'>анкета создана стандартным методом</option>
+                    <option value='1'>анкета ЕГЭ-Центра</option>
+                </select>
+            </div>
+            <div class="form-group">
                 <select class="form-control"
                     ng-model="tutor.in_egecentr"
                     ng-options="+(workplace) as label for (workplace, label) in Workplaces" placeholder="место работы"></select>

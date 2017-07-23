@@ -17,6 +17,10 @@ class Tutor extends Service\Person
 
     public $timestamps = false;
 
+    protected $casts = [
+        'egecentr_source' => 'string'
+    ];
+
     protected $fillable =  [
         'first_name',
         'last_name',
