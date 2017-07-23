@@ -61,6 +61,9 @@ class YandexDirect
     }
 
 
+    /**
+     * Получить уже исключенные сайты
+     */
     public static function getExludedSites()
     {
         $data = [
@@ -93,7 +96,7 @@ class YandexDirect
 
         $result = json_decode($result->getBody()->getContents());
 
-        return $result->result->Campaigns[0]->ExcludedSites->Items;
+        return self::removeWWW($result->result->Campaigns[0]->ExcludedSites->Items);
     }
 
     /**
@@ -144,6 +147,16 @@ class YandexDirect
                         $sites[] = $placement;
                     }
                 }
+            }
+        }
+        return self::removeWWW($sites);
+    }
+
+    private static function removeWWW($sites)
+    {
+        foreach($sites as &$site) {
+            if (strpos($site, 'www.') === 0) {
+                $site = substr($site, 4);
             }
         }
         return $sites;
