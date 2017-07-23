@@ -53,9 +53,9 @@ class Kernel extends ConsoleKernel
         })->dailyAt('02:30'); // это выполняется примерно полчаса
 
         // Исключить неактивные площадки из Yandex.Direct (#1857)
-        $schedule->call(function() {
-            YandexDirect::excludeSites();
-        })->dailyAt('04:00');
+        // $schedule->call(function() {
+        //     YandexDirect::excludeSites();
+        // })->dailyAt('04:00');
 
         $schedule->command('summary:calc')->dailyAt('03:15'); // затем должно запуститься это
 
