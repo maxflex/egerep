@@ -29,7 +29,6 @@ class LogAction extends Event
                     'table'     => $model->getTable(),
                     'type'      => static::_getType($model),
                     'ip'        => @$_SERVER['HTTP_X_REAL_IP'],
-                    'created_at'=> now(),
                 ]);
             }
         } catch (\Exception $e) {

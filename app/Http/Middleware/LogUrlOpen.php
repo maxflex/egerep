@@ -6,7 +6,7 @@ use Closure;
 use App\Models\User;
 use App\Models\Service\Log;
 
-class UserLogin
+class LogUrlOpen
 {
     /**
      * Handle an incoming request.
@@ -17,11 +17,10 @@ class UserLogin
      */
     public function handle($request, Closure $next)
     {
-        if (! User::loggedIn()) {
-            return view('login.login');
+        // логируем проход по URL
+        if (User::loggedIn()) {
+            Log::custom('url', User::fromSession()->id, ['url' => @$_SERVER['REQUEST_URI']]);
         }
-        view()->share('user', User::fromSession());
-        
         return $next($request);
     }
 }

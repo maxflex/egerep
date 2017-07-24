@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Redis;
+use App\Models\Service\Log;
 
 class User extends Model
 {
@@ -52,34 +53,54 @@ class User extends Model
      */
     public static function login($data)
     {
-        $User = User::active()->where([
-            'login'         => $data['login'],
-            'password'      => static::_password($data['password']),
-        ]);
+        $query = User::where('login', $data['login']);
 
-        if ($User->exists()) {
-            $user = $User->first();
-            if ($user->allowed(\Shared\Rights::WORLDWIDE_ACCESS) || User::fromOffice()) {
+         # проверка логина
+        if ($query->exists()) {
+            $user_id = $query->value('id');
+        } else {
+            self::log('wrong_login', null, ['login' => $data['login']]);
+            return false;
+        }
 
-                // Дополнительная СМС-проверка, если пользователь логинится если не из офиса
+        # проверка пароля
+        $query->where('password', static::_password($data['password']));
+        if (! $query->exists()) {
+            self::log('wrong_password', $user_id);
+            return false;
+        }
+
+        # забанен ли?
+        $query->active();
+        if (! $query->exists()) {
+            self::log('banned', $user_id);
+        } else {
+            $user = $query->first();
+            # из офиса или есть доступ вне офиса
+            if (User::fromOffice() || $user->allowed(\Shared\Rights::WORLDWIDE_ACCESS)) {
+                # дополнительная СМС-проверка, если пользователь логинится если не из офиса
                 if (! User::fromOffice() && $user->type == User::USER_TYPE) {
-                    $sent_code = Redis::get("egerep:codes:{$user->id}");
+                    $sent_code = Redis::get("egerep:codes:{$user_id}");
                     // если уже был отправлен – проверяем
                     if (! empty($sent_code)) {
                         if (@$data['code'] != $sent_code) {
+                            self::log('wrong_sms_code', $user_id);
                             return false;
                         } else {
-                            Redis::del("egerep:codes:{$user->id}");
+                            Redis::del("egerep:codes:{$user_id}");
                         }
                     } else {
-                    // иначе отправляем код
+                        // иначе отправляем код
+                        self::log('sms_code_sent', $user_id);
                         Sms::verify($user);
                         return 'sms';
                     }
                 }
-
+                self::log('login', $user_id);
                 $_SESSION['user'] = $user;
                 return true;
+            } else {
+                self::log('outside_office', $user_id);
             }
         }
         return false;
@@ -207,5 +228,12 @@ class User extends Model
     public function allowed($right)
     {
         return in_array($right, $this->rights);
+    }
+
+
+    public static function log($type, $user_id, $data = [])
+    {
+        $data = array_merge($data, ['user_agent' => @$_SERVER['USER_AGENT']]);
+        Log::custom($type, $user_id, $data);
     }
 }

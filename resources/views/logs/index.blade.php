@@ -64,23 +64,28 @@
                         @{{ log.table }}
                     </td>
                     <td>
-                        @{{ LogTypes[log.type] }}
+                        @{{ LogTypes[log.type] || log.type }}
                     </td>
                     <td>
                         <a target="_blank" ng-href="@{{ log.link }}" ng-show="log.link">@{{ log.row_id }}</a>
                         <span ng-show="!log.link">@{{ log.row_id }}</span>
                     </td>
                     <td width="100">
-                        <user model='log.user'></user>
+                        <user ng-if="log.user_id !== null" model='log.user'></user>
                     </td>
                     <td ng-init='d = toJson(log.data)'>
                         <table style="font-size: 12px">
                             <tr ng-repeat="(key, data) in d track by $index">
                                 <td style="vertical-align: top; width: 150px">@{{ key }}</td>
-                                <td>
-                                    <span class="text-gray">@{{ data[0]  }}</span>
-                                    <span class='text-gray'>⟶</span>
-                                    <span>@{{ data[1] }}</span>
+                                <td class="text-gray">
+                                    <span ng-if="log.row_id">
+                                        <span>@{{ data[0]  }}</span>
+                                        <span>⟶</span>
+                                        <span style='color: black'>@{{ data[1] }}</span>
+                                    </span>
+                                    <span ng-if="!log.row_id">
+                                        @{{ data }}
+                                    </span>
                                 </td>
                             </tr>
                         </table>

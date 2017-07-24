@@ -4,6 +4,7 @@ namespace App\Models\Service;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+use DB;
 
 class Log extends Model
 {
@@ -14,6 +15,20 @@ class Log extends Model
     const EXCEPT_TABLES = ['logs', 'distances', 'graph_distances', 'migrations', 'phone_duplicates', 'stations'];
 
     protected $appends = ['user'];
+
+    /**
+     * Кастомный лог
+     */
+    public static function custom($type, $user_id, $data = [])
+    {
+        DB::table('logs')->insert([
+            'table'     => null,
+            'user_id'   => $user_id,
+            'data'      => json_encode($data),
+            'type'      => $type,
+            'ip'        => @$_SERVER['HTTP_X_REAL_IP'],
+        ]);
+    }
 
     public function getUserAttribute()
     {
@@ -30,7 +45,9 @@ class Log extends Model
         $return = [];
 
         foreach(array_diff($tables, static::EXCEPT_TABLES) as $table) {
-            $return[$table] = \Schema::getColumnListing($table);
+            if ($table) {
+                $return[$table] = \Schema::getColumnListing($table);
+            }
         }
 
         return $return;

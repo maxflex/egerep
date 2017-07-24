@@ -26,6 +26,7 @@ class LoginController extends Controller
         $recaptcha = new ReCaptcha(config('captcha.secret'));
         $resp = $recaptcha->verify($request->captcha, $_SERVER['REMOTE_ADDR']);
         if (! $resp->isSuccess()) {
+            User::log('wrong_captcha', null);
             return $resp->getErrorCodes();
         }
 
