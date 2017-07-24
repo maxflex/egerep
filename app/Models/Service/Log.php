@@ -75,14 +75,6 @@ class Log extends Model
             $query->where('user_id', $search->user_id);
         }
 
-        if (isset($search->date_start)) {
-            $query->where('created_at', '>=', fromDotDate($search->date_start) . ' 00:00:00');
-        }
-
-        if (isset($search->date_end)) {
-            $query->where('created_at', '<=', fromDotDate($search->date_end) . ' 23:59:59');
-        }
-
         if (isset($search->type)) {
             $query->where('type', $search->type);
         }
