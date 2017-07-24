@@ -4066,3 +4066,14 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
     color: $placeholder_gray;
     font-size: 12px;
 }
+
+.small-gray {
+    font-size: 12px;
+    color: $placeholder_gray;
+}
+
+.tutor-created {
+    @extend .small-gray;
+    position: absolute;
+    right: 10px;
+}

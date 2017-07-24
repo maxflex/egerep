@@ -331,5 +331,8 @@
             <h4>КОММЕНТАРИИ</h4>
             <comments entity-type='tutor' entity-id='{{ isset($id) ? $id : 0 }}' user='{{ $user }}'></comments>
         </div>
+        <div ng-if="tutor.id" class="tutor-created">
+            профиль создан @{{ formatDateTime(tutor.created_at) }}
+        </div>
     </div>
 </div>
