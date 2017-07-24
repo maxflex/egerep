@@ -233,7 +233,7 @@ class User extends Model
 
     public static function log($type, $user_id, $data = [])
     {
-        $data = array_merge($data, ['user_agent' => @$_SERVER['USER_AGENT']]);
+        $data = array_merge($data, ['user_agent' => @$_SERVER['HTTP_USER_AGENT']]);
         Log::custom($type, $user_id, $data);
     }
 }
