@@ -68,8 +68,8 @@ class ExternalController extends Controller
         }
 
         // согласие размещать анкету в психпортрет
-        if (! @$request->egecentr_source) {
-            $data['impression'] = @$request->agree_to_publish ? ' я хотел бы получать учеников и даю согласие на публикацию анкеты на сайте ege-repetitor.ru' : 'я хотел бы получать учеников, но не хотел бы размещать анкету на сайте ege-repetitor.ru';
+        if (isset($request->agree_to_publish)) {
+            $data['impression'] = $request->agree_to_publish ? ' я хотел бы получать учеников и даю согласие на публикацию анкеты на сайте ege-repetitor.ru' : 'я хотел бы получать учеников, но не хотел бы размещать анкету на сайте ege-repetitor.ru';
         }
 
         if ($request->has('filename')) {
