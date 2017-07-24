@@ -116,7 +116,6 @@ Route::group(['middleware' => ['web']], function () {
         Route::resource('markers', 'MarkersController');
         Route::get('notifications/get', 'NotificationsController@get');
         Route::resource('notifications', 'NotificationsController');
-        Route::get('logs/graph', 'LogsController@graph');
         Route::resource('logs', 'LogsController');
         Route::get('tutors/list', 'TutorsController@lists');
         Route::post('tutors/filtered', 'TutorsController@filtered');

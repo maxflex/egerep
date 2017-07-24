@@ -31,79 +31,11 @@ angular
             load $scope.page
             $scope.current_page = $scope.page
 
-            $scope.chart = new Chart document.getElementById('graph').getContext('2d'),
-                type: 'bar'
-                options:
-                    legend:
-                        display: false
-                        # fullWidth: false
-                    maintainAspectRatio: false
-                    tooltips:
-                        callbacks:
-                            title: (tooltipItem, data) ->
-                                moment(tooltipItem[0].xLabel).format('DD.MM.YY HH:mm')
-                            label: (tooltipItem, data) -> ''
-                    scales:
-                        xAxes: [
-                            ticks:
-                                autoSkip: true
-                                autoSkipPadding: 25
-                                maxRotation: 0
-                            stacked: true
-                            # categoryPercentage: 0.07
-                            type: 'time'
-                            time:
-                                displayFormats:
-                                    minute: 'HH:mm'
-                                    hour: 'DD.MM HH:00'
-                                    millisecond: 'HH:mm:ss'
-                                    second: 'HH:mm:ss',
-                                    day: 'DD.MM',
-                                    week: 'DD.MM',
-                                    month: 'DD.MM.YYYY',
-                                    quarter: 'DD.MM.YYYY',
-                                    year: 'DD.MM.YYYY',
-                        ]
-                        yAxes: [
-                            ticks:
-                                beginAtZero: true
-                                mix: 0
-                                max: 1
-                                userCallback: (label, index, labels) -> return label if Math.floor(label) is label
-                            display: true,
-                            scaleLabel:
-                                display: true
-                                # labelString: 'действие'
-                        ]
-
         $scope.pageChanged = ->
             $rootScope.frontend_loading = true
             load $scope.current_page
             paginate('logs', $scope.current_page)
 
-        $scope.showGraph = ->
-            $rootScope.dialog('log-graph')
-            $scope.graph_loading = true
-            $http.get('api/logs/graph').then (response) ->
-                console.log(response)
-                $scope.width = response.data.width
-                $timeout ->
-                    $scope.chart.data.labels    = response.data.labels
-                    $scope.chart.data.datasets  = response.data.datasets
-                    $scope.chart.update()
-                    $scope.graph_loading = false
-                # response.data.forEach (d) ->
-                #     data.push
-                #         date: moment(d).toDate()
-                #         value: 1
-                # MG.data_graphic
-                #     chart_type: 'histogram'
-                #     data: data
-                #     full_width: true,
-                #     height: 300,
-                #     target: '#graph',
-                #     x_accessor: 'date',
-                #     y_accessor: 'value'
 
         load = (page) ->
             params = '?page=' + page
