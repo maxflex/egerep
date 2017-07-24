@@ -28,6 +28,7 @@ class LogAction extends Event
                     'data'      => static::_generateData($model),
                     'table'     => $model->getTable(),
                     'type'      => static::_getType($model),
+                    'ip'        => @$_SERVER['HTTP_X_REAL_IP'],
                     'created_at'=> now(),
                 ]);
             }
