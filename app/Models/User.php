@@ -59,21 +59,21 @@ class User extends Model
         if ($query->exists()) {
             $user_id = $query->value('id');
         } else {
-            self::log('wrong_login', null, ['login' => $data['login']]);
+            self::log(null, 'failed_login', 'неверный логин', ['login' => $data['login']]);
             return false;
         }
 
         # проверка пароля
         $query->where('password', static::_password($data['password']));
         if (! $query->exists()) {
-            self::log('wrong_password', $user_id);
+            self::log($user_id, 'failed_login', 'неверный пароль');
             return false;
         }
 
         # забанен ли?
         $query->active();
         if (! $query->exists()) {
-            self::log('banned', $user_id);
+            self::log($user_id, 'failed_login', 'пользователь заблокирован');
         } else {
             $user = $query->first();
             # из офиса или есть доступ вне офиса
@@ -84,23 +84,23 @@ class User extends Model
                     // если уже был отправлен – проверяем
                     if (! empty($sent_code)) {
                         if (@$data['code'] != $sent_code) {
-                            self::log('wrong_sms_code', $user_id);
+                            self::log($user_id, 'failed_login', 'неверный смс-код');
                             return false;
                         } else {
                             Redis::del("egerep:codes:{$user_id}");
                         }
                     } else {
                         // иначе отправляем код
-                        self::log('sms_code_sent', $user_id);
+                        self::log($user_id, 'sms_code_sent');
                         Sms::verify($user);
                         return 'sms';
                     }
                 }
-                self::log('login', $user_id);
+                self::log($user_id, 'success_login');
                 $_SESSION['user'] = $user;
                 return true;
             } else {
-                self::log('outside_office', $user_id);
+                self::log($user_id, 'failed_login', 'нет прав доступа для данного IP');
             }
         }
         return false;
@@ -231,9 +231,12 @@ class User extends Model
     }
 
 
-    public static function log($type, $user_id, $data = [])
+    public static function log($user_id, $type, $message = '', $data = [])
     {
-        $data = array_merge($data, ['user_agent' => @$_SERVER['HTTP_USER_AGENT']]);
-        Log::custom($type, $user_id, $data);
+        $data = array_merge($data, [
+            $type => $message,
+            'user_agent' => @$_SERVER['HTTP_USER_AGENT']
+        ]);
+        Log::custom('authorization', $user_id, $data);
     }
 }

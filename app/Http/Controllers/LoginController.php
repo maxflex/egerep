@@ -24,9 +24,9 @@ class LoginController extends Controller
          * Проверка капчи
          */
         $recaptcha = new ReCaptcha(config('captcha.secret'));
-        $resp = $recaptcha->verify($request->captcha, $_SERVER['REMOTE_ADDR']);
+        $resp = $recaptcha->verify($request->captcha, @$_SERVER['HTTP_X_REAL_IP']);
         if (! $resp->isSuccess()) {
-            User::log('wrong_captcha', null);
+            User::log(null, 'failed_login', 'попытка обхода captcha');
             return $resp->getErrorCodes();
         }
 
@@ -35,6 +35,7 @@ class LoginController extends Controller
 
     public function logout()
     {
+        User::log(User::fromSession()->id, 'logout');
         User::logout();
         return redirect('/');
     }
