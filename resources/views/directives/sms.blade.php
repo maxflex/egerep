@@ -12,7 +12,6 @@
                                 <div class="sms-coordinates">
                                     @{{ sms.user_login }}
                                     @{{ $parent.$parent.formatDateTime(sms.created_at) }}
-                                    @{{ sms.mass ? '(массовое)' : '' }}
     		                        <svg class="sms-status @{{ sms.id_status == 103 ? 'delivered' : ( sms.id_status == 102 ? 'inway' : 'not-delivered')}}">
                                         <circle r="3" cx="7" cy="7"></circle>
                                     </svg>

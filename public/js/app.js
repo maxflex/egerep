@@ -4903,7 +4903,6 @@
             return console.log(val, key);
           });
         });
-        $scope.mass = false;
         $scope.smsCount = function() {
           return SmsCounter.count($scope.message || '').messages;
         };
@@ -4914,8 +4913,7 @@
             ajaxStart();
             sms = new Sms({
               message: $scope.message,
-              to: $scope.number,
-              mass: $scope.mass
+              to: $scope.number
             });
             return sms.$save().then(function(data) {
               ajaxEnd();

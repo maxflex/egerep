@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Redis;
 
 class Sms extends Model
 {
-    protected $fillable = ['number', 'user_id', 'id_status', 'id_status', 'id_smsru', 'mass', 'message'];
+    protected $fillable = ['number', 'user_id', 'id_status', 'id_status', 'id_smsru', 'message'];
     protected $appends = ['user_login'];
 
     public function getUserLoginAttribute()
@@ -16,14 +16,14 @@ class Sms extends Model
     }
 
 
-	public static function sendToNumbers($numbers, $message, $mass) {
+	public static function sendToNumbers($numbers, $message, $create = true) {
 		foreach ($numbers as $number) {
-			self::send($number, $message, $mass);
+			self::send($number, $message, $create);
 		}
 	}
 
 
-	public static function send($to, $message, $mass)
+	public static function send($to, $message, $create = true)
 	{
 		$to = explode(",", $to);
 		foreach ($to as $number) {
@@ -38,14 +38,14 @@ class Sms extends Model
 				"text"		=>	$message,
 				"from"      =>  "EGE-Repetit",
 			);
-			$result = self::exec("http://sms.ru/sms/send", $params, $mass);
+			$result = self::exec("http://sms.ru/sms/send", $params, $create);
 		}
 
 
 		return $result;
 	}
 
-	protected static function exec($url, $params, $mass = false)
+	protected static function exec($url, $params, $create = true)
 	{
 		$ch = curl_init($url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -64,11 +64,12 @@ class Sms extends Model
             "user_id"   => User::loggedIn() ? User::fromSession()->id : 0,
 			"message"	=> $params["text"],
 			"number"	=> $params["to"],
-            "mass"      => $mass,
 		];
 
 		// создаем объект для истории
-		return SMS::create($info);
+        if ($create) {
+            return SMS::create($info);
+        }
 	}
 
 

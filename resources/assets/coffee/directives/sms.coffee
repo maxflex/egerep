@@ -12,9 +12,6 @@ angular.module('Egerep').directive 'sms', ->
                     $scope.$apply()
                 console.log val, key
 
-        # массовая отправка?
-        $scope.mass = false
-
         # подсчитать СМС
         $scope.smsCount = ->
             SmsCounter.count($scope.message || '').messages
@@ -27,7 +24,6 @@ angular.module('Egerep').directive 'sms', ->
                 sms = new Sms
                     message: $scope.message
                     to: $scope.number
-                    mass: $scope.mass
                 sms.$save()
                     .then (data) ->
                         ajaxEnd()
