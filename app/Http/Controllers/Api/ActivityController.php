@@ -13,7 +13,7 @@ class ActivityController extends Controller
     public function index(Request $request)
     {
         $query = DB::table('logs')->whereDate('created_at', '=', fromDotDate($request->date))->where('user_id', $request->user_id);
-        $mango_query = DB::table('mango')->where(DB::raw('DATE(FROM_UNIXTIME(start))', $request->date));
+        $mango_query = DB::table('mango')->where(DB::raw('DATE(FROM_UNIXTIME(start))', fromDotDate($request->date)));
 
         $data = cloneQuery($query)->select('created_at')->orderBy('created_at', 'asc')->pluck('created_at');
 
