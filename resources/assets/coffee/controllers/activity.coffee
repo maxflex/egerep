@@ -23,6 +23,7 @@ angular
         , 300
 
     $scope.show = ->
+        $rootScope.frontend_loading = true
         $http.get 'api/activity?' + $.param($scope.search)
             .then (response) ->
                 $rootScope.frontend_loading = false
