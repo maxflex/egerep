@@ -14,6 +14,8 @@ Route::group(['middleware' => ['web', LogUrlOpen::class]], function () {
 
     Route::get('emergency', 'EmergencyController@index');
 
+    Route::get('activity', 'ActivityController@index');
+
     Route::get('stream', 'StreamController@index');
     Route::get('stream/configurations', 'StreamController@configurations');
 
@@ -112,6 +114,7 @@ Route::group(['middleware' => ['web', LogUrlOpen::class]], function () {
  * API ROUTES
  */
 Route::group(['namespace' => 'Api', 'prefix' => 'api', 'middleware' => ['web']], function () {
+    Route::get('activity', 'ActivityController@index');
     Route::resource('markers', 'MarkersController');
     Route::get('notifications/get', 'NotificationsController@get');
     Route::resource('notifications', 'NotificationsController');

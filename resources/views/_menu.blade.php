@@ -55,6 +55,9 @@
 @if (allowed(\Shared\Rights::ER_ATTENDANCE))
     <a href="attendance" class="list-group-item">Посещаемость</a>
 @endif
+@if (allowed(\Shared\Rights::ER_ACTIVITY))
+    <a href="activity" class="list-group-item">Активность</a>
+@endif
 @if (allowed(\Shared\Rights::ER_TEMPLATES))
     <a href="templates" class="list-group-item">Шаблоны</a>
 @endif

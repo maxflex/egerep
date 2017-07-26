@@ -48615,6 +48615,489 @@ vueInit = function() {
  * @license MIT
  */
 !function(t){"use strict";function r(t){if(t)c[0]=c[16]=c[1]=c[2]=c[3]=c[4]=c[5]=c[6]=c[7]=c[8]=c[9]=c[10]=c[11]=c[12]=c[13]=c[14]=c[15]=0,this.blocks=c,this.buffer8=i;else if(n){var r=new ArrayBuffer(68);this.buffer8=new Uint8Array(r),this.blocks=new Uint32Array(r)}else this.blocks=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];this.h0=this.h1=this.h2=this.h3=this.start=this.bytes=0,this.finalized=this.hashed=!1,this.first=!0}var e="object"==typeof process&&process.versions&&process.versions.node;e&&(t=global);var i,h=!t.JS_MD5_TEST&&"object"==typeof module&&module.exports,s="function"==typeof define&&define.amd,n=!t.JS_MD5_TEST&&"undefined"!=typeof ArrayBuffer,f="0123456789abcdef".split(""),a=[128,32768,8388608,-2147483648],o=[0,8,16,24],u=["hex","array","digest","buffer","arrayBuffer"],c=[];if(n){var p=new ArrayBuffer(68);i=new Uint8Array(p),c=new Uint32Array(p)}var y=function(t){return function(e){return new r(!0).update(e)[t]()}},d=function(){var t=y("hex");e&&(t=l(t)),t.create=function(){return new r},t.update=function(r){return t.create().update(r)};for(var i=0;i<u.length;++i){var h=u[i];t[h]=y(h)}return t},l=function(r){var e,i;try{if(t.JS_MD5_TEST)throw"JS_MD5_TEST";e=require("crypto"),i=require("buffer").Buffer}catch(h){return console.log(h),r}var s=function(t){if("string"==typeof t)return e.createHash("md5").update(t,"utf8").digest("hex");if(t.constructor==ArrayBuffer)t=new Uint8Array(t);else if(void 0===t.length)return r(t);return e.createHash("md5").update(new i(t)).digest("hex")};return s};r.prototype.update=function(r){if(!this.finalized){var e="string"!=typeof r;e&&r.constructor==t.ArrayBuffer&&(r=new Uint8Array(r));for(var i,h,s=0,f=r.length||0,a=this.blocks,u=this.buffer8;f>s;){if(this.hashed&&(this.hashed=!1,a[0]=a[16],a[16]=a[1]=a[2]=a[3]=a[4]=a[5]=a[6]=a[7]=a[8]=a[9]=a[10]=a[11]=a[12]=a[13]=a[14]=a[15]=0),e)if(n)for(h=this.start;f>s&&64>h;++s)u[h++]=r[s];else for(h=this.start;f>s&&64>h;++s)a[h>>2]|=r[s]<<o[3&h++];else if(n)for(h=this.start;f>s&&64>h;++s)i=r.charCodeAt(s),128>i?u[h++]=i:2048>i?(u[h++]=192|i>>6,u[h++]=128|63&i):55296>i||i>=57344?(u[h++]=224|i>>12,u[h++]=128|i>>6&63,u[h++]=128|63&i):(i=65536+((1023&i)<<10|1023&r.charCodeAt(++s)),u[h++]=240|i>>18,u[h++]=128|i>>12&63,u[h++]=128|i>>6&63,u[h++]=128|63&i);else for(h=this.start;f>s&&64>h;++s)i=r.charCodeAt(s),128>i?a[h>>2]|=i<<o[3&h++]:2048>i?(a[h>>2]|=(192|i>>6)<<o[3&h++],a[h>>2]|=(128|63&i)<<o[3&h++]):55296>i||i>=57344?(a[h>>2]|=(224|i>>12)<<o[3&h++],a[h>>2]|=(128|i>>6&63)<<o[3&h++],a[h>>2]|=(128|63&i)<<o[3&h++]):(i=65536+((1023&i)<<10|1023&r.charCodeAt(++s)),a[h>>2]|=(240|i>>18)<<o[3&h++],a[h>>2]|=(128|i>>12&63)<<o[3&h++],a[h>>2]|=(128|i>>6&63)<<o[3&h++],a[h>>2]|=(128|63&i)<<o[3&h++]);this.lastByteIndex=h,this.bytes+=h-this.start,h>=64?(this.start=h-64,this.hash(),this.hashed=!0):this.start=h}return this}},r.prototype.finalize=function(){if(!this.finalized){this.finalized=!0;var t=this.blocks,r=this.lastByteIndex;t[r>>2]|=a[3&r],r>=56&&(this.hashed||this.hash(),t[0]=t[16],t[16]=t[1]=t[2]=t[3]=t[4]=t[5]=t[6]=t[7]=t[8]=t[9]=t[10]=t[11]=t[12]=t[13]=t[14]=t[15]=0),t[14]=this.bytes<<3,this.hash()}},r.prototype.hash=function(){var t,r,e,i,h,s,n=this.blocks;this.first?(t=n[0]-680876937,t=(t<<7|t>>>25)-271733879<<0,i=(-1732584194^2004318071&t)+n[1]-117830708,i=(i<<12|i>>>20)+t<<0,e=(-271733879^i&(-271733879^t))+n[2]-1126478375,e=(e<<17|e>>>15)+i<<0,r=(t^e&(i^t))+n[3]-1316259209,r=(r<<22|r>>>10)+e<<0):(t=this.h0,r=this.h1,e=this.h2,i=this.h3,t+=(i^r&(e^i))+n[0]-680876936,t=(t<<7|t>>>25)+r<<0,i+=(e^t&(r^e))+n[1]-389564586,i=(i<<12|i>>>20)+t<<0,e+=(r^i&(t^r))+n[2]+606105819,e=(e<<17|e>>>15)+i<<0,r+=(t^e&(i^t))+n[3]-1044525330,r=(r<<22|r>>>10)+e<<0),t+=(i^r&(e^i))+n[4]-176418897,t=(t<<7|t>>>25)+r<<0,i+=(e^t&(r^e))+n[5]+1200080426,i=(i<<12|i>>>20)+t<<0,e+=(r^i&(t^r))+n[6]-1473231341,e=(e<<17|e>>>15)+i<<0,r+=(t^e&(i^t))+n[7]-45705983,r=(r<<22|r>>>10)+e<<0,t+=(i^r&(e^i))+n[8]+1770035416,t=(t<<7|t>>>25)+r<<0,i+=(e^t&(r^e))+n[9]-1958414417,i=(i<<12|i>>>20)+t<<0,e+=(r^i&(t^r))+n[10]-42063,e=(e<<17|e>>>15)+i<<0,r+=(t^e&(i^t))+n[11]-1990404162,r=(r<<22|r>>>10)+e<<0,t+=(i^r&(e^i))+n[12]+1804603682,t=(t<<7|t>>>25)+r<<0,i+=(e^t&(r^e))+n[13]-40341101,i=(i<<12|i>>>20)+t<<0,e+=(r^i&(t^r))+n[14]-1502002290,e=(e<<17|e>>>15)+i<<0,r+=(t^e&(i^t))+n[15]+1236535329,r=(r<<22|r>>>10)+e<<0,t+=(e^i&(r^e))+n[1]-165796510,t=(t<<5|t>>>27)+r<<0,i+=(r^e&(t^r))+n[6]-1069501632,i=(i<<9|i>>>23)+t<<0,e+=(t^r&(i^t))+n[11]+643717713,e=(e<<14|e>>>18)+i<<0,r+=(i^t&(e^i))+n[0]-373897302,r=(r<<20|r>>>12)+e<<0,t+=(e^i&(r^e))+n[5]-701558691,t=(t<<5|t>>>27)+r<<0,i+=(r^e&(t^r))+n[10]+38016083,i=(i<<9|i>>>23)+t<<0,e+=(t^r&(i^t))+n[15]-660478335,e=(e<<14|e>>>18)+i<<0,r+=(i^t&(e^i))+n[4]-405537848,r=(r<<20|r>>>12)+e<<0,t+=(e^i&(r^e))+n[9]+568446438,t=(t<<5|t>>>27)+r<<0,i+=(r^e&(t^r))+n[14]-1019803690,i=(i<<9|i>>>23)+t<<0,e+=(t^r&(i^t))+n[3]-187363961,e=(e<<14|e>>>18)+i<<0,r+=(i^t&(e^i))+n[8]+1163531501,r=(r<<20|r>>>12)+e<<0,t+=(e^i&(r^e))+n[13]-1444681467,t=(t<<5|t>>>27)+r<<0,i+=(r^e&(t^r))+n[2]-51403784,i=(i<<9|i>>>23)+t<<0,e+=(t^r&(i^t))+n[7]+1735328473,e=(e<<14|e>>>18)+i<<0,r+=(i^t&(e^i))+n[12]-1926607734,r=(r<<20|r>>>12)+e<<0,h=r^e,t+=(h^i)+n[5]-378558,t=(t<<4|t>>>28)+r<<0,i+=(h^t)+n[8]-2022574463,i=(i<<11|i>>>21)+t<<0,s=i^t,e+=(s^r)+n[11]+1839030562,e=(e<<16|e>>>16)+i<<0,r+=(s^e)+n[14]-35309556,r=(r<<23|r>>>9)+e<<0,h=r^e,t+=(h^i)+n[1]-1530992060,t=(t<<4|t>>>28)+r<<0,i+=(h^t)+n[4]+1272893353,i=(i<<11|i>>>21)+t<<0,s=i^t,e+=(s^r)+n[7]-155497632,e=(e<<16|e>>>16)+i<<0,r+=(s^e)+n[10]-1094730640,r=(r<<23|r>>>9)+e<<0,h=r^e,t+=(h^i)+n[13]+681279174,t=(t<<4|t>>>28)+r<<0,i+=(h^t)+n[0]-358537222,i=(i<<11|i>>>21)+t<<0,s=i^t,e+=(s^r)+n[3]-722521979,e=(e<<16|e>>>16)+i<<0,r+=(s^e)+n[6]+76029189,r=(r<<23|r>>>9)+e<<0,h=r^e,t+=(h^i)+n[9]-640364487,t=(t<<4|t>>>28)+r<<0,i+=(h^t)+n[12]-421815835,i=(i<<11|i>>>21)+t<<0,s=i^t,e+=(s^r)+n[15]+530742520,e=(e<<16|e>>>16)+i<<0,r+=(s^e)+n[2]-995338651,r=(r<<23|r>>>9)+e<<0,t+=(e^(r|~i))+n[0]-198630844,t=(t<<6|t>>>26)+r<<0,i+=(r^(t|~e))+n[7]+1126891415,i=(i<<10|i>>>22)+t<<0,e+=(t^(i|~r))+n[14]-1416354905,e=(e<<15|e>>>17)+i<<0,r+=(i^(e|~t))+n[5]-57434055,r=(r<<21|r>>>11)+e<<0,t+=(e^(r|~i))+n[12]+1700485571,t=(t<<6|t>>>26)+r<<0,i+=(r^(t|~e))+n[3]-1894986606,i=(i<<10|i>>>22)+t<<0,e+=(t^(i|~r))+n[10]-1051523,e=(e<<15|e>>>17)+i<<0,r+=(i^(e|~t))+n[1]-2054922799,r=(r<<21|r>>>11)+e<<0,t+=(e^(r|~i))+n[8]+1873313359,t=(t<<6|t>>>26)+r<<0,i+=(r^(t|~e))+n[15]-30611744,i=(i<<10|i>>>22)+t<<0,e+=(t^(i|~r))+n[6]-1560198380,e=(e<<15|e>>>17)+i<<0,r+=(i^(e|~t))+n[13]+1309151649,r=(r<<21|r>>>11)+e<<0,t+=(e^(r|~i))+n[4]-145523070,t=(t<<6|t>>>26)+r<<0,i+=(r^(t|~e))+n[11]-1120210379,i=(i<<10|i>>>22)+t<<0,e+=(t^(i|~r))+n[2]+718787259,e=(e<<15|e>>>17)+i<<0,r+=(i^(e|~t))+n[9]-343485551,r=(r<<21|r>>>11)+e<<0,this.first?(this.h0=t+1732584193<<0,this.h1=r-271733879<<0,this.h2=e-1732584194<<0,this.h3=i+271733878<<0,this.first=!1):(this.h0=this.h0+t<<0,this.h1=this.h1+r<<0,this.h2=this.h2+e<<0,this.h3=this.h3+i<<0)},r.prototype.hex=function(){this.finalize();var t=this.h0,r=this.h1,e=this.h2,i=this.h3;return f[t>>4&15]+f[15&t]+f[t>>12&15]+f[t>>8&15]+f[t>>20&15]+f[t>>16&15]+f[t>>28&15]+f[t>>24&15]+f[r>>4&15]+f[15&r]+f[r>>12&15]+f[r>>8&15]+f[r>>20&15]+f[r>>16&15]+f[r>>28&15]+f[r>>24&15]+f[e>>4&15]+f[15&e]+f[e>>12&15]+f[e>>8&15]+f[e>>20&15]+f[e>>16&15]+f[e>>28&15]+f[e>>24&15]+f[i>>4&15]+f[15&i]+f[i>>12&15]+f[i>>8&15]+f[i>>20&15]+f[i>>16&15]+f[i>>28&15]+f[i>>24&15]},r.prototype.toString=r.prototype.hex,r.prototype.digest=function(){this.finalize();var t=this.h0,r=this.h1,e=this.h2,i=this.h3;return[255&t,t>>8&255,t>>16&255,t>>24&255,255&r,r>>8&255,r>>16&255,r>>24&255,255&e,e>>8&255,e>>16&255,e>>24&255,255&i,i>>8&255,i>>16&255,i>>24&255]},r.prototype.array=r.prototype.digest,r.prototype.arrayBuffer=function(){this.finalize();var t=new ArrayBuffer(16),r=new Uint32Array(t);return r[0]=this.h0,r[1]=this.h1,r[2]=this.h2,r[3]=this.h3,t},r.prototype.buffer=r.prototype.arrayBuffer;var v=d();h?module.exports=v:(t.md5=v,s&&define(function(){return v}))}(this);
+/*! Moment Duration Format v1.3.0
+ *  https://github.com/jsmreese/moment-duration-format 
+ *  Date: 2014-07-15
+ *
+ *  Duration format plugin function for the Moment.js library
+ *  http://momentjs.com/
+ *
+ *  Copyright 2014 John Madhavan-Reese
+ *  Released under the MIT license
+ */
+
+(function (root, undefined) {
+
+	// repeatZero(qty)
+	// returns "0" repeated qty times
+	function repeatZero(qty) {
+		var result = "";
+		
+		// exit early
+		// if qty is 0 or a negative number
+		// or doesn't coerce to an integer
+		qty = parseInt(qty, 10);
+		if (!qty || qty < 1) { return result; }
+		
+		while (qty) {
+			result += "0";
+			qty -= 1;
+		}
+		
+		return result;
+	}
+	
+	// padZero(str, len [, isRight])
+	// pads a string with zeros up to a specified length
+	// will not pad a string if its length is aready
+	// greater than or equal to the specified length
+	// default output pads with zeros on the left
+	// set isRight to `true` to pad with zeros on the right
+	function padZero(str, len, isRight) {
+		if (str == null) { str = ""; }
+		str = "" + str;
+		
+		return (isRight ? str : "") + repeatZero(len - str.length) + (isRight ? "" : str);
+	}
+	
+	// isArray
+	function isArray(array) {
+		return Object.prototype.toString.call(array) === "[object Array]";
+	}
+	
+	// isObject
+	function isObject(obj) {
+		return Object.prototype.toString.call(obj) === "[object Object]";
+	}
+	
+	// findLast
+	function findLast(array, callback) {
+		var index = array.length;
+
+		while (index -= 1) {
+			if (callback(array[index])) { return array[index]; }
+		}
+	}
+
+	// find
+	function find(array, callback) {
+		var index = 0,
+			max = array.length,
+			match;
+			
+		if (typeof callback !== "function") {
+			match = callback;
+			callback = function (item) {
+				return item === match;
+			};
+		}
+
+		while (index < max) {
+			if (callback(array[index])) { return array[index]; }
+			index += 1;
+		}
+	}
+	
+	// each
+	function each(array, callback) {
+		var index = 0,
+			max = array.length;
+			
+		if (!array || !max) { return; }
+
+		while (index < max) {
+			if (callback(array[index], index) === false) { return; }
+			index += 1;
+		}
+	}
+	
+	// map
+	function map(array, callback) {
+		var index = 0,
+			max = array.length,
+			ret = [];
+
+		if (!array || !max) { return ret; }
+				
+		while (index < max) {
+			ret[index] = callback(array[index], index);
+			index += 1;
+		}
+		
+		return ret;
+	}
+	
+	// pluck
+	function pluck(array, prop) {
+		return map(array, function (item) {
+			return item[prop];
+		});
+	}
+	
+	// compact
+	function compact(array) {
+		var ret = [];
+		
+		each(array, function (item) {
+			if (item) { ret.push(item); }
+		});
+		
+		return ret;
+	}
+	
+	// unique
+	function unique(array) {
+		var ret = [];
+		
+		each(array, function (_a) {
+			if (!find(ret, _a)) { ret.push(_a); }
+		});
+		
+		return ret;
+	}
+	
+	// intersection
+	function intersection(a, b) {
+		var ret = [];
+		
+		each(a, function (_a) {
+			each(b, function (_b) {
+				if (_a === _b) { ret.push(_a); }
+			});
+		});
+		
+		return unique(ret);
+	}
+	
+	// rest
+	function rest(array, callback) {
+		var ret = [];
+		
+		each(array, function (item, index) {
+			if (!callback(item)) {
+				ret = array.slice(index);
+				return false;
+			}
+		});
+		
+		return ret;
+	}
+
+	// initial
+	function initial(array, callback) {
+		var reversed = array.slice().reverse();
+		
+		return rest(reversed, callback).reverse();
+	}
+	
+	// extend
+	function extend(a, b) {
+		for (var key in b) {
+			if (b.hasOwnProperty(key)) { a[key] = b[key]; }
+		}
+		
+		return a;
+	}
+			
+	// define internal moment reference
+	var moment;
+
+	if (typeof require === "function") {
+		try { moment = require('moment'); } 
+		catch (e) {}
+	} 
+	
+	if (!moment && root.moment) {
+		moment = root.moment;
+	}
+	
+	if (!moment) {
+		throw "Moment Duration Format cannot find Moment.js";
+	}
+	
+	// moment.duration.format([template] [, precision] [, settings])
+	moment.duration.fn.format = function () {
+
+		var tokenizer, tokens, types, typeMap, momentTypes, foundFirst, trimIndex,
+			args = [].slice.call(arguments),
+			settings = extend({}, this.format.defaults),
+			// keep a shadow copy of this moment for calculating remainders
+			remainder = moment.duration(this);
+
+		// add a reference to this duration object to the settings for use
+		// in a template function
+		settings.duration = this;
+
+		// parse arguments
+		each(args, function (arg) {
+			if (typeof arg === "string" || typeof arg === "function") {
+				settings.template = arg;
+				return;
+			}
+
+			if (typeof arg === "number") {
+				settings.precision = arg;
+				return;
+			}
+
+			if (isObject(arg)) {
+				extend(settings, arg);
+			}
+		});
+
+		// types
+		types = settings.types = (isArray(settings.types) ? settings.types : settings.types.split(" "));
+
+		// template
+		if (typeof settings.template === "function") {
+			settings.template = settings.template.apply(settings);
+		}
+
+		// tokenizer regexp
+		tokenizer = new RegExp(map(types, function (type) {
+			return settings[type].source;
+		}).join("|"), "g");
+
+		// token type map function
+		typeMap = function (token) {
+			return find(types, function (type) {
+				return settings[type].test(token);
+			});
+		};
+
+		// tokens array
+		tokens = map(settings.template.match(tokenizer), function (token, index) {
+			var type = typeMap(token),
+				length = token.length;
+
+			return {
+				index: index,
+				length: length,
+
+				// replace escaped tokens with the non-escaped token text
+				token: (type === "escape" ? token.replace(settings.escape, "$1") : token),
+
+				// ignore type on non-moment tokens
+				type: ((type === "escape" || type === "general") ? null : type)
+
+				// calculate base value for all moment tokens
+				//baseValue: ((type === "escape" || type === "general") ? null : this.as(type))
+			};
+		}, this);
+
+		// unique moment token types in the template (in order of descending magnitude)
+		momentTypes = intersection(types, unique(compact(pluck(tokens, "type"))));
+
+		// exit early if there are no momentTypes
+		if (!momentTypes.length) {
+			return pluck(tokens, "token").join("");
+		}
+
+		// calculate values for each token type in the template
+		each(momentTypes, function (momentType, index) {
+			var value, wholeValue, decimalValue, isLeast, isMost;
+
+			// calculate integer and decimal value portions
+			value = remainder.as(momentType);
+			wholeValue = (value > 0 ? Math.floor(value) : Math.ceil(value));
+			decimalValue = value - wholeValue;
+
+			// is this the least-significant moment token found?
+			isLeast = ((index + 1) === momentTypes.length);
+
+			// is this the most-significant moment token found?
+			isMost = (!index);
+
+			// update tokens array
+			// using this algorithm to not assume anything about
+			// the order or frequency of any tokens
+			each(tokens, function (token) {
+				if (token.type === momentType) {
+					extend(token, {
+						value: value,
+						wholeValue: wholeValue,
+						decimalValue: decimalValue,
+						isLeast: isLeast,
+						isMost: isMost
+					});
+
+					if (isMost) {
+						// note the length of the most-significant moment token:
+						// if it is greater than one and forceLength is not set, default forceLength to `true`
+						if (settings.forceLength == null && token.length > 1) {
+							settings.forceLength = true;
+						}
+
+						// rationale is this:
+						// if the template is "h:mm:ss" and the moment value is 5 minutes, the user-friendly output is "5:00", not "05:00"
+						// shouldn't pad the `minutes` token even though it has length of two
+						// if the template is "hh:mm:ss", the user clearly wanted everything padded so we should output "05:00"
+						// if the user wanted the full padded output, they can set `{ trim: false }` to get "00:05:00"
+					}
+				}
+			});
+
+			// update remainder
+			remainder.subtract(wholeValue, momentType);
+		});
+	
+		// trim tokens array
+		if (settings.trim) {
+			tokens = (settings.trim === "left" ? rest : initial)(tokens, function (token) {
+				// return `true` if:
+				// the token is not the least moment token (don't trim the least moment token)
+				// the token is a moment token that does not have a value (don't trim moment tokens that have a whole value)
+				return !(token.isLeast || (token.type != null && token.wholeValue));
+			});
+		}
+		
+		
+		// build output
+
+		// the first moment token can have special handling
+		foundFirst = false;
+
+		// run the map in reverse order if trimming from the right
+		if (settings.trim === "right") {
+			tokens.reverse();
+		}
+
+		tokens = map(tokens, function (token) {
+			var val,
+				decVal;
+
+			if (!token.type) {
+				// if it is not a moment token, use the token as its own value
+				return token.token;
+			}
+
+			// apply negative precision formatting to the least-significant moment token
+			if (token.isLeast && (settings.precision < 0)) {
+				val = (Math.floor(token.wholeValue * Math.pow(10, settings.precision)) * Math.pow(10, -settings.precision)).toString();
+			} else {
+				val = token.wholeValue.toString();
+			}
+			
+			// remove negative sign from the beginning
+			val = val.replace(/^\-/, "");
+
+			// apply token length formatting
+			// special handling for the first moment token that is not the most significant in a trimmed template
+			if (token.length > 1 && (foundFirst || token.isMost || settings.forceLength)) {
+				val = padZero(val, token.length);
+			}
+
+			// add decimal value if precision > 0
+			if (token.isLeast && (settings.precision > 0)) {
+				decVal = token.decimalValue.toString().replace(/^\-/, "").split(/\.|e\-/);
+				switch (decVal.length) {
+					case 1:
+						val += "." + padZero(decVal[0], settings.precision, true).slice(0, settings.precision);
+						break;
+						
+					case 2:
+						val += "." + padZero(decVal[1], settings.precision, true).slice(0, settings.precision);		
+						break;
+						
+					case 3:
+						val += "." + padZero(repeatZero((+decVal[2]) - 1) + (decVal[0] || "0") + decVal[1], settings.precision, true).slice(0, settings.precision);		
+						break;
+					
+					default:
+						throw "Moment Duration Format: unable to parse token decimal value.";
+				}
+			}
+			
+			// add a negative sign if the value is negative and token is most significant
+			if (token.isMost && token.value < 0) {
+				val = "-" + val;
+			}
+
+			foundFirst = true;
+
+			return val;
+		});
+
+		// undo the reverse if trimming from the right
+		if (settings.trim === "right") {
+			tokens.reverse();
+		}
+
+		return tokens.join("");
+	};
+
+	moment.duration.fn.format.defaults = {
+		// token definitions
+		escape: /\[(.+?)\]/,
+		years: /[Yy]+/,
+		months: /M+/,
+		weeks: /[Ww]+/,
+		days: /[Dd]+/,
+		hours: /[Hh]+/,
+		minutes: /m+/,
+		seconds: /s+/,
+		milliseconds: /S+/,
+		general: /.+?/,
+
+		// token type names
+		// in order of descending magnitude
+		// can be a space-separated token name list or an array of token names
+		types: "escape years months weeks days hours minutes seconds milliseconds general",
+
+		// format options
+
+		// trim
+		// "left" - template tokens are trimmed from the left until the first moment token that has a value >= 1
+		// "right" - template tokens are trimmed from the right until the first moment token that has a value >= 1
+		// (the final moment token is not trimmed, regardless of value)
+		// `false` - template tokens are not trimmed
+		trim: "left",
+
+		// precision
+		// number of decimal digits to include after (to the right of) the decimal point (positive integer)
+		// or the number of digits to truncate to 0 before (to the left of) the decimal point (negative integer)
+		precision: 0,
+
+		// force first moment token with a value to render at full length even when template is trimmed and first moment token has length of 1
+		forceLength: null,
+
+		// template used to format duration
+		// may be a function or a string
+		// template functions are executed with the `this` binding of the settings object
+		// so that template strings may be dynamically generated based on the duration object
+		// (accessible via `this.duration`)
+		// or any of the other settings
+		template: function () {
+			var types = this.types,
+				dur = this.duration,
+				lastType = findLast(types, function (type) {
+					return dur._data[type];
+				});
+
+			// default template strings for each duration dimension type
+			switch (lastType) {
+				case "seconds":
+					return "h:mm:ss";
+				case "minutes":
+					return "d[d] h:mm";
+				case "hours":
+					return "d[d] h[h]";
+				case "days":
+					return "M[m] d[d]";
+				case "weeks":
+					return "y[y] w[w]";
+				case "months":
+					return "y[y] M[m]";
+				case "years":
+					return "y[y]";
+				default:
+					return "y[y] M[m] d[d] h:mm:ss";
+			}
+		}
+	};
+
+})(this);
+
 angular.module('svgmap', []).directive('svgMap', function() {
   return {
     templateUrl: 'img/svg/map.svg',

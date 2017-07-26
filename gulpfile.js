@@ -79,6 +79,7 @@ elixir(function(mix) {
             'vue-resource/dist/vue-resource.min',
             'phoneapi/dist/js/pusher',
             'js-md5/build/md5.min',
+            'moment-duration-format/lib/moment-duration-format',
             'egerep-svg-metro/scripts/svg',
         ]).concat(['resources/assets/js/*.js']), 'public/js/vendor.js');
 });

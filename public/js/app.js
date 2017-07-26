@@ -751,6 +751,38 @@
 }).call(this);
 
 (function() {
+  angular.module('Egerep').controller("ActivityIndex", function($scope, $http, $timeout, $rootScope, UserService) {
+    bindArguments($scope, arguments);
+    $timeout(function() {
+      $scope.search = {};
+      return $scope.refreshCounts();
+    });
+    $scope.formatMinutes = function(minutes) {
+      var format;
+      format = minutes >= 60 ? 'H час m мин' : 'm мин';
+      return moment.duration(minutes, 'minutes').format(format);
+    };
+    $scope.refreshCounts = function() {
+      return $timeout(function() {
+        $('.selectpicker option').each(function(index, el) {
+          $(el).data('subtext', $(el).attr('data-subtext'));
+          return $(el).data('content', $(el).attr('data-content'));
+        });
+        return $('.selectpicker').selectpicker('refresh');
+      }, 300);
+    };
+    return $scope.show = function() {
+      return $http.get('api/activity?' + $.param($scope.search)).then(function(response) {
+        $rootScope.frontend_loading = false;
+        $rootScope.frontendStop();
+        return $scope.data = response.data;
+      });
+    };
+  });
+
+}).call(this);
+
+(function() {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   angular.module('Egerep').controller('AddToList', function($scope, Genders, Grades, Subjects, TutorStates, Destinations, TutorService, PhoneService, RequestList) {
