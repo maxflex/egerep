@@ -111,7 +111,16 @@ class User extends Model
      */
     public static function fromOffice()
     {
-        return app('env') === 'local' || strpos($_SERVER['HTTP_X_REAL_IP'], '213.184.130.') === 0;
+        if (app('env') === 'local') {
+            return true;
+        }
+        $current_ip = @$_SERVER['HTTP_X_REAL_IP'];
+        foreach(['213.184.130.', '77.37.220.250'] as $ip) {
+            if (strpos($current_ip, $ip) === 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
