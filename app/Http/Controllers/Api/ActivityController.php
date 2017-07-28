@@ -46,6 +46,10 @@ class ActivityController extends Controller
                     'diff'  => $diff
                 ];
             }
+
+            usort($pauses, function($a, $b) {
+                return $a['start'] - $b['start'];
+            });
         }
 
         $return['pauses'] = $pauses;
