@@ -57,7 +57,7 @@ class ActivityController extends Controller
         $return['url_views'] = cloneQuery($query)->where('type', 'url')->count();
         $return['outgoing_calls_successful'] = cloneQuery($mango_query)->where('from_extension', $request->user_id)->where('answer', '>', 0)->count();
         $return['outgoing_calls_failed'] = cloneQuery($mango_query)->where('from_extension', $request->user_id)->where('answer', 0)->count();
-        $return['incoming_calls'] = cloneQuery($mango_query)->where('to_extension', $request->user_id)->count();
+        $return['incoming_calls'] = cloneQuery($mango_query)->where('to_extension', $request->user_id)->where('answer', '>', 0)->count();
         $return['calls_duration'] = round(cloneQuery($mango_query)->whereRaw("(from_extension={$request->user_id} or to_extension={$request->user_id})")->where('answer', '>', 0)->value(DB::raw('sum(finish - answer)')) / 60);
 
         return $return;

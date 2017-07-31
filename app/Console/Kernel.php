@@ -31,6 +31,7 @@ class Kernel extends ConsoleKernel
         Commands\RecalcEfficency::class,
         Commands\ConnectStations::class,
         Commands\Attendance::class,
+        Commands\SwitchGrades::class,
     ];
 
     /**
