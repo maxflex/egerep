@@ -8,6 +8,7 @@ class EfficencyData extends Model
 {
     protected $table = 'efficency_data';
     public $timestamps = false;
+    public $loggable = false;
 
     protected $fillable = [
         'date',
