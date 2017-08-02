@@ -144,7 +144,7 @@ class Request extends Model
         $return = [];
         foreach (self::$states as $state) {
             $query = static::where('state', $state);
-            if (! empty($user_id)) {
+            if (! isBlank($user_id)) {
                 $query->where('user_id', $user_id);
             }
             $return[$state] = $query->count();
@@ -184,7 +184,7 @@ class Request extends Model
         $return = [];
         foreach ($user_ids as $user_id) {
             $query = static::where('user_id', $user_id);
-            if ((! empty($state) || strlen($state) > 0) && $state != 'all') {
+            if (! isBlank($state) && $state != 'all') {
                 $query->where('state', $state);
             }
             $return[$user_id] = $query->count();
