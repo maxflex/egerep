@@ -150,8 +150,8 @@ class Request extends Model
             $return[$state] = $query->count();
         }
 
-        $return['all_denies'] = $return['deny'] + $return['reasoned_deny'] + $return['checked_reasoned_deny'];
         $return['all'] = array_sum($return);
+        $return['all_denies'] = $return['deny'] + $return['reasoned_deny'] + $return['checked_reasoned_deny'];
         return $return;
     }
 
