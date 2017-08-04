@@ -54,7 +54,7 @@ class CallsController extends Controller
             $query->where('line_number', $request->line_number);
         }
 
-        $data = $query->paginate(30);
+        $data = $query->paginate(100);
 
         $data->getCollection()->map(function ($d) {
             $d->statuses = array_keys(array_filter([$d->status_1, $d->status_2, $d->status_3, $d->status_4]));
