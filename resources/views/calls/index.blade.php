@@ -47,6 +47,14 @@
                 <option value="0">нет</option>
             </select>
         </div>
+        <div>
+            <select ng-model='search.status_4' class='selectpicker' ng-change='filter()'>
+                <option value="">@{{ CallStatuses[4] }}</option>
+                <option disabled>──────────────</option>
+                <option value="1">да</option>
+                <option value="0">нет</option>
+            </select>
+        </div>
     </div>
 
 
@@ -70,8 +78,9 @@
                         @{{ callDuration(call) }}
                     </td>
                     <td>
-                        <span ng-repeat="status in call.statuses">
-                            @{{ CallStatuses[status + 1] }}<span ng-if="call.additional && status == 1"> (@{{ call.additional }})</span>@{{ $last ? '' : ', ' }}</span>
+                        <div ng-repeat="status in call.statuses">
+                            @{{ CallStatuses[status + 1] }}<span ng-if="call.additional && status == 1"> (@{{ call.additional }})</span>
+                        </div>
                     </td>
                 </tr>
             </table>
