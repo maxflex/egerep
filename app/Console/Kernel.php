@@ -32,6 +32,7 @@ class Kernel extends ConsoleKernel
         Commands\ConnectStations::class,
         Commands\Attendance::class,
         Commands\SwitchGrades::class,
+        Commands\CallStatus::class,
     ];
 
     /**

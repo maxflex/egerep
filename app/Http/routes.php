@@ -19,6 +19,7 @@ Route::group(['middleware' => ['web', LogUrlOpen::class]], function () {
     Route::get('stream', 'StreamController@index');
     Route::get('stream/configurations', 'StreamController@configurations');
 
+    Route::get('calls', 'CallsController@index');
     Route::get('calls/missed', 'CallsController@missed');
     Route::resource('calls', 'CallsController');
 
@@ -150,6 +151,8 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api', 'middleware' => ['web']],
     Route::resource('sms', 'SmsController');
     Route::resource('periods', 'PeriodsController');
     Route::resource('stream', 'StreamController');
+
+    Route::resource('calls', 'CallsController');
 
     Route::post('summary/users', 'SummaryController@users');
     Route::post('summary/users/explain', 'SummaryController@explain');

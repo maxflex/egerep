@@ -212,6 +212,9 @@ angular.module('Egerep')
         12: 'студенты'
         13: 'остальные'
 
+    .value 'CallStatuses',
+        1: 'входящие без ответа'
+
     .value 'Subjects',
         all:
             1: 'математика',
