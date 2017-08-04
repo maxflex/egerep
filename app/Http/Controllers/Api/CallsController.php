@@ -36,7 +36,7 @@ class CallsController extends Controller
         if ($request->status_3) {
             $query->whereRaw(($request->status_3 == 2 ? "NOT" : "") . " exists(select 1 from call_statuses cs where cs.id=mango.id and cs.status=3 limit 1)");
         }
-        
+
         if ($request->user_id) {
             $query->whereRaw("(from_extension={$request->user_id} or to_extension={$request->user_id})");
         }
@@ -56,6 +56,9 @@ class CallsController extends Controller
         // $data->getCollection()->map(function ($d) {
         //     $d->statuses = dbEgecrm('call_statuses')->whereId($d->id)->get();
         // });
+        foreach($data as &$d) {
+            $d->statuses = dbEgecrm('call_statuses')->whereId($d->id)->get();
+        }
 
         return [
             // 'counts' => Log::counts($search),
