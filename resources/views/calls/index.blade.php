@@ -71,7 +71,7 @@
                     </td>
                     <td>
                         <span ng-repeat="status in call.statuses">
-                            @{{ CallStatuses[status + 1] }}<span ng-if="call.additional"> (@{{ call.additional }})</span>@{{ $last ? '' : ', ' }}</span>
+                            @{{ CallStatuses[status + 1] }}<span ng-if="call.additional && status == 1"> (@{{ call.additional }})</span>@{{ $last ? '' : ', ' }}</span>
                     </td>
                 </tr>
             </table>
