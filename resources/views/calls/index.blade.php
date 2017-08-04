@@ -82,6 +82,20 @@
                             @{{ CallStatuses[status + 1] }}<span ng-if="call.additional && status == 1"> (@{{ call.additional }})</span>
                         </div>
                     </td>
+                    <td width='20'>
+                        <span ng-show='call.recording_id' ng-click='play(call.recording_id)'
+                            style='text-decoration: none' class="glyphicon no-margin-right link-like glyphicon-play" ng-class="{
+                                'glyphicon-pause': isPlaying(call.recording_id) && is_playing_stage == 'play'
+                            }"></span>
+                    </td>
+                    <td width='200'>
+                        <div class="progress_bar" ng-show='isPlaying(call.recording_id)'>
+                            <div class="wraperPGBR">
+                                <div class="line" style="width: @{{prc}}%;"></div>
+                            </div>
+                            <div class="clicker" ng-click="setCurentTime($event)"></div>
+                        </div>
+                    </td>
                 </tr>
             </table>
         </div>

@@ -12,7 +12,7 @@ class AddStatus4ToTmpMango extends Migration
      */
     public function up()
     {
-        Schema::table('mango', function (Blueprint $table) {
+        Schema::connection('egecrm')->table('mango', function (Blueprint $table) {
             $table->boolean('status_4')->index();
         });
     }
