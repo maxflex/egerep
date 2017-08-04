@@ -16,6 +16,14 @@
             </select>
         </div>
         <div>
+            <select ng-model='search.line_number' class='selectpicker' ng-change='filter()'>
+                <option value="">линия</option>
+                <option disabled>──────────────</option>
+                <option value="74956461080">74956461080</option>
+                <option value="74956468592">74956468592</option>
+            </select>
+        </div>
+        <div>
             <select ng-model='search.status_1' class='selectpicker' ng-change='filter()'>
                 <option value="">@{{ CallStatuses[1] }}</option>
                 <option disabled>──────────────</option>

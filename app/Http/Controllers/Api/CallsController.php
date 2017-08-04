@@ -41,6 +41,10 @@ class CallsController extends Controller
             $query->whereRaw("(from_extension={$request->user_id} or to_extension={$request->user_id})");
         }
 
+        if ($request->line_number) {
+            $query->where('line_number', $request->line_number);
+        }
+
         // dd($query->toSql());
 
 
