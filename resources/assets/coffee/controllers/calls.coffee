@@ -1,6 +1,6 @@
 angular
 .module 'Egerep'
-.controller 'CallsIndex', ($rootScope, $scope, $timeout, $http, UserService, LogTypes) ->
+.controller 'CallsIndex', ($rootScope, $scope, $timeout, $http, UserService, CallStatuses) ->
     bindArguments($scope, arguments)
     $rootScope.frontend_loading = true
 
@@ -34,6 +34,7 @@ angular
 
     $timeout ->
         # $scope.search = if $.cookie("logs") then JSON.parse($.cookie("logs")) else {}
+        $scope.search = {}
         load $scope.page
         $scope.current_page = $scope.page
 
@@ -44,9 +45,10 @@ angular
 
 
     load = (page) ->
-        params = '?page=' + page
+        params = _.clone($scope.search)
+        params.page = page
 
-        $http.get "api/calls#{ params }"
+        $http.get "api/calls?" + $.param(params)
         .then (response) ->
             console.log response
             # $scope.counts = response.data.counts

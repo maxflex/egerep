@@ -15,9 +15,30 @@ class CallsController extends Controller
         // $search = isset($_COOKIE['logs']) ? json_decode($_COOKIE['logs']) : (object)[];
         // $data = Log::search($search)->paginate(30);
 
-        $query = DB::table('mango')->orderBy('id', 'desc');
+        $query = dbEgecrm('mango')->orderBy('mango.id', 'desc');
+
+        if ($request->type) {
+            if ($request->type == 1) {
+                $query->where('from_extension', 0);
+            }
+            if ($request->type == 2) {
+                $query->where('to_extension', 0);
+            }
+        }
+
+        if ($request->status) {
+            $query->join('call_statuses', 'call_statuses.id', '=', 'mango.id')->where('status', $request->status);
+        }
+
+        if ($request->user_id) {
+            $query->whereRaw("(from_extension={$request->user_id} or to_extension={$request->user_id})");
+        }
 
         $data = $query->paginate(30);
+
+        $data->getCollection()->map(function ($d) {
+            $d->statuses = dbEgecrm('call_statuses')->whereId($d->id)->get();
+        });
 
         return [
             // 'counts' => Log::counts($search),

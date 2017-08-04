@@ -214,6 +214,8 @@ angular.module('Egerep')
 
     .value 'CallStatuses',
         1: 'входящие без ответа'
+        2: 'соответствие договорам'
+        3: 'повтор в рамках 2 недель'
 
     .value 'Subjects',
         all:
