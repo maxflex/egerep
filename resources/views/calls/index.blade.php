@@ -16,10 +16,27 @@
             </select>
         </div>
         <div>
-            <select ng-model='search.status' class='selectpicker' ng-change='filter()'>
-                <option value="">статус</option>
+            <select ng-model='search.status_1' class='selectpicker' ng-change='filter()'>
+                <option value="">@{{ CallStatuses[1] }}</option>
                 <option disabled>──────────────</option>
-                <option ng-repeat='(id, name) in CallStatuses' value="@{{id}}">@{{ name }}</option>
+                <option value="1">да</option>
+                <option value="2">нет</option>
+            </select>
+        </div>
+        <div>
+            <select ng-model='search.status_2' class='selectpicker' ng-change='filter()'>
+                <option value="">@{{ CallStatuses[2] }}</option>
+                <option disabled>──────────────</option>
+                <option value="1">да</option>
+                <option value="2">нет</option>
+            </select>
+        </div>
+        <div>
+            <select ng-model='search.status_3' class='selectpicker' ng-change='filter()'>
+                <option value="">@{{ CallStatuses[3] }}</option>
+                <option disabled>──────────────</option>
+                <option value="1">да</option>
+                <option value="2">нет</option>
             </select>
         </div>
     </div>
@@ -45,7 +62,8 @@
                         @{{ callDuration(call) }}
                     </td>
                     <td>
-                        <span ng-repeat="status in call.statuses">@{{ CallStatuses[status.status] }}@{{ $last ? '' : ', ' }}</span>
+                        <span ng-repeat="status in call.statuses">
+                            @{{ CallStatuses[status.status] }}<span ng-if="status.additional"> (@{{ status.additional }})</span>@{{ $last ? '' : ', ' }}</span>
                     </td>
                 </tr>
             </table>
