@@ -26,22 +26,15 @@ class CallsController extends Controller
             }
         }
 
-        if ($request->status_1) {
-            $query->leftJoin('call_statuses as cs1', function($join) use ($request) {
-                $join->on('cs1.id', '=', 'mango.id')->on('cs1.status', '=', 1);
-            });
-            if ($request->status_1 == 1) {
-                $query->whereRaw("cs1.id IS NOT NULL");
-            } else {
-                $query->whereRaw("cs1.id IS NULL");
-            }
+        if (! isBlank($request->status_1)) {
+            $query->where('status_1', $request->status_1);
         }
-        // if ($request->status_2) {
-        //     $query->whereRaw(($request->status_2 == 2 ? "NOT" : "") . " exists(select 1 from call_statuses cs where cs.id=mango.id and cs.status=2 limit 1)");
-        // }
-        // if ($request->status_3) {
-        //     $query->whereRaw(($request->status_3 == 2 ? "NOT" : "") . " exists(select 1 from call_statuses cs where cs.id=mango.id and cs.status=3 limit 1)");
-        // }
+        if (! isBlank($request->status_2)) {
+            $query->where('status_2', $request->status_2);
+        }
+        if (! isBlank($request->status_3)) {
+            $query->where('status_3', $request->status_3);
+        }
 
         if ($request->user_id) {
             $query->whereRaw("(from_extension={$request->user_id} or to_extension={$request->user_id})");
@@ -54,11 +47,8 @@ class CallsController extends Controller
         $data = $query->paginate(30);
 
         $data->getCollection()->map(function ($d) {
-            $d->statuses = array_filter([$d->status_1, $d->status_2, $d->status_3]);
+            $d->statuses = array_keys(array_filter([$d->status_1, $d->status_2, $d->status_3]));
         });
-        // foreach($data as &$d) {
-        //     $d->statuses = dbEgecrm('call_statuses')->whereId($d->id)->get();
-        // }
 
         return [
             'data' => $data,

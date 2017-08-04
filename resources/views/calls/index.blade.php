@@ -28,7 +28,7 @@
                 <option value="">@{{ CallStatuses[1] }}</option>
                 <option disabled>──────────────</option>
                 <option value="1">да</option>
-                <option value="2">нет</option>
+                <option value="0">нет</option>
             </select>
         </div>
         <div>
@@ -36,7 +36,7 @@
                 <option value="">@{{ CallStatuses[2] }}</option>
                 <option disabled>──────────────</option>
                 <option value="1">да</option>
-                <option value="2">нет</option>
+                <option value="0">нет</option>
             </select>
         </div>
         <div>
@@ -44,7 +44,7 @@
                 <option value="">@{{ CallStatuses[3] }}</option>
                 <option disabled>──────────────</option>
                 <option value="1">да</option>
-                <option value="2">нет</option>
+                <option value="0">нет</option>
             </select>
         </div>
     </div>
@@ -71,7 +71,7 @@
                     </td>
                     <td>
                         <span ng-repeat="status in call.statuses">
-                            @{{ CallStatuses[status.status] }}<span ng-if="status.additional"> (@{{ status.additional }})</span>@{{ $last ? '' : ', ' }}</span>
+                            @{{ CallStatuses[status + 1] }}<span ng-if="call.additional"> (@{{ call.additional }})</span>@{{ $last ? '' : ', ' }}</span>
                     </td>
                 </tr>
             </table>
