@@ -18,10 +18,17 @@ class UserLogin
     public function handle($request, Closure $next)
     {
         if (! User::loggedIn()) {
-            return view('login.login');
+            if (! isset($_COOKIE['wallpapper_id'])) {
+                $wallpapper_count = count(glob(getcwd() . '/img/wallpapper/*.jpg'));
+                $wallpapper_id = mt_rand(1, $wallpapper_count);
+                setcookie('wallpapper_id', mt_rand(1, $wallpapper_id),  time() + 68400, '/'); // 19 часов
+            } else {
+                $wallpapper_id = $_COOKIE['wallpapper_id'];
+            }
+            return view('login.login', compact('wallpapper_id'));
         }
         view()->share('user', User::fromSession());
-        
+
         return $next($request);
     }
 }

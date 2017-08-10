@@ -2,7 +2,14 @@ angular
     .module 'Egerep'
     .controller 'LoginCtrl', ($scope, $http) ->
         angular.element(document).ready ->
-            $scope.l = Ladda.create(document.querySelector('#login-submit'))
+            $('input[autocomplete="off"]').each ->
+                input = this
+                id = $(input).attr('id')
+                $(input).removeAttr('id')
+                setTimeout ->
+                    $(input).attr('id', id)
+                , 2000
+            # $scope.l = Ladda.create(document.querySelector('#login-submit'))
             login_data = $.cookie("login_data")
             if login_data isnt undefined
                 login_data = JSON.parse(login_data)
@@ -17,7 +24,8 @@ angular
                 $scope.checkFields()
 
         $scope.goLogin = ->
-            ajaxStart()
+            $('center').removeClass('invalid')
+            # ajaxStart()
             $http.post 'login',
                 login: $scope.login
                 password: $scope.password
@@ -29,18 +37,20 @@ angular
                     $.removeCookie('login_data')
                     location.reload()
                 else if response.data is 'sms'
-                    ajaxEnd()
+                    # ajaxEnd()
                     $scope.in_process = false
-                    $scope.l.stop()
+                    # $scope.l.stop()
                     $scope.sms_verification = true
                     $.cookie("login_data", JSON.stringify({login: $scope.login, password: $scope.password}), { expires: 1 / (24 * 60) * 2, path: '/' })
                 else
                     $scope.in_process = false
-                    ajaxEnd()
-                    $scope.l.stop()
-                    notifyError "Неправильная пара логин-пароль"
+                    # ajaxEnd()
+                    # $scope.l.stop()
+                    # notifyError "Неправильная пара логин-пароль"
+                    $('center').addClass('invalid')
 
         $scope.checkFields = ->
-            $scope.l.start()
+            # $scope.l.start()
             $scope.in_process = true
+            # $scope.goLogin()
             if grecaptcha.getResponse() is '' then grecaptcha.execute() else $scope.goLogin()

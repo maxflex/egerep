@@ -1,28 +1,20 @@
 @extends('login')
 @section('content')
-<center>
-	<div class="form-signin" autocomplete="off">
-<!-- 		<h2 class="form-signin-heading">Вход в систему</h2> -->
-		<input ng-disabled="sms_verification" type="text" id="inputLogin" class="form-control" placeholder="Логин" autofocus ng-model="login" autocomplete="off" ng-keyup="enter($event)">
-		<input ng-disabled="sms_verification" type="password" id="inputPassword" class="form-control" placeholder="Пароль" ng-model="password" autocomplete="off" ng-keyup="enter($event)">
-		<input type="text" id="sms-code" class="form-control" placeholder="код из смс" ng-model="$parent.code" autocomplete="off" ng-keyup="enter($event)" ng-if="sms_verification">
-
-		<button id="login-submit" data-style="zoom-in" ng-disabled="in_process" class="btn btn-lg btn-primary btn-block ladda-button" type="submit" ng-click="checkFields()">
-			<span class="glyphicon glyphicon-lock"></span><span ng-show="!in_process">Войти</span>
-			<span ng-show="in_process">Вход</span>
-		</button>
-	</div>
+<center autocomplete="off">
+        <div style='display: none'>
+            <input type="password"/>
+        </div>
+        <div class="input-wrapper">
+            <input ng-disabled="sms_verification" type="text" id="inputLogin" placeholder="login" autofocus ng-model="login" autocomplete="off" ng-keyup="enter($event)">
+        </div>
+        <div class="input-wrapper">
+            <input ng-class="{'password-start-typing': password}" ng-disabled="sms_verification" type="password" id="inputPassword"  placeholder="password" ng-model="password" autocomplete="off" ng-keyup="enter($event)">
+            <img ng-show="!sms_verification && password" src="img/svg/@{{ in_process ? 'spinner' : 'next' }}.svg" ng-class="{'in-process': in_process}" ng-click="checkFields()" />
+        </div>
+        <div class="input-wrapper" ng-show="sms_verification">
+            <input type="text" id="sms-code" placeholder="sms code" ng-model="code" autocomplete="off" ng-keyup="enter($event)">
+            <img ng-show="code" src="img/svg/@{{ in_process ? 'spinner' : 'next' }}.svg" ng-class="{'in-process': in_process}" ng-click="checkFields()" />
+        </div>
+    <div class="g-recaptcha" data-sitekey="{{ config('captcha.site') }}" data-size="invisible" data-callback="captchaChecked"></div>
 </center>
-<div class="g-recaptcha" data-sitekey="{{ config('captcha.site') }}" data-size="invisible" data-callback="captchaChecked"></div>
-<script src='https://www.google.com/recaptcha/api.js?hl=ru'></script>
-<style>
-    .grecaptcha-badge {
-        visibility: hidden;
-    }
-</style>
-<script>
-    function captchaChecked() {
-        scope.goLogin()
-    }
-</script>
 @stop

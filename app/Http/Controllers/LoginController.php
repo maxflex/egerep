@@ -20,6 +20,7 @@ class LoginController extends Controller
         if (Settings::get('emergency_exit') == 1) {
             return false;
         }
+
         /**
          * Проверка капчи
          */
