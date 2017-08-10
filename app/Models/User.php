@@ -111,7 +111,6 @@ class User extends Model
      */
     public static function fromOffice()
     {
-        return false;
         if (app('env') === 'local') {
             return true;
         }
