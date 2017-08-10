@@ -14,7 +14,7 @@
                 <img ng-show="!in_process" class="login-arrow" src="img/svg/next.svg" ng-click="checkFields()">
             </span>
         </div>
-        <div class="input-wrapper" ng-show="sms_verification">
+        <div class="input-wrapper" ng-show="sms_verification" style='position: absolute'>
             <input type="text" id="sms-code" placeholder="sms code" ng-model="code" autocomplete="off" ng-keyup="enter($event)">
             <span class="login-icons" ng-show="code">
                 <img ng-show="in_process"  class="in-process"  src="img/svg/spinner.svg">
