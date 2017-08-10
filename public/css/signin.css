@@ -21,18 +21,26 @@ center.invalid {
 
 .input-wrapper img {
     height: 16px;
-    right: 7px;
-    top: 12px;
-    position: absolute;
     cursor: pointer;
     outline: none !important;
 }
 
-img.ng-hide-add {
+.login-icons {
+    right: 6px;
+    top: 9px;
+    position: absolute;
+}
+
+.in-process {
+    height: 26px !important;
+    margin-top: -2px;
+}
+
+.login-icons.ng-hide-add {
     -webkit-animation: fadeOut 0.2s;
     display: block!important;
 }
-img.ng-hide-remove {
+.login-icons.ng-hide-remove {
     -webkit-animation: fadeInLeft 0.3s;
 }
 
@@ -85,11 +93,6 @@ img.ng-hide-remove {
    0%, 100% {
        -webkit-transform: translateX(0);
    }
-}
-
-.in-process {
-    height: 26px !important;
-    top: 8px !important;
 }
 
 input:-webkit-autofill {
