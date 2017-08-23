@@ -48,7 +48,8 @@ class DeleteMarginIntermediate extends Command
         $data = "";
         foreach($tutor_ids as $tutor_id) {
             // получить последние 50 стыковок преподавателя
-            $attachment_ids = DB::table('attachments')->where('tutor_id', $tutor_id)->orderBy('date', 'desc')->take(50)->pluck('id');
+            $attachment_ids = DB::table('attachments a')->join(DB::raw("(select id, attachment_id from archives where state='impossible' and (total_lessons_missing is null or total_lessons_missing=0)) as ar"), "ar.attachment_id", "=", "a.id")
+                ->where('a.tutor_id', $tutor_id)->orderBy('a.date', 'desc')->take(50)->pluck('a.id');
             $tutor = DB::table('tutors')->whereId($tutor_id)->select(DB::raw("CONCAT(last_name, ' ', first_name, ' ', middle_name) as name"))->value('name');
             $count = count($attachment_ids);
             $commission = DB::table('account_datas')->whereIn('attachment_id', $attachment_ids)
