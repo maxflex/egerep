@@ -33,6 +33,7 @@ class Kernel extends ConsoleKernel
         Commands\Attendance::class,
         Commands\SwitchGrades::class,
         Commands\CallStatus::class,
+        Commands\DeleteMarginIntermediate::class,
     ];
 
     /**

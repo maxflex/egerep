@@ -117,6 +117,13 @@
                             <div ng-show='s.sort'>
                                 по @{{ findById(sort, s.sort).title }}
                             </div>
+                            <div ng-show="s.gender !== null">
+                                @{{ s.gender ? 'мужчины' : 'женщины' }}
+                            </div>
+                            <div ng-show="s.age_from !== null || s.age_to !== null">
+                                <span ng-show="s.age_from !== null">от @{{ s.age_from }}</span>
+                                <span ng-show="s.age_to !== null">до @{{ s.age_to }}</span> лет
+                            </div>
                             <div ng-show="s.station_id">
                                 @{{ findById(stations, s.station_id).title }}
                             </div>
