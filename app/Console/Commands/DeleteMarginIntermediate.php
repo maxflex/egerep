@@ -42,9 +42,9 @@ class DeleteMarginIntermediate extends Command
         // join archives ar on (ar.attachment_id = a.id and ar.`date` <= '2017-04-30' and (ar.total_lessons_missing is null or ar.total_lessons_missing=0))
         // group by a.tutor_id
 
-        $tutor_ids = DB::table('attachments as a')->join('archives as ar', function($join) {
-            return $join->on('ar.attachment_id', '=', 'a.id')->where('ar.state', '=', 'impossible');
-        })->whereRaw('(ar.total_lessons_missing is null or ar.total_lessons_missing=0)')->groupBy('a.tutor_id')->pluck('tutor_id');
+        $tutor_ids = DB::table('attachments as a')
+            ->join(DB::raw("(select id from archives where state='impossible' and (ar.total_lessons_missing is null or ar.total_lessons_missing=0)) as ar", "ar.attachment_id", "=", "a.id")
+            ->groupBy('a.tutor_id')->pluck('tutor_id');
 
         $data = "";
         foreach($tutor_ids as $tutor_id) {
