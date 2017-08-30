@@ -13,7 +13,7 @@
     <span class="header-link" ng-click='mergeTutor()'>склеить</span>
     @endif
     <a target='_new' href="{{ $lk_link }}">режим просмотра</a>
-    <a href="http://ege-repetitor.ru/@{{ tutor.id }}" target="_blank">анкета на ege-repetitor.ru</a>
+    <a href="http://test.ege-repetitor.ru/@{{ tutor.id }}" target="_blank">анкета на ege-repetitor.ru</a>
     <a href="tutors/{{ $id }}/accounts">отчетность</a>
     @if($user->allowed(\Shared\Rights::ER_DELETE_TUTOR))
     <span class="header-link" ng-click='deleteTutor()'>удалить</span>
