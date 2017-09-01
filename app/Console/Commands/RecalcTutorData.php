@@ -70,6 +70,7 @@ class RecalcTutorData extends Command
                                     ->whereBetween('score', [1, 10])->count(),
                 'reviews_count_egecrm' => DB::connection('egecrm')->table('teacher_reviews')->where('published', 1)->where('id_teacher', $tutor_id)->count(),
                 'review_avg' => static::_getReviewAvg($tutor_id),
+                'review_avg_new' => static::_getReviewAvgNew($tutor_id),
                 'photo_exists' => static::_photoExists($tutor_id),
                 'video_duration' => $data->video_link ? Youtube::getVideoDuration($data->video_link) : null,
             ]);
@@ -103,6 +104,115 @@ class RecalcTutorData extends Command
             }
         }
         $avg = (4 * (($data->lk + $data->tb + $js) / 3) + $sum)/(4 + $count);
+        return $avg;
+    }
+
+    private static function _getReviewAvgNew($tutor_id)
+    {
+        $tutor = DB::table('tutors')->whereId($tutor_id)->select('lk', 'tb', 'js')->first();
+
+        $data = DB::table('attachments')->where('tutor_id', $tutor_id)
+                    ->leftJoin(DB::raw('(SELECT attachment_id, score FROM reviews WHERE score BETWEEN 1 AND 10) as r'), 'r.attachment_id', '=', 'attachments.id')
+                    ->select(DB::raw("r.score, (SELECT COUNT(*) FROM account_datas WHERE account_datas.attachment_id = attachments.id) as lesson_count"))
+                    ->get();
+
+        // общий вес
+        $total_weight = 0;
+
+        // наша оценка
+        switch($tutor->js) {
+            case 6:
+            case 10: {
+                $js = 8;
+                break;
+            }
+            case 8: {
+                $js = 10;
+                break;
+            }
+            case 7: {
+                $js = 9;
+                break;
+            }
+            default: {
+                $js = $tutor->js;
+            }
+        }
+
+        $our_score = ($tutor->lk + $tutor->tb + $js) / 3;
+
+        $total_weight = 0;
+        $total_score = 0;
+
+        // подсчет числителя
+        foreach($data as $d) {
+            // отзыв с оценкой присутствует
+            if ($d->score) {
+                if ($d->lesson_count == 0) {
+                    $tmp_score = 2;
+                    $tmp_weight = 0.1;
+                } else
+                if ($d->lesson_count == 1) {
+                    $tmp_score = 3;
+                    $tmp_weight = 0.2;
+                } else
+                if ($d->lesson_count == 2) {
+                    $tmp_score = 4;
+                    $tmp_weight = 0.4;
+                } else
+                if ($d->lesson_count >= 3 && $d->lesson_count <= 4) {
+                    $tmp_score = 6;
+                    $tmp_weight = 0.6;
+                } else
+                if ($d->lesson_count >= 5 && $d->lesson_count <= 8) {
+                    $tmp_score = 7;
+                    $tmp_weight = 0.7;
+                } else
+                if ($d->lesson_count >= 9 && $d->lesson_count <= 15) {
+                    $tmp_score = 8;
+                    $tmp_weight = 0.75;
+                } else {
+                    $tmp_score = 9;
+                    $tmp_weight = 0.8;
+                }
+                $score = $d->score + ($tmp_score * $tmp_weight);
+                $weight = 1 + $tmp_weight;
+            } else {
+                if ($d->lesson_count == 0) {
+                    $tmp_score = 2;
+                    $weight = 0.1;
+                } else
+                if ($d->lesson_count == 1) {
+                    $tmp_score = 3;
+                    $weight = 0.2;
+                } else
+                if ($d->lesson_count == 2) {
+                    $tmp_score = 4;
+                    $weight = 0.4;
+                } else
+                if ($d->lesson_count >= 3 && $d->lesson_count <= 4) {
+                    $tmp_score = 6;
+                    $weight = 0.6;
+                } else
+                if ($d->lesson_count >= 5 && $d->lesson_count <= 8) {
+                    $tmp_score = 7;
+                    $weight = 0.7;
+                } else
+                if ($d->lesson_count >= 9 && $d->lesson_count <= 15) {
+                    $tmp_score = 8;
+                    $weight = 0.75;
+                } else {
+                    $tmp_score = 9;
+                    $weight = 0.8;
+                }
+                $score = $tmp_score * $weight;
+            }
+            $total_weight += $weight;
+            $total_score += $score;
+        }
+
+        $avg = (4 * $our_score + $total_score) / (4 + $total_weight);
+
         return $avg;
     }
 
