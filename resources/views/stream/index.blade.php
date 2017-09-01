@@ -112,9 +112,9 @@
                                 </span>
                             </div>
                             <div ng-show='s.priority'>
-                                по @{{ findById(priorities, s.priority).title }}
+                                @{{ findById(priorities, s.priority).title }}
                             </div>
-                            <div>
+                            <div ng-show='s.place'>
                                 @{{ s.place ? findById(places, s.place).title : 'неважно где' }}
                             </div>
                             <div ng-show='s.sort'>
