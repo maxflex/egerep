@@ -111,6 +111,9 @@
                                     @{{ Subjects.all[subject_id] }}@{{ $last ? '' : ', '}}
                                 </span>
                             </div>
+                            <div ng-show='s.priority'>
+                                по @{{ findById(priorities, s.priority).title }}
+                            </div>
                             <div>
                                 @{{ s.place ? findById(places, s.place).title : 'неважно где' }}
                             </div>
