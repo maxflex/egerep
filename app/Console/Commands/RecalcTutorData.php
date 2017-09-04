@@ -146,72 +146,47 @@ class RecalcTutorData extends Command
 
         // подсчет числителя
         foreach($data as $d) {
+            if ($d->lesson_count == 0) {
+                $score = 2;
+                $weight = 0.1;
+            } else
+            if ($d->lesson_count == 1) {
+                $score = 3;
+                $weight = 0.4;
+            } else
+            if ($d->lesson_count == 2) {
+                $score = 4;
+                $weight = 0.5;
+            } else
+            if ($d->lesson_count >= 3 && $d->lesson_count <= 4) {
+                $score = 6;
+                $weight = 0.6;
+            } else
+            if ($d->lesson_count >= 5 && $d->lesson_count <= 8) {
+                $score = 7;
+                $weight = 0.7;
+            } else
+            if ($d->lesson_count >= 9 && $d->lesson_count <= 15) {
+                $score = 8;
+                $weight = 0.75;
+            } else {
+                $score = 9;
+                $weight = 0.8;
+            }
+
             // отзыв с оценкой присутствует
             if ($d->score) {
-                if ($d->lesson_count == 0) {
-                    $tmp_score = 2;
-                    $tmp_weight = 0.1;
-                } else
-                if ($d->lesson_count == 1) {
-                    $tmp_score = 3;
-                    $tmp_weight = 0.2;
-                } else
-                if ($d->lesson_count == 2) {
-                    $tmp_score = 4;
-                    $tmp_weight = 0.4;
-                } else
-                if ($d->lesson_count >= 3 && $d->lesson_count <= 4) {
-                    $tmp_score = 6;
-                    $tmp_weight = 0.6;
-                } else
-                if ($d->lesson_count >= 5 && $d->lesson_count <= 8) {
-                    $tmp_score = 7;
-                    $tmp_weight = 0.7;
-                } else
-                if ($d->lesson_count >= 9 && $d->lesson_count <= 15) {
-                    $tmp_score = 8;
-                    $tmp_weight = 0.75;
-                } else {
-                    $tmp_score = 9;
-                    $tmp_weight = 0.8;
-                }
-                $score = $d->score + ($tmp_score * $tmp_weight);
-                $weight = 1 + $tmp_weight;
+                $score = $d->score + ($score * $weight);
+                $weight += 1;
             } else {
-                if ($d->lesson_count == 0) {
-                    $tmp_score = 2;
-                    $weight = 0.1;
-                } else
-                if ($d->lesson_count == 1) {
-                    $tmp_score = 3;
-                    $weight = 0.2;
-                } else
-                if ($d->lesson_count == 2) {
-                    $tmp_score = 4;
-                    $weight = 0.4;
-                } else
-                if ($d->lesson_count >= 3 && $d->lesson_count <= 4) {
-                    $tmp_score = 6;
-                    $weight = 0.6;
-                } else
-                if ($d->lesson_count >= 5 && $d->lesson_count <= 8) {
-                    $tmp_score = 7;
-                    $weight = 0.7;
-                } else
-                if ($d->lesson_count >= 9 && $d->lesson_count <= 15) {
-                    $tmp_score = 8;
-                    $weight = 0.75;
-                } else {
-                    $tmp_score = 9;
-                    $weight = 0.8;
-                }
-                $score = $tmp_score * $weight;
+                $score = $score * $weight;
             }
+
             $total_weight += $weight;
             $total_score += $score;
         }
 
-        $avg = (4 * $our_score + $total_score) / (4 + $total_weight);
+        $avg = (4 * $our_score * 0.9 + $total_score) / (4 + $total_weight);
 
         return $avg;
     }
