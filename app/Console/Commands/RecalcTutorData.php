@@ -186,7 +186,7 @@ class RecalcTutorData extends Command
             $total_score += $score;
         }
 
-        $avg = (4 * $our_score * 0.9 + $total_score) / (4 + $total_weight);
+        $avg = (4 * $our_score * 0.8 + $total_score) / (4 + $total_weight);
 
         return $avg;
     }
