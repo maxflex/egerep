@@ -33,20 +33,14 @@
                             </span>
                             <span ng-show='!tutor.departure_possible'>(выезд невозможен)</span>
                         </td>
-                        <td style='width: 7%'>
+                        <td style='width: 8%'>
                             @include('modules.subjects-list', ['subjects' => 'tutor.subjects', 'type' => 'three_letters'])
                         </td>
-                        <td style='width: 7%'>
+                        <td style='width: 8%'>
                             <plural count='tutor.age' type='age'></plural>
                         </td>
                         <td  style='width: 2%'>
-                            @{{ tutor.tb }}
-                        </td>
-                        <td  style='width: 2%'>
-                            @{{ tutor.lk }}
-                        </td>
-                        <td  style='width: 2%'>
-                            @{{ tutor.js }}
+                            @{{ tutor.review_avg | number:1 }}
                         </td>
                         <td style='width: 15%' data-init="@{{recommendation = RecommendationService.get(tutor, client.grade)}}">
                             <span aria-label='@{{ recommendation.text }}' class='hint--bottom-right cursor-default' ng-class="{
@@ -57,7 +51,7 @@
                                 @{{ recommendation.type_text }}
                             </span>
                         </td>
-                        <td style='width: 10%'>
+                        <td style='width: 12%'>
                             <plural count='tutor.clients_count' type='client' none-text='клиентов нет' hide-zero></plural>
                             <span ng-hide="tutor.margin === null">(M@{{ tutor.margin }})</span>
                         </td>

@@ -77,7 +77,8 @@ class Tutor extends Service\Person
         'photo_original_size',
         'photo_url',
         'age',
-        'clients_count'
+        'clients_count',
+        'review_avg'
     ];
 
     // protected $with = ['markers'];
@@ -138,6 +139,12 @@ class Tutor extends Service\Person
             'tutor_id' => $this->id,
             'after_last_meeting' => 1
         ]));
+    }
+
+
+    public function getReviewAvgAttribute()
+    {
+        return DB::table('tutor_data')->where('tutor_id', $this->id)->value('review_avg');
     }
 
     public function getSvgMapAttribute()

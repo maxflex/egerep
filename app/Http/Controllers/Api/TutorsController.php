@@ -7,6 +7,7 @@ use App\Models\Tutor;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Metro;
+use DB;
 
 class TutorsController extends Controller
 {
@@ -221,12 +222,16 @@ class TutorsController extends Controller
              'tb',
              'lk',
              'js',
-             'margin'
+             'margin',
+             'public_price',
+             'departure_price',
          ] + Tutor::$phone_fields);
 
          foreach($tutors as $tutor) {
             # Количество учеников, Количество встреч
             $tutor->append(['clients_count', 'meeting_count', 'svg_map']);
+
+            $tutor->departure_possible = DB::table('tutor_departures')->where('tutor_id', $tutor->id)->exists();
 
             # Получить минуты
             $tutor->minutes = $tutor->getMinutes($request->client_marker);
