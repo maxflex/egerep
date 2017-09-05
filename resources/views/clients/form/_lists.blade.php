@@ -42,6 +42,10 @@
                         <td  style='width: 2%'>
                             @{{ tutor.review_avg | number:1 }}
                         </td>
+                        <td style='width: 12%'>
+                            <plural count='tutor.clients_count' type='client' none-text='клиентов нет' hide-zero></plural>
+                            <span ng-hide="tutor.margin === null">(M@{{ tutor.margin }})</span>
+                        </td>
                         <td style='width: 15%' data-init="@{{recommendation = RecommendationService.get(tutor, client.grade)}}">
                             <span aria-label='@{{ recommendation.text }}' class='hint--bottom-right cursor-default' ng-class="{
                                 'text-success': recommendation.type == 0,
@@ -50,10 +54,6 @@
                             }">
                                 @{{ recommendation.type_text }}
                             </span>
-                        </td>
-                        <td style='width: 12%'>
-                            <plural count='tutor.clients_count' type='client' none-text='клиентов нет' hide-zero></plural>
-                            <span ng-hide="tutor.margin === null">(M@{{ tutor.margin }})</span>
                         </td>
                         <td style='width: 10%'>
                             <span ng-hide="attachmentExists(tutor.id)"

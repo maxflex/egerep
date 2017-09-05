@@ -17,15 +17,15 @@
     <plural count='tutor.age' type='age'></plural>
 </td>
 <td width='50'>
-    @{{ tutor.review_avg }}
-</td>
-<td width='150'>
-  <plural count='getHours(tutor.minutes)' type='hour' hide-zero></plural>
-  <plural count='getMinutes(tutor.minutes)' type='minute'></plural>
+    @{{ tutor.review_avg | number:1 }}
 </td>
 <td width='150'>
     <plural count='tutor.clients_count' type='client' hide-zero></plural>
     <span ng-hide="tutor.margin === null">(M@{{ tutor.margin }})</span>
+</td>
+<td width='150'>
+  <plural count='getHours(tutor.minutes)' type='hour' hide-zero></plural>
+  <plural count='getMinutes(tutor.minutes)' type='minute'></plural>
 </td>
 <td>
     <span class="link-like text-gray" style='width: 118px'
