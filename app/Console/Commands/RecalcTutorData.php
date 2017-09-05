@@ -70,7 +70,6 @@ class RecalcTutorData extends Command
                                     ->whereBetween('score', [1, 10])->count(),
                 'reviews_count_egecrm' => DB::connection('egecrm')->table('teacher_reviews')->where('published', 1)->where('id_teacher', $tutor_id)->count(),
                 'review_avg' => static::_getReviewAvg($tutor_id),
-                'review_avg_new' => static::_getReviewAvgNew($tutor_id),
                 'photo_exists' => static::_photoExists($tutor_id),
                 'video_duration' => $data->video_link ? Youtube::getVideoDuration($data->video_link) : null,
             ]);
@@ -80,34 +79,6 @@ class RecalcTutorData extends Command
     }
 
     private static function _getReviewAvg($tutor_id)
-    {
-        $data = DB::table('tutors')->whereId($tutor_id)->select('lk', 'tb', 'js')->first();
-        $query = Review::join('attachments', 'attachments.id', '=', 'attachment_id')->where('tutor_id', $tutor_id)->whereBetween('score', [1, 10]);
-        $sum = $query->newQuery()->sum('reviews.score');
-        $count = $query->newQuery()->count();
-        switch($data->js) {
-            case 6:
-            case 10: {
-                $js = 8;
-                break;
-            }
-            case 8: {
-                $js = 10;
-                break;
-            }
-            case 7: {
-                $js = 9;
-                break;
-            }
-            default: {
-                $js = $data->js;
-            }
-        }
-        $avg = (4 * (($data->lk + $data->tb + $js) / 3) + $sum)/(4 + $count);
-        return $avg;
-    }
-
-    private static function _getReviewAvgNew($tutor_id)
     {
         $tutor = DB::table('tutors')->whereId($tutor_id)->select('lk', 'tb', 'js')->first();
 
