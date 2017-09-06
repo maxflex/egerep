@@ -197,6 +197,12 @@ class SummaryController extends Controller
                     ->whereRaw("DATE(created_at) <= '{$end}'")
                     ->count();
 
+        $requests_from_internet = DB::table('requests')
+                    ->whereRaw("DATE(created_at) >= '{$start}'")
+                    ->whereRaw("DATE(created_at) <= '{$end}'")
+                    ->where('user_id_created', 0)
+                    ->count();
+
         $attachments = DB::table('attachments')
                         ->whereRaw("DATE(created_at) >= '{$start}'")
                         ->whereRaw("DATE(created_at) <= '{$end}'")
@@ -226,6 +232,9 @@ class SummaryController extends Controller
         $data = [
             'requests' => [
                 'cnt' => $requests
+            ],
+            'requests_from_internet' => [
+                'cnt' => $requests_from_internet
             ],
             'attachments' => [
                 'cnt' => $attachments

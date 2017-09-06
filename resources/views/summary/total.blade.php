@@ -51,7 +51,7 @@
                     @{{ summary.tutors.cnt | hideZero }}
                 </td>
                 <td>
-                    @{{ summary.requests.cnt | hideZero }}
+                    @{{ summary.requests.cnt | hideZero }}<span ng-show="summary.requests_from_internet.cnt" class="text-gray">/@{{ summary.requests_from_internet.cnt }}</span>
                 </td>
                 <td>
                     @{{ summary.attachments.cnt | hideZero }}
