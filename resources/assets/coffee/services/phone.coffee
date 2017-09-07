@@ -5,7 +5,7 @@ angular.module 'Egerep'
                 number: number
 
         # позвонить
-        this.call = (number) ->
+        this.call = (number) -> 
             location.href = "tel:" + number.replace(/[^0-9]/g, '')
 
         this.isMobile = (number) ->
