@@ -2,7 +2,7 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
     .config [
         '$compileProvider'
         ($compileProvider) ->
-            $compileProvider.aHrefSanitizationWhitelist /^\s*(https?|ftp|mailto|chrome-extension|sip):/
+            $compileProvider.aHrefSanitizationWhitelist /^\s*(https?|ftp|mailto|chrome-extension|sip|tel):/
 	]
     .filter 'cut', ->
         (value, wordwise, max, nothing = '', tail = '…') ->
