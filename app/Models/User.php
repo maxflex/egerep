@@ -8,6 +8,8 @@ use App\Models\Service\Log;
 
 class User extends Model
 {
+    const SUPERUSER_RIGHT = 9999;
+
     protected $connection = 'egecrm';
 
     protected $fillable = [

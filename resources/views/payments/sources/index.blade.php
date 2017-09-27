@@ -1,0 +1,23 @@
+@extends('app')
+@section('title')
+    Источники
+    <a href="payments" class="title-link">назад в стрим</a>
+@stop
+@section('controller', 'PaymentSourceIndex')
+
+@section('title-right')
+    <a href="payments/sources/create">добавить</a>
+@stop
+
+@section('content')
+    <table class="table reverse-borders">
+        <tr ng-repeat="model in IndexService.page.data">
+            <td>
+                <a href='payments/sources/@{{ model.id }}/edit'>
+                  @{{ model.name }}
+                </a>
+            </td>
+        </tr>
+    </table>
+    @include('modules.pagination-new')
+@stop

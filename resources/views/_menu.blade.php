@@ -52,6 +52,9 @@
 @if (allowed(\Shared\Rights::ER_STREAM))
     <a href="stream" class="list-group-item">Стрим</a>
 @endif
+@if (allowed(9999))
+    <a href="payments" class="list-group-item">Стрим платежей</a>
+@endif
 @if (allowed(\Shared\Rights::ER_ATTENDANCE))
     <a href="attendance" class="list-group-item">Посещаемость</a>
 @endif

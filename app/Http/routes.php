@@ -67,6 +67,14 @@ Route::group(['middleware' => ['web', LogUrlOpen::class]], function () {
     Route::get('tutors/select', 'TutorsController@select');
     Route::resource('tutors', 'TutorsController');
     Route::resource('logs', 'LogsController');
+
+    Route::group(['namespace' => 'Payments', 'prefix' => 'payments'], function() {
+        Route::resource('addressees', 'AddresseesController');
+        Route::resource('expenditures', 'ExpendituresController');
+        Route::resource('sources', 'SourcesController');
+    });
+
+    Route::resource('payments', 'PaymentsController');
     Route::resource('requests', 'RequestsController', ['except' => ['index', 'show']]);
     Route::get('requests/errors', 'RequestsController@errors');
     Route::get('requests/{state_id?}', 'RequestsController@index');
@@ -162,6 +170,14 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api', 'middleware' => ['web']],
     Route::controllers([
         'command'  => 'CommandsController',
     ]);
+
+    Route::group(['namespace' => 'Payments', 'prefix' => 'payments'], function() {
+        Route::resource('addressees', 'AddresseesController');
+        Route::resource('sources', 'SourcesController');
+        Route::resource('expenditures', 'ExpendituresController');
+    });
+
+    Route::resource('payments', 'PaymentsController');
 
     # шаблоны смс
     Route::get('template/{id}', 'TemplatesController@getTemplatesByType');

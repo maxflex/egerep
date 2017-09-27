@@ -39,6 +39,18 @@ angular.module('Egerep')
     .factory 'Sms', ($resource) ->
         $resource apiPath('sms'), {id: '@id'}, updateMethod()
 
+    .factory 'Payment', ($resource) ->
+        $resource apiPath('payments'), {id: '@id'}, updateMethod()
+
+    .factory 'PaymentAddressee', ($resource) ->
+        $resource apiPath('payments/addressees'), {id: '@id'}, updateMethod()
+
+    .factory 'PaymentSource', ($resource) ->
+        $resource apiPath('payments/sources'), {id: '@id'}, updateMethod()
+
+    .factory 'PaymentExpenditure', ($resource) ->
+        $resource apiPath('payments/expenditures'), {id: '@id'}, updateMethod()
+
     .factory 'Comment', ($resource) ->
         $resource apiPath('comments'), {id: '@id'}, updateMethod()
 

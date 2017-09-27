@@ -4,6 +4,12 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
         ($compileProvider) ->
             $compileProvider.aHrefSanitizationWhitelist /^\s*(https?|ftp|mailto|chrome-extension|sip|tel):/
 	]
+    .directive 'convertToNumber', ->
+        require: 'ngModel',
+        link: (scope, element, attrs, ngModel) ->
+            ngModel.$parsers.push (val) -> parseInt(val, 10)
+            ngModel.$formatters.push (val) -> '' + val
+            
     .filter 'cut', ->
         (value, wordwise, max, nothing = '', tail = '…') ->
             return nothing if !value or value is ''
