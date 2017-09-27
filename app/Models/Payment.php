@@ -26,6 +26,17 @@ class Payment extends Model
 
     protected static function boot()
     {
+        static::saving(function($model) {
+            if (! $model->source_id) {
+                $model->source_id = null;
+            }
+            if (! $model->addressee_id) {
+                $model->addressee_id = null;
+            }
+            if (! $model->expenditure_id) {
+                $model->expenditure_id = null;
+            }
+        });
         static::creating(function ($model) {
             $model->user_id = User::fromSession()->id;
         });
