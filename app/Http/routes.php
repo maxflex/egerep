@@ -69,7 +69,6 @@ Route::group(['middleware' => ['web', LogUrlOpen::class]], function () {
     Route::resource('logs', 'LogsController');
 
     Route::group(['namespace' => 'Payments', 'prefix' => 'payments'], function() {
-        Route::resource('addressees', 'AddresseesController');
         Route::resource('expenditures', 'ExpendituresController');
         Route::resource('sources', 'SourcesController');
     });
@@ -172,7 +171,6 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api', 'middleware' => ['web']],
     ]);
 
     Route::group(['namespace' => 'Payments', 'prefix' => 'payments'], function() {
-        Route::resource('addressees', 'AddresseesController');
         Route::resource('sources', 'SourcesController');
         Route::resource('expenditures', 'ExpendituresController');
     });

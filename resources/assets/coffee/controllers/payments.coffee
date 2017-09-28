@@ -27,16 +27,6 @@ angular.module('Egerep')
             FormService.init(Payment, $scope.id, $scope.model)
             FormService.prefix = ''
 
-    .controller 'PaymentAddresseeIndex', ($scope, $attrs, IndexService, PaymentAddressee) ->
-        bindArguments($scope, arguments)
-        angular.element(document).ready ->
-            IndexService.init(PaymentAddressee, $scope.current_page, $attrs)
-    .controller 'PaymentAddresseeForm', ($scope, FormService, PaymentAddressee)->
-        bindArguments($scope, arguments)
-        angular.element(document).ready ->
-            FormService.init(PaymentAddressee, $scope.id, $scope.model)
-            FormService.prefix = 'payments/'
-
     .controller 'PaymentSourceIndex', ($scope, $attrs, IndexService, PaymentSource) ->
         bindArguments($scope, arguments)
         angular.element(document).ready ->

@@ -9,7 +9,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Payment;
 use App\Models\Payment\Source;
 use App\Models\Payment\Expenditure;
-use App\Models\Payment\Addressee;
 
 class PaymentsController extends Controller
 {
@@ -30,7 +29,6 @@ class PaymentsController extends Controller
             'current_page' => $request->page,
             'sources'      => Source::select('id', 'name')->get(),
             'expenditures' => Expenditure::select('id', 'name')->get(),
-            'addressees'   => Addressee::select('id', 'name')->get(),
         ]));
     }
 
@@ -48,7 +46,6 @@ class PaymentsController extends Controller
             'model'        => new Payment(['date' => date('Y-m-d')]),
             'sources'      => Source::select('id', 'name')->get(),
             'expenditures' => Expenditure::select('id', 'name')->get(),
-            'addressees'   => Addressee::select('id', 'name')->get(),
         ]));
     }
 
@@ -67,7 +64,6 @@ class PaymentsController extends Controller
             'id'           => $id,
             'sources'      => Source::select('id', 'name')->get(),
             'expenditures' => Expenditure::select('id', 'name')->get(),
-            'addressees'   => Addressee::select('id', 'name')->get(),
         ]));
     }
 }

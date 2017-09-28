@@ -32,7 +32,7 @@
     </div>
     <div class="col-sm-4">
         <div class="form-group">
-            <ng-select-new model='FormService.model.addressee_id' object="addressees" label="name" convert-to-number none-text='адресат'></ng-select-new>
+            <ng-select-new model='FormService.model.addressee_id' object="sources" label="name" convert-to-number none-text='адресат'></ng-select-new>
         </div>
     </div>
     <div class="col-sm-4">

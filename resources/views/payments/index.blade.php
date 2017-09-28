@@ -23,7 +23,7 @@
             </select>
         </div>
         <div>
-            <ng-select-new model='search.addressee_id' object="addressees" label="name" none-text='адресат'></ng-select-new>
+            <ng-select-new model='search.addressee_id' object="sources" label="name" none-text='адресат'></ng-select-new>
         </div>
         <div>
             <ng-select-new model='search.source_id' object="sources" label="name" none-text='источник'></ng-select-new>
@@ -51,7 +51,7 @@
                 @{{ findById(sources, model.source_id).name }}
             </td>
             <td>
-                @{{ findById(addressees, model.addressee_id).name }}
+                @{{ findById(sources, model.addressee_id).name }}
             </td>
             <td>
                 @{{ findById(expenditures, model.expenditure_id).name }}
