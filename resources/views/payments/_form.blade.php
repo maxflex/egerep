@@ -27,17 +27,17 @@
 <div class="row mb">
     <div class="col-sm-4">
         <div class="form-group">
-            <ng-select-new model='FormService.model.source_id' object="sources" label="name" none-text='источник'></ng-select-new>
+            <ng-select-new model='FormService.model.source_id' object="sources" label="name" convert-to-number none-text='источник'></ng-select-new>
         </div>
     </div>
     <div class="col-sm-4">
         <div class="form-group">
-            <ng-select-new model='FormService.model.addressee_id' object="sources" label="name" none-text='адресат'></ng-select-new>
+            <ng-select-new model='FormService.model.addressee_id' object="sources" label="name" convert-to-number none-text='адресат'></ng-select-new>
         </div>
     </div>
     <div class="col-sm-4">
         <div class="form-group">
-            <ng-select-new model='FormService.model.expenditure_id' object="expenditures" label="name" none-text='статья'></ng-select-new>
+            <ng-select-new model='FormService.model.expenditure_id' object="expenditures" label="name" convert-to-number none-text='статья'></ng-select-new>
         </div>
     </div>
 </div>
