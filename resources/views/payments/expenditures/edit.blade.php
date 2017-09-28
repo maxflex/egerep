@@ -3,10 +3,8 @@
     Редактирование статьи
     <a href="payments/expenditures" class="title-link">к списку статей</a>
 @stop
-@section('title-center')
-    <a class="pointer" ng-click="FormService.edit()">сохранить</a>
-@stop
 @section('title-right')
+    <a class="pointer" style="position: absolute; left: 45%" ng-click="FormService.edit()">сохранить</a>
     <a class="pointer" ng-click="FormService.delete($event)">удалить статью</a>
 @stop
 @section('content')
