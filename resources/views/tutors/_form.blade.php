@@ -124,11 +124,11 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-3">
+                <div class="col-sm-12">
                     <span class="link-like" ng-click="showMap()">метки</span> (@{{ tutor.markers.length }})
-                </div>
-                <div class="col-sm-9">
-                    <metro-list markers='tutor.markers'></metro-list>
+                    <div style="margin-top: 5px">
+                        <metro-list markers='tutor.markers'></metro-list>
+                    </div>
                 </div>
             </div>
         </div>

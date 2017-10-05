@@ -1,4 +1,4 @@
-<div class="small" ng-repeat='marker in markers' style="display: @{{ inline ? 'inline-block' : 'block' }}; position: relative" ng-init="stations = one_station ? [marker.metros[0]] : marker.metros">
+<div ng-repeat='marker in markers' style="display: @{{ inline ? 'inline-block' : 'block' }}; position: relative" ng-init="stations = one_station ? [marker.metros[0]] : marker.metros">
     <span class="metro-circle" style="background: @{{ stations[0].station.color }}"></span>
     @{{ stations[0].station.title }}, @{{ marker.comment || 'адрес отсутствует' }}
     <span class="link-like link-reverse" style='margin-left: 10px' ng-click="editMarkerModal(marker)">редактировать</span>
