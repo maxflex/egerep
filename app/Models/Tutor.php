@@ -486,6 +486,23 @@ class Tutor extends Service\Person
     }
 
     /**
+     * Search by markers
+     */
+    public function scopeSearchByMarkers($query, $state)
+    {
+        if (isset($state)) {
+            switch(intval($state)) {
+                case 1:
+                    return $query->has('markers')->whereRaw("(SELECT COUNT(*) FROM markers WHERE markerable_id=tutors.id AND markerable_type='App\\\Models\\\Tutor') = (SELECT COUNT(*) FROM markers WHERE markerable_id=tutors.id AND markerable_type='App\\\Models\\\Tutor' AND comment<>'')");
+                case 2:
+                    return $query->has('markers')->whereRaw("(SELECT COUNT(*) FROM markers WHERE markerable_id=tutors.id AND markerable_type='App\\\Models\\\Tutor') <> (SELECT COUNT(*) FROM markers WHERE markerable_id=tutors.id AND markerable_type='App\\\Models\\\Tutor' AND comment<>'')");
+                case 3:
+                    return $query->doesntHave('markers');
+            }
+        }
+    }
+
+    /**
      * Search by debtor
      */
     public function scopeSearchByDebtor($query, $debtor)

@@ -29411,6 +29411,16 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
   font-size: 12px;
   margin-left: 6px; }
 
+.metro-circle {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  top: -1px;
+  display: inline-block;
+  position: relative;
+  background: #293694; }
+
 .ios7-switch {
   display: inline-block;
   position: relative;

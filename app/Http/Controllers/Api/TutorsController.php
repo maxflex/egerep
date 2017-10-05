@@ -38,6 +38,7 @@ class TutorsController extends Controller
                     ->searchByPublishedState($request->published_state)
                     ->searchByErrorsState($request->errors_state)
                     ->searchBySource($request->egecentr_source)
+                    ->searchByMarkers($request->markers_state)
                     ->paginate(30, ['clients_count'])
                     ->toJson();
     }

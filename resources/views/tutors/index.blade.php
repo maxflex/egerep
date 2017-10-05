@@ -71,6 +71,15 @@
         </select>
     </div>
     <div>
+        <select class="form-control" ng-model='markers_state' ng-change="changeMarkers()" id='change-markers'>
+            <option value="">все</option>
+            <option disabled>──────────────</option>
+            <option data-subtext="@{{ marker_counts[1] || '' }}" value="1">все метки с адресом</option>
+            <option data-subtext="@{{ marker_counts[2] || '' }}" value="2">есть метки без адреса</option>
+            <option data-subtext="@{{ marker_counts[3] || '' }}" value="3">нет меток</option>
+        </select>
+    </div>
+    <div>
         <select class="form-control" ng-model='errors_state' ng-change="changeErrorsState()" id='change-errors'>
             <option value="">все</option>
             <option disabled>──────────────</option>

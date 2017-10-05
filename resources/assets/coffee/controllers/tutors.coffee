@@ -17,6 +17,7 @@ angular
         $scope.published_state  = localStorage.getItem('tutors_index_published_state')
         $scope.errors_state     = localStorage.getItem('tutors_index_errors_state')
         $scope.egecentr_source  = localStorage.getItem('tutors_index_egecentr_source')
+        $scope.markers_state    = localStorage.getItem('tutors_index_markers_state')
 
         PusherService.bind 'ResponsibleUserChanged', (data) ->
             if tutor = findById($scope.tutors, data.tutor_id)
@@ -51,6 +52,10 @@ angular
             localStorage.setItem 'tutors_index_egecentr_source', $scope.egecentr_source
             loadTutors $scope.current_page
 
+        $scope.changeMarkers = ->
+            localStorage.setItem 'tutors_index_markers_state', $scope.markers_state
+            loadTutors $scope.current_page
+
         $timeout ->
             loadTutors($scope.page)
             $scope.current_page = $scope.page
@@ -68,6 +73,7 @@ angular
             params += "&published_state=#{ $scope.published_state }" if $scope.published_state isnt null and $scope.published_state isnt ''
             params += "&errors_state=#{ $scope.errors_state }" if $scope.errors_state isnt null and $scope.errors_state isnt ''
             params += "&egecentr_source=#{ $scope.egecentr_source }" if $scope.egecentr_source isnt null and $scope.egecentr_source isnt ''
+            params += "&markers_state=#{ $scope.markers_state }" if $scope.markers_state isnt null and $scope.markers_state isnt ''
 
             # update repetitors
             # @todo: why ugly params? maybe use $http.post instead?
@@ -84,21 +90,23 @@ angular
                 published_state: $scope.published_state
                 errors_state:    $scope.errors_state
                 egecentr_source: $scope.egecentr_source
+                markers_state: $scope.markers_state
             .then (response) ->
                 $scope.state_counts     = response.data.state_counts
                 $scope.user_counts      = response.data.user_counts
                 $scope.published_counts = response.data.published_counts
                 $scope.errors_counts    = response.data.errors_counts
                 $scope.source_counts    = response.data.source_counts
+                $scope.marker_counts    = response.data.marker_counts
                 $timeout ->
                     # потому что data кэшируется
                     # @todo: add issue at github
                     # @link: https://github.com/silviomoreto/bootstrap-select/issues/293
-                    $('#change-state option, #change-user option, #change-published option, #change-errors option, #change-source option').each (index, el) ->
+                    $('#change-state option, #change-user option, #change-published option, #change-errors option, #change-source option, #change-markers option').each (index, el) ->
                         $(el).data 'subtext', $(el).attr 'data-subtext'
                         $(el).data 'content', $(el).attr 'data-content'
 
-                    $('#change-state, #change-user, #change-published, #change-errors, #change-source').selectpicker 'refresh'
+                    $('#change-state, #change-user, #change-published, #change-errors, #change-source, #change-markers').selectpicker 'refresh'
                     $rootScope.frontend_loading = false
 
         $scope.blurComment = (tutor) ->
