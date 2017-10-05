@@ -13,6 +13,7 @@ class Marker extends Model
         'type',
         'markerable_id',
         'markerable_type',
+        'comment'
     ];
     protected $with = ['metros'];
     public $timestamps = false;

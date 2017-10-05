@@ -376,7 +376,7 @@ angular
         filterMarkers = ->
             new_markers = []
             $.each $scope.tutor.markers, (index, marker) ->
-                new_markers.push _.pick(marker, 'lat', 'lng', 'type', 'metros', 'server_id')
+                new_markers.push _.pick(marker, 'lat', 'lng', 'type', 'metros', 'server_id', 'comment')
             $scope.tutor.markers = new_markers
 
         $scope.$on 'mapInitialized', (event, map) ->
@@ -545,6 +545,7 @@ angular
                     # @todo: сделать так, чтобы type и metros и еще дургие можно было передавать массивом в последнем параметре
                     new_marker = newMarker($scope.marker_id++, new google.maps.LatLng(marker.lat, marker.lng), $scope.map, marker.type, marker.id)
                     new_marker.metros = marker.metros
+                    new_marker.comment = marker.comment
 
                     # Добавляем маркер на карту
                     new_marker.setMap($scope.map)

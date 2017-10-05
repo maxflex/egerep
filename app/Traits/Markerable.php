@@ -2,6 +2,8 @@
 
     namespace App\Traits;
 
+    use App\Models\Marker;
+
     /**
      * Имеет маркеры
      *
@@ -40,6 +42,10 @@
                             'station_id'=> $metro['station']['id'],
                         ]);
                     }
+                } else {
+                    Marker::whereId($data['server_id'])->update([
+                        'comment' => @$data['comment']
+                    ]);
                 }
             }
             unset($this->markers);
