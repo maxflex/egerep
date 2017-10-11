@@ -32,39 +32,4 @@ class PaymentsController extends Controller
             'expenditures' => Expenditure::select('id', 'name')->get(),
         ]));
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        if (! allowed(9999)) {
-            return view('errors.not_allowed');
-        }
-        return view(self::VIEWS_FOLDER . 'create')->with(ngInit([
-            'model'        => new Payment(['date' => date('Y-m-d')]),
-            'sources'      => Source::select('id', 'name')->get(),
-            'expenditures' => Expenditure::select('id', 'name')->get(),
-        ]));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        if (! allowed(9999)) {
-            return view('errors.not_allowed');
-        }
-        return view(self::VIEWS_FOLDER . 'edit')->with(ngInit([
-            'id'           => $id,
-            'sources'      => Source::select('id', 'name')->get(),
-            'expenditures' => Expenditure::select('id', 'name')->get(),
-        ]));
-    }
 }
