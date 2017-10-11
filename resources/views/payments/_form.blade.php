@@ -1,7 +1,7 @@
 <div class="row mb">
     <div class="col-sm-4">
         <div class="form-group">
-            <ng-select-new model='FormService.model.loan' object="PaymentTypes" label="title" convert-to-number></ng-select-new>
+            <ng-select-new model='FormService.model.type' object="PaymentTypes" label="title" convert-to-number></ng-select-new>
         </div>
     </div>
     <div class="col-sm-4">

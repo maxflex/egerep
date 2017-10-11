@@ -8,7 +8,7 @@ class Payment extends Model
 {
     protected $fillable = [
         'sum',
-        'loan',
+        'type',
         'purpose',
         'date',
         'addressee_id',
@@ -17,6 +17,7 @@ class Payment extends Model
     ];
 
     protected $attributes = [
+        'type'           => 0,
         'source_id'      => '',
         'addressee_id'   => '',
         'expenditure_id' => '',

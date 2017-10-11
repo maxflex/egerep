@@ -2,10 +2,12 @@
 @section('title', 'Стрим платежей')
 @section('controller', 'PaymentsIndex')
 @include('payments._top_right_section')
+@include('payments._modals')
 
 @section('content')
     <div class="row flex-list">
         <div>
+            <label>пользователь</label>
             <select ng-highlight class="form-control selectpicker" ng-model='search.user_id' id='change-user'>
                 <option value=''>пользователь</option>
             	<option disabled>──────────────</option>
@@ -23,26 +25,30 @@
             </select>
         </div>
         <div>
-            <ng-select-new model='search.addressee_id' object="sources" label="name" none-text='адресат'></ng-select-new>
-        </div>
-        <div>
+            <label>источник</label>
             <ng-select-new model='search.source_id' object="sources" label="name" none-text='источник'></ng-select-new>
         </div>
         <div>
+            <label>адресат</label>
+            <ng-select-new model='search.addressee_id' object="sources" label="name" none-text='адресат'></ng-select-new>
+        </div>
+        <div>
+            <label>статья</label>
             <ng-select-new model='search.expenditure_id' object="expenditures" label="name" none-text='статья'></ng-select-new>
         </div>
         <div>
-            <ng-select-new model='search.loan' object="PaymentTypes" label="title" none-text='тип'></ng-select-new>
+            <label>тип</label>
+            <ng-select-new model='search.type' object="PaymentTypes" label="title" none-text='тип'></ng-select-new>
         </div>
     </div>
 
-    <table class="table reverse-borders">
+    <table class="table reverse-borders" style='font-size: 13px'>
         <tr ng-repeat="model in IndexService.page.data">
             <td>
-                @{{ findById(PaymentTypes, model.loan).title }}
+                <a class="pointer" ng-click="editPayment(model)">@{{ findById(PaymentTypes, model.type).title }}</a>
             </td>
             <td>
-                @{{ model.sum | number }} руб.
+                @{{ model.sum | number }}
             </td>
             <td>
                 @{{ model.date }}
@@ -56,11 +62,11 @@
             <td>
                 @{{ findById(expenditures, model.expenditure_id).name }}
             </td>
-            <td>
+            {{-- <td>
                 @{{ UserService.getLogin(model.user_id) }}: @{{ formatDateTime(model.created_at) }}
-            </td>
-            <td style='text-align: right'>
-                <a href="payments/@{{ model.id }}/edit">редактировать</a>
+            </td> --}}
+            <td width="250">
+                @{{ model.purpose | cut:false:20 }}
             </td>
         </tr>
     </table>

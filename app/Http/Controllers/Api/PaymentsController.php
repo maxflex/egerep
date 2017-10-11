@@ -20,7 +20,7 @@ class PaymentsController extends Controller
         $search = isset($_COOKIE['payments']) ? json_decode($_COOKIE['payments']) : (object)[];
         $search = filterParams($search);
 
-        $query = Payment::query();
+        $query = Payment::orderBy('date', 'desc')->orderBy('id', 'desc');
 
         if (isset($search->user_id)) {
             $query->where('user_id', $search->user_id);
@@ -38,8 +38,8 @@ class PaymentsController extends Controller
             $query->where('expenditure_id', $search->expenditure_id);
         }
 
-        if (isset($search->loan)) {
-            $query->where('loan', $search->loan);
+        if (isset($search->type)) {
+            $query->where('type', $search->type);
         }
 
         return $query->paginate(30);
@@ -63,6 +63,14 @@ class PaymentsController extends Controller
      */
     public function store(Request $request)
     {
+        if (isset($request->create_loan) && $request->create_loan) {
+            $loan = new Payment($request->input());
+            $loan->type = 1;
+            $buf = $loan->addressee_id;
+            $loan->addressee_id = $loan->source_id;
+            $loan->source_id = $buf;
+            $loan->save();
+        }
         return Payment::create($request->input())->fresh();
     }
 

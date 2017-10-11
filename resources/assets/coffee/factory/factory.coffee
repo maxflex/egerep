@@ -215,6 +215,7 @@ angular.module('Egerep')
     .value 'PaymentTypes', [
         {id: 0, title: 'платёж'},
         {id: 1, title: 'заём'},
+        {id: 2, title: 'списание'},
     ]
 
     .value 'CallStatuses',

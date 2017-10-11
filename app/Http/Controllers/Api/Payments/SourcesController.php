@@ -17,7 +17,7 @@ class SourcesController extends Controller
      */
     public function index()
     {
-        return Source::paginate(30);
+        return Source::paginate(30, ['in_remainder', 'loan_remainder']);
     }
 
     /**

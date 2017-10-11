@@ -9,7 +9,7 @@ angular.module('Egerep')
                 addressee_id: ''
                 source_id: ''
                 expenditure_id: ''
-                loan: ''
+                type: ''
 
             $scope.$watchCollection 'search', (newVal, oldVal) ->
                 console.log('filter') if IndexService.data_loaded
@@ -20,6 +20,27 @@ angular.module('Egerep')
             $.cookie("payments", JSON.stringify($scope.search), { expires: 365, path: '/' });
             IndexService.current_page = 1
             IndexService.pageChanged()
+
+        $scope.addPaymentDialog = ->
+            $scope.modal_payment = _.clone($scope.fresh_payment)
+            $('#payment-stream-modal').modal('show')
+
+        $scope.savePayment = ->
+            $scope.adding_payment = true
+            func = if $scope.modal_payment.id then Payment.update else Payment.save
+            func $scope.modal_payment, (response) ->
+                $scope.adding_payment = false
+                $('#payment-stream-modal').modal('hide')
+                $scope.filter()
+
+        $scope.deletePayment = ->
+            Payment.delete {id: $scope.modal_payment.id}, (response) ->
+                $('#payment-stream-modal').modal('hide')
+                $scope.filter()
+
+        $scope.editPayment = (model) ->
+            $scope.modal_payment = _.clone(model)
+            $('#payment-stream-modal').modal('show')
 
     .controller 'PaymentForm', ($scope, FormService, Payment, PaymentTypes)->
         bindArguments($scope, arguments)
