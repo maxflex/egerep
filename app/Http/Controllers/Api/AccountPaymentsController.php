@@ -20,7 +20,7 @@ class AccountPaymentsController extends Controller
      */
     public function index(Request $request)
     {
-        $per_page = 1500;
+        $per_page = 999999;
         // получаем ВСЕ данные из account_payments и egecrm-payments
         // мерджим, сортируем по дате и вырезаем пагинацию
         $account_payments = AccountPayment::orderBy('date', 'desc');
