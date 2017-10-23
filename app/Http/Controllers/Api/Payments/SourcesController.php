@@ -17,7 +17,7 @@ class SourcesController extends Controller
      */
     public function index()
     {
-        return Source::orderBy('position')->paginate(30, ['in_remainder', 'loan_remainder']);
+        return Source::orderBy('position')->paginate(999, ['in_remainder', 'loan_remainder']);
     }
 
     /**

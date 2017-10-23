@@ -17,7 +17,7 @@ class ExpendituresController extends Controller
      */
     public function index()
     {
-        return Expenditure::orderBy('position')->paginate(30);
+        return Expenditure::orderBy('position')->paginate(999);
     }
 
     /**
