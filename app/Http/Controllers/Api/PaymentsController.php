@@ -132,11 +132,11 @@ class PaymentsController extends Controller
 
         $income = Payment::select(DB::raw("DATE_FORMAT(`date`, '%Y-%m') as month_date, sum(`sum`) as sum"))
             ->whereIn('addressee_id', $request->wallet_ids)->whereNotIn('source_id', $request->wallet_ids)
-            ->groupBy(DB::raw("month_date"));
+            ->groupBy(DB::raw("month_date"))->orderBy(DB::raw('month_date'));
 
         $outcome = Payment::select(DB::raw("DATE_FORMAT(`date`, '%Y-%m') as month_date, sum(`sum`) as sum"))
             ->whereIn('source_id', $request->wallet_ids)->whereNotIn('addressee_id', $request->wallet_ids)
-            ->groupBy(DB::raw("month_date"));
+            ->groupBy(DB::raw("month_date"))->orderBy(DB::raw('month_date'));
 
         if (isset($search->date_start) && $search->date_start) {
             $income->whereRaw("date(`date`) >= '" . fromDotDate($search->date_start) . "'");
