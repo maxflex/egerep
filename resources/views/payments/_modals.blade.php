@@ -103,12 +103,12 @@
         </div>
         <div class="modal-body" style='height: 300px; overflow-y: scroll'>
             <table class="table reverse-borders">
-                <tr ng-repeat="(date, sum) in stats_data">
+                <tr ng-repeat="s in stats_data">
                     <td width='100'>
-                        @{{ formatStatDate(date) }}
+                        @{{ formatStatDate(s.date) }}
                     </td>
                     <td>
-                        @{{ sum | number }}
+                        @{{ s.sum | number }}
                     </td>
                 </tr>
             </table>

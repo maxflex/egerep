@@ -158,13 +158,14 @@ class PaymentsController extends Controller
         // return [$income, $outcome];
 
         foreach($dates as $date) {
-            $return[$date] = 0;
+            $sum = 0;
             if (isset($income[$date])) {
-                $return[$date] += $income[$date]->sum;
+                $sum += $income[$date]->sum;
             }
             if (isset($outcome[$date])) {
-                $return[$date] -= $outcome[$date]->sum;
+                $sum -= $outcome[$date]->sum;
             }
+            $return[] = compact('date', 'sum');
         }
 
         return $return;
