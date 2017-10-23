@@ -111,6 +111,14 @@
                         @{{ s.sum | number }}
                     </td>
                 </tr>
+                <tr>
+                    <td width='100'>
+
+                    </td>
+                    <td>
+                        <b>@{{ totalStatsSum() | number }}</b>
+                    </td>
+                </tr>
             </table>
         </div>
         <div class="modal-footer center">

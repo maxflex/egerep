@@ -55,6 +55,11 @@ angular.module('Egerep')
                 $('#stats-modal').modal('hide')
                 $('#stats-table').modal('show')
 
+        $scope.totalStatsSum = ->
+            sum = 0
+            $scope.stats_data.forEach (d) -> sum += parseInt(d.sum)
+            sum
+
         $scope.formatStatDate = (date) ->
             moment(date + '-01').format('MM.YYYY')
 
