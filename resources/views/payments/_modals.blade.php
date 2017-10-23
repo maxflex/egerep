@@ -96,12 +96,12 @@
 
 {{-- СТАТИСТИКА ТАБЛИЦА --}}
 <div id="stats-table" class="modal" role="dialog" tabindex="-1">
-  <div class="modal-dialog" style='width: 500px'>
+  <div class="modal-dialog" style='width: 500px; margin: 2% auto'>
     <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title center">Статистика</h4>
         </div>
-        <div class="modal-body" style='height: 300px; overflow-y: scroll'>
+        <div class="modal-body" style='height: 680; overflow-y: scroll'>
             <table class="table reverse-borders">
                 <tr ng-repeat="s in stats_data">
                     <td width='100'>
