@@ -55,6 +55,8 @@ angular.module('Egerep')
                 $('#stats-modal').modal('hide')
                 $('#stats-table').modal('show')
 
+        $scope.formatStatDate = (date) ->
+            moment(date + '-01').format('MM.YY')
 
         $scope.deletePayment = ->
             Payment.delete {id: $scope.modal_payment.id}, (response) ->

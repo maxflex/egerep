@@ -105,13 +105,16 @@
             <table class="table reverse-borders">
                 <tr ng-repeat="(date, sum) in stats_data">
                     <td width='100'>
-                        @{{ date }}
+                        @{{ formatStatDate(date) }}
                     </td>
                     <td>
                         @{{ sum | number }}
                     </td>
                 </tr>
             </table>
+        </div>
+        <div class="modal-footer center">
+          <button class="btn btn-primary" type="button" onclick="$('#stats-table').modal('hide')">закрыть</button>
         </div>
     </div>
   </div>
