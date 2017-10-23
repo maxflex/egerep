@@ -152,7 +152,8 @@ class PaymentsController extends Controller
         $outcome = collect($outcome->get())->keyBy('month_date')->all();
 
         $dates = array_unique(array_merge(array_keys((array)$income), array_keys((array)$outcome)));
-
+        sort($dates);
+        
         $return = [];
 
         // return [$income, $outcome];
