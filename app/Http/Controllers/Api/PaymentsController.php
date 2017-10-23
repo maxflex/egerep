@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
+use DB;
 
 class PaymentsController extends Controller
 {
@@ -121,5 +122,49 @@ class PaymentsController extends Controller
     public function destroy($id)
     {
         Payment::destroy($id);
+    }
+
+
+    public function stats(Request $request)
+    {
+        $search = isset($_COOKIE['payments']) ? json_decode($_COOKIE['payments']) : (object)[];
+        $search = filterParams($search);
+
+        $income = Payment::select(DB::raw("DATE_FORMAT(`date`, '%m.%Y') as month_date, sum(`sum`) as sum"))
+            ->whereIn('addressee_id', $request->wallet_ids)->whereNotIn('source_id', $request->wallet_ids)
+            ->groupBy(DB::raw("month_date"));
+
+        $outcome = Payment::select(DB::raw("DATE_FORMAT(`date`, '%m.%Y') as month_date, sum(`sum`) as sum"))
+            ->whereIn('source_id', $request->wallet_ids)->whereNotIn('addressee_id', $request->wallet_ids)
+            ->groupBy(DB::raw("month_date"));
+
+        if (isset($search->date_start) && $search->date_start) {
+            $income->whereRaw("date(`date`) >= '" . fromDotDate($search->date_start) . "'");
+            $outcome->whereRaw("date(`date`) >= '" . fromDotDate($search->date_start) . "'");
+        }
+
+        if (isset($search->date_end) && $search->date_end) {
+            $income->whereRaw("date(`date`) <= '" . fromDotDate($search->date_end) . "'");
+            $outcome->whereRaw("date(`date`) <= '" . fromDotDate($search->date_end) . "'");
+        }
+
+        $income = collect($income->get())->keyBy('month_date')->all();
+        $outcome = collect($outcome->get())->keyBy('month_date')->all();
+
+        $dates = array_unique(array_merge(array_keys((array)$income), array_keys((array)$outcome)));
+
+        $return = [];
+
+        foreach($dates as $date) {
+            $return[$date] = 0;
+            if (isset($income[$date])) {
+                $return[$date] += $income[$date]->sum;
+            }
+            if (isset($outcome[$date])) {
+                $return[$date] -= $outcome[$date]->sum;
+            }
+        }
+
+        return $return;
     }
 }

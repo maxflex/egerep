@@ -170,6 +170,8 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api', 'middleware' => ['web']],
         'command'  => 'CommandsController',
     ]);
 
+    Route::post('payments/stats', 'PaymentsController@stats');
+
     Route::group(['namespace' => 'Payments', 'prefix' => 'payments'], function() {
         Route::resource('sources', 'SourcesController');
         Route::resource('expenditures', 'ExpendituresController');

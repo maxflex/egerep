@@ -1,10 +1,7 @@
-{{-- ПЕРЕМЕЩЕНИЕ ЗАЯВКИ --}}
+{{-- ДОБАВЛЕНИЕ ПЛАТЕЖА --}}
 <div id="payment-stream-modal" class="modal" role="dialog" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
-      {{-- <div class="modal-header">
-        <h4 class="modal-title">Склеить преподавателя</h4>
-      </div> --}}
       <div class="modal-body">
           <div class="form-group simpleinput-wrapper">
               <label>тип операции</label>
@@ -73,6 +70,49 @@
             </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+
+{{-- СТАТИСТИКА --}}
+<div id="stats-modal" class="modal" role="dialog" tabindex="-1">
+  <div class="modal-dialog" style='width: 300px'>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title center">Выберите кошелек</h4>
+      </div>
+      <div class="modal-body">
+          <select multiple title="не выбрано" ng-model="wallet_ids" class="selectpicker">
+              <option ng-repeat="source in sources" value="@{{ source.id }}">@{{ source.name }}</option>
+          </select>
+      </div>
+      <div class="modal-footer center">
+        <button type="button" ng-disabled="!(wallet_ids && wallet_ids.length) || stats_loading" class="btn btn-primary" ng-click="stats()">статистика</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{-- СТАТИСТИКА ТАБЛИЦА --}}
+<div id="stats-table" class="modal" role="dialog" tabindex="-1">
+  <div class="modal-dialog" style='width: 500px'>
+    <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title center">Статистика</h4>
+        </div>
+        <div class="modal-body">
+            <table class="table reverse-borders">
+                <tr ng-repeat="(date, sum) in stats_data">
+                    <td width='100'>
+                        @{{ date }}
+                    </td>
+                    <td>
+                        @{{ sum | number }}
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
   </div>
 </div>

@@ -1,5 +1,5 @@
 angular.module('Egerep')
-    .controller 'PaymentsIndex', ($scope, $attrs, $timeout, IndexService, Payment, PaymentTypes, UserService) ->
+    .controller 'PaymentsIndex', ($scope, $attrs, $timeout, $http, IndexService, Payment, PaymentTypes, UserService) ->
         bindArguments($scope, arguments)
         angular.element(document).ready ->
             $timeout ->
@@ -40,6 +40,21 @@ angular.module('Egerep')
             delete new_payment.updated_at
             delete new_payment.user_id
             $scope.addPaymentDialog(new_payment)
+
+        $scope.statsDialog = ->
+            $('#stats-modal').modal('show')
+
+        $scope.stats = ->
+            $scope.stats_loading = true
+            ajaxStart()
+            $http.post('api/payments/stats', {wallet_ids: $scope.wallet_ids}).then (response) ->
+                console.log(response)
+                ajaxEnd()
+                $scope.stats_loading = false
+                $scope.stats_data = response.data
+                $('#stats-modal').modal('hide')
+                $('#stats-table').modal('show')
+
 
         $scope.deletePayment = ->
             Payment.delete {id: $scope.modal_payment.id}, (response) ->
