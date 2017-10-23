@@ -7,38 +7,41 @@
 @section('content')
     <div class="row flex-list">
         <div>
-            <label>пользователь</label>
-            <select ng-highlight class="form-control selectpicker" ng-model='search.user_id' id='change-user'>
-                <option value=''>пользователь</option>
-            	<option disabled>──────────────</option>
-            	<option
-            		ng-repeat="user in UserService.getActiveInAnySystem()"
-            		value="@{{ user.id }}"
-            		data-content="<span style='color: @{{ user.color || 'black' }}'>@{{ user.login }}</span>"
-            	></option>
-            	<option disabled>──────────────</option>
-            	<option
-                    ng-repeat="user in UserService.getBannedInBothSystems()"
-            		value="@{{ user.id }}"
-            		data-content="<span style='color: black'>@{{ user.login }}</span>"
-            	></option>
-            </select>
-        </div>
-        <div>
             <label>источник</label>
-            <ng-select-new model='search.source_id' object="sources" label="name" none-text='источник'></ng-select-new>
+            <select multiple title="не выбрано" ng-model="search.source_ids" class="selectpicker">
+                <option ng-repeat="source in sources" value="@{{ source.id }}">@{{ source.name }}</option>
+            </select>
+            {{-- <ng-select-new multiple model='search.source_id' object="sources" label="name" none-text='источник'></ng-select-new> --}}
         </div>
         <div>
             <label>адресат</label>
-            <ng-select-new model='search.addressee_id' object="sources" label="name" none-text='адресат'></ng-select-new>
+            <select multiple title="не выбрано" ng-model="search.addressee_ids" class="selectpicker">
+                <option ng-repeat="source in sources" value="@{{ source.id }}">@{{ source.name }}</option>
+            </select>
         </div>
         <div>
             <label>статья</label>
-            <ng-select-new model='search.expenditure_id' object="expenditures" label="name" none-text='статья'></ng-select-new>
+            <select multiple title="не выбрано" ng-model="search.expenditure_ids" class="selectpicker">
+                <option ng-repeat="expenditure in expenditures" value="@{{ expenditure.id }}">@{{ expenditure.name }}</option>
+            </select>
         </div>
         <div>
             <label>тип</label>
             <ng-select-new model='search.type' object="PaymentTypes" label="title" none-text='тип'></ng-select-new>
+        </div>
+        <div>
+            <div class="form-group">
+                <label>начало</label>
+                <input type="text" readonly ng-change='filter()' placeholder="не указано"
+                  class="form-control bs-date-clear pointer" ng-model="search.date_start">
+            </div>
+        </div>
+        <div>
+            <div class="form-group">
+                <label>конец</label>
+                <input type="text" readonly ng-change='filter()' placeholder="не указано"
+                  class="form-control bs-date-clear pointer" ng-model="search.date_end">
+            </div>
         </div>
     </div>
 
@@ -72,3 +75,6 @@
     </table>
     @include('modules.pagination-new')
 @stop
+
+{{-- drag & drop --}}
+{{-- копировать платеж --}}

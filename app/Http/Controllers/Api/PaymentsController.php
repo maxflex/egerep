@@ -22,20 +22,24 @@ class PaymentsController extends Controller
 
         $query = Payment::orderBy('date', 'desc')->orderBy('id', 'desc');
 
-        if (isset($search->user_id)) {
-            $query->where('user_id', $search->user_id);
+        if (isset($search->source_ids) && count($search->source_ids)) {
+            $query->whereIn('source_id', $search->source_ids);
         }
 
-        if (isset($search->source_id)) {
-            $query->where('source_id', $search->source_id);
+        if (isset($search->addressee_ids) && count($search->addressee_ids)) {
+            $query->whereIn('addressee_id', $search->addressee_ids);
         }
 
-        if (isset($search->addressee_id)) {
-            $query->where('addressee_id', $search->addressee_id);
+        if (isset($search->expenditure_ids) && count($search->expenditure_ids)) {
+            $query->whereIn('expenditure_id', $search->expenditure_ids);
         }
 
-        if (isset($search->expenditure_id)) {
-            $query->where('expenditure_id', $search->expenditure_id);
+        if (isset($search->date_start) && $search->date_start) {
+            $query->whereRaw("date(`date`) >= '" . fromDotDate($search->date_start) . "'");
+        }
+
+        if (isset($search->date_end) && $search->date_end) {
+            $query->whereRaw("date(`date`) <= '" . fromDotDate($search->date_end) . "'");
         }
 
         if (isset($search->type)) {

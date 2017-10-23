@@ -67,6 +67,7 @@
         <div ng-show="modal_payment.id" style='text-align: left'>
             <span class="text-gray">@{{ UserService.getLogin(modal_payment.user_id) }} @{{ formatDateTime(modal_payment.created_at) }}</span>
             <div class="pull-right">
+                <span class="link-like" style='margin-right: 12px' ng-click="clonePayment()">копировать</span>
                 <span class="link-like" style='margin-right: 12px' ng-click="savePayment()">сохранить</span>
                 <span class="link-like text-danger" ng-click="deletePayment()">удалить</span>
             </div>

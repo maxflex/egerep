@@ -10,7 +10,7 @@ class Source extends Model
     protected $table = 'payment_sources';
     public $timestamps = false;
 
-    protected $fillable = ['name', 'remainder'];
+    protected $fillable = ['name', 'remainder', 'position'];
 
 
     public function getInRemainderAttribute()
@@ -21,7 +21,7 @@ class Source extends Model
 
         $remainder -= Payment::where('type', 2)->where('source_id', $this->id)->sum('sum');
         $remainder += Payment::where('type', 2)->where('addressee_id', $this->id)->sum('sum');
-        
+
         return $remainder;
     }
 

@@ -29433,7 +29433,7 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
 
 #payment-stream-modal .modal-dialog {
   margin: 7% auto !important;
-  width: 400px; }
+  width: 475px; }
 
 .md-datepicker-triangle-button.md-button.md-icon-button {
   right: 7px !important; }
@@ -29491,6 +29491,17 @@ md-option {
   bottom: 0px;
   opacity: 0;
   z-index: 99; }
+
+tr.ui-sortable-helper {
+  background: rgba(255, 255, 255, 0.5) !important;
+  width: 98% !important;
+  display: table;
+  box-shadow: 0 0 10px #ddd; }
+  tr.ui-sortable-helper td {
+    border-bottom: none !important; }
+
+.ui-sortable-helper {
+  overflow: hidden; }
 
 .ios7-switch {
   display: inline-block;

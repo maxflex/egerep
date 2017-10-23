@@ -24,19 +24,21 @@
                 </td>
             </tr>
         </thead>
-        <tr ng-repeat="model in IndexService.page.data">
-            <td>
-                <a href='payments/sources/@{{ model.id }}/edit'>
-                  @{{ model.name }}
-                </a>
-            </td>
-            <td>
-                  @{{ model.in_remainder | hideZero | number }}
-            </td>
-            <td>
-                  @{{ model.loan_remainder | hideZero | number }}
-            </td>
-        </tr>
+        <tbody ui-sortable='sortableOptions' ng-model="IndexService.page.data">
+            <tr ng-repeat="model in IndexService.page.data">
+                <td width='400'>
+                    <a href='payments/sources/@{{ model.id }}/edit'>
+                      @{{ model.name }}
+                    </a>
+                </td>
+                <td>
+                      @{{ model.in_remainder | hideZero | number }}
+                </td>
+                <td>
+                      @{{ model.loan_remainder | hideZero | number }}
+                </td>
+            </tr>
+        </tbody>
     </table>
     @include('modules.pagination-new')
 @stop

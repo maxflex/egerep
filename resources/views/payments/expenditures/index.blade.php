@@ -11,13 +11,15 @@
 
 @section('content')
     <table class="table reverse-borders">
-        <tr ng-repeat="model in IndexService.page.data">
-            <td>
-                <a href='payments/expenditures/@{{ model.id }}/edit'>
-                  @{{ model.name }}
-                </a>
-            </td>
-        </tr>
+        <tbody ui-sortable='sortableOptions' ng-model="IndexService.page.data">
+            <tr ng-repeat="model in IndexService.page.data">
+                <td>
+                    <a href='payments/expenditures/@{{ model.id }}/edit'>
+                      @{{ model.name }}
+                    </a>
+                </td>
+            </tr>
+        </tbody>
     </table>
     @include('modules.pagination-new')
 @stop

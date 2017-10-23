@@ -21,8 +21,8 @@ angular.module('Egerep')
             IndexService.current_page = 1
             IndexService.pageChanged()
 
-        $scope.addPaymentDialog = ->
-            $scope.modal_payment = _.clone($scope.fresh_payment)
+        $scope.addPaymentDialog = (payment = false) ->
+            $scope.modal_payment = _.clone(payment || $scope.fresh_payment)
             $('#payment-stream-modal').modal('show')
 
         $scope.savePayment = ->
@@ -32,6 +32,14 @@ angular.module('Egerep')
                 $scope.adding_payment = false
                 $('#payment-stream-modal').modal('hide')
                 $scope.filter()
+
+        $scope.clonePayment = ->
+            new_payment = _.clone($scope.modal_payment)
+            delete new_payment.id
+            delete new_payment.created_at
+            delete new_payment.updated_at
+            delete new_payment.user_id
+            $scope.addPaymentDialog(new_payment)
 
         $scope.deletePayment = ->
             Payment.delete {id: $scope.modal_payment.id}, (response) ->
@@ -48,20 +56,46 @@ angular.module('Egerep')
             FormService.init(Payment, $scope.id, $scope.model)
             FormService.prefix = ''
 
-    .controller 'PaymentSourceIndex', ($scope, $attrs, IndexService, PaymentSource) ->
+    .controller 'PaymentSourceIndex', ($scope, $attrs, $timeout, IndexService, PaymentSource) ->
         bindArguments($scope, arguments)
         angular.element(document).ready ->
             IndexService.init(PaymentSource, $scope.current_page, $attrs)
+
+        $scope.sortableOptions =
+            cursor: "move"
+            opacity: 0.9,
+            zIndex: 9999
+            tolerance: "pointer"
+            axis: 'y'
+            containment: "parent"
+            update: (event, ui) ->
+                $timeout ->
+                    IndexService.page.data.forEach (model, index) ->
+                        PaymentSource.update({id: model.id, position: index})
+
     .controller 'PaymentSourceForm', ($scope, FormService, PaymentSource)->
         bindArguments($scope, arguments)
         angular.element(document).ready ->
             FormService.init(PaymentSource, $scope.id, $scope.model)
             FormService.prefix = 'payments/'
 
-    .controller 'PaymentExpenditureIndex', ($scope, $attrs, IndexService, PaymentExpenditure) ->
+    .controller 'PaymentExpenditureIndex', ($scope, $attrs, $timeout, IndexService, PaymentExpenditure) ->
         bindArguments($scope, arguments)
         angular.element(document).ready ->
             IndexService.init(PaymentExpenditure, $scope.current_page, $attrs)
+
+        $scope.sortableOptions =
+            cursor: "move"
+            opacity: 0.9,
+            zIndex: 9999
+            tolerance: "pointer"
+            axis: 'y'
+            containment: "parent"
+            update: (event, ui) ->
+                $timeout ->
+                    IndexService.page.data.forEach (model, index) ->
+                        PaymentExpenditure.update({id: model.id, position: index})
+
     .controller 'PaymentExpenditureForm', ($scope, FormService, PaymentExpenditure)->
         bindArguments($scope, arguments)
         angular.element(document).ready ->

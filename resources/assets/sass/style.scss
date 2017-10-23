@@ -4110,7 +4110,7 @@ thead.small.ng-scope.tableFloatingHeaderOriginal {
 #payment-stream-modal {
 	& .modal-dialog {
 		margin: 7% auto !important;
-		width: 400px;
+		width: 475px;
 	}
 }
 
@@ -4186,4 +4186,18 @@ md-option {
     bottom: 0px;
     opacity: 0;
     z-index: 99;
+}
+
+tr.ui-sortable-helper {
+    background: rgba(255, 255, 255, 0.5) !important;
+    //	z-index: 999;
+    width: 98% !important;
+    display: table;
+    box-shadow: 0 0 10px #ddd;
+    & td {
+        border-bottom: none !important;
+    }
+}
+.ui-sortable-helper {
+    overflow: hidden;
 }

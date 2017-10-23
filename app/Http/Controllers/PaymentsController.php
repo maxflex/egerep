@@ -28,8 +28,8 @@ class PaymentsController extends Controller
         return view(self::VIEWS_FOLDER . 'index')->with(ngInit([
             'current_page' => $request->page,
             'fresh_payment'=> new Payment,
-            'sources'      => Source::select('id', 'name')->get(),
-            'expenditures' => Expenditure::select('id', 'name')->get(),
+            'sources'      => Source::orderBy('position')->select('id', 'name')->get(),
+            'expenditures' => Expenditure::orderBy('position')->select('id', 'name')->get(),
         ]));
     }
 }

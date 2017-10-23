@@ -9,5 +9,5 @@ class Expenditure extends Model
     protected $table = 'payment_expenditures';
     public $timestamps = false;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'position'];
 }
