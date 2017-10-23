@@ -130,11 +130,11 @@ class PaymentsController extends Controller
         $search = isset($_COOKIE['payments']) ? json_decode($_COOKIE['payments']) : (object)[];
         $search = filterParams($search);
 
-        $income = Payment::select(DB::raw("DATE_FORMAT(`date`, '%m.%Y') as month_date, sum(`sum`) as sum"))
+        $income = Payment::select(DB::raw("DATE_FORMAT(`date`, '%Y-%m') as month_date, sum(`sum`) as sum"))
             ->whereIn('addressee_id', $request->wallet_ids)->whereNotIn('source_id', $request->wallet_ids)
             ->groupBy(DB::raw("month_date"));
 
-        $outcome = Payment::select(DB::raw("DATE_FORMAT(`date`, '%m.%Y') as month_date, sum(`sum`) as sum"))
+        $outcome = Payment::select(DB::raw("DATE_FORMAT(`date`, '%Y-%m') as month_date, sum(`sum`) as sum"))
             ->whereIn('source_id', $request->wallet_ids)->whereNotIn('addressee_id', $request->wallet_ids)
             ->groupBy(DB::raw("month_date"));
 
@@ -154,6 +154,8 @@ class PaymentsController extends Controller
         $dates = array_unique(array_merge(array_keys((array)$income), array_keys((array)$outcome)));
 
         $return = [];
+
+        // return [$income, $outcome];
 
         foreach($dates as $date) {
             $return[$date] = 0;
