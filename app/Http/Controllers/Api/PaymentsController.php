@@ -148,22 +148,27 @@ class PaymentsController extends Controller
             $outcome->whereRaw("date(`date`) <= '" . fromDotDate($search->date_end) . "'");
         }
 
+        if (isset($request->expenditure_ids) && count($request->expenditure_ids)) {
+            $income->whereIn('expenditure_id', $request->expenditure_ids);
+            $outcome->whereIn('expenditure_id', $request->expenditure_ids);
+        }
+
         $income = collect($income->get())->keyBy('month_date')->all();
         $outcome = collect($outcome->get())->keyBy('month_date')->all();
 
         $dates = array_unique(array_merge(array_keys((array)$income), array_keys((array)$outcome)));
         sort($dates);
-        
+
         $return = [];
 
         // return [$income, $outcome];
 
         foreach($dates as $date) {
             $sum = 0;
-            if (isset($income[$date])) {
+            if (isset($income[$date]) && (! (isset($request->in_out) && count($request->in_out)) || in_array(1, $request->in_out))) {
                 $sum += $income[$date]->sum;
             }
-            if (isset($outcome[$date])) {
+            if (isset($outcome[$date]) && (! (isset($request->in_out) && count($request->in_out)) || in_array(2, $request->in_out))) {
                 $sum -= $outcome[$date]->sum;
             }
             $return[] = compact('date', 'sum');

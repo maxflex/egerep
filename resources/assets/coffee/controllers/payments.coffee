@@ -47,7 +47,11 @@ angular.module('Egerep')
         $scope.stats = ->
             $scope.stats_loading = true
             ajaxStart()
-            $http.post('api/payments/stats', {wallet_ids: $scope.wallet_ids}).then (response) ->
+            $http.post 'api/payments/stats',
+                wallet_ids: $scope.wallet_ids
+                in_out: $scope.in_out
+                expenditure_ids: $scope.expenditure_ids
+            .then (response) ->
                 console.log(response)
                 ajaxEnd()
                 $scope.stats_loading = false

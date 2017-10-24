@@ -79,13 +79,29 @@
 <div id="stats-modal" class="modal" role="dialog" tabindex="-1">
   <div class="modal-dialog" style='width: 300px'>
     <div class="modal-content">
-      <div class="modal-header">
+      {{-- <div class="modal-header">
         <h4 class="modal-title center">Выберите кошелек</h4>
-      </div>
+      </div> --}}
       <div class="modal-body">
-          <select multiple title="не выбрано" ng-model="wallet_ids" class="selectpicker">
-              <option ng-repeat="source in sources" value="@{{ source.id }}">@{{ source.name }}</option>
-          </select>
+          <div class='mbb'>
+              <label style='margin-bottom: 0'>кошелёк</label>
+              <select multiple title="не выбрано" ng-model="wallet_ids" class="selectpicker">
+                  <option ng-repeat="source in sources" value="@{{ source.id }}">@{{ source.name }}</option>
+              </select>
+          </div>
+          <div class="mbb">
+              <label style='margin-bottom: 0'>in-out</label>
+              <select multiple title="не выбрано" ng-model="in_out" class="selectpicker">
+                  <option value="1">in</option>
+                  <option value="2">out</option>
+              </select>
+          </div>
+          <div>
+              <label style='margin-bottom: 0'>статьи</label>
+              <select multiple title="не выбрано" ng-model="expenditure_ids" class="selectpicker">
+                  <option ng-repeat="expenditure in expenditures" value="@{{ expenditure.id }}">@{{ expenditure.name }}</option>
+              </select>
+          </div>
       </div>
       <div class="modal-footer center">
         <button type="button" ng-disabled="!(wallet_ids && wallet_ids.length) || stats_loading" class="btn btn-primary" ng-click="stats()">статистика</button>

@@ -76,5 +76,14 @@
     @include('modules.pagination-new')
 @stop
 
+<style>
+    label {
+        margin: 0 0 2px 10px;
+        color: #757575;
+        font-size: 12px;
+        font-weight: 500;
+    }
+</style>
+
 {{-- drag & drop --}}
 {{-- копировать платеж --}}
