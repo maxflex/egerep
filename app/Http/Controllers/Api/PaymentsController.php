@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
+use App\Models\Payment\Source;
 use DB;
 
 class PaymentsController extends Controller
@@ -47,7 +48,7 @@ class PaymentsController extends Controller
             $query->where('type', $search->type);
         }
 
-        return $query->paginate(30);
+        return $query->paginate(100);
     }
 
     /**
@@ -161,8 +162,6 @@ class PaymentsController extends Controller
 
         $return = [];
 
-        // return [$income, $outcome];
-
         foreach($dates as $date) {
             $sum = 0;
             if (isset($income[$date]) && (! (isset($request->in_out) && count($request->in_out)) || in_array(1, $request->in_out))) {
@@ -175,5 +174,31 @@ class PaymentsController extends Controller
         }
 
         return $return;
+    }
+
+
+    public function remainders(Request $request)
+    {
+        $page = (isset($request->page) ? $request->page : 1) - 1;
+
+        $sources = Source::get();
+
+        $date = new \DateTime('today');
+        $skip_days = $page * Source::PER_PAGE_REMAINDERS;
+
+        $end_date   = clone $date->sub(new \DateInterval("P{$skip_days}D"));
+        $start_date = clone $date->sub(new \DateInterval("P" . Source::PER_PAGE_REMAINDERS . "D"));
+
+        $return = [];
+        while ($start_date < $end_date) {
+            $start = $start_date->modify('+1 day')->format('Y-m-d'); // переход на новую неделю
+            $end   = $start_date->format('Y-m-d');
+            $return_date = $end;
+            foreach($sources as $source) {
+                $return[$return_date][$source->id] = Source::getRemaindersOnDate($source, $return_date);
+            }
+        }
+
+        return array_reverse($return);
     }
 }

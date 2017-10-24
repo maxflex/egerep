@@ -10,8 +10,10 @@ class Source extends Model
     protected $table = 'payment_sources';
     public $timestamps = false;
 
-    protected $fillable = ['name', 'remainder', 'position'];
+    const PER_PAGE_REMAINDERS = 30;
 
+    protected $fillable = ['name', 'remainder', 'remainder_date', 'position'];
+    protected static $dotDates = ['remainder_date'];
 
     public function getInRemainderAttribute()
     {
@@ -31,5 +33,24 @@ class Source extends Model
         $remainder += Payment::where('type', 1)->where('addressee_id', $this->id)->sum('sum');
         $remainder -= Payment::where('type', 1)->where('source_id', $this->id)->sum('sum');
         return $remainder;
+    }
+
+    /**
+     * Входящий и заемный остаток на дату
+     */
+    public static function getRemaindersOnDate($source, $date)
+    {
+        $remainder = @intval($source->remainder);
+        $remainder += Payment::where('type', 0)->where('addressee_id', $source->id)->where('date', '<=', $date)->sum('sum');
+        $remainder -= Payment::where('type', 0)->where('source_id', $source->id)->where('date', '<=', $date)->sum('sum');
+
+        $remainder -= Payment::where('type', 2)->where('source_id', $source->id)->where('date', '<=', $date)->sum('sum');
+        $remainder += Payment::where('type', 2)->where('addressee_id', $source->id)->where('date', '<=', $date)->sum('sum');
+
+        $loan_remainder = $remainder;
+        $loan_remainder += Payment::where('type', 1)->where('addressee_id', $source->id)->where('date', '<=', $date)->sum('sum');
+        $loan_remainder -= Payment::where('type', 1)->where('source_id', $source->id)->where('date', '<=', $date)->sum('sum');
+
+        return compact('remainder', 'loan_remainder');
     }
 }

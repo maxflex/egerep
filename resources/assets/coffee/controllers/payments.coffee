@@ -127,3 +127,22 @@ angular.module('Egerep')
         angular.element(document).ready ->
             FormService.init(PaymentExpenditure, $scope.id, $scope.model)
             FormService.prefix = 'payments/'
+
+    .controller 'PaymentRemainders', ($scope, $http, $timeout) ->
+        bindArguments($scope, arguments)
+        angular.element(document).ready ->
+            $timeout ->
+                load($scope.page)
+                $scope.current_page = $scope.page
+
+        $scope.pageChanged = ->
+            load($scope.current_page)
+            paginate 'payments/remainders', $scope.current_page
+
+        load = (page) ->
+            ajaxStart()
+            $http.post 'api/payments/remainders',
+                page: page
+            .then (response) ->
+                ajaxEnd()
+                $scope.data = response.data

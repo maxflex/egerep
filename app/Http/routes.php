@@ -73,7 +73,9 @@ Route::group(['middleware' => ['web', LogUrlOpen::class]], function () {
         Route::resource('sources', 'SourcesController');
     });
 
+    Route::get('payments/remainders', 'PaymentsController@remainders');
     Route::resource('payments', 'PaymentsController');
+
     Route::resource('requests', 'RequestsController', ['except' => ['index', 'show']]);
     Route::get('requests/errors', 'RequestsController@errors');
     Route::get('requests/{state_id?}', 'RequestsController@index');
@@ -170,6 +172,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api', 'middleware' => ['web']],
         'command'  => 'CommandsController',
     ]);
 
+    Route::post('payments/remainders', 'PaymentsController@remainders');
     Route::post('payments/stats', 'PaymentsController@stats');
 
     Route::group(['namespace' => 'Payments', 'prefix' => 'payments'], function() {

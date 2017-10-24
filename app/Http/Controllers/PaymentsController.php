@@ -14,11 +14,6 @@ class PaymentsController extends Controller
 {
     const VIEWS_FOLDER = 'payments.';
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index(Request $request)
     {
         if (! allowed(9999)) {
@@ -30,6 +25,20 @@ class PaymentsController extends Controller
             'fresh_payment'=> new Payment,
             'sources'      => Source::orderBy('position')->select('id', 'name')->get(),
             'expenditures' => Expenditure::orderBy('position')->select('id', 'name')->get(),
+        ]));
+    }
+
+    public function remainders(Request $request)
+    {
+        // кол-во элементов = кол-во дней с момента самого раннего состояния счета / Source::PER_PAGE_REMAINDERS
+        $earliest_remainder_date = Source::whereNotNull('remainder_date')->min('remainder_date');
+        $datediff = time() - $earliest_remainder_date;
+        $item_cnt = floor($datediff / (60 * 60 * 24) / Source::PER_PAGE_REMAINDERS);
+
+        return view(self::VIEWS_FOLDER . 'remainders')->with(ngInit([
+            'page' => $request->page,
+            'sources' => collect(Source::get())->keyBy('id')->all(),
+            'item_cnt' => $item_cnt,
         ]));
     }
 }

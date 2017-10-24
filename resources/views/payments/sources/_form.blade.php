@@ -13,4 +13,12 @@
             </div>
         </div>
     </div>
+    <div class="col-sm-3">
+        <div class="form-group">
+            <div class="form-gorup">
+                <input type="text" readonly placeholder="дата остатка" ng-model="FormService.model.remainder_date"
+                  class="form-control bs-date-clear pointer">
+            </div>
+        </div>
+    </div>
 </div>
