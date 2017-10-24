@@ -1,4 +1,5 @@
 @section('title-right')
+    <a href="payments/export">экспорт</a>
     <a href="payments/sources">источники</a>
     <a href="payments/expenditures">статьи</a>
     <a class="pointer" ng-click="statsDialog()">статистика</a>

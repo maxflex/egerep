@@ -41,4 +41,21 @@ class PaymentsController extends Controller
             'item_cnt' => $item_cnt,
         ]));
     }
+
+    public function export()
+    {
+        $payments = \DB::table('payments')->get();
+        
+        $data = [];
+        $data[] = ['ID', 'источник', 'адресат', 'статья расхода', 'назначение', 'сумма', 'тип', 'дата', 'пользователь', 'создан', 'обновлен'];
+        foreach($payments as $payment) {
+            $data[] = [$payment->id, $payment->source_id, $payment->addressee_id, $payment->expenditure_id, $payment->purpose, $payment->sum, $payment->type, $payment->date, $payment->user_id, $payment->created_at, $payment->updated_at];
+        }
+
+        \Excel::create('paystream_' . date('Y-m-d-H-i-s'), function($excel) use($data) {
+            $excel->sheet('paystream', function($sheet) use($data) {
+                $sheet->fromArray($data, null, 'A1', true, false);
+            });
+        })->export('xls');
+    }
 }

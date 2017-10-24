@@ -74,6 +74,7 @@ Route::group(['middleware' => ['web', LogUrlOpen::class]], function () {
     });
 
     Route::get('payments/remainders', 'PaymentsController@remainders');
+    Route::get('payments/export', 'PaymentsController@export');
     Route::resource('payments', 'PaymentsController');
 
     Route::resource('requests', 'RequestsController', ['except' => ['index', 'show']]);
