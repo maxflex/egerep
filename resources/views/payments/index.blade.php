@@ -11,7 +11,6 @@
             <select multiple title="не выбрано" ng-model="search.source_ids" class="selectpicker">
                 <option ng-repeat="source in sources" value="@{{ source.id }}">@{{ source.name }}</option>
             </select>
-            {{-- <ng-select-new multiple model='search.source_id' object="sources" label="name" none-text='источник'></ng-select-new> --}}
         </div>
         <div>
             <label>адресат</label>

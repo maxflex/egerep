@@ -162,7 +162,8 @@ return [
         Barryvdh\Debugbar\ServiceProvider::class,
         'Clockwork\Support\Laravel\ClockworkServiceProvider',
         'GrahamCampbell\Throttle\ThrottleServiceProvider',
-        Arcanedev\LogViewer\LogViewerServiceProvider::class
+        Arcanedev\LogViewer\LogViewerServiceProvider::class,
+        // Maatwebsite\Excel\ExcelServiceProvider::class,
     ],
 
     /*
@@ -210,6 +211,7 @@ return [
         'Form'      => Collective\Html\FormFacade::class,
         'Html'      => Collective\Html\HtmlFacade::class,
         'Throttle'  => 'GrahamCampbell\Throttle\Facades\Throttle',
+        // 'Excel'     => Maatwebsite\Excel\Facades\Excel::class,
     ],
 
 ];

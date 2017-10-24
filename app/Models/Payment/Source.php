@@ -12,8 +12,8 @@ class Source extends Model
 
     const PER_PAGE_REMAINDERS = 30;
 
-    protected $fillable = ['name', 'remainder', 'remainder_date', 'position'];
-    protected static $dotDates = ['remainder_date'];
+    protected $fillable = ['name', 'remainder', 'remainder_date', 'loan_remainder', 'loan_remainder_date', 'position'];
+    protected static $dotDates = ['remainder_date', 'loan_remainder_date'];
 
     public function getInRemainderAttribute()
     {
@@ -47,7 +47,7 @@ class Source extends Model
         $remainder -= Payment::where('type', 2)->where('source_id', $source->id)->where('date', '<=', $date)->sum('sum');
         $remainder += Payment::where('type', 2)->where('addressee_id', $source->id)->where('date', '<=', $date)->sum('sum');
 
-        $loan_remainder = $remainder;
+        $loan_remainder = @intval($source->loan_remainder);;
         $loan_remainder += Payment::where('type', 1)->where('addressee_id', $source->id)->where('date', '<=', $date)->sum('sum');
         $loan_remainder -= Payment::where('type', 1)->where('source_id', $source->id)->where('date', '<=', $date)->sum('sum');
 
