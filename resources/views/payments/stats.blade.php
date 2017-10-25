@@ -36,46 +36,46 @@
         </div>
     </div>
     <div class="vertical-center" ng-if="stats_data === ''">нет данных</div>
-    <div ng-repeat="(year, data) in stats_data" ng-if="stats_data && stats_data !== ''">
-        <h4>@{{ year }}</h4>
-        <table class="table reverse-borders">
-            <tr ng-repeat="d in data">
-                <td width='250'>
-                    @{{ formatStatDate(d.date) }}
+    <div ng-if="stats_data && stats_data !== ''">
+        <div ng-repeat="(year, data) in stats_data">
+            <h4>@{{ year }}</h4>
+            <table class="table reverse-borders">
+                <tr ng-repeat="d in data">
+                    <td width='300'>
+                        @{{ formatStatDate(d.date) }}
+                    </td>
+                    <td width='150'>
+                        <span ng-show="d.in != 0" class="text-success">+@{{ d.in | number }}</span>
+                    </td>
+                    <td width='150'>
+                        <span ng-show="d.out != 0" class="text-danger">-@{{ d.out | number }}</span>
+                    </td>
+                    <td>
+                        <span ng-show="d.sum != 0">@{{ d.sum | number }}</span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <table class="table reverse-borders" style='margin-top: -20px'>
+            <tr>
+                <td width='300'>
+
                 </td>
                 <td width='150'>
-                    <span ng-show="d.in != 0" class="text-success">+@{{ d.in | number }}</span>
+                    <b ng-show="totals.in != 0" class="text-success">+@{{ totals.in | number:2 }}</b>
                 </td>
                 <td width='150'>
-                    <span ng-show="d.out != 0" class="text-danger">-@{{ d.out | number }}</span>
+                    <b ng-show="totals.out != 0" class="text-danger">-@{{ totals.out | number:2 }}</b>
                 </td>
                 <td>
-                    <span ng-show="d.sum != 0">@{{ d.sum | number }}</span>
+                    <b>@{{ totals.sum | number:2 }}</b>
                 </td>
             </tr>
         </table>
-    </div>
-    <table class="table reverse-borders" ng-if="totals" style='margin-top: -20px'>
-        <tr>
-            <td width='250'>
-
-            </td>
-            <td width='150'>
-                <b ng-show="totals.in != 0" class="text-success">+@{{ totals.in | number:2 }}</b>
-            </td>
-            <td width='150'>
-                <b ng-show="totals.out != 0" class="text-danger">-@{{ totals.out | number:2 }}</b>
-            </td>
-            <td>
-                <b>@{{ totals.sum | number:2 }}</b>
-            </td>
-        </tr>
-    </table>
-    <div ng-if="stats_data && stats_data !== ''">
         <h4>статьи расхода</h4>
         <table class="table reverse-borders" tyle='margin: 0'>
             <tr ng-repeat="(expenditure_id, data) in expenditure_data">
-                <td width='250'>
+                <td width='300'>
                     @{{ expenditure_id ? findById(expenditures, expenditure_id).name : 'не указано' }}
                 </td>
                 <td width='150'>
@@ -89,23 +89,23 @@
                 </td>
             </tr>
         </table>
-    </div>
-    <table class="table reverse-borders" ng-if="totals" style='margin-top: -20px'>
-        <tr>
-            <td width='250'>
+        <table class="table reverse-borders" style='margin-top: -20px'>
+            <tr>
+                <td width='300'>
 
-            </td>
-            <td width='150'>
-                <b ng-show="totals.in != 0" class="text-success">+@{{ totals.in | number:2 }}</b>
-            </td>
-            <td width='150'>
-                <b ng-show="totals.out != 0" class="text-danger">-@{{ totals.out | number:2 }}</b>
-            </td>
-            <td>
-                <b>@{{ totals.sum | number:2 }}</b>
-            </td>
-        </tr>
-    </table>
+                </td>
+                <td width='150'>
+                    <b ng-show="totals.in != 0" class="text-success">+@{{ totals.in | number:2 }}</b>
+                </td>
+                <td width='150'>
+                    <b ng-show="totals.out != 0" class="text-danger">-@{{ totals.out | number:2 }}</b>
+                </td>
+                <td>
+                    <b>@{{ totals.sum | number:2 }}</b>
+                </td>
+            </tr>
+        </table>
+    </div>
 @stop
 {{-- drag & drop --}}
 {{-- копировать платеж --}}
