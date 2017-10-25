@@ -22,7 +22,7 @@
         </div>
         <div>
             <label>статьи</label>
-            <select multiple title="не выбрано" ng-model="expenditure_ids" class="selectpicker">
+            <select multiple title="не выбрано" ng-model="search.expenditure_ids" class="selectpicker">
                 <option ng-repeat="expenditure in expenditures" value="@{{ expenditure.id }}">@{{ expenditure.name }}</option>
             </select>
         </div>
