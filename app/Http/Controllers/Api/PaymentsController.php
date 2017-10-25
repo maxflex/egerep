@@ -155,6 +155,11 @@ class PaymentsController extends Controller
         $outcome = collect($outcome->get())->keyBy('month_date')->all();
 
         $dates = array_unique(array_merge(array_keys((array)$income), array_keys((array)$outcome)));
+
+        if (! count($dates)) {
+            return null;
+        }
+
         sort($dates);
 
         $return = [];
@@ -164,13 +169,17 @@ class PaymentsController extends Controller
         while ($d->format('Y-m') <= end($dates)) {
             $date = $d->format('Y-m');
             $sum = 0;
-            if (isset($income[$date]) && (! (isset($request->in_out) && count($request->in_out)) || in_array(1, $request->in_out))) {
-                $sum += $income[$date]->sum;
+            $in = 0;
+            $out = 0;
+            if (isset($income[$date])) {
+                $in = $income[$date]->sum;
+                $sum += $in;
             }
-            if (isset($outcome[$date]) && (! (isset($request->in_out) && count($request->in_out)) || in_array(2, $request->in_out))) {
-                $sum -= $outcome[$date]->sum;
+            if (isset($outcome[$date])) {
+                $out = $outcome[$date]->sum;
+                $sum -= $out;
             }
-            $return[$d->format('Y')][] = compact('date', 'sum');
+            $return[$d->format('Y')][] = compact('date', 'sum', 'in', 'out');
             $d->modify('first day of next month');
         }
 

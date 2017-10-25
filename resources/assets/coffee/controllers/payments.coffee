@@ -128,6 +128,7 @@ angular.module('Egerep')
             moment(date + '-01').format('MMMM')
 
         $scope.load = ->
+            delete $scope.totals
             $scope.stats_loading = true
             ajaxStart()
             $http.post 'api/payments/stats', $scope.search
@@ -135,9 +136,13 @@ angular.module('Egerep')
                 ajaxEnd()
                 $scope.stats_loading = false
                 $scope.stats_data = response.data
+                if $scope.stats_data then $timeout -> $scope.totals = getTotal()
 
-        $scope.totalStatsSum = ->
-            sum = 0
+        getTotal = ->
+            total = {in: 0, out: 0, sum: 0}
             $.each $scope.stats_data, (year, data) ->
-                data.forEach (d) -> sum += parseFloat(d.sum)
-            sum
+                data.forEach (d) ->
+                    total.in  += parseFloat(d.in)
+                    total.out += parseFloat(d.out)
+                    total.sum += parseFloat(d.sum)
+            total
