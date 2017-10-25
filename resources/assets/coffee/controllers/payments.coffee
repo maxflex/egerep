@@ -135,8 +135,10 @@ angular.module('Egerep')
             .then (response) ->
                 ajaxEnd()
                 $scope.stats_loading = false
-                $scope.stats_data = response.data
-                if $scope.stats_data then $timeout -> $scope.totals = getTotal()
+                if response.data
+                    $scope.stats_data = response.data.data
+                    $scope.expenditure_data = response.data.expenditures
+                    $timeout -> $scope.totals = getTotal()
 
         getTotal = ->
             total = {in: 0, out: 0, sum: 0}

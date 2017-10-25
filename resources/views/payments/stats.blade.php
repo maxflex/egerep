@@ -40,7 +40,7 @@
         <h4>@{{ year }}</h4>
         <table class="table reverse-borders">
             <tr ng-repeat="d in data">
-                <td width='150'>
+                <td width='250'>
                     @{{ formatStatDate(d.date) }}
                 </td>
                 <td width='150'>
@@ -55,9 +55,44 @@
             </tr>
         </table>
     </div>
-    <table class="table reverse-borders" ng-if="totals" style='margin: 0; margin-top: -20px'>
+    <table class="table reverse-borders" ng-if="totals" style='margin-top: -20px'>
         <tr>
+            <td width='250'>
+
+            </td>
             <td width='150'>
+                <b ng-show="totals.in != 0" class="text-success">+@{{ totals.in | number:2 }}</b>
+            </td>
+            <td width='150'>
+                <b ng-show="totals.out != 0" class="text-danger">-@{{ totals.out | number:2 }}</b>
+            </td>
+            <td>
+                <b>@{{ totals.sum | number:2 }}</b>
+            </td>
+        </tr>
+    </table>
+    <div ng-if="stats_data && stats_data !== ''">
+        <h4>статьи расхода</h4>
+        <table class="table reverse-borders" tyle='margin: 0'>
+            <tr ng-repeat="(expenditure_id, data) in expenditure_data">
+                <td width='250'>
+                    @{{ expenditure_id ? findById(expenditures, expenditure_id).name : 'не указано' }}
+                </td>
+                <td width='150'>
+                    <span ng-show="data.in != 0" class="text-success">+@{{ data.in }}</span>
+                </td>
+                <td width='150'>
+                    <span ng-show="data.out != 0" class="text-danger">-@{{ data.out }}</span>
+                </td>
+                <td>
+                    <span>@{{ data.sum | number }}</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <table class="table reverse-borders" ng-if="totals" style='margin-top: -20px'>
+        <tr>
+            <td width='250'>
 
             </td>
             <td width='150'>
