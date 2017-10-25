@@ -79,10 +79,10 @@
                     @{{ expenditure_id ? findById(expenditures, expenditure_id).name : 'не указано' }}
                 </td>
                 <td width='150'>
-                    <span ng-show="data.in != 0" class="text-success">+@{{ data.in }}</span>
+                    <span ng-show="data.in != 0" class="text-success">+@{{ data.in | number }}</span>
                 </td>
                 <td width='150'>
-                    <span ng-show="data.out != 0" class="text-danger">-@{{ data.out }}</span>
+                    <span ng-show="data.out != 0" class="text-danger">-@{{ data.out | number }}</span>
                 </td>
                 <td>
                     <span>@{{ data.sum | number }}</span>
