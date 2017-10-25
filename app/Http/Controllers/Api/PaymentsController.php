@@ -128,31 +128,56 @@ class PaymentsController extends Controller
 
     public function stats(Request $request)
     {
-        $income = Payment::select(DB::raw("DATE_FORMAT(`date`, '%Y-%m') as month_date, expenditure_id, sum(`sum`) as sum"))
+        $income = Payment::select(DB::raw("DATE_FORMAT(`date`, '%Y-%m') as month_date, sum(`sum`) as sum"))
             ->whereIn('addressee_id', $request->wallet_ids)->whereNotIn('source_id', $request->wallet_ids)
             ->groupBy(DB::raw("month_date"))->orderBy(DB::raw('month_date'));
 
-        $outcome = Payment::select(DB::raw("DATE_FORMAT(`date`, '%Y-%m') as month_date, expenditure_id, sum(`sum`) as sum"))
+        $outcome = Payment::select(DB::raw("DATE_FORMAT(`date`, '%Y-%m') as month_date, sum(`sum`) as sum"))
             ->whereIn('source_id', $request->wallet_ids)->whereNotIn('addressee_id', $request->wallet_ids)
             ->groupBy(DB::raw("month_date"))->orderBy(DB::raw('month_date'));
+
+        $expenditures_income = Payment::selectRaw('expenditure_id as `id`, sum(`sum`) as sum, 1 as `is_income`')->whereIn('addressee_id', $request->wallet_ids)->whereNotIn('source_id', $request->wallet_ids)->groupBy('expenditure_id');
+        $expenditures_outcome = Payment::selectRaw('expenditure_id as `id`, sum(`sum`) as sum, 0 as `is_income`')->whereIn('source_id', $request->wallet_ids)->whereNotIn('addressee_id', $request->wallet_ids)->groupBy('expenditure_id');
 
         if (isset($request->date_start) && $request->date_start) {
             $income->whereRaw("date(`date`) >= '" . fromDotDate($request->date_start) . "'");
             $outcome->whereRaw("date(`date`) >= '" . fromDotDate($request->date_start) . "'");
+            $expenditures_income->whereRaw("date(`date`) >= '" . fromDotDate($request->date_start) . "'");
+            $expenditures_outcome->whereRaw("date(`date`) >= '" . fromDotDate($request->date_start) . "'");
         }
 
         if (isset($request->date_end) && $request->date_end) {
             $income->whereRaw("date(`date`) <= '" . fromDotDate($request->date_end) . "'");
             $outcome->whereRaw("date(`date`) <= '" . fromDotDate($request->date_end) . "'");
+            $expenditures_income->whereRaw("date(`date`) <= '" . fromDotDate($request->date_end) . "'");
+            $expenditures_outcome->whereRaw("date(`date`) <= '" . fromDotDate($request->date_end) . "'");
         }
 
         if (isset($request->expenditure_ids) && count($request->expenditure_ids)) {
             $income->whereIn('expenditure_id', $request->expenditure_ids);
             $outcome->whereIn('expenditure_id', $request->expenditure_ids);
+            $expenditures_income->whereIn('expenditure_id', $request->expenditure_ids);
+            $expenditures_outcome->whereIn('expenditure_id', $request->expenditure_ids);
         }
 
         $income = collect($income->get())->keyBy('month_date')->all();
         $outcome = collect($outcome->get())->keyBy('month_date')->all();
+
+        $expenditure_data = array_merge($expenditures_income->get()->all(), $expenditures_outcome->get()->all());
+        $expenditures = [];
+
+        foreach($expenditure_data as $e) {
+            if (! isset($expenditures[$e->id])) {
+                $expenditures[$e->id] = ['in' => 0, 'out' => 0, 'sum' => 0];
+            }
+            if ($e->is_income) {
+                $expenditures[$e->id]['in']  += $e->sum;
+                $expenditures[$e->id]['sum'] += $e->sum;
+            } else {
+                $expenditures[$e->id]['out'] += $e->sum;
+                $expenditures[$e->id]['sum'] -= $e->sum;
+            }
+        }
 
         $dates = array_unique(array_merge(array_keys((array)$income), array_keys((array)$outcome)));
 
@@ -163,7 +188,6 @@ class PaymentsController extends Controller
         sort($dates);
 
         $data = [];
-        $expenditures = [];
 
         // foreach($dates as $date) {
         $d = new \DateTime($dates[0] . '-01');
@@ -175,20 +199,10 @@ class PaymentsController extends Controller
             if (isset($income[$date])) {
                 $in = $income[$date]->sum;
                 $sum += $in;
-                if (! isset($expenditures[$income[$date]->expenditure_id])) {
-                    $expenditures[$income[$date]->expenditure_id] = ['in' => 0, 'out' => 0, 'sum' => 0];
-                }
-                $expenditures[$income[$date]->expenditure_id]['in'] += $in;
-                $expenditures[$income[$date]->expenditure_id]['sum'] += $in;
             }
             if (isset($outcome[$date])) {
                 $out = $outcome[$date]->sum;
                 $sum -= $out;
-                if (! isset($expenditures[$outcome[$date]->expenditure_id])) {
-                    $expenditures[$outcome[$date]->expenditure_id] = ['in' => 0, 'out' => 0, 'sum' => 0];
-                }
-                $expenditures[$outcome[$date]->expenditure_id]['out'] += $out;
-                $expenditures[$outcome[$date]->expenditure_id]['sum'] -= $out;
             }
             $data[$d->format('Y')][] = compact('date', 'sum', 'in', 'out');
             $d->modify('first day of next month');
