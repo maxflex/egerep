@@ -51,7 +51,7 @@
                     @{{ formatStatDate(d.date) }}
                 </td>
                 <td>
-                    @{{ d.sum | number }}
+                    <span ng-show="d.sum != 0">@{{ d.sum | number }}</span>
                 </td>
             </tr>
         </table>
@@ -62,7 +62,7 @@
 
             </td>
             <td>
-                <b>@{{ totalStatsSum() | number }}</b>
+                <b>@{{ totalStatsSum() | number:2 }}</b>
             </td>
         </tr>
     </table>
