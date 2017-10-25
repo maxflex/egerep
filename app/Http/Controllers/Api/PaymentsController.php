@@ -36,13 +36,13 @@ class PaymentsController extends Controller
             $query->whereIn('expenditure_id', $search->expenditure_ids);
         }
 
-        if (isset($search->date_start) && $search->date_start) {
-            $query->whereRaw("date(`date`) >= '" . fromDotDate($search->date_start) . "'");
-        }
-
-        if (isset($search->date_end) && $search->date_end) {
-            $query->whereRaw("date(`date`) <= '" . fromDotDate($search->date_end) . "'");
-        }
+        // if (isset($search->date_start) && $search->date_start) {
+        //     $query->whereRaw("date(`date`) >= '" . fromDotDate($search->date_start) . "'");
+        // }
+        //
+        // if (isset($search->date_end) && $search->date_end) {
+        //     $query->whereRaw("date(`date`) <= '" . fromDotDate($search->date_end) . "'");
+        // }
 
         if (isset($search->type)) {
             $query->where('type', $search->type);
@@ -128,9 +128,6 @@ class PaymentsController extends Controller
 
     public function stats(Request $request)
     {
-        $search = isset($_COOKIE['payments']) ? json_decode($_COOKIE['payments']) : (object)[];
-        $search = filterParams($search);
-
         $income = Payment::select(DB::raw("DATE_FORMAT(`date`, '%Y-%m') as month_date, sum(`sum`) as sum"))
             ->whereIn('addressee_id', $request->wallet_ids)->whereNotIn('source_id', $request->wallet_ids)
             ->groupBy(DB::raw("month_date"))->orderBy(DB::raw('month_date'));
@@ -139,14 +136,14 @@ class PaymentsController extends Controller
             ->whereIn('source_id', $request->wallet_ids)->whereNotIn('addressee_id', $request->wallet_ids)
             ->groupBy(DB::raw("month_date"))->orderBy(DB::raw('month_date'));
 
-        if (isset($search->date_start) && $search->date_start) {
-            $income->whereRaw("date(`date`) >= '" . fromDotDate($search->date_start) . "'");
-            $outcome->whereRaw("date(`date`) >= '" . fromDotDate($search->date_start) . "'");
+        if (isset($request->date_start) && $request->date_start) {
+            $income->whereRaw("date(`date`) >= '" . fromDotDate($request->date_start) . "'");
+            $outcome->whereRaw("date(`date`) >= '" . fromDotDate($request->date_start) . "'");
         }
 
-        if (isset($search->date_end) && $search->date_end) {
-            $income->whereRaw("date(`date`) <= '" . fromDotDate($search->date_end) . "'");
-            $outcome->whereRaw("date(`date`) <= '" . fromDotDate($search->date_end) . "'");
+        if (isset($request->date_end) && $request->date_end) {
+            $income->whereRaw("date(`date`) <= '" . fromDotDate($request->date_end) . "'");
+            $outcome->whereRaw("date(`date`) <= '" . fromDotDate($request->date_end) . "'");
         }
 
         if (isset($request->expenditure_ids) && count($request->expenditure_ids)) {
@@ -162,7 +159,10 @@ class PaymentsController extends Controller
 
         $return = [];
 
-        foreach($dates as $date) {
+        // foreach($dates as $date) {
+        $d = new \DateTime($dates[0] . '-01');
+        while ($d->format('Y-m') <= end($dates)) {
+            $date = $d->format('Y-m');
             $sum = 0;
             if (isset($income[$date]) && (! (isset($request->in_out) && count($request->in_out)) || in_array(1, $request->in_out))) {
                 $sum += $income[$date]->sum;
@@ -170,7 +170,8 @@ class PaymentsController extends Controller
             if (isset($outcome[$date]) && (! (isset($request->in_out) && count($request->in_out)) || in_array(2, $request->in_out))) {
                 $sum -= $outcome[$date]->sum;
             }
-            $return[] = compact('date', 'sum');
+            $return[$d->format('Y')][] = compact('date', 'sum');
+            $d->modify('first day of next month');
         }
 
         return $return;

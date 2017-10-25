@@ -30,6 +30,9 @@ class PaymentsController extends Controller
 
     public function remainders(Request $request)
     {
+        if (! allowed(9999)) {
+            return view('errors.not_allowed');
+        }
         // кол-во элементов = кол-во дней с момента самого раннего состояния счета / Source::PER_PAGE_REMAINDERS
         $earliest_remainder_date = Source::whereNotNull('remainder_date')->min('remainder_date');
         $datediff = time() - $earliest_remainder_date;
@@ -42,10 +45,26 @@ class PaymentsController extends Controller
         ]));
     }
 
+    public function stats(Request $request)
+    {
+        if (! allowed(9999)) {
+            return view('errors.not_allowed');
+        }
+
+        return view(self::VIEWS_FOLDER . 'stats')->with(ngInit([
+            'sources' => Source::orderBy('position')->select('id', 'name')->get(),
+            'expenditures' => Expenditure::orderBy('position')->select('id', 'name')->get(),
+        ]));
+    }
+
     public function export()
     {
+        if (! allowed(9999)) {
+            return view('errors.not_allowed');
+        }
+
         $payments = \DB::table('payments')->get();
-        
+
         $data = [];
         $data[] = ['ID', 'источник', 'адресат', 'статья расхода', 'назначение', 'сумма', 'тип', 'дата', 'пользователь', 'создан', 'обновлен'];
         foreach($payments as $payment) {

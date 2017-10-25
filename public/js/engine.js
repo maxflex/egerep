@@ -192,6 +192,7 @@
 			$.mask.definitions['y'] = "[0-1]";
 			$.mask.definitions['d'] = "[0-3]";
 			$(".timemask").mask("Hh:Mm", {clearIfNotMatch: true});
+			$(".datemask").mask("99.99.9999", {clearIfNotMatch: true});
 
 			// Маска телефонов
 			$(".phone-masked")

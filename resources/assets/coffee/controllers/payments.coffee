@@ -41,32 +41,6 @@ angular.module('Egerep')
             delete new_payment.user_id
             $scope.addPaymentDialog(new_payment)
 
-        $scope.statsDialog = ->
-            $('#stats-modal').modal('show')
-
-        $scope.stats = ->
-            $scope.stats_loading = true
-            ajaxStart()
-            $http.post 'api/payments/stats',
-                wallet_ids: $scope.wallet_ids
-                in_out: $scope.in_out
-                expenditure_ids: $scope.expenditure_ids
-            .then (response) ->
-                console.log(response)
-                ajaxEnd()
-                $scope.stats_loading = false
-                $scope.stats_data = response.data
-                $('#stats-modal').modal('hide')
-                $('#stats-table').modal('show')
-
-        $scope.totalStatsSum = ->
-            sum = 0
-            $scope.stats_data.forEach (d) -> sum += parseInt(d.sum)
-            sum
-
-        $scope.formatStatDate = (date) ->
-            moment(date + '-01').format('MM.YYYY')
-
         $scope.deletePayment = ->
             Payment.delete {id: $scope.modal_payment.id}, (response) ->
                 $('#payment-stream-modal').modal('hide')
@@ -146,3 +120,24 @@ angular.module('Egerep')
             .then (response) ->
                 ajaxEnd()
                 $scope.data = response.data
+
+    .controller 'PaymentStats', ($scope, $http, $timeout) ->
+        bindArguments($scope, arguments)
+
+        $scope.formatStatDate = (date) ->
+            moment(date + '-01').format('MMMM')
+
+        $scope.load = ->
+            $scope.stats_loading = true
+            ajaxStart()
+            $http.post 'api/payments/stats', $scope.search
+            .then (response) ->
+                ajaxEnd()
+                $scope.stats_loading = false
+                $scope.stats_data = response.data
+
+        $scope.totalStatsSum = ->
+            sum = 0
+            $.each $scope.stats_data, (year, data) ->
+                data.forEach (d) -> sum += parseFloat(d.sum)
+            sum

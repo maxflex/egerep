@@ -4224,36 +4224,6 @@
       delete new_payment.user_id;
       return $scope.addPaymentDialog(new_payment);
     };
-    $scope.statsDialog = function() {
-      return $('#stats-modal').modal('show');
-    };
-    $scope.stats = function() {
-      $scope.stats_loading = true;
-      ajaxStart();
-      return $http.post('api/payments/stats', {
-        wallet_ids: $scope.wallet_ids,
-        in_out: $scope.in_out,
-        expenditure_ids: $scope.expenditure_ids
-      }).then(function(response) {
-        console.log(response);
-        ajaxEnd();
-        $scope.stats_loading = false;
-        $scope.stats_data = response.data;
-        $('#stats-modal').modal('hide');
-        return $('#stats-table').modal('show');
-      });
-    };
-    $scope.totalStatsSum = function() {
-      var sum;
-      sum = 0;
-      $scope.stats_data.forEach(function(d) {
-        return sum += parseInt(d.sum);
-      });
-      return sum;
-    };
-    $scope.formatStatDate = function(date) {
-      return moment(date + '-01').format('MM.YYYY');
-    };
     $scope.deletePayment = function() {
       return Payment["delete"]({
         id: $scope.modal_payment.id
@@ -4351,6 +4321,30 @@
         ajaxEnd();
         return $scope.data = response.data;
       });
+    };
+  }).controller('PaymentStats', function($scope, $http, $timeout) {
+    bindArguments($scope, arguments);
+    $scope.formatStatDate = function(date) {
+      return moment(date + '-01').format('MMMM');
+    };
+    $scope.load = function() {
+      $scope.stats_loading = true;
+      ajaxStart();
+      return $http.post('api/payments/stats', $scope.search).then(function(response) {
+        ajaxEnd();
+        $scope.stats_loading = false;
+        return $scope.stats_data = response.data;
+      });
+    };
+    return $scope.totalStatsSum = function() {
+      var sum;
+      sum = 0;
+      $.each($scope.stats_data, function(year, data) {
+        return data.forEach(function(d) {
+          return sum += parseFloat(d.sum);
+        });
+      });
+      return sum;
     };
   });
 

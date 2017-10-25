@@ -13,7 +13,7 @@
           </div>
           <div class="form-group simpleinput-wrapper">
               <label>дата</label>
-              <input type="text" class="bs-date-top pointer" readonly="true" ng-model="modal_payment.date">
+              <input type="text" class="bs-date-top datemask" ng-model="modal_payment.date">
               <i class="fa fa-caret-down" aria-hidden="true"></i>
           </div>
           <div class="form-group simpleinput-wrapper">
@@ -70,76 +70,6 @@
             </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
-
-
-{{-- СТАТИСТИКА --}}
-<div id="stats-modal" class="modal" role="dialog" tabindex="-1">
-  <div class="modal-dialog" style='width: 300px'>
-    <div class="modal-content">
-      {{-- <div class="modal-header">
-        <h4 class="modal-title center">Выберите кошелек</h4>
-      </div> --}}
-      <div class="modal-body">
-          <div class='mbb'>
-              <label style='margin-bottom: 0'>кошелёк</label>
-              <select multiple title="не выбрано" ng-model="wallet_ids" class="selectpicker">
-                  <option ng-repeat="source in sources" value="@{{ source.id }}">@{{ source.name }}</option>
-              </select>
-          </div>
-          <div class="mbb">
-              <label style='margin-bottom: 0'>in-out</label>
-              <select multiple title="не выбрано" ng-model="in_out" class="selectpicker">
-                  <option value="1">in</option>
-                  <option value="2">out</option>
-              </select>
-          </div>
-          <div>
-              <label style='margin-bottom: 0'>статьи</label>
-              <select multiple title="не выбрано" ng-model="expenditure_ids" class="selectpicker">
-                  <option ng-repeat="expenditure in expenditures" value="@{{ expenditure.id }}">@{{ expenditure.name }}</option>
-              </select>
-          </div>
-      </div>
-      <div class="modal-footer center">
-        <button type="button" ng-disabled="!(wallet_ids && wallet_ids.length) || stats_loading" class="btn btn-primary" ng-click="stats()">статистика</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-{{-- СТАТИСТИКА ТАБЛИЦА --}}
-<div id="stats-table" class="modal" role="dialog" tabindex="-1">
-  <div class="modal-dialog" style='width: 500px; margin: 2% auto'>
-    <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title center">Статистика</h4>
-        </div>
-        <div class="modal-body" style='height: 680; overflow-y: scroll'>
-            <table class="table reverse-borders">
-                <tr ng-repeat="s in stats_data">
-                    <td width='100'>
-                        @{{ formatStatDate(s.date) }}
-                    </td>
-                    <td>
-                        @{{ s.sum | number }}
-                    </td>
-                </tr>
-                <tr>
-                    <td width='100'>
-
-                    </td>
-                    <td>
-                        <b>@{{ totalStatsSum() | number }}</b>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <div class="modal-footer center">
-          <button class="btn btn-primary" type="button" onclick="$('#stats-table').modal('hide')">закрыть</button>
-        </div>
     </div>
   </div>
 </div>

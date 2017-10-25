@@ -108,6 +108,13 @@ class Log extends Model
             $query->where('row_id', $search->row_id);
         }
 
+        /**
+         * Если не супер-пользователь, то в логах не видно paystream
+         */
+        if (! allowed(9999)) {
+            $query->whereNotIn('table', ['payments', 'payment_sources', 'payment_expenditures']);
+        }
+
         return $query->orderBy('created_at', $order);
     }
 }

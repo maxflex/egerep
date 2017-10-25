@@ -28,20 +28,6 @@
             <label>тип</label>
             <ng-select-new model='search.type' object="PaymentTypes" label="title" none-text='тип'></ng-select-new>
         </div>
-        <div>
-            <div class="form-group">
-                <label>начало</label>
-                <input type="text" readonly ng-change='filter()' placeholder="не указано"
-                  class="form-control bs-date-clear pointer" ng-model="search.date_start">
-            </div>
-        </div>
-        <div>
-            <div class="form-group">
-                <label>конец</label>
-                <input type="text" readonly ng-change='filter()' placeholder="не указано"
-                  class="form-control bs-date-clear pointer" ng-model="search.date_end">
-            </div>
-        </div>
     </div>
 
     <table class="table reverse-borders" style='font-size: 13px'>
