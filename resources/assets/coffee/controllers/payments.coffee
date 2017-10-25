@@ -139,6 +139,8 @@ angular.module('Egerep')
                     $scope.stats_data = response.data.data
                     $scope.expenditure_data = response.data.expenditures
                     $timeout -> $scope.totals = getTotal()
+                else
+                    $scope.stats_data = null
 
         getTotal = ->
             total = {in: 0, out: 0, sum: 0}

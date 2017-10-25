@@ -35,8 +35,8 @@
             <button type="button" ng-disabled="!(search.wallet_ids && search.wallet_ids.length) || stats_loading" class="btn btn-primary full-width" style='margin-top: 21px' ng-click="load()">показать</button>
         </div>
     </div>
-    <div class="vertical-center" ng-if="stats_data === ''">нет данных</div>
-    <div ng-if="stats_data && stats_data !== ''">
+    <div class="vertical-center" ng-if="stats_data === null">нет данных</div>
+    <div ng-if="stats_data && stats_data !== null">
         <div ng-repeat="(year, data) in stats_data">
             <h4>@{{ year }}</h4>
             <table class="table reverse-borders">
