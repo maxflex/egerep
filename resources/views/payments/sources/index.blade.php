@@ -32,10 +32,10 @@
                     </a>
                 </td>
                 <td>
-                      @{{ model.in_remainder | hideZero | number }}
+                      @{{ model.calc_remainder | hideZero | number }}
                 </td>
                 <td>
-                      @{{ model.loan_remainder | hideZero | number }}
+                      @{{ model.calc_loan_remainder | hideZero | number }}
                 </td>
             </tr>
         </tbody>
