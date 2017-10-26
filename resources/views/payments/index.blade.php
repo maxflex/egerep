@@ -12,8 +12,8 @@
     @include('payments._payments')
     @include('payments._stats')
 
-    <input name="file" type="file" id="import-button" data-url="payments/import" class="ng-hide">
-    {{-- <input name="file" type="file" id="import-button" data-url="payments/import" accept=".xls" class="ng-hide"> --}}
+    {{-- <input name="file" type="file" id="import-button" data-url="payments/import" class="ng-hide"> --}}
+    <input name="file" type="file" id="import-button" data-url="payments/import" accept=".xls" class="ng-hide">
 @stop
 
 <style>
