@@ -19,36 +19,7 @@ class PaymentsController extends Controller
      */
     public function index()
     {
-        $search = isset($_COOKIE['payments']) ? json_decode($_COOKIE['payments']) : (object)[];
-        $search = filterParams($search);
-
-        $query = Payment::orderBy('date', 'desc')->orderBy('id', 'desc');
-
-        if (isset($search->source_ids) && count($search->source_ids)) {
-            $query->whereIn('source_id', $search->source_ids);
-        }
-
-        if (isset($search->addressee_ids) && count($search->addressee_ids)) {
-            $query->whereIn('addressee_id', $search->addressee_ids);
-        }
-
-        if (isset($search->expenditure_ids) && count($search->expenditure_ids)) {
-            $query->whereIn('expenditure_id', $search->expenditure_ids);
-        }
-
-        // if (isset($search->date_start) && $search->date_start) {
-        //     $query->whereRaw("date(`date`) >= '" . fromDotDate($search->date_start) . "'");
-        // }
-        //
-        // if (isset($search->date_end) && $search->date_end) {
-        //     $query->whereRaw("date(`date`) <= '" . fromDotDate($search->date_end) . "'");
-        // }
-
-        if (isset($search->type)) {
-            $query->where('type', $search->type);
-        }
-
-        return $query->paginate(100);
+        return Payment::search()->paginate(100);
     }
 
     /**
@@ -123,6 +94,11 @@ class PaymentsController extends Controller
     public function destroy($id)
     {
         Payment::destroy($id);
+    }
+
+    public function delete(Request $request)
+    {
+        Payment::whereIn('id', $request->ids)->delete();
     }
 
 

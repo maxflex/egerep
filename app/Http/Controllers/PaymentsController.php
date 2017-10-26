@@ -7,8 +7,10 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
+use App\Models\User;
 use App\Models\Payment\Source;
 use App\Models\Payment\Expenditure;
+use DB;
 
 class PaymentsController extends Controller
 {
@@ -45,28 +47,17 @@ class PaymentsController extends Controller
         ]));
     }
 
-    public function stats(Request $request)
-    {
-        if (! allowed(9999)) {
-            return view('errors.not_allowed');
-        }
-
-        return view(self::VIEWS_FOLDER . 'stats')->with(ngInit([
-            'sources' => Source::orderBy('position')->select('id', 'name')->get(),
-            'expenditures' => Expenditure::orderBy('position')->select('id', 'name')->get(),
-        ]));
-    }
-
     public function export()
     {
         if (! allowed(9999)) {
             return view('errors.not_allowed');
         }
 
-        $payments = \DB::table('payments')->get();
+        $payments = Payment::search(false)->get();
 
         $data = [];
-        $data[] = ['ID', 'источник', 'адресат', 'статья расхода', 'назначение', 'сумма', 'тип', 'дата', 'пользователь', 'создан', 'обновлен'];
+        // $data[] = ['ID', 'источник', 'адресат', 'статья расхода', 'назначение', 'сумма', 'тип', 'дата', 'пользователь', 'создан', 'обновлен'];
+        $data[] = ['id', 'source_id', 'addressee_id', 'expenditure_id', 'purpose', 'sum', 'type', 'date', 'user_id', 'created_at', 'updated_at'];
         foreach($payments as $payment) {
             $data[] = [$payment->id, $payment->source_id, $payment->addressee_id, $payment->expenditure_id, $payment->purpose, $payment->sum, $payment->type, $payment->date, $payment->user_id, $payment->created_at, $payment->updated_at];
         }
@@ -76,5 +67,93 @@ class PaymentsController extends Controller
                 $sheet->fromArray($data, null, 'A1', true, false);
             });
         })->export('xls');
+    }
+
+
+    public function import(Request $request)
+    {
+        if (! allowed(9999)) {
+            return view('errors.not_allowed');
+        }
+
+        if ($request->hasFile('file')) {
+            $data = [];
+            \Excel::load($request->file('file'), function($reader) use (&$data) {
+                foreach ($reader->all()->toArray() as $model) {
+                    // \Log::info(json_encode($model));
+                    $data[] = $model;
+                }
+            });
+
+            $unique_ids = [
+                'source_id'      => [],
+                'addressee_id'   => [],
+                'expenditure_id' => [],
+                'user_id'        => []
+            ];
+
+            foreach($data as $index => $d) {
+                foreach(['source_id', 'addressee_id', 'expenditure_id', 'user_id'] as $field) {
+                    if ($d[$field] && ! in_array($d[$field], $unique_ids[$field])) {
+                        $unique_ids[$field][] = $d[$field];
+                    }
+                    if (isset($d['action']) && $d['action'] == 'delete' && (! $d['id'] || ! DB::table('payments')->whereId($d['id'])->exists())) {
+                        return response()->json("невозможно удалить #{$index}", 422);
+                    }
+                    if (isset($d['action']) && $d['action'] == 'add' && $d['id']) {
+                        return response()->json("невозможно добавить #{$index}", 422);
+                    }
+                    if (! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $d['date'])) {
+                        return response()->json("неверный формат даты #{$index}", 422);
+                    }
+                    if (! filter_var($d['sum'], FILTER_VALIDATE_FLOAT)) {
+                        return response()->json("неверная сумма #{$index}", 422);
+                    }
+                    if (! in_array((string)$d['type'], ["0", "1", "2"])) {
+                        return response()->json("неверный тип #{$index}", 422);
+                    }
+                    if ($d['id']) {
+                        if (! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) [0-9]{2}:[0-9]{2}:[0-9]{2}$/", $d['created_at'])) {
+                            return response()->json("неверный формат created_at #{$index}", 422);
+                        }
+                        if (! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) [0-9]{2}:[0-9]{2}:[0-9]{2}$/", $d['updated_at'])) {
+                            return response()->json("неверный формат updated_at #{$index}", 422);
+                        }
+                    }
+                    unset($data[$index]['']);
+                }
+            }
+
+            $source_ids = array_unique(array_merge($unique_ids['source_id'], $unique_ids['addressee_id']));
+            if (Source::whereIn('id', $source_ids)->count() != count($source_ids)) {
+                return response()->json("неверный ID источника или адресата", 422);
+            }
+
+            if (Expenditure::whereIn('id', $unique_ids['expenditure_id'])->count() != count($unique_ids['expenditure_id'])) {
+                return response()->json("неверный ID расхода", 422);
+            }
+
+            if (User::whereIn('id', $unique_ids['user_id'])->count() != count($unique_ids['user_id'])) {
+                return response()->json("неверный ID пользователя", 422);
+            }
+
+            // валидация пройдена, импорт...
+            foreach($data as $d) {
+                if (isset($d['action']) && $d['action'] == 'delete') {
+                    unset($d['action']);
+                    DB::table('payments')->whereId($d['id'])->delete();
+                } else
+                if (isset($d['action']) && $d['action'] == 'add') {
+                    unset($d['action']);
+                    DB::table('payments')->insert($d);
+                } else {
+                    unset($d['action']);
+                    DB::table('payments')->whereId($d['id'])->update($d);
+                }
+            }
+
+            return response()->json(count($data), 200);
+        }
+        return abort();
     }
 }

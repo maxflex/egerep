@@ -4052,8 +4052,34 @@
 }).call(this);
 
 (function() {
+  var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
   angular.module('Egerep').controller('PaymentsIndex', function($scope, $attrs, $timeout, $http, IndexService, Payment, PaymentTypes, UserService) {
+    var getTotal;
     bindArguments($scope, arguments);
+    $('#import-button').fileupload({
+      send: function() {
+        return NProgress.configure({
+          showSpinner: true
+        });
+      },
+      progress: function(e, data) {
+        return NProgress.set(data.loaded / data.total);
+      },
+      always: function() {
+        NProgress.configure({
+          showSpinner: false
+        });
+        return ajaxEnd();
+      },
+      done: function(i, response) {
+        return notifySuccess("<b>" + response.result + "</b> импортировано");
+      },
+      error: function(response) {
+        console.log(response);
+        return notifyError(response.responseJSON);
+      }
+    });
     angular.element(document).ready(function() {
       $timeout(function() {
         return $('.selectpicker').selectpicker('refresh');
@@ -4064,14 +4090,13 @@
         expenditure_id: '',
         type: ''
       };
-      $scope.$watchCollection('search', function(newVal, oldVal) {
-        if (IndexService.data_loaded) {
-          console.log('filter');
-        }
+      $scope.$watch('search.type', function(newVal, oldVal) {
         if (IndexService.data_loaded) {
           return $scope.filter();
         }
       });
+      $scope.selected_payments = [];
+      $scope.tab = 'payments';
       return IndexService.init(Payment, $scope.current_page, $attrs);
     });
     $scope.filter = function() {
@@ -4081,6 +4106,29 @@
       });
       IndexService.current_page = 1;
       return IndexService.pageChanged();
+    };
+    $scope.keyFilter = function(event) {
+      if (event.keyCode === 13) {
+        return $scope.filter();
+      }
+    };
+    $scope.selectPayment = function(payment) {
+      var ref;
+      if (ref = payment.id, indexOf.call($scope.selected_payments, ref) >= 0) {
+        return $scope.selected_payments = _.without($scope.selected_payments, payment.id);
+      } else {
+        return $scope.selected_payments.push(payment.id);
+      }
+    };
+    $scope.removeSelectedPayments = function() {
+      ajaxStart();
+      return $.post('api/payments/delete', {
+        ids: $scope.selected_payments
+      }).then(function(response) {
+        $scope.selected_payments = [];
+        $scope.filter();
+        return ajaxEnd();
+      });
     };
     $scope.addPaymentDialog = function(payment) {
       if (payment == null) {
@@ -4116,9 +4164,48 @@
         return $scope.filter();
       });
     };
-    return $scope.editPayment = function(model) {
+    $scope.editPayment = function(model) {
       $scope.modal_payment = _.clone(model);
       return $('#payment-stream-modal').modal('show');
+    };
+    $scope.formatStatDate = function(date) {
+      return moment(date + '-01').format('MMMM');
+    };
+    $scope.loadStats = function() {
+      if ($scope.tab !== 'stats') {
+        return;
+      }
+      $scope.stats_loading = true;
+      ajaxStart();
+      return $http.post('api/payments/stats', $scope.search_stats).then(function(response) {
+        ajaxEnd();
+        $scope.stats_loading = false;
+        if (response.data) {
+          $scope.stats_data = response.data.data;
+          $scope.expenditure_data = response.data.expenditures;
+          return $timeout(function() {
+            return $scope.totals = getTotal();
+          });
+        } else {
+          return $scope.stats_data = null;
+        }
+      });
+    };
+    return getTotal = function() {
+      var total;
+      total = {
+        "in": 0,
+        out: 0,
+        sum: 0
+      };
+      $.each($scope.stats_data, function(year, data) {
+        return data.forEach(function(d) {
+          total["in"] += parseFloat(d["in"]);
+          total.out += parseFloat(d.out);
+          return total.sum += parseFloat(d.sum);
+        });
+      });
+      return total;
     };
   }).controller('PaymentForm', function($scope, FormService, Payment, PaymentTypes) {
     bindArguments($scope, arguments);
@@ -4205,45 +4292,6 @@
         ajaxEnd();
         return $scope.data = response.data;
       });
-    };
-  }).controller('PaymentStats', function($scope, $http, $timeout) {
-    var getTotal;
-    bindArguments($scope, arguments);
-    $scope.formatStatDate = function(date) {
-      return moment(date + '-01').format('MMMM');
-    };
-    $scope.load = function() {
-      $scope.stats_loading = true;
-      ajaxStart();
-      return $http.post('api/payments/stats', $scope.search).then(function(response) {
-        ajaxEnd();
-        $scope.stats_loading = false;
-        if (response.data) {
-          $scope.stats_data = response.data.data;
-          $scope.expenditure_data = response.data.expenditures;
-          return $timeout(function() {
-            return $scope.totals = getTotal();
-          });
-        } else {
-          return $scope.stats_data = null;
-        }
-      });
-    };
-    return getTotal = function() {
-      var total;
-      total = {
-        "in": 0,
-        out: 0,
-        sum: 0
-      };
-      $.each($scope.stats_data, function(year, data) {
-        return data.forEach(function(d) {
-          total["in"] += parseFloat(d["in"]);
-          total.out += parseFloat(d.out);
-          return total.sum += parseFloat(d.sum);
-        });
-      });
-      return total;
     };
   });
 

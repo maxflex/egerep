@@ -1,6 +1,23 @@
 angular.module('Egerep')
     .controller 'PaymentsIndex', ($scope, $attrs, $timeout, $http, IndexService, Payment, PaymentTypes, UserService) ->
         bindArguments($scope, arguments)
+        $('#import-button').fileupload
+            # начало загрузки
+            send: ->
+                NProgress.configure({ showSpinner: true })
+            # во время загрузки
+            progress: (e, data) ->
+                NProgress.set(data.loaded / data.total)
+            # всегда по окончании загрузки (неважно, ошибка или успех)
+            always: ->
+                NProgress.configure({ showSpinner: false })
+                ajaxEnd()
+            done: (i, response) ->
+                notifySuccess("<b>#{response.result}</b> импортировано")
+            error: (response) ->
+                console.log(response)
+                notifyError(response.responseJSON)
+
         angular.element(document).ready ->
             $timeout ->
                 $('.selectpicker').selectpicker 'refresh'
@@ -11,15 +28,34 @@ angular.module('Egerep')
                 expenditure_id: ''
                 type: ''
 
-            $scope.$watchCollection 'search', (newVal, oldVal) ->
-                console.log('filter') if IndexService.data_loaded
+            $scope.$watch 'search.type', (newVal, oldVal) ->
                 $scope.filter() if IndexService.data_loaded
+
+            $scope.selected_payments = []
+            $scope.tab = 'payments'
+
             IndexService.init(Payment, $scope.current_page, $attrs)
 
         $scope.filter = ->
             $.cookie("payments", JSON.stringify($scope.search), { expires: 365, path: '/' });
             IndexService.current_page = 1
             IndexService.pageChanged()
+
+        $scope.keyFilter = (event) ->
+            $scope.filter() if event.keyCode is 13
+
+        $scope.selectPayment = (payment) ->
+            if payment.id in $scope.selected_payments
+                $scope.selected_payments = _.without($scope.selected_payments, payment.id)
+            else
+                $scope.selected_payments.push(payment.id)
+
+        $scope.removeSelectedPayments = ->
+            ajaxStart()
+            $.post('api/payments/delete', {ids: $scope.selected_payments}).then (response) ->
+                $scope.selected_payments = []
+                $scope.filter()
+                ajaxEnd()
 
         $scope.addPaymentDialog = (payment = false) ->
             $scope.modal_payment = _.clone(payment || $scope.fresh_payment)
@@ -49,6 +85,33 @@ angular.module('Egerep')
         $scope.editPayment = (model) ->
             $scope.modal_payment = _.clone(model)
             $('#payment-stream-modal').modal('show')
+
+        $scope.formatStatDate = (date) ->
+            moment(date + '-01').format('MMMM')
+
+        $scope.loadStats = ->
+            return if $scope.tab isnt 'stats'
+            $scope.stats_loading = true
+            ajaxStart()
+            $http.post 'api/payments/stats', $scope.search_stats
+            .then (response) ->
+                ajaxEnd()
+                $scope.stats_loading = false
+                if response.data
+                    $scope.stats_data = response.data.data
+                    $scope.expenditure_data = response.data.expenditures
+                    $timeout -> $scope.totals = getTotal()
+                else
+                    $scope.stats_data = null
+
+        getTotal = ->
+            total = {in: 0, out: 0, sum: 0}
+            $.each $scope.stats_data, (year, data) ->
+                data.forEach (d) ->
+                    total.in  += parseFloat(d.in)
+                    total.out += parseFloat(d.out)
+                    total.sum += parseFloat(d.sum)
+            total
 
     .controller 'PaymentForm', ($scope, FormService, Payment, PaymentTypes)->
         bindArguments($scope, arguments)
@@ -120,32 +183,3 @@ angular.module('Egerep')
             .then (response) ->
                 ajaxEnd()
                 $scope.data = response.data
-
-    .controller 'PaymentStats', ($scope, $http, $timeout) ->
-        bindArguments($scope, arguments)
-
-        $scope.formatStatDate = (date) ->
-            moment(date + '-01').format('MMMM')
-
-        $scope.load = ->
-            $scope.stats_loading = true
-            ajaxStart()
-            $http.post 'api/payments/stats', $scope.search
-            .then (response) ->
-                ajaxEnd()
-                $scope.stats_loading = false
-                if response.data
-                    $scope.stats_data = response.data.data
-                    $scope.expenditure_data = response.data.expenditures
-                    $timeout -> $scope.totals = getTotal()
-                else
-                    $scope.stats_data = null
-
-        getTotal = ->
-            total = {in: 0, out: 0, sum: 0}
-            $.each $scope.stats_data, (year, data) ->
-                data.forEach (d) ->
-                    total.in  += parseFloat(d.in)
-                    total.out += parseFloat(d.out)
-                    total.sum += parseFloat(d.sum)
-            total

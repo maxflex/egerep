@@ -64,7 +64,8 @@
     "js-md5": "md5#^0.4.1",
     "vue-resource": "^1.0.3",
     "egerep-svg-metro": "*",
-    "angular-chart.js": "^1.1.1"
+    "angular-chart.js": "^1.1.1",
+    "angular-file-upload": "^2.5.0"
   },
   "resolutions": {
     "angular": "^1.5.8",

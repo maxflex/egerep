@@ -5,60 +5,15 @@
 @include('payments._modals')
 
 @section('content')
-    <div class="row flex-list">
-        <div>
-            <label>источник</label>
-            <select multiple title="не выбрано" ng-model="search.source_ids" class="selectpicker">
-                <option ng-repeat="source in sources" value="@{{ source.id }}">@{{ source.name }}</option>
-            </select>
-        </div>
-        <div>
-            <label>адресат</label>
-            <select multiple title="не выбрано" ng-model="search.addressee_ids" class="selectpicker">
-                <option ng-repeat="source in sources" value="@{{ source.id }}">@{{ source.name }}</option>
-            </select>
-        </div>
-        <div>
-            <label>статья</label>
-            <select multiple title="не выбрано" ng-model="search.expenditure_ids" class="selectpicker">
-                <option ng-repeat="expenditure in expenditures" value="@{{ expenditure.id }}">@{{ expenditure.name }}</option>
-            </select>
-        </div>
-        <div>
-            <label>тип</label>
-            <ng-select-new model='search.type' object="PaymentTypes" label="title" none-text='тип'></ng-select-new>
-        </div>
+    <div class="top-links" style='text-align: right'>
+        <a class="pointer" ng-class="{'active': tab == 'payments'}" ng-click="tab = 'payments'">платежи</a>
+        <a class="pointer" ng-class="{'active': tab == 'stats'}" ng-click="tab = 'stats'">статистика</a>
     </div>
+    @include('payments._payments')
+    @include('payments._stats')
 
-    <table class="table reverse-borders" style='font-size: 13px'>
-        <tr ng-repeat="model in IndexService.page.data">
-            <td>
-                <a class="pointer" ng-click="editPayment(model)">@{{ findById(PaymentTypes, model.type).title }}</a>
-            </td>
-            <td>
-                @{{ model.sum | number }}
-            </td>
-            <td>
-                @{{ model.date }}
-            </td>
-            <td>
-                @{{ findById(sources, model.source_id).name }}
-            </td>
-            <td>
-                @{{ findById(sources, model.addressee_id).name }}
-            </td>
-            <td>
-                @{{ findById(expenditures, model.expenditure_id).name }}
-            </td>
-            {{-- <td>
-                @{{ UserService.getLogin(model.user_id) }}: @{{ formatDateTime(model.created_at) }}
-            </td> --}}
-            <td width="250">
-                @{{ model.purpose | cut:false:20 }}
-            </td>
-        </tr>
-    </table>
-    @include('modules.pagination-new')
+    <input name="file" type="file" id="import-button" data-url="payments/import" class="ng-hide">
+    {{-- <input name="file" type="file" id="import-button" data-url="payments/import" accept=".xls" class="ng-hide"> --}}
 @stop
 
 <style>
@@ -67,6 +22,12 @@
         color: #757575;
         font-size: 12px;
         font-weight: 500;
+    }
+    tr td {
+        outline: none !important;
+    }
+    tr.selected td {
+        background: #f5f4f4;
     }
 </style>
 

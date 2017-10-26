@@ -80,6 +80,6 @@ elixir(function(mix) {
             'phoneapi/dist/js/pusher',
             'js-md5/build/md5.min',
             'moment-duration-format/lib/moment-duration-format',
-            'egerep-svg-metro/scripts/svg',
+            'egerep-svg-metro/scripts/svg'
         ]).concat(['resources/assets/js/*.js']), 'public/js/vendor.js');
 });

@@ -1,39 +1,32 @@
-@extends('app')
-@section('title')
-    Статистика
-    <a href="payments" class="title-link">назад в стрим</a>
-@stop
-@section('controller', 'PaymentStats')
-
-@section('content')
+<div ng-show="tab == 'stats'">
     <div class="row flex-list">
         <div>
             <label>кошелёк</label>
-            <select multiple title="не выбрано" ng-model="search.wallet_ids" class="selectpicker">
+            <select multiple title="не выбрано" ng-model="search_stats.wallet_ids" class="selectpicker" ng-change="loadStats()">
                 <option ng-repeat="source in sources" value="@{{ source.id }}">@{{ source.name }}</option>
             </select>
         </div>
         <div>
             <label>статьи</label>
-            <select multiple title="не выбрано" ng-model="search.expenditure_ids" class="selectpicker">
+            <select multiple title="не выбрано" ng-model="search_stats.expenditure_ids" class="selectpicker" ng-change="loadStats()">
                 <option ng-repeat="expenditure in expenditures" value="@{{ expenditure.id }}">@{{ expenditure.name }}</option>
             </select>
         </div>
         <div>
             <div class="form-group">
                 <label>начало</label>
-                <input type="text" readonly placeholder="не указано" class="form-control bs-date-clear pointer" ng-model="search.date_start">
+                <input type="text" readonly placeholder="не указано" class="form-control bs-date-clear pointer" ng-model="search_stats.date_start" ng-change="loadStats()">
             </div>
         </div>
         <div>
             <div class="form-group">
                 <label>конец</label>
-                <input type="text" readonly placeholder="не указано" class="form-control bs-date-clear pointer" ng-model="search.date_end">
+                <input type="text" readonly placeholder="не указано" class="form-control bs-date-clear pointer" ng-model="search_stats.date_end" ng-change="loadStats()">
             </div>
         </div>
-        <div>
-            <button type="button" ng-disabled="!(search.wallet_ids && search.wallet_ids.length) || stats_loading" class="btn btn-primary full-width" style='margin-top: 21px' ng-click="load()">показать</button>
-        </div>
+        {{-- <div>
+            <button type="button" ng-disabled="!(search_stats.wallet_ids && search_stats.wallet_ids.length) || stats_loading" class="btn btn-primary full-width" style='margin-top: 21px' ng-click="loadStats()">показать</button>
+        </div> --}}
     </div>
     <div class="vertical-center" ng-if="stats_data === null">нет данных</div>
     <div ng-if="stats_data && stats_data !== null">
@@ -106,6 +99,4 @@
             </tr>
         </table>
     </div>
-@stop
-{{-- drag & drop --}}
-{{-- копировать платеж --}}
+</div>
