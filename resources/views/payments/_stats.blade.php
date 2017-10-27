@@ -32,41 +32,59 @@
     <div ng-if="stats_data && stats_data !== null">
         <div ng-repeat="(year, data) in stats_data">
             <h4>@{{ year }}</h4>
-            <table class="table reverse-borders">
+            <table class="table no-borders">
                 <tr ng-repeat="d in data">
                     <td width='300'>
                         @{{ formatStatDate(d.date) }}
                     </td>
-                    <td width='150'>
+                    <td width='150' class='br-left'>
                         <span ng-show="d.in != 0" class="text-success">+@{{ d.in | number }}</span>
                     </td>
                     <td width='150'>
                         <span ng-show="d.out != 0" class="text-danger">-@{{ d.out | number }}</span>
                     </td>
-                    <td>
+                    <td width='150'>
                         <span ng-show="d.sum != 0">@{{ d.sum | number }}</span>
+                    </td>
+                    <td width='150' class='br-left'>
+                        <span ng-show="d.in_loan != 0" class="text-success">+@{{ d.in_loan | number }}</span>
+                    </td>
+                    <td width='150'>
+                        <span ng-show="d.out_loan != 0" class="text-danger">-@{{ d.out_loan | number }}</span>
+                    </td>
+                    <td>
+                        <span ng-show="d.sum_loan != 0">@{{ d.sum_loan | number }}</span>
                     </td>
                 </tr>
             </table>
         </div>
-        <table class="table reverse-borders" style='margin-top: -20px'>
+        <table class="table" style='margin-top: -20px'>
             <tr>
                 <td width='300'>
 
                 </td>
-                <td width='150'>
+                <td width='150' class='br-left'>
                     <b ng-show="totals.in != 0" class="text-success">+@{{ totals.in | number:2 }}</b>
                 </td>
                 <td width='150'>
                     <b ng-show="totals.out != 0" class="text-danger">-@{{ totals.out | number:2 }}</b>
                 </td>
-                <td>
+                <td width='150'>
                     <b>@{{ totals.sum | number:2 }}</b>
+                </td>
+                <td width='150' class='br-left'>
+                    <b ng-show="totals.in_loan != 0" class="text-success">+@{{ totals.in_loan | number:2 }}</b>
+                </td>
+                <td width='150'>
+                    <b ng-show="totals.out_loan != 0" class="text-danger">-@{{ totals.out_loan | number:2 }}</b>
+                </td>
+                <td>
+                    <b>@{{ totals.sum_loan | number:2 }}</b>
                 </td>
             </tr>
         </table>
         <h4>статьи расхода</h4>
-        <table class="table reverse-borders" tyle='margin: 0'>
+        <table class="table no-borders" tyle='margin: 0'>
             <tr ng-repeat="(expenditure_id, data) in expenditure_data">
                 <td width='300'>
                     @{{ expenditure_id ? findById(expenditures, expenditure_id).name : 'не указано' }}
@@ -82,7 +100,7 @@
                 </td>
             </tr>
         </table>
-        <table class="table reverse-borders" style='margin-top: -20px'>
+        <table class="table" style='margin-top: -20px'>
             <tr>
                 <td width='300'>
 
@@ -100,3 +118,9 @@
         </table>
     </div>
 </div>
+
+<style>
+    .br-left {
+        border-left: 1px solid #ddd;
+    }
+</style>

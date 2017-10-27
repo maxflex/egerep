@@ -29064,6 +29064,9 @@ table.summary-table.left-align tr td {
   border-top: none;
   border-bottom: 1px solid #ddd; }
 
+.table.no-borders > tbody > tr:first-child > td {
+  border-top: none; }
+
 .table thead {
   font-weight: bold;
   text-transform: uppercase;

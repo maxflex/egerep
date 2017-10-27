@@ -136,9 +136,15 @@ class PaymentsController extends Controller
             $expenditures_outcome->whereIn('expenditure_id', $request->expenditure_ids);
         }
 
-        $income = collect($income->get())->keyBy('month_date')->all();
-        $outcome = collect($outcome->get())->keyBy('month_date')->all();
+        $income_loan = cloneQuery($income)->where('type', 1);
+        $outcome_loan = cloneQuery($outcome)->where('type', 1);
 
+        $income         = collect($income->get())->keyBy('month_date')->all();
+        $outcome        = collect($outcome->get())->keyBy('month_date')->all();
+        $income_loan    = collect($income_loan->get())->keyBy('month_date')->all();
+        $outcome_loan   = collect($outcome_loan->get())->keyBy('month_date')->all();
+
+        /** ПО СТАТЬЯМ РАСХОДА **/
         $expenditure_data = array_merge($expenditures_income->get()->all(), $expenditures_outcome->get()->all());
         $expenditures = [];
 
@@ -154,6 +160,7 @@ class PaymentsController extends Controller
                 $expenditures[$e->id]['sum'] -= $e->sum;
             }
         }
+        /** КОНЕЦ ПО СТАТЬЯМ РАСХОДА **/
 
         $dates = array_unique(array_merge(array_keys((array)$income), array_keys((array)$outcome)));
 
@@ -180,7 +187,19 @@ class PaymentsController extends Controller
                 $out = $outcome[$date]->sum;
                 $sum -= $out;
             }
-            $data[$d->format('Y')][] = compact('date', 'sum', 'in', 'out');
+
+            $sum_loan = 0;
+            $in_loan = 0;
+            $out_loan = 0;
+            if (isset($income_loan[$date])) {
+                $in_loan = $income_loan[$date]->sum;
+                $sum_loan += $in;
+            }
+            if (isset($outcome_loan[$date])) {
+                $out_loan = $outcome_loan[$date]->sum;
+                $sum_loan -= $out;
+            }
+            $data[$d->format('Y')][] = compact('date', 'sum', 'in', 'out', 'in_loan', 'out_loan', 'sum_loan');
             $d->modify('first day of next month');
         }
 

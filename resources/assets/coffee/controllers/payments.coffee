@@ -14,6 +14,8 @@ angular.module('Egerep')
                 ajaxEnd()
             done: (i, response) ->
                 notifySuccess("<b>#{response.result}</b> импортировано")
+                $scope.filter()
+
             error: (response) ->
                 console.log(response)
                 notifyError(response.responseJSON)
@@ -87,7 +89,7 @@ angular.module('Egerep')
             $('#payment-stream-modal').modal('show')
 
         $scope.formatStatDate = (date) ->
-            moment(date + '-01').format('MMMM')
+            moment(date + '-01').format('MMMM') 
 
         $scope.loadStats = ->
             return if $scope.tab isnt 'stats'
@@ -105,12 +107,15 @@ angular.module('Egerep')
                     $scope.stats_data = null
 
         getTotal = ->
-            total = {in: 0, out: 0, sum: 0}
+            total = {in: 0, out: 0, sum: 0, in_loan: 0, out_loan: 0, sum_loan: 0}
             $.each $scope.stats_data, (year, data) ->
                 data.forEach (d) ->
                     total.in  += parseFloat(d.in)
                     total.out += parseFloat(d.out)
                     total.sum += parseFloat(d.sum)
+                    total.in_loan  += parseFloat(d.in_loan)
+                    total.out_loan += parseFloat(d.out_loan)
+                    total.sum_loan += parseFloat(d.sum_loan)
             total
 
     .controller 'PaymentForm', ($scope, FormService, Payment, PaymentTypes)->

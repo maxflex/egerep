@@ -3649,6 +3649,14 @@ table.summary-table.left-align tr td {
 			border-bottom: 1px solid #ddd;
 		}
 	}
+	&.no-borders {
+		// & > tbody > tr > td {
+		// 	border-top: none;
+		// }
+		& > tbody > tr:first-child > td {
+			border-top: none;
+		}
+	}
 	& thead {
 	    font-weight: bold;
 	    text-transform: uppercase;
