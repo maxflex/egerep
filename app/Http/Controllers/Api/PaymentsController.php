@@ -147,8 +147,8 @@ class PaymentsController extends Controller
         $income_loan = cloneQuery($income)->where('type', 1);
         $outcome_loan = cloneQuery($outcome)->where('type', 1);
 
-        $income         = collect($income->get())->keyBy('month_date')->all();
-        $outcome        = collect($outcome->get())->keyBy('month_date')->all();
+        $income         = collect($income->where('type', 0)->get())->keyBy('month_date')->all();
+        $outcome        = collect($outcome->where('type', 0)->get())->keyBy('month_date')->all();
         $income_loan    = collect($income_loan->get())->keyBy('month_date')->all();
         $outcome_loan   = collect($outcome_loan->get())->keyBy('month_date')->all();
 
