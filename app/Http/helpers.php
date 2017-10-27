@@ -285,7 +285,7 @@ use App\Models\Sms;
     {
         $mode = isset($_COOKIE['payments_mode']) ? json_decode($_COOKIE['payments_mode']) : 0;
         if ($return_table) {
-            return ($mode == 1 ? 'payments' : 'payments_test');
+            return ($mode == 1 ? 'payments_test' : 'payments');
         }
         return ($mode == 1 ? \App\Models\PaymentTest::class : \App\Models\Payment::class);
     }
