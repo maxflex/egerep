@@ -50,7 +50,7 @@ class PaymentTest extends Model
         $search = isset($_COOKIE['payments']) ? json_decode($_COOKIE['payments']) : (object)[];
         $search = filterParams($search);
 
-        $query = $model ? self::query() : \DB::table('payments');
+        $query = $model ? self::query() : \DB::table('payments_test');
         $query->orderBy('date', 'desc')->orderBy('id', 'desc');
 
         if (isset($search->source_ids) && count($search->source_ids)) {

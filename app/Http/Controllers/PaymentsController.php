@@ -98,7 +98,7 @@ class PaymentsController extends Controller
                     if ($d[$field] && ! in_array($d[$field], $unique_ids[$field])) {
                         $unique_ids[$field][] = $d[$field];
                     }
-                    if (isset($d['action']) && $d['action'] == 'delete' && (! $d['id'] || ! DB::table('payments')->whereId($d['id'])->exists())) {
+                    if (isset($d['action']) && $d['action'] == 'delete' && (! $d['id'] || ! DB::table(PaymentsClass(true))->whereId($d['id'])->exists())) {
                         return response()->json("невозможно удалить #{$index}", 422);
                     }
                     if (isset($d['action']) && $d['action'] == 'add' && $d['id']) {
@@ -142,14 +142,14 @@ class PaymentsController extends Controller
             foreach($data as $d) {
                 if (isset($d['action']) && $d['action'] == 'delete') {
                     unset($d['action']);
-                    DB::table('payments')->whereId($d['id'])->delete();
+                    DB::table(PaymentsClass(true))->whereId($d['id'])->delete();
                 } else
                 if (isset($d['action']) && $d['action'] == 'add') {
                     unset($d['action']);
-                    DB::table('payments')->insert($d);
+                    DB::table(PaymentsClass(true))->insert($d);
                 } else {
                     unset($d['action']);
-                    DB::table('payments')->whereId($d['id'])->update($d);
+                    DB::table(PaymentsClass(true))->whereId($d['id'])->update($d);
                 }
             }
 
