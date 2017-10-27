@@ -42,7 +42,7 @@ class PaymentsController extends Controller
 
         return view(self::VIEWS_FOLDER . 'remainders')->with(ngInit([
             'page' => $request->page,
-            'sources' => collect(Source::get())->keyBy('id')->all(),
+            'sources' => collect(Source::whereId(1)->get())->keyBy('id')->all(),
             'item_cnt' => $item_cnt,
         ]));
     }
