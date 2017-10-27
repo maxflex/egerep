@@ -22,7 +22,8 @@
                     @{{ date | date:'dd MMMM yyyy' }}
                 </td>
                 <td ng-repeat="source in srs">
-                    @{{ source.remainder }}/@{{ source.loan_remainder }}
+                    @{{ source.remainder }}
+                    {{-- /@{{ source.loan_remainder }} --}}
                 </td>
             </tr>
         </tbody>
