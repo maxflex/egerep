@@ -207,7 +207,12 @@ class PaymentsController extends Controller
                 $out_loan = $outcome_loan[$date]->sum;
                 $sum_loan -= $out_loan;
             }
-            $data[$d->format('Y')][] = compact('date', 'sum', 'in', 'out', 'in_loan', 'out_loan', 'sum_loan');
+
+            $total_in  = $in  + $in_loan;
+            $total_out = $out + $out_loan;
+            $total_sum = $sum + $sum_loan;
+
+            $data[$d->format('Y')][] = compact('date', 'sum', 'in', 'out', 'in_loan', 'out_loan', 'sum_loan', 'total_in', 'total_out', 'total_sum');
             $d->modify('first day of next month');
         }
 
