@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Payment extends Model
+class PaymentTest extends Model
 {
+    public $table = 'payments_test';
+
     protected $fillable = [
         'sum',
         'type',

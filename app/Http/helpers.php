@@ -1,4 +1,5 @@
 <?php
+use App\Models\Sms;
     function dateRange($strDateFrom, $strDateTo)
     {
         $aryRange=array();
@@ -275,4 +276,13 @@
      */
     function toDate($date) {
         return explode(' ', $date)[0];
+    }
+
+    /**
+     *
+     */
+    function PaymentsClass()
+    {
+        $mode = isset($_COOKIE['payments_mode']) ? json_decode($_COOKIE['payments_mode']) : 0;
+        return ($mode == 1 ? \App\Models\PaymentTest::class : \App\Models\Payment::class);
     }

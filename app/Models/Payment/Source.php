@@ -18,11 +18,11 @@ class Source extends Model
     public function getCalcRemainderAttribute()
     {
         $remainder = @intval($this->remainder);
-        $remainder += Payment::where('type', 0)->where('addressee_id', $this->id)->sum('sum');
-        $remainder -= Payment::where('type', 0)->where('source_id', $this->id)->sum('sum');
+        $remainder += PaymentsClass()::where('type', 0)->where('addressee_id', $this->id)->sum('sum');
+        $remainder -= PaymentsClass()::where('type', 0)->where('source_id', $this->id)->sum('sum');
 
-        $remainder -= Payment::where('type', 2)->where('source_id', $this->id)->sum('sum');
-        $remainder += Payment::where('type', 2)->where('addressee_id', $this->id)->sum('sum');
+        $remainder -= PaymentsClass()::where('type', 2)->where('source_id', $this->id)->sum('sum');
+        $remainder += PaymentsClass()::where('type', 2)->where('addressee_id', $this->id)->sum('sum');
 
         return $remainder;
     }
@@ -30,8 +30,8 @@ class Source extends Model
     public function getCalcLoanRemainderAttribute()
     {
         $remainder = $this->calc_remainder;
-        $remainder += Payment::where('type', 1)->where('addressee_id', $this->id)->sum('sum');
-        $remainder -= Payment::where('type', 1)->where('source_id', $this->id)->sum('sum');
+        $remainder += PaymentsClass()::where('type', 1)->where('addressee_id', $this->id)->sum('sum');
+        $remainder -= PaymentsClass()::where('type', 1)->where('source_id', $this->id)->sum('sum');
         return $remainder;
     }
 
@@ -41,15 +41,15 @@ class Source extends Model
     public static function getRemaindersOnDate($source, $date)
     {
         $remainder = @intval($source->remainder);
-        $remainder += Payment::where('type', 0)->where('addressee_id', $source->id)->where('date', '<=', $date)->sum('sum');
-        $remainder -= Payment::where('type', 0)->where('source_id', $source->id)->where('date', '<=', $date)->sum('sum');
+        $remainder += PaymentsClass()::where('type', 0)->where('addressee_id', $source->id)->where('date', '<=', $date)->sum('sum');
+        $remainder -= PaymentsClass()::where('type', 0)->where('source_id', $source->id)->where('date', '<=', $date)->sum('sum');
 
-        $remainder -= Payment::where('type', 2)->where('source_id', $source->id)->where('date', '<=', $date)->sum('sum');
-        $remainder += Payment::where('type', 2)->where('addressee_id', $source->id)->where('date', '<=', $date)->sum('sum');
+        $remainder -= PaymentsClass()::where('type', 2)->where('source_id', $source->id)->where('date', '<=', $date)->sum('sum');
+        $remainder += PaymentsClass()::where('type', 2)->where('addressee_id', $source->id)->where('date', '<=', $date)->sum('sum');
 
         $loan_remainder = @intval($remainder);
-        $loan_remainder += Payment::where('type', 1)->where('addressee_id', $source->id)->where('date', '<=', $date)->sum('sum');
-        $loan_remainder -= Payment::where('type', 1)->where('source_id', $source->id)->where('date', '<=', $date)->sum('sum');
+        $loan_remainder += PaymentsClass()::where('type', 1)->where('addressee_id', $source->id)->where('date', '<=', $date)->sum('sum');
+        $loan_remainder -= PaymentsClass()::where('type', 1)->where('source_id', $source->id)->where('date', '<=', $date)->sum('sum');
 
         return compact('remainder', 'loan_remainder');
     }

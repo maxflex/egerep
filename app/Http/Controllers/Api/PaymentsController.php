@@ -19,7 +19,7 @@ class PaymentsController extends Controller
      */
     public function index()
     {
-        return Payment::search()->paginate(100);
+        return PaymentsClass()::search()->paginate(100);
     }
 
     /**
@@ -48,7 +48,7 @@ class PaymentsController extends Controller
             $loan->source_id = $buf;
             $loan->save();
         }
-        return Payment::create($request->input())->fresh();
+        return PaymentsClass()::create($request->input())->fresh();
     }
 
     /**
@@ -59,7 +59,7 @@ class PaymentsController extends Controller
      */
     public function show($id)
     {
-        return Payment::find($id);
+        return PaymentsClass()::find($id);
     }
 
     /**
@@ -82,7 +82,7 @@ class PaymentsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Payment::find($id)->update($request->input());
+        PaymentsClass()::find($id)->update($request->input());
     }
 
     /**
@@ -93,27 +93,27 @@ class PaymentsController extends Controller
      */
     public function destroy($id)
     {
-        Payment::destroy($id);
+        PaymentsClass()::destroy($id);
     }
 
     public function delete(Request $request)
     {
-        Payment::whereIn('id', $request->ids)->delete();
+        PaymentsClass()::whereIn('id', $request->ids)->delete();
     }
 
 
     public function stats(Request $request)
     {
-        $income = Payment::select(DB::raw("DATE_FORMAT(`date`, '%Y-%m') as month_date, sum(`sum`) as sum"))
+        $income = PaymentsClass()::select(DB::raw("DATE_FORMAT(`date`, '%Y-%m') as month_date, sum(`sum`) as sum"))
             ->whereIn('addressee_id', $request->wallet_ids)->whereNotIn('source_id', $request->wallet_ids)
             ->groupBy(DB::raw("month_date"))->orderBy(DB::raw('month_date'));
 
-        $outcome = Payment::select(DB::raw("DATE_FORMAT(`date`, '%Y-%m') as month_date, sum(`sum`) as sum"))
+        $outcome = PaymentsClass()::select(DB::raw("DATE_FORMAT(`date`, '%Y-%m') as month_date, sum(`sum`) as sum"))
             ->whereIn('source_id', $request->wallet_ids)->whereNotIn('addressee_id', $request->wallet_ids)
             ->groupBy(DB::raw("month_date"))->orderBy(DB::raw('month_date'));
 
-        $expenditures_income = Payment::selectRaw('expenditure_id as `id`, sum(`sum`) as sum, 1 as `is_income`')->whereIn('addressee_id', $request->wallet_ids)->whereNotIn('source_id', $request->wallet_ids)->groupBy('expenditure_id');
-        $expenditures_outcome = Payment::selectRaw('expenditure_id as `id`, sum(`sum`) as sum, 0 as `is_income`')->whereIn('source_id', $request->wallet_ids)->whereNotIn('addressee_id', $request->wallet_ids)->groupBy('expenditure_id');
+        $expenditures_income = PaymentsClass()::selectRaw('expenditure_id as `id`, sum(`sum`) as sum, 1 as `is_income`')->whereIn('addressee_id', $request->wallet_ids)->whereNotIn('source_id', $request->wallet_ids)->groupBy('expenditure_id');
+        $expenditures_outcome = PaymentsClass()::selectRaw('expenditure_id as `id`, sum(`sum`) as sum, 0 as `is_income`')->whereIn('source_id', $request->wallet_ids)->whereNotIn('addressee_id', $request->wallet_ids)->groupBy('expenditure_id');
 
         if (isset($request->date_start) && $request->date_start) {
             $income->whereRaw("date(`date`) >= '" . fromDotDate($request->date_start) . "'");

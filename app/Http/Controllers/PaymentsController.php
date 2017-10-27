@@ -53,7 +53,7 @@ class PaymentsController extends Controller
             return view('errors.not_allowed');
         }
 
-        $payments = Payment::search(false)->get();
+        $payments = PaymentsClass()::search(false)->get();
 
         $data = [];
         // $data[] = ['ID', 'источник', 'адресат', 'статья расхода', 'назначение', 'сумма', 'тип', 'дата', 'пользователь', 'создан', 'обновлен'];
