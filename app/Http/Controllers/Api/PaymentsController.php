@@ -230,7 +230,8 @@ class PaymentsController extends Controller
     {
         $page = (isset($request->page) ? $request->page : 1) - 1;
 
-        $sources = Source::get();
+        // $sources = Source::get();
+        $sources = Source::whereId(1)->get();
 
         $date = new \DateTime('today');
         $skip_days = $page * Source::PER_PAGE_REMAINDERS;
