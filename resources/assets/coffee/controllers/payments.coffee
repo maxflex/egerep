@@ -1,5 +1,5 @@
 angular.module('Egerep')
-    .controller 'PaymentsIndex', ($scope, $attrs, $timeout, $http, IndexService, Payment, PaymentTypes, UserService) ->
+    .controller 'PaymentsIndex', ($scope, $attrs, $timeout, $http, IndexService, Payment, PaymentTypes, UserService, Checked) ->
         bindArguments($scope, arguments)
         $('#import-button').fileupload
             # начало загрузки
@@ -47,6 +47,13 @@ angular.module('Egerep')
             $scope.mode = mode
             $.cookie("payments_mode", mode, { expires: 365, path: '/' })
             if filter then $timeout -> $scope.filter()
+
+        $scope.setChecked = ->
+            ajaxStart()
+            $.post('api/payments/check').then (response) ->
+                console.log(response)
+                notifySuccess("<b>#{response}</b> платежей проверено")
+                ajaxEnd()
 
         $scope.filter = ->
             $.cookie("payments", JSON.stringify($scope.search), { expires: 365, path: '/' });

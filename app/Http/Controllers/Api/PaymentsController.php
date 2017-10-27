@@ -107,6 +107,12 @@ class PaymentsController extends Controller
         $PaymentsClass::whereIn('id', $request->ids)->delete();
     }
 
+    public function check()
+    {
+        $PaymentsClass = PaymentsClass();
+        return $PaymentsClass::search(false)->update(['checked' => 1]);
+    }
+
 
     public function stats(Request $request)
     {

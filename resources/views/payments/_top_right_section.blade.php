@@ -1,5 +1,6 @@
 @section('title-right')
     <a class="pointer" ng-show="selected_payments.length" ng-click="removeSelectedPayments()">удалить (@{{ selected_payments.length }})</a>
+    <a class="pointer" ng-click="setChecked()">отметить проверенными</a>
     <a class="pointer" onclick="$('#import-button').click()">импорт</a>
     <a href="payments/export">экспорт</a>
     <a href="payments/sources">источники</a>

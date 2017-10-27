@@ -13,7 +13,8 @@ class Payment extends Model
         'date',
         'addressee_id',
         'source_id',
-        'expenditure_id'
+        'expenditure_id',
+        'checked'
     ];
 
     protected $attributes = [
@@ -65,6 +66,10 @@ class Payment extends Model
 
         if (isset($search->purpose) && ! isBlank($search->purpose)) {
             $query->whereRaw("purpose LIKE '%" . $search->purpose . "%'");
+        }
+
+        if (isset($search->checked) && ! isBlank($search->checked)) {
+            $query->where('checked', $search->checked);
         }
 
         // if (isset($search->date_start) && $search->date_start) {

@@ -54,6 +54,10 @@
               <label>назначение</label>
               <textarea ng-model="modal_payment.purpose" rows="3"></textarea>
           </div>
+          <div>
+              <input type="checkbox" name="checkbox" id="checkbox_id" ng-model="modal_payment.checked" ng-true-value="1" ng-false-value="0">
+              <label for="checkbox_id" style='font-weight: normal'>проверено</label>
+          </div>
           <div ng-hide="modal_payment.id">
               <input type="checkbox" name="checkbox" id="checkbox_id" ng-model="modal_payment.create_loan" ng-true-value="1" ng-false-value="0">
               <label for="checkbox_id" style='font-weight: normal'>создать заём</label>

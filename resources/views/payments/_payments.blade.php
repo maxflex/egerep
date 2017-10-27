@@ -23,6 +23,14 @@
             <ng-select-new model='search.type' object="PaymentTypes" label="title" none-text='тип'></ng-select-new>
         </div>
         <div>
+            <label>проверено</label>
+            <select ng-model="search.checked" class="selectpicker" ng-change="filter()">
+                <option value="">не выбрано</option>
+                <option disabled>──────────────</option>
+                <option ng-repeat="c in Checked" ng-value="@{{ $index }}">@{{ c }}</option>
+            </select>
+        </div>
+        <div>
             <label>назначение</label>
             <input type="text" ng-keyup='keyFilter($event)' class="form-control" ng-model="search.purpose" placeholder="не выбрано">
         </div>

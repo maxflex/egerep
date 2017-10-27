@@ -15,7 +15,8 @@ class PaymentTest extends Model
         'date',
         'addressee_id',
         'source_id',
-        'expenditure_id'
+        'expenditure_id',
+        'checked'
     ];
 
     protected $attributes = [
