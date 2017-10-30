@@ -146,9 +146,12 @@ class PaymentsController extends Controller
                 } else
                 if (isset($d['action']) && $d['action'] == 'add') {
                     unset($d['action']);
+                    $d['created_at'] = now();
+                    $d['updated_at'] = now();
                     DB::table(PaymentsClass(true))->insert($d);
                 } else {
                     unset($d['action']);
+                    $d['updated_at'] = now();
                     DB::table(PaymentsClass(true))->whereId($d['id'])->update($d);
                 }
             }

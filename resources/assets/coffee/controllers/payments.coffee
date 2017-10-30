@@ -6,15 +6,14 @@ angular.module('Egerep')
 
         $('#import-button').fileupload
             # начало загрузки
-            send: ->
-                NProgress.configure({ showSpinner: true })
-            # во время загрузки
-            progress: (e, data) ->
-                NProgress.set(data.loaded / data.total)
-            # всегда по окончании загрузки (неважно, ошибка или успех)
-            always: ->
-                NProgress.configure({ showSpinner: false })
-                ajaxEnd()
+            # send: ->
+            #     NProgress.configure({ showSpinner: true })
+            # # во время загрузки
+            # progress: (e, data) ->
+            #     NProgress.set(data.loaded / data.total)
+            # # всегда по окончании загрузки (неважно, ошибка или успех)
+            start: -> ajaxStart()
+            always: -> ajaxEnd()
             done: (i, response) ->
                 notifySuccess("<b>#{response.result}</b> импортировано")
                 $scope.filter()
