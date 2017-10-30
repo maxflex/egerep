@@ -121,20 +121,12 @@ angular.module('Egerep')
                     $scope.stats_data = null
 
         getTotal = ->
-            total = {in: 0, out: 0, sum: 0, in_loan: 0, out_loan: 0, sum_loan: 0, total_in: 0, total_out: 0, total_sum: 0}
+            total = {in: 0, out: 0, sum: 0}
             $.each $scope.stats_data, (year, data) ->
                 data.forEach (d) ->
                     total.in  += parseFloat(d.in)
                     total.out += parseFloat(d.out)
                     total.sum += parseFloat(d.sum)
-
-                    total.in_loan  += parseFloat(d.in_loan)
-                    total.out_loan += parseFloat(d.out_loan)
-                    total.sum_loan += parseFloat(d.sum_loan)
-
-                    total.total_in  += parseFloat(d.total_in)
-                    total.total_out += parseFloat(d.total_out)
-                    total.total_sum += parseFloat(d.total_sum)
             total
 
     .controller 'PaymentForm', ($scope, FormService, Payment, PaymentTypes)->

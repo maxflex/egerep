@@ -177,7 +177,6 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api', 'middleware' => ['web']],
     Route::post('payments/remainders', 'PaymentsController@remainders');
     Route::post('payments/stats', 'PaymentsController@stats');
     Route::post('payments/delete', 'PaymentsController@delete');
-    Route::post('payments/check', 'PaymentsController@check');
 
     Route::group(['namespace' => 'Payments', 'prefix' => 'payments'], function() {
         Route::resource('sources', 'SourcesController');

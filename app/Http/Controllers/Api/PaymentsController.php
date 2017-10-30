@@ -107,61 +107,38 @@ class PaymentsController extends Controller
         $PaymentsClass::whereIn('id', $request->ids)->delete();
     }
 
-    public function check()
-    {
-        $PaymentsClass = PaymentsClass();
-        return $PaymentsClass::search(false)->update(['checked' => 1]);
-    }
-
-
     public function stats(Request $request)
     {
-        $PaymentsClass = PaymentsClass();
-
-        $income = $PaymentsClass::select(DB::raw("DATE_FORMAT(`date`, '%Y-%m') as month_date, sum(`sum`) as sum"))
+        $income = Payment::select(DB::raw("DATE_FORMAT(`date`, '%Y-%m') as month_date, sum(`sum`) as sum"))
             ->whereIn('addressee_id', $request->wallet_ids)->whereNotIn('source_id', $request->wallet_ids)
             ->groupBy(DB::raw("month_date"))->orderBy(DB::raw('month_date'));
-
-        $outcome = $PaymentsClass::select(DB::raw("DATE_FORMAT(`date`, '%Y-%m') as month_date, sum(`sum`) as sum"))
+        $outcome = Payment::select(DB::raw("DATE_FORMAT(`date`, '%Y-%m') as month_date, sum(`sum`) as sum"))
             ->whereIn('source_id', $request->wallet_ids)->whereNotIn('addressee_id', $request->wallet_ids)
             ->groupBy(DB::raw("month_date"))->orderBy(DB::raw('month_date'));
-
-        $expenditures_income = $PaymentsClass::selectRaw('expenditure_id as `id`, sum(`sum`) as sum, 1 as `is_income`')->whereIn('addressee_id', $request->wallet_ids)->whereNotIn('source_id', $request->wallet_ids)->groupBy('expenditure_id');
-        $expenditures_outcome = $PaymentsClass::selectRaw('expenditure_id as `id`, sum(`sum`) as sum, 0 as `is_income`')->whereIn('source_id', $request->wallet_ids)->whereNotIn('addressee_id', $request->wallet_ids)->groupBy('expenditure_id');
-
+        $expenditures_income = Payment::selectRaw('expenditure_id as `id`, sum(`sum`) as sum, 1 as `is_income`')->whereIn('addressee_id', $request->wallet_ids)->whereNotIn('source_id', $request->wallet_ids)->groupBy('expenditure_id');
+        $expenditures_outcome = Payment::selectRaw('expenditure_id as `id`, sum(`sum`) as sum, 0 as `is_income`')->whereIn('source_id', $request->wallet_ids)->whereNotIn('addressee_id', $request->wallet_ids)->groupBy('expenditure_id');
         if (isset($request->date_start) && $request->date_start) {
             $income->whereRaw("date(`date`) >= '" . fromDotDate($request->date_start) . "'");
             $outcome->whereRaw("date(`date`) >= '" . fromDotDate($request->date_start) . "'");
             $expenditures_income->whereRaw("date(`date`) >= '" . fromDotDate($request->date_start) . "'");
             $expenditures_outcome->whereRaw("date(`date`) >= '" . fromDotDate($request->date_start) . "'");
         }
-
         if (isset($request->date_end) && $request->date_end) {
             $income->whereRaw("date(`date`) <= '" . fromDotDate($request->date_end) . "'");
             $outcome->whereRaw("date(`date`) <= '" . fromDotDate($request->date_end) . "'");
             $expenditures_income->whereRaw("date(`date`) <= '" . fromDotDate($request->date_end) . "'");
             $expenditures_outcome->whereRaw("date(`date`) <= '" . fromDotDate($request->date_end) . "'");
         }
-
         if (isset($request->expenditure_ids) && count($request->expenditure_ids)) {
             $income->whereIn('expenditure_id', $request->expenditure_ids);
             $outcome->whereIn('expenditure_id', $request->expenditure_ids);
             $expenditures_income->whereIn('expenditure_id', $request->expenditure_ids);
             $expenditures_outcome->whereIn('expenditure_id', $request->expenditure_ids);
         }
-
-        $income_loan = cloneQuery($income)->where('type', 1);
-        $outcome_loan = cloneQuery($outcome)->where('type', 1);
-
-        $income         = collect($income->where('type', 0)->get())->keyBy('month_date')->all();
-        $outcome        = collect($outcome->where('type', 0)->get())->keyBy('month_date')->all();
-        $income_loan    = collect($income_loan->get())->keyBy('month_date')->all();
-        $outcome_loan   = collect($outcome_loan->get())->keyBy('month_date')->all();
-
-        /** ПО СТАТЬЯМ РАСХОДА **/
+        $income = collect($income->get())->keyBy('month_date')->all();
+        $outcome = collect($outcome->get())->keyBy('month_date')->all();
         $expenditure_data = array_merge($expenditures_income->get()->all(), $expenditures_outcome->get()->all());
         $expenditures = [];
-
         foreach($expenditure_data as $e) {
             if (! isset($expenditures[$e->id])) {
                 $expenditures[$e->id] = ['in' => 0, 'out' => 0, 'sum' => 0];
@@ -174,18 +151,12 @@ class PaymentsController extends Controller
                 $expenditures[$e->id]['sum'] -= $e->sum;
             }
         }
-        /** КОНЕЦ ПО СТАТЬЯМ РАСХОДА **/
-
         $dates = array_unique(array_merge(array_keys((array)$income), array_keys((array)$outcome)));
-
         if (! count($dates)) {
             return null;
         }
-
         sort($dates);
-
         $data = [];
-
         // foreach($dates as $date) {
         $d = new \DateTime($dates[0] . '-01');
         while ($d->format('Y-m') <= end($dates)) {
@@ -201,27 +172,9 @@ class PaymentsController extends Controller
                 $out = $outcome[$date]->sum;
                 $sum -= $out;
             }
-
-            $sum_loan = 0;
-            $in_loan = 0;
-            $out_loan = 0;
-            if (isset($income_loan[$date])) {
-                $in_loan = $income_loan[$date]->sum;
-                $sum_loan += $in_loan;
-            }
-            if (isset($outcome_loan[$date])) {
-                $out_loan = $outcome_loan[$date]->sum;
-                $sum_loan -= $out_loan;
-            }
-
-            $total_in  = $in  + $in_loan;
-            $total_out = $out + $out_loan;
-            $total_sum = $sum + $sum_loan;
-
-            $data[$d->format('Y')][] = compact('date', 'sum', 'in', 'out', 'in_loan', 'out_loan', 'sum_loan', 'total_in', 'total_out', 'total_sum');
+            $data[$d->format('Y')][] = compact('date', 'sum', 'in', 'out');
             $d->modify('first day of next month');
         }
-
         return compact('data', 'expenditures');
     }
 
