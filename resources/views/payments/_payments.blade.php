@@ -27,7 +27,7 @@
             <select ng-model="search.checked" class="selectpicker" ng-change="filter()">
                 <option value="">не выбрано</option>
                 <option disabled>──────────────</option>
-                <option ng-repeat="c in Checked" ng-value="@{{ $index }}">@{{ c }}</option>
+                <option ng-repeat="c in Checked" value="@{{ $index }}">@{{ c }}</option>
             </select>
         </div>
         <div>
