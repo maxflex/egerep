@@ -38,7 +38,7 @@
 
     <table class="table reverse-borders" style='font-size: 13px'>
         <tr ng-repeat="model in IndexService.page.data" ng-class="{'selected': selected_payments.indexOf(model.id) !== -1}">
-            <td>
+            <td width='110'>
                 <i class="fa fa-star table-star" ng-class="{'active': model.checked}" aria-hidden="true" ng-click="toggleEnumServer(model, 'checked', Checked, Payment)"></i>
                 <img src="img/svg/copy-file.svg" class="pointer" style='width: 13px; margin-right: 5px; outline: none' ng-click="clonePayment(model)" />
                 <a class="pointer" ng-click="editPayment(model)">@{{ findById(PaymentTypes, model.type).title }}</a>
