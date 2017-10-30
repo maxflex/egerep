@@ -29506,6 +29506,16 @@ tr.ui-sortable-helper {
 .ui-sortable-helper {
   overflow: hidden; }
 
+.table-star {
+  margin-right: 5px;
+  top: 1px;
+  position: relative;
+  cursor: pointer;
+  color: #d1d1d1;
+  outline: none; }
+  .table-star.active {
+    color: #f78d46; }
+
 .ios7-switch {
   display: inline-block;
   position: relative;

@@ -1,6 +1,9 @@
 angular.module('Egerep')
     .controller 'PaymentsIndex', ($scope, $attrs, $timeout, $http, IndexService, Payment, PaymentTypes, UserService, Checked) ->
         bindArguments($scope, arguments)
+
+        $(window).on 'keydown', (e) -> $scope.removeSelectedPayments() if e.which is 8
+
         $('#import-button').fileupload
             # начало загрузки
             send: ->
@@ -48,13 +51,6 @@ angular.module('Egerep')
             $.cookie("payments_mode", mode, { expires: 365, path: '/' })
             if filter then $timeout -> $scope.filter()
 
-        $scope.setChecked = ->
-            ajaxStart()
-            $.post('api/payments/check').then (response) ->
-                console.log(response)
-                notifySuccess("<b>#{response}</b> платежей проверено")
-                ajaxEnd()
-
         $scope.filter = ->
             $.cookie("payments", JSON.stringify($scope.search), { expires: 365, path: '/' });
             IndexService.current_page = 1
@@ -70,11 +66,13 @@ angular.module('Egerep')
                 $scope.selected_payments.push(payment.id)
 
         $scope.removeSelectedPayments = ->
-            ajaxStart()
-            $.post('api/payments/delete', {ids: $scope.selected_payments}).then (response) ->
-                $scope.selected_payments = []
-                $scope.filter()
-                ajaxEnd()
+            if $scope.selected_payments.length then bootbox.confirm "Вы уверены, что хотите удалить <b>#{$scope.selected_payments.length}</b> платежей?", (response) ->
+                if response is true
+                    ajaxStart()
+                    $.post('api/payments/delete', {ids: $scope.selected_payments}).then (response) ->
+                        $scope.selected_payments = []
+                        $scope.filter()
+                        ajaxEnd()
 
         $scope.addPaymentDialog = (payment = false) ->
             $scope.modal_payment = _.clone(payment || $scope.fresh_payment)
@@ -88,8 +86,8 @@ angular.module('Egerep')
                 $('#payment-stream-modal').modal('hide')
                 $scope.filter()
 
-        $scope.clonePayment = ->
-            new_payment = _.clone($scope.modal_payment)
+        $scope.clonePayment = (payment) ->
+            new_payment = _.clone(payment)
             delete new_payment.id
             delete new_payment.created_at
             delete new_payment.updated_at

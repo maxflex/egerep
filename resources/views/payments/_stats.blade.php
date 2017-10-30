@@ -34,31 +34,13 @@
             <h4>@{{ year }}</h4>
             <table class="table no-borders">
                 <tr ng-repeat="d in data">
-                    <td width='150'>
+                    <td width='300'>
                         @{{ formatStatDate(d.date) }}
                     </td>
-                    <td width='110' class='br-left'>
-                        <span ng-show="d.in != 0" class="text-success">+@{{ d.in | number }}</span>
-                    </td>
-                    <td width='110'>
-                        <span ng-show="d.out != 0" class="text-danger">-@{{ d.out | number }}</span>
-                    </td>
-                    <td width='110'>
-                        <span ng-show="d.sum != 0">@{{ d.sum | number }}</span>
-                    </td>
-                    <td width='110' class='br-left'>
-                        <span ng-show="d.in_loan != 0" class="text-success">+@{{ d.in_loan | number }}</span>
-                    </td>
-                    <td width='110'>
-                        <span ng-show="d.out_loan != 0" class="text-danger">-@{{ d.out_loan | number }}</span>
-                    </td>
-                    <td width='110'>
-                        <span ng-show="d.sum_loan != 0">@{{ d.sum_loan | number }}</span>
-                    </td>
-                    <td width='110' class='br-left'>
+                    <td width='150'>
                         <span ng-show="d.total_in != 0" class="text-success">+@{{ d.total_in | number }}</span>
                     </td>
-                    <td width='110'>
+                    <td width='150'>
                         <span ng-show="d.total_out != 0" class="text-danger">-@{{ d.total_out | number }}</span>
                     </td>
                     <td>
@@ -69,31 +51,13 @@
         </div>
         <table class="table" style='margin-top: -20px'>
             <tr>
-                <td width='150'>
+                <td width='300'>
 
                 </td>
-                <td width='110' class='br-left'>
-                    <b ng-show="totals.in != 0" class="text-success">+@{{ totals.in | number:2 }}</b>
-                </td>
-                <td width='110'>
-                    <b ng-show="totals.out != 0" class="text-danger">-@{{ totals.out | number:2 }}</b>
-                </td>
-                <td width='110'>
-                    <b>@{{ totals.sum | number:2 }}</b>
-                </td>
-                <td width='110' class='br-left'>
-                    <b ng-show="totals.in_loan != 0" class="text-success">+@{{ totals.in_loan | number:2 }}</b>
-                </td>
-                <td width='110'>
-                    <b ng-show="totals.out_loan != 0" class="text-danger">-@{{ totals.out_loan | number:2 }}</b>
-                </td>
-                <td width='110'>
-                    <b>@{{ totals.sum_loan | number:2 }}</b>
-                </td>
-                <td width='110' class='br-left'>
+                <td width='150'>
                     <b ng-show="totals.total_in != 0" class="text-success">+@{{ totals.total_in | number:2 }}</b>
                 </td>
-                <td width='110'>
+                <td width='150'>
                     <b ng-show="totals.total_out != 0" class="text-danger">-@{{ totals.total_out | number:2 }}</b>
                 </td>
                 <td>

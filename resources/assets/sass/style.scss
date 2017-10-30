@@ -4209,3 +4209,15 @@ tr.ui-sortable-helper {
 .ui-sortable-helper {
     overflow: hidden;
 }
+
+.table-star {
+	margin-right: 5px;
+	top: 1px;
+	position: relative;
+	cursor: pointer;
+	color: #d1d1d1;
+	outline: none;
+	&.active {
+		color: #f78d46;
+	}
+}

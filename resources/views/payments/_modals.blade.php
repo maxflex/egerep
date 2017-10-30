@@ -55,8 +55,7 @@
               <textarea ng-model="modal_payment.purpose" rows="3"></textarea>
           </div>
           <div>
-              <input type="checkbox" name="checkbox" id="checkbox_id" ng-model="modal_payment.checked" ng-true-value="1" ng-false-value="0">
-              <label for="checkbox_id" style='font-weight: normal'>проверено</label>
+              <i class="fa fa-star table-star" ng-class="{'active': modal_payment.checked}" aria-hidden="true" ng-click="modal_payment.checked = !modal_payment.checked"></i>
           </div>
           <div ng-hide="modal_payment.id">
               <input type="checkbox" name="checkbox" id="checkbox_id" ng-model="modal_payment.create_loan" ng-true-value="1" ng-false-value="0">
@@ -68,7 +67,6 @@
         <div ng-show="modal_payment.id" style='text-align: left'>
             <span class="text-gray">@{{ UserService.getLogin(modal_payment.user_id) }} @{{ formatDateTime(modal_payment.created_at) }}</span>
             <div class="pull-right">
-                <span class="link-like" style='margin-right: 12px' ng-click="clonePayment()">копировать</span>
                 <span class="link-like" style='margin-right: 12px' ng-click="savePayment()">сохранить</span>
                 <span class="link-like text-danger" ng-click="deletePayment()">удалить</span>
             </div>

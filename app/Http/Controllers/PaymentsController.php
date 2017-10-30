@@ -58,9 +58,9 @@ class PaymentsController extends Controller
 
         $data = [];
         // $data[] = ['ID', 'источник', 'адресат', 'статья расхода', 'назначение', 'сумма', 'тип', 'дата', 'пользователь', 'создан', 'обновлен'];
-        $data[] = ['id', 'source_id', 'addressee_id', 'expenditure_id', 'purpose', 'sum', 'type', 'date', 'user_id', 'created_at', 'updated_at'];
+        $data[] = ['id', 'source_id', 'addressee_id', 'expenditure_id', 'purpose', 'sum', 'type', 'checked', 'date', 'user_id', 'created_at', 'updated_at'];
         foreach($payments as $payment) {
-            $data[] = [$payment->id, $payment->source_id, $payment->addressee_id, $payment->expenditure_id, $payment->purpose, $payment->sum, $payment->type, $payment->date, $payment->user_id, $payment->created_at, $payment->updated_at];
+            $data[] = [$payment->id, $payment->source_id, $payment->addressee_id, $payment->expenditure_id, $payment->purpose, $payment->sum, $payment->type, $payment->checked, $payment->date, $payment->user_id, $payment->created_at, $payment->updated_at];
         }
 
         \Excel::create('paystream_' . date('Y-m-d-H-i-s'), function($excel) use($data) {
