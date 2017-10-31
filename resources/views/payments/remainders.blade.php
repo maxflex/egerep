@@ -18,9 +18,13 @@
     </div>
     <table class="table table-hover reverse-borders">
         <tbody ng-repeat="(date, items) in data.items">
+            <tr>
+                <td colspan="3"></td>
+                <td colspan="3">@{{ data.totals[date] | number }}</td>
+            </tr>
             <tr ng-repeat="item in items">
                 <td width='120'>
-                    <span ng-show="$index == 0">@{{ date | date:'dd.MM.yyyy' }}</span>
+                    <span ng-show="$last">@{{ date | date:'dd.MM.yyyy' }}</span>
                 </td>
                 <td width='120'>
                     <span ng-show="item.addressee_id == source_id" class="text-success">+@{{ item.sum | number }}</span>
@@ -36,10 +40,6 @@
                 <td>
                     @{{ item.purpose }}
                 </td>
-            </tr>
-            <tr>
-                <td colspan="3"></td>
-                <td colspan="3">@{{ data.totals[date] | number }}</td>
             </tr>
         </tbody>
     </table>
