@@ -192,9 +192,26 @@ class PaymentsController extends Controller
         $totals = [];
         foreach($items as $date => $data) {
             $remainder = $source->remainder;
-            $remainder += Payment::where('addressee_id', $source->id)->where('date', '<=', $date)->where('date', '>=', $source->remainder_date)->sum('sum');
-            $remainder -= Payment::where('source_id', $source->id)->where('date', '<=', $date)->where('date', '>=', $source->remainder_date)->sum('sum');
-            $totals[$date] = $remainder;
+            if ($date > $source->remainder_date) {
+                $remainder += Payment::where('addressee_id', $source->id)->where('date', '<=', $date)->where('date', '>', $source->remainder_date)->sum('sum');
+                $remainder -= Payment::where('source_id', $source->id)->where('date', '<=', $date)->where('date', '>', $source->remainder_date)->sum('sum');
+            }
+            if ($date < $source->remainder_date) {
+                $remainder -= Payment::where('addressee_id', $source->id)->where('date', '>=', $date)->where('date', '<', $source->remainder_date)->sum('sum');
+                $remainder += Payment::where('source_id', $source->id)->where('date', '>=', $date)->where('date', '<', $source->remainder_date)->sum('sum');
+            }
+            // если date == source->remainder_date, то будет перезаписано ниже
+            $totals[$date] = ['sum' => $remainder];
+        }
+
+        // inject входящий остаток
+        if ($source->remainder_date >= array_keys($items)[count($items) - 1] && $source->remainder_date <= array_keys($items)[0]) {
+            $totals[$source->remainder_date] = [
+                'sum'       => $source->remainder,
+                'comment'   => 'входящий остаток',
+            ];
+            // ksort($items);
+            // $items = array_reverse($items);
         }
 
         return compact('items', 'totals', 'item_cnt');

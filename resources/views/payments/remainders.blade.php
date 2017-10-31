@@ -20,7 +20,10 @@
         <tbody ng-repeat="(date, items) in data.items">
             <tr>
                 <td colspan="3"></td>
-                <td colspan="3">@{{ data.totals[date] | number }}</td>
+                <td>@{{ data.totals[date].sum | number }}</td>
+                <td colspan="2">
+                    @{{ data.totals[date].comment }}
+                </td>
             </tr>
             <tr ng-repeat="item in items">
                 <td width='120'>
@@ -36,6 +39,7 @@
                 </td>
                 <td width='300'>
                     <span ng-if="item.expenditure_id">@{{ expenditures[item.expenditure_id].name }}</span>
+                    {{-- <span ng-if="item.expenditure_id == -1">входящий остаток</span> --}}
                 </td>
                 <td>
                     @{{ item.purpose }}
