@@ -63,6 +63,17 @@ angular.module('Egerep')
                         $scope.filter()
                         ajaxEnd()
 
+        $scope.getExpenditure = (id) ->
+            id = parseInt(id)
+            expenditure = null
+            $scope.expenditures.forEach (e) ->
+                return if expenditure
+                e.data.forEach (d) ->
+                    if d.id == id
+                        expenditure = d
+                        return
+            expenditure
+
         $scope.addPaymentDialog = (payment = false) ->
             $scope.modal_payment = _.clone(payment || $scope.fresh_payment)
             $('#payment-stream-modal').modal('show')
@@ -120,7 +131,7 @@ angular.module('Egerep')
             total
 
     .controller 'PaymentForm', ($scope, FormService, Payment, PaymentTypes)->
-        bindArguments($scope, arguments) 
+        bindArguments($scope, arguments)
         angular.element(document).ready ->
             FormService.init(Payment, $scope.id, $scope.model)
             FormService.prefix = ''
@@ -148,10 +159,19 @@ angular.module('Egerep')
             FormService.init(PaymentSource, $scope.id, $scope.model)
             FormService.prefix = 'payments/'
 
-    .controller 'PaymentExpenditureIndex', ($scope, $attrs, $timeout, IndexService, PaymentExpenditure) ->
+    .controller 'PaymentExpenditureIndex', ($scope, $attrs, $timeout, IndexService, PaymentExpenditure, PaymentExpenditureGroup) ->
         bindArguments($scope, arguments)
         angular.element(document).ready ->
-            IndexService.init(PaymentExpenditure, $scope.current_page, $attrs)
+            $scope.groups = PaymentExpenditureGroup.query()
+
+        $scope.onEdit = (id, event) ->
+            PaymentExpenditureGroup.update {id: id, name: $(event.target).text()}
+
+        $scope.removeGroup = (group) ->
+            bootbox.confirm "Вы уверены, что хотите удалить группу «#{group.name}»", (response) ->
+                if response is true
+                    PaymentExpenditureGroup.remove {id: group.id}, -> $scope.groups = PaymentExpenditureGroup.query()
+
 
         $scope.sortableOptions =
             cursor: "move"
@@ -160,16 +180,33 @@ angular.module('Egerep')
             tolerance: "pointer"
             axis: 'y'
             containment: "parent"
-            update: (event, ui) ->
+            update: (event, ui, data) ->
                 $timeout ->
-                    IndexService.page.data.forEach (model, index) ->
-                        PaymentExpenditure.update({id: model.id, position: index})
+                    $scope.groups.forEach (group) ->
+                        group.data.forEach (model, index) ->
+                            PaymentExpenditure.update({id: model.id, position: index})
 
-    .controller 'PaymentExpenditureForm', ($scope, FormService, PaymentExpenditure)->
+    .controller 'PaymentExpenditureForm', ($scope, $timeout, FormService, PaymentExpenditure, PaymentExpenditureGroup)->
         bindArguments($scope, arguments)
         angular.element(document).ready ->
             FormService.init(PaymentExpenditure, $scope.id, $scope.model)
             FormService.prefix = 'payments/'
+
+        $scope.changeGroup = ->
+            if FormService.model.group_id is -1
+                FormService.model.group_id = ''
+                $('#new-group').modal('show')
+            # console.log(FormService.model.group_id)
+
+        $scope.createNewGroup = ->
+            $('#new-group').modal('hide')
+            PaymentExpenditureGroup.save
+                name: $scope.new_group_name
+            , (response) ->
+                $scope.new_group_name = ''
+                $scope.groups.push(response)
+                FormService.model.group_id = response.id
+                $timeout -> $('.selectpicker').selectpicker('refresh')
 
     .controller 'PaymentRemainders', ($scope, $http, $timeout) ->
         bindArguments($scope, arguments)

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Payment\Expenditure;
+use App\Models\Payment\ExpenditureGroup;
 
 class ExpendituresController extends Controller
 {
@@ -39,6 +40,7 @@ class ExpendituresController extends Controller
         }
         return view(self::VIEWS_FOLDER . 'create')->with(ngInit([
             'model' => new Expenditure,
+            'groups'=> ExpenditureGroup::all()
         ]));
     }
 
@@ -53,6 +55,7 @@ class ExpendituresController extends Controller
         if (! allowed(9999)) {
             return view('errors.not_allowed');
         }
-        return view(self::VIEWS_FOLDER . 'edit')->with(ngInit(compact('id')));
+        $groups = ExpenditureGroup::all();
+        return view(self::VIEWS_FOLDER . 'edit')->with(ngInit(compact('id', 'groups')));
     }
 }

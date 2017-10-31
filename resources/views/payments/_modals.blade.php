@@ -42,12 +42,14 @@
           </div>
           <div class="form-group simpleinput-wrapper">
               <label>статья</label>
-              <input readonly="true" type="text" value="@{{ modal_payment.expenditure_id ? findById(expenditures, modal_payment.expenditure_id).name : 'не указано' }}">
+              <input readonly="true" type="text" value="@{{ modal_payment.expenditure_id ? getExpenditure(modal_payment.expenditure_id).name : 'не указано' }}">
               <i class="fa fa-caret-down" aria-hidden="true"></i>
               <select ng-model="modal_payment.expenditure_id" class="hidden-select">
                   <option value="">не указано</option>
-                  <option disabled>──────────────</option>
-                <option ng-repeat="expenditure in expenditures" ng-value="expenditure.id">@{{ expenditure.name }}</option>
+                  {{-- <option disabled>──────────────</option> --}}
+                    <optgroup ng-repeat="expenditure in expenditures" label="@{{ expenditure.name }}">
+                        <option ng-repeat="d in expenditure.data" value="@{{ d.id }}">@{{ d.name }}</option>
+                    </optgroup>
               </select>
           </div>
           <div class="form-group simpleinput-wrapper">

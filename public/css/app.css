@@ -29516,6 +29516,10 @@ tr.ui-sortable-helper {
   .table-star.active {
     color: #f78d46; }
 
+.disable-events {
+  pointer-events: none;
+  cursor: default !important; }
+
 .ios7-switch {
   display: inline-block;
   position: relative;

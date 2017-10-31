@@ -4221,3 +4221,8 @@ tr.ui-sortable-helper {
 		color: #f78d46;
 	}
 }
+
+.disable-events {
+	pointer-events: none;
+	cursor: default !important;
+}

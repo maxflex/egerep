@@ -11,7 +11,13 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
         link: (scope, element, attrs, ngModel) ->
             ngModel.$parsers.push (val) -> parseInt(val, 10)
             ngModel.$formatters.push (val) -> '' + val
-
+    .directive 'convertToNumberNew', ->
+        require: 'ngModel'
+        link: (scope, element, attrs, ngModel) ->
+            ngModel.$parsers.push (val) ->
+                parseInt(val, 10)
+            ngModel.$formatters.push (val) ->
+                if val or val is 0 then '' + val else ''
     .filter 'cut', ->
         (value, wordwise, max, nothing = '', tail = '…') ->
             return nothing if !value or value is ''

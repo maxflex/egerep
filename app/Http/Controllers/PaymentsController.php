@@ -10,6 +10,7 @@ use App\Models\Payment;
 use App\Models\User;
 use App\Models\Payment\Source;
 use App\Models\Payment\Expenditure;
+use App\Models\Payment\ExpenditureGroup;
 use DB;
 
 class PaymentsController extends Controller
@@ -26,7 +27,7 @@ class PaymentsController extends Controller
             'current_page' => $request->page,
             'fresh_payment'=> new Payment,
             'sources'      => Source::orderBy('position')->select('id', 'name')->get(),
-            'expenditures' => Expenditure::orderBy('position')->select('id', 'name')->get(),
+            'expenditures' => ExpenditureGroup::getAll(),
         ]));
     }
 

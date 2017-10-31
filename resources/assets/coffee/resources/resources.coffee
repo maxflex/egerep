@@ -48,6 +48,9 @@ angular.module('Egerep')
     .factory 'PaymentExpenditure', ($resource) ->
         $resource apiPath('payments/expenditures'), {id: '@id'}, updateMethod()
 
+    .factory 'PaymentExpenditureGroup', ($resource) ->
+        $resource apiPath('payments/expendituregroups'), {id: '@id'}, updateMethod()
+
     .factory 'Comment', ($resource) ->
         $resource apiPath('comments'), {id: '@id'}, updateMethod()
 

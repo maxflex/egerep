@@ -9,7 +9,9 @@
         <div>
             <label>статьи</label>
             <select multiple title="не выбрано" ng-model="search_stats.expenditure_ids" class="selectpicker" ng-change="loadStats()">
-                <option ng-repeat="expenditure in expenditures" value="@{{ expenditure.id }}">@{{ expenditure.name }}</option>
+                <optgroup ng-repeat="expenditure in expenditures" label="@{{ expenditure.name }}">
+                    <option ng-repeat="d in expenditure.data" value="@{{ d.id }}">@{{ d.name }}</option>
+                </optgroup>
             </select>
         </div>
         <div>
