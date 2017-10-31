@@ -192,10 +192,10 @@ class PaymentsController extends Controller
         $totals = [];
         foreach($items as $date => $data) {
             $remainder = $source->remainder;
-            $remainder += Payment::where('type', 0)->where('addressee_id', $source->id)->where('date', '<=', $date)->where('date', '>=', $source->remainder_date)->sum('sum');
-            $remainder -= Payment::where('type', 0)->where('source_id', $source->id)->where('date', '<=', $date)->where('date', '>=', $source->remainder_date)->sum('sum');
-            $remainder -= Payment::where('type', 2)->where('source_id', $source->id)->where('date', '<=', $date)->where('date', '>=', $source->remainder_date)->sum('sum');
-            $remainder += Payment::where('type', 2)->where('addressee_id', $source->id)->where('date', '<=', $date)->where('date', '>=', $source->remainder_date)->sum('sum');
+            $remainder += Payment::where('addressee_id', $source->id)->where('date', '<=', $date)->where('date', '>=', $source->remainder_date)->sum('sum');
+            $remainder -= Payment::where('source_id', $source->id)->where('date', '<=', $date)->where('date', '>=', $source->remainder_date)->sum('sum');
+            // $remainder -= Payment::where('type', 2)->where('source_id', $source->id)->where('date', '<=', $date)->where('date', '>=', $source->remainder_date)->sum('sum');
+            // $remainder += Payment::where('type', 2)->where('addressee_id', $source->id)->where('date', '<=', $date)->where('date', '>=', $source->remainder_date)->sum('sum');
             $totals[$date] = $remainder;
         }
 
