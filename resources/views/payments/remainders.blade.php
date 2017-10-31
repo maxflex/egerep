@@ -18,14 +18,14 @@
     </div>
     <table class="table table-hover reverse-borders">
         <tbody ng-repeat="(date, items) in data.items">
-            <tr>
+            <tr class="text-gray">
                 <td colspan="3"></td>
                 <td>@{{ data.totals[date].sum | number }}</td>
                 <td colspan="2">
                     @{{ data.totals[date].comment }}
                 </td>
             </tr>
-            <tr ng-repeat="item in items">
+            <tr ng-repeat="item in items" ng-class="{'last-date': $last}">
                 <td width='120'>
                     <span ng-show="$last">@{{ date | date:'dd.MM.yyyy' }}</span>
                 </td>
@@ -69,5 +69,11 @@
     }
     .table tr td {
         font-size: 12px;
+    }
+    .table tr td {
+        border-bottom: none !important;
+    }
+    .table tr.last-date td {
+        border-bottom: 1px solid #ddd !important;
     }
 </style>
