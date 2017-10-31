@@ -19,8 +19,7 @@ class PaymentsController extends Controller
      */
     public function index()
     {
-        $PaymentsClass = PaymentsClass();
-        return $PaymentsClass::search()->paginate(100);
+        return Payment::search()->paginate(100);
     }
 
     /**
@@ -49,8 +48,7 @@ class PaymentsController extends Controller
             $loan->source_id = $buf;
             $loan->save();
         }
-        $PaymentsClass = PaymentsClass();
-        return $PaymentsClass::create($request->input())->fresh();
+        return Payment::create($request->input())->fresh();
     }
 
     /**
@@ -61,8 +59,7 @@ class PaymentsController extends Controller
      */
     public function show($id)
     {
-        $PaymentsClass = PaymentsClass();
-        return $PaymentsClass::find($id);
+        return Payment::find($id);
     }
 
     /**
@@ -85,8 +82,7 @@ class PaymentsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $PaymentsClass = PaymentsClass();
-        $PaymentsClass::find($id)->update($request->input());
+        Payment::find($id)->update($request->input());
     }
 
     /**
@@ -97,14 +93,12 @@ class PaymentsController extends Controller
      */
     public function destroy($id)
     {
-        $PaymentsClass = PaymentsClass();
-        $PaymentsClass::destroy($id);
+        Payment::destroy($id);
     }
 
     public function delete(Request $request)
     {
-        $PaymentsClass = PaymentsClass();
-        $PaymentsClass::whereIn('id', $request->ids)->delete();
+        Payment::whereIn('id', $request->ids)->delete();
     }
 
     public function stats(Request $request)

@@ -6,10 +6,6 @@
 
 @section('content')
     <div class="top-links" style='height: 15px'>
-        <div class="pull-left">
-            <a class="pointer" ng-class="{'active': mode == 0}" ng-click="setMode(0)">настоящие</a>
-            <a class="pointer" ng-class="{'active': mode == 1}" ng-click="setMode(1)">тестовые</a>
-        </div>
         <div class="pull-right">
             <a class="pointer" ng-class="{'active': tab == 'payments'}" ng-click="tab = 'payments'">платежи</a>
             <a class="pointer" ng-class="{'active': tab == 'stats'}" ng-click="tab = 'stats'">статистика</a>

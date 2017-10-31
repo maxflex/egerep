@@ -53,8 +53,7 @@ class PaymentsController extends Controller
             return view('errors.not_allowed');
         }
 
-        $PaymentsClass = PaymentsClass();
-        $payments = $PaymentsClass::search(false)->get();
+        $payments = Payment::search(false)->get();
 
         $data = [];
         // $data[] = ['ID', 'источник', 'адресат', 'статья расхода', 'назначение', 'сумма', 'тип', 'дата', 'пользователь', 'создан', 'обновлен'];
@@ -98,7 +97,7 @@ class PaymentsController extends Controller
                     if ($d[$field] && ! in_array($d[$field], $unique_ids[$field])) {
                         $unique_ids[$field][] = $d[$field];
                     }
-                    if (isset($d['action']) && $d['action'] == 'delete' && (! $d['id'] || ! DB::table(PaymentsClass(true))->whereId($d['id'])->exists())) {
+                    if (isset($d['action']) && $d['action'] == 'delete' && (! $d['id'] || ! DB::table('payments')->whereId($d['id'])->exists())) {
                         return response()->json("невозможно удалить #{$index}", 422);
                     }
                     if (isset($d['action']) && $d['action'] == 'add' && $d['id']) {
@@ -142,17 +141,17 @@ class PaymentsController extends Controller
             foreach($data as $d) {
                 if (isset($d['action']) && $d['action'] == 'delete') {
                     unset($d['action']);
-                    DB::table(PaymentsClass(true))->whereId($d['id'])->delete();
+                    DB::table('payments')->whereId($d['id'])->delete();
                 } else
                 if (isset($d['action']) && $d['action'] == 'add') {
                     unset($d['action']);
                     $d['created_at'] = now();
                     $d['updated_at'] = now();
-                    DB::table(PaymentsClass(true))->insert($d);
+                    DB::table('payments')->insert($d);
                 } else {
                     unset($d['action']);
                     $d['updated_at'] = now();
-                    DB::table(PaymentsClass(true))->whereId($d['id'])->update($d);
+                    DB::table('payments')->whereId($d['id'])->update($d);
                 }
             }
 

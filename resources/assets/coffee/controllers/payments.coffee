@@ -38,17 +38,7 @@ angular.module('Egerep')
             $scope.selected_payments = []
             $scope.tab = 'payments'
 
-            if $.cookie("payments_mode")
-                $scope.mode = JSON.parse($.cookie("payments_mode"))
-            else
-                $scope.setMode(0, false)
-
             IndexService.init(Payment, $scope.current_page, $attrs)
-
-        $scope.setMode = (mode, filter = true) ->
-            $scope.mode = mode
-            $.cookie("payments_mode", mode, { expires: 365, path: '/' })
-            if filter then $timeout -> $scope.filter()
 
         $scope.filter = ->
             $.cookie("payments", JSON.stringify($scope.search), { expires: 365, path: '/' });
@@ -130,7 +120,7 @@ angular.module('Egerep')
             total
 
     .controller 'PaymentForm', ($scope, FormService, Payment, PaymentTypes)->
-        bindArguments($scope, arguments)
+        bindArguments($scope, arguments) 
         angular.element(document).ready ->
             FormService.init(Payment, $scope.id, $scope.model)
             FormService.prefix = ''
