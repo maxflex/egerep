@@ -211,7 +211,7 @@ class PaymentsController extends Controller
                 'comment'   => 'входящий остаток',
             ];
             if (! isset($items[$source->remainder_date])) {
-                $items[$source->remainder_date] = [];
+                $items[$source->remainder_date] = [[]];
                 ksort($items);
                 $items = array_reverse($items);
             }
