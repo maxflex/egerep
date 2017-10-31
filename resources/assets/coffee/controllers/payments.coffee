@@ -186,6 +186,19 @@ angular.module('Egerep')
                         group.data.forEach (model, index) ->
                             PaymentExpenditure.update({id: model.id, position: index})
 
+        $scope.sortableGroupOptions =
+            cursor: "move"
+            opacity: 0.9,
+            zIndex: 9999
+            tolerance: "pointer"
+            axis: 'y'
+            containment: "parent"
+            items: ".item-draggable"
+            update: (event, ui, data) ->
+                $timeout ->
+                    $scope.groups.forEach (group, index) ->
+                        PaymentExpenditureGroup.update({id: group.id, position: index})
+
     .controller 'PaymentExpenditureForm', ($scope, $timeout, FormService, PaymentExpenditure, PaymentExpenditureGroup)->
         bindArguments($scope, arguments)
         angular.element(document).ready ->

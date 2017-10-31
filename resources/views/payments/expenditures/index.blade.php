@@ -10,19 +10,21 @@
 @stop
 
 @section('content')
-    <div ng-repeat="group in groups">
-        <h4 editable='@{{ group.id }}' class="inline-block" ng-class="{'disable-events': !group.id}">@{{ group.name }}</h4>
-        <a ng-if='group.id' style='margin-left: 5px' class='link-like text-danger show-on-hover' ng-click='removeGroup(group)'>удалить</a>
-        <table class="table reverse-borders">
-            <tbody ui-sortable='sortableOptions' ng-model="group.data">
-                <tr ng-repeat="model in group.data">
-                    <td>
-                        <a href='payments/expenditures/@{{ model.id }}/edit'>
-                          @{{ model.name }}
-                        </a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <div ui-sortable='sortableGroupOptions' ng-model="groups">
+        <div ng-repeat="group in groups" ng-class="{'item-draggable': group.id}">
+            <h4 editable='@{{ group.id }}' class="inline-block" ng-class="{'disable-events': !group.id}">@{{ group.name }}</h4>
+            <a ng-if='group.id' style='margin-left: 5px' class='link-like text-danger show-on-hover' ng-click='removeGroup(group)'>удалить</a>
+            <table class="table reverse-borders">
+                <tbody ui-sortable='sortableOptions' ng-model="group.data">
+                    <tr ng-repeat="model in group.data">
+                        <td>
+                            <a href='payments/expenditures/@{{ model.id }}/edit'>
+                              @{{ model.name }}
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 @stop
