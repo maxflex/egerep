@@ -37,14 +37,15 @@ class PaymentsController extends Controller
             return view('errors.not_allowed');
         }
         // кол-во элементов = кол-во дней с момента самого раннего состояния счета / Source::PER_PAGE_REMAINDERS
-        $earliest_remainder_date = Source::whereNotNull('remainder_date')->min('remainder_date');
-        $datediff = time() - $earliest_remainder_date;
-        $item_cnt = floor($datediff / (60 * 60 * 24) / Source::PER_PAGE_REMAINDERS);
+        // $earliest_remainder_date = Source::whereNotNull('remainder_date')->min('remainder_date');
+        // $datediff = time() - $earliest_remainder_date;
+        // $item_cnt = floor($datediff / (60 * 60 * 24) / Source::PER_PAGE_REMAINDERS);
 
         return view(self::VIEWS_FOLDER . 'remainders')->with(ngInit([
-            'page' => $request->page,
-            'sources' => collect(Source::whereId(1)->get())->keyBy('id')->all(),
-            'item_cnt' => $item_cnt,
+            // 'page' => $request->page,
+            'sources' => Source::orderBy('position')->get(),
+            'expenditures' => collect(Expenditure::get())->keyBy('id')
+            // 'item_cnt' => $item_cnt,
         ]));
     }
 

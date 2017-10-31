@@ -176,26 +176,29 @@ class PaymentsController extends Controller
     public function remainders(Request $request)
     {
         $page = (isset($request->page) ? $request->page : 1) - 1;
+        $source = Source::find($request->source_id);
 
         // $sources = DB::table('payment_sources')->get();
-        $sources = DB::table('payment_sources')->whereId(1)->get();
+        // $sources = DB::table('payment_sources')->whereId(1)->get();
 
-        $date = new \DateTime('today');
-        $skip_days = $page * Source::PER_PAGE_REMAINDERS;
+        // кол-во элементов
+        $query      = DB::table('payments')->where('source_id', $source->id)->orWhere('addressee_id', $source->id);
+        $item_cnt   = cloneQuery($query)->count();
+        $items      = cloneQuery($query)->orderBy('date', 'desc')->take(Source::PER_PAGE_REMAINDERS)->skip(($page - 1) * Source::PER_PAGE_REMAINDERS)->get();
 
-        $end_date   = clone $date->sub(new \DateInterval("P{$skip_days}D"));
-        $start_date = clone $date->sub(new \DateInterval("P" . Source::PER_PAGE_REMAINDERS . "D"));
+        $items = collect($items)->groupBy('date')->all();
 
-        $return = [];
-        while ($start_date < $end_date) {
-            $start = $start_date->modify('+1 day')->format('Y-m-d'); // переход на новую неделю
-            $end   = $start_date->format('Y-m-d');
-            $return_date = $end;
-            foreach($sources as $source) {
-                $return[$return_date][$source->id] = Source::getRemaindersOnDate($source, $return_date);
-            }
+        // суммы дней
+        $totals = [];
+        foreach($items as $date => $data) {
+            $remainder = $source->remainder;
+            $remainder += Payment::where('type', 0)->where('addressee_id', $source->id)->where('date', '<=', $date)->where('date', '>=', $source->remainder_date)->sum('sum');
+            $remainder -= Payment::where('type', 0)->where('source_id', $source->id)->where('date', '<=', $date)->where('date', '>=', $source->remainder_date)->sum('sum');
+            $remainder -= Payment::where('type', 2)->where('source_id', $source->id)->where('date', '<=', $date)->where('date', '>=', $source->remainder_date)->sum('sum');
+            $remainder += Payment::where('type', 2)->where('addressee_id', $source->id)->where('date', '<=', $date)->where('date', '>=', $source->remainder_date)->sum('sum');
+            $totals[$date] = $remainder;
         }
 
-        return array_reverse($return);
+        return compact('items', 'totals', 'item_cnt');
     }
 }

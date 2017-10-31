@@ -211,9 +211,14 @@ angular.module('Egerep')
     .controller 'PaymentRemainders', ($scope, $http, $timeout) ->
         bindArguments($scope, arguments)
         angular.element(document).ready ->
-            $timeout ->
-                load($scope.page)
-                $scope.current_page = $scope.page
+            # $timeout ->
+            #     # load($scope.page)
+            #     $scope.current_page = $scope.page
+
+        $scope.filterChanged = ->
+            # load($scope.page)
+            $scope.current_page = 1
+            load(1)
 
         $scope.pageChanged = ->
             load($scope.current_page)
@@ -223,6 +228,7 @@ angular.module('Egerep')
             ajaxStart()
             $http.post 'api/payments/remainders',
                 page: page
+                source_id: $scope.source_id
             .then (response) ->
                 ajaxEnd()
                 $scope.data = response.data
