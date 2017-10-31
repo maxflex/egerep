@@ -176,7 +176,7 @@ class PaymentsController extends Controller
     public function remainders(Request $request)
     {
         $page = (isset($request->page) ? $request->page : 1) - 1;
-        $source = Source::find($request->source_id);
+        $source = DB::table('payment_sources')->whereId($request->source_id)->first();
 
         // $sources = DB::table('payment_sources')->get();
         // $sources = DB::table('payment_sources')->whereId(1)->get();
@@ -194,8 +194,6 @@ class PaymentsController extends Controller
             $remainder = $source->remainder;
             $remainder += Payment::where('addressee_id', $source->id)->where('date', '<=', $date)->where('date', '>=', $source->remainder_date)->sum('sum');
             $remainder -= Payment::where('source_id', $source->id)->where('date', '<=', $date)->where('date', '>=', $source->remainder_date)->sum('sum');
-            // $remainder -= Payment::where('type', 2)->where('source_id', $source->id)->where('date', '<=', $date)->where('date', '>=', $source->remainder_date)->sum('sum');
-            // $remainder += Payment::where('type', 2)->where('addressee_id', $source->id)->where('date', '<=', $date)->where('date', '>=', $source->remainder_date)->sum('sum');
             $totals[$date] = $remainder;
         }
 
