@@ -210,8 +210,11 @@ class PaymentsController extends Controller
                 'sum'       => $source->remainder,
                 'comment'   => 'входящий остаток',
             ];
-            // ksort($items);
-            // $items = array_reverse($items);
+            if (! isset($items[$date])) {
+                $items[$date] = [];
+                ksort($items);
+                $items = array_reverse($items);
+            }
         }
 
         return compact('items', 'totals', 'item_cnt');
