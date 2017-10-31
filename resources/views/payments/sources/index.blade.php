@@ -11,31 +11,12 @@
 
 @section('content')
     <table class="table reverse-borders">
-        <thead>
-            <tr>
-                <td>
-
-                </td>
-                <td>
-                    входящий остаток
-                </td>
-                <td>
-                    заемный остаток
-                </td>
-            </tr>
-        </thead>
         <tbody ui-sortable='sortableOptions' ng-model="IndexService.page.data">
             <tr ng-repeat="model in IndexService.page.data">
-                <td width='400'>
+                <td>
                     <a href='payments/sources/@{{ model.id }}/edit'>
                       @{{ model.name }}
                     </a>
-                </td>
-                <td>
-                      @{{ model.calc_remainder | hideZero | number }}
-                </td>
-                <td>
-                      @{{ model.calc_loan_remainder | hideZero | number }}
                 </td>
             </tr>
         </tbody>
