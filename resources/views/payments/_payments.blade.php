@@ -14,7 +14,7 @@
         </div>
         <div>
             <label>статья</label>
-            <select multiple title="не выбрано" ng-model="search.expenditure_ids" class="selectpicker" ng-change="filter()">
+            <select multiple title="не выбрано" ng-model="search.expenditure_ids" class="selectpicker expenditure-select" ng-change="filter()">
                 <optgroup ng-repeat="expenditure in expenditures" label="@{{ expenditure.name }}">
                     <option ng-repeat="d in expenditure.data" value="@{{ d.id }}">@{{ d.name }}</option>
                 </optgroup>

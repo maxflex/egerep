@@ -18,10 +18,10 @@
     </div>
     <table class="table table-hover reverse-borders">
         <tbody ng-repeat="(date, items) in data.items">
-            <tr class="text-gray">
+            <tr>
                 <td colspan="3"></td>
                 <td>@{{ data.totals[date].sum | number }}</td>
-                <td colspan="2">
+                <td colspan="2" class="text-gray">
                     @{{ data.totals[date].comment }}
                 </td>
             </tr>

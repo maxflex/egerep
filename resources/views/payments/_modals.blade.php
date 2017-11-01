@@ -47,7 +47,7 @@
               <select ng-model="modal_payment.expenditure_id" class="hidden-select">
                   <option value="">не указано</option>
                   {{-- <option disabled>──────────────</option> --}}
-                    <optgroup ng-repeat="expenditure in expenditures" label="@{{ expenditure.name }}">
+                    <optgroup ng-repeat="expenditure in expenditures" label="@{{ expenditure.name }}" ng-hide="!expenditure.data.length">
                         <option ng-repeat="d in expenditure.data" value="@{{ d.id }}">@{{ d.name }}</option>
                     </optgroup>
               </select>

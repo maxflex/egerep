@@ -175,7 +175,7 @@ class PaymentsController extends Controller
 
     public function remainders(Request $request)
     {
-        $page = (isset($request->page) ? $request->page : 1) - 1;
+        $page = isset($request->page) ? $request->page : 1;
         $source = DB::table('payment_sources')->whereId($request->source_id)->first();
 
         // $sources = DB::table('payment_sources')->get();

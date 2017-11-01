@@ -31,6 +31,11 @@
     tr.selected td {
         background: #f5f4f4;
     }
+    .dropdown-header {
+        color: #b9b9b9 !important;
+        font-size: 16px !important;
+        font-weight: bold !important;
+    }
 </style>
 
 {{-- drag & drop --}}
