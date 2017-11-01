@@ -58,7 +58,7 @@
                 @{{ findById(sources, model.addressee_id).name }}
             </td>
             <td ng-click="selectPayment(model)">
-                @{{ findById(expenditures, model.expenditure_id).name }}
+                @{{ getExpenditure(model.expenditure_id).name }}
             </td>
             {{-- <td>
                 @{{ UserService.getLogin(model.user_id) }}: @{{ formatDateTime(model.created_at) }}
