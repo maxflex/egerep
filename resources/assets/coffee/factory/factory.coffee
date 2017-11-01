@@ -212,12 +212,6 @@ angular.module('Egerep')
         12: 'студенты'
         13: 'остальные'
 
-    .value 'PaymentTypes', [
-        {id: 0, title: 'платёж'},
-        {id: 1, title: 'заём'},
-        {id: 2, title: 'списание'},
-    ]
-
     .value 'CallStatuses',
         1: 'входящие без ответа'
         2: 'соответствие договорам'

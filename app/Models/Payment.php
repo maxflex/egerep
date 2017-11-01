@@ -8,7 +8,7 @@ class Payment extends Model
 {
     protected $fillable = [
         'sum',
-        'type',
+        'sum_comma',
         'purpose',
         'date',
         'addressee_id',
@@ -18,13 +18,24 @@ class Payment extends Model
     ];
 
     protected $attributes = [
-        'type'           => 0,
         'source_id'      => '',
         'addressee_id'   => '',
         'expenditure_id' => '',
     ];
 
+    protected $appends = ['sum_comma'];
+
     protected static $dotDates = ['date'];
+
+    public function getSumCommaAttribute()
+    {
+        return str_replace('.', ',', $this->sum);
+    }
+
+    public function setSumCommaAttribute($value)
+    {
+        $this->attributes['sum'] = str_replace(',', '.', $value);
+    }
 
     protected static function boot()
     {
@@ -70,18 +81,6 @@ class Payment extends Model
 
         if (isset($search->checked) && ! isBlank($search->checked)) {
             $query->where('checked', $search->checked);
-        }
-
-        // if (isset($search->date_start) && $search->date_start) {
-        //     $query->whereRaw("date(`date`) >= '" . fromDotDate($search->date_start) . "'");
-        // }
-        //
-        // if (isset($search->date_end) && $search->date_end) {
-        //     $query->whereRaw("date(`date`) <= '" . fromDotDate($search->date_end) . "'");
-        // }
-
-        if (isset($search->type)) {
-            $query->where('type', $search->type);
         }
 
         return $query;

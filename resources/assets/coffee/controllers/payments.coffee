@@ -1,5 +1,5 @@
 angular.module('Egerep')
-    .controller 'PaymentsIndex', ($scope, $attrs, $timeout, $http, IndexService, Payment, PaymentTypes, UserService, Checked) ->
+    .controller 'PaymentsIndex', ($scope, $attrs, $timeout, $http, IndexService, Payment, UserService, Checked) ->
         bindArguments($scope, arguments)
 
         $(window).on 'keydown', (e) -> $scope.removeSelectedPayments() if e.which is 8
@@ -31,9 +31,6 @@ angular.module('Egerep')
                 source_id: ''
                 expenditure_id: ''
                 type: ''
-
-            $scope.$watch 'search.type', (newVal, oldVal) ->
-                $scope.filter() if IndexService.data_loaded
 
             $scope.selected_payments = []
             $scope.tab = 'payments'
@@ -80,6 +77,29 @@ angular.module('Egerep')
 
         $scope.savePayment = ->
             $scope.adding_payment = true
+
+            if not $scope.modal_payment.date
+                $('#payment-date').focus()
+                notifyError("укажите дату")
+                return
+
+            if not $scope.modal_payment.source_id
+                notifyError("укажите источник")
+                return
+
+            if not $scope.modal_payment.addressee_id
+                notifyError("укажите адресат")
+                return
+
+            if not $scope.modal_payment.expenditure_id
+                notifyError("укажите статью")
+                return
+
+            if not $scope.modal_payment.purpose
+                $('#payment-purpose').focus()
+                notifyError("укажите назначение")
+                return
+
             func = if $scope.modal_payment.id then Payment.update else Payment.save
             func $scope.modal_payment, (response) ->
                 $scope.adding_payment = false
@@ -130,7 +150,7 @@ angular.module('Egerep')
                     total.sum += parseFloat(d.sum)
             total
 
-    .controller 'PaymentForm', ($scope, FormService, Payment, PaymentTypes)->
+    .controller 'PaymentForm', ($scope, FormService, Payment)->
         bindArguments($scope, arguments)
         angular.element(document).ready ->
             FormService.init(Payment, $scope.id, $scope.model)

@@ -4,21 +4,13 @@
     <div class="modal-content">
       <div class="modal-body">
           <div class="form-group simpleinput-wrapper">
-              <label>тип операции</label>
-              <input readonly="true" type="text" value="@{{ findById(PaymentTypes, modal_payment.type).title }}">
-              <i class="fa fa-caret-down" aria-hidden="true"></i>
-              <select ng-model="modal_payment.type" class="hidden-select">
-                <option ng-repeat="type in PaymentTypes" ng-value="type.id">@{{ type.title }}</option>
-              </select>
-          </div>
-          <div class="form-group simpleinput-wrapper">
               <label>дата</label>
-              <input type="text" class="bs-date-top datemask" ng-model="modal_payment.date">
+              <input type="text" class="bs-date-top datemask" ng-model="modal_payment.date" id="payment-date">
               <i class="fa fa-caret-down" aria-hidden="true"></i>
           </div>
           <div class="form-group simpleinput-wrapper">
               <label>сумма</label>
-              <input type="text" ng-model="modal_payment.sum">
+              <input type="text" ng-model="modal_payment.sum_comma" class="digits-only-floatcomma">
           </div>
           <div class="form-group simpleinput-wrapper">
               <label>источник</label>

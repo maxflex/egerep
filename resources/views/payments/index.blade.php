@@ -36,6 +36,15 @@
         font-size: 16px !important;
         font-weight: bold !important;
     }
+    .fa-pencil {
+        top: 1px;
+        position: relative;
+        margin-left: 4px;
+        outline: none;
+    }
+    .col-xs-11.col-sm-4.alert.alert-danger {
+        z-index: 9999 !important;
+    }
 </style>
 
 {{-- drag & drop --}}
