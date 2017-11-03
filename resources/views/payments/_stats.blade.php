@@ -71,7 +71,7 @@
         <table class="table no-borders" tyle='margin: 0'>
             <tr ng-repeat="(expenditure_id, data) in expenditure_data">
                 <td width='300'>
-                    @{{ expenditure_id ? findById(expenditures, expenditure_id).name : 'не указано' }}
+                    @{{ expenditure_id ? getExpenditure(expenditure_id).name : 'не указано' }}
                 </td>
                 <td width='150'>
                     <span ng-show="data.in != 0" class="text-success">+@{{ data.in | number }}</span>
