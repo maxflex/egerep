@@ -288,10 +288,6 @@ angular
             $scope.cropper_built = false
             bindCropper()
 
-        $scope.toggleBanned = ->
-            $scope.tutor.banned = +(!$scope.tutor.banned)
-
-
         # get tutor
         $timeout ->
             if $scope.id > 0

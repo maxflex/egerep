@@ -59,7 +59,6 @@ class Tutor extends Service\Person
         'login',
         'password',
         'branches',
-        'banned',
         'in_egecentr',
         'video_link',
         'debt_comment',
@@ -84,7 +83,6 @@ class Tutor extends Service\Person
     // protected $with = ['markers'];
 
     protected static $commaSeparated = ['subjects', 'grades', 'branches', 'errors'];
-    protected static $virtual = ['banned'];
 
     const UPLOAD_DIR = '/img/tutors/';
     const NO_PHOTO   = 'no-profile-img.gif';
@@ -203,12 +201,6 @@ class Tutor extends Service\Person
             ->where('date_end', '>=', $this->getDateLimit())
             ->orderBy('date_end', 'asc')
             ->get();
-    }
-
-    public function getBannedAttribute()
-    {
-        // @check: does this run 2 separate queries?
-        return $this->user ? $this->user->banned : false;
     }
 
     public function getStatisticsAttribute()
@@ -437,7 +429,7 @@ class Tutor extends Service\Person
         parent::boot();
 
         static::saving(function($tutor) {
-            if ($tutor->changed(['login', 'password', 'banned'])) {
+            if ($tutor->changed(['login', 'password'])) {
                 $tutor->updateUser();
             }
         });
@@ -684,7 +676,6 @@ class Tutor extends Service\Person
                 'id_entity' => $this->id,
                 'type'      => static::USER_TYPE,
             ], [
-                'banned'    => $this->getClean('banned'),
                 'login'     => $this->login,
                 'password'  => $this->password,
             ]);
