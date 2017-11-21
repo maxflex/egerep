@@ -147,14 +147,14 @@
             <div ng-show="tutor.in_egecentr">
                 <div class="form-group">
                     <div class="input-group">
-                        <input class="form-control" ng-disabled="tutor.in_egecentr != 1" ng-model="tutor.login" placeholder="Логин">
+                        <input class="form-control" ng-disabled="tutor.in_egecentr != 2" ng-model="tutor.login" placeholder="Логин">
                         <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-lock no-margin-right" ng-class="{ 'text-danger': tutor.in_egecentr != 1 }"></span>
+                            <span class="glyphicon glyphicon-lock no-margin-right" ng-class="{ 'text-danger': tutor.in_egecentr != 2 }"></span>
                         </span>
                     </div>
                 </div>
                 <div class="form-group">
-                    <input placeholder="пароль" type="text" ng-model="tutor.password" class="form-control" ng-disabled="tutor.in_egecentr != 1">
+                    <input placeholder="пароль" type="text" ng-model="tutor.password" class="form-control" ng-disabled="tutor.in_egecentr != 2">
                 </div>
                 <div class="form-group">
                     <div class="form-group">
