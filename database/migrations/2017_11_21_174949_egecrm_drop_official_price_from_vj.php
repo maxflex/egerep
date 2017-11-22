@@ -12,13 +12,13 @@ class EgecrmDropOfficialPriceFromVj extends Migration
      */
     public function up()
     {
-        Schema::connection('egecrm')->table('visit_journal', function (Blueprint $table) {
-            $table->dropColumn('insurance');
-            $table->dropColumn('teacher_price_official');
-        });
-        Schema::connection('egecrm')->table('groups', function (Blueprint $table) {
-            $table->dropColumn('teacher_price_official');
-        });
+        // Schema::connection('egecrm')->table('visit_journal', function (Blueprint $table) {
+        //     $table->dropColumn('insurance');
+        //     $table->dropColumn('teacher_price_official');
+        // });
+        // Schema::connection('egecrm')->table('groups', function (Blueprint $table) {
+        //     $table->dropColumn('teacher_price_official');
+        // });
     }
 
     /**
