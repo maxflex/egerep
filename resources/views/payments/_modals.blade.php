@@ -51,10 +51,6 @@
           <div>
               <i class="fa fa-star table-star" ng-class="{'active': modal_payment.checked}" aria-hidden="true" ng-click="modal_payment.checked = !modal_payment.checked"></i>
           </div>
-          <div ng-hide="modal_payment.id">
-              <input type="checkbox" name="checkbox" id="checkbox_id" ng-model="modal_payment.create_loan" ng-true-value="1" ng-false-value="0">
-              <label for="checkbox_id" style='font-weight: normal'>создать заём</label>
-          </div>
       </div>
       <div class="modal-footer center">
         <button ng-hide="modal_payment.id" type="button" class="btn btn-primary" ng-disabled="adding_payment" ng-click="savePayment()">добавить</button>
