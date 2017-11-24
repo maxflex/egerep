@@ -13,6 +13,8 @@ class Review extends Model
         'score',
         'comment',
         'state',
+        'ball',
+        'max_ball',
         'signature',
     ];
     protected $appends = ['user_login'];

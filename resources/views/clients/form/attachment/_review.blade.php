@@ -21,10 +21,15 @@
             </select>
         </div>
         <div class="form-group"><input type="text" class="form-control" ng-model='selected_attachment.review.signature' placeholder="подпись"></div>
+        <div class="form-group" style='display: flex; align-items: center'>
+            <input type="text" class="form-control" ng-model='selected_attachment.review.ball' placeholder="балл">
+            <span style='padding: 0 10px'>из</span>
+            <input type="text" class="form-control" ng-model='selected_attachment.review.max_ball' placeholder="балл">
+        </div>
     </div>
     <div class="col-sm-3">
         <div class="form-group">
-            <textarea style="height: 75px" cols="40" class="form-control" ng-model='selected_attachment.review.comment'></textarea>
+            <textarea style="height: 115px" cols="40" class="form-control" ng-model='selected_attachment.review.comment'></textarea>
         </div>
     </div>
     <div class="col-sm-6">
