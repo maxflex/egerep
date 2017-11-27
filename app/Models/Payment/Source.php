@@ -12,8 +12,19 @@ class Source extends Model
 
     const PER_PAGE_REMAINDERS = 100;
 
-    protected $fillable = ['name', 'remainder', 'remainder_date', 'position'];
+    protected $fillable = ['name', 'remainder', 'remainder_comma', 'remainder_date', 'position'];
     protected static $dotDates = ['remainder_date'];
+    protected $appends = ['remainder_comma'];
+
+    public function getRemainderCommaAttribute()
+    {
+        return str_replace('.', ',', $this->remainder);
+    }
+
+    public function setRemainderCommaAttribute($value)
+    {
+        $this->attributes['remainder'] = str_replace(',', '.', $value);
+    }
 
     public function getCalcRemainderAttribute()
     {

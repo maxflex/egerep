@@ -183,6 +183,7 @@
 			// REGEX для полей типа "число" и "1-5"
 			$(".digits-only-float").inputmask("Regex", {regex: "[0-9]*[.]?[0-9]+"});
 			$(".digits-only-floatcomma").inputmask("Regex", {regex: "[0-9]*[,]?[0-9]{0,2}"});
+			$(".digits-only-floatcomma-minus").inputmask("Regex", {regex: "[-]?[0-9]*[,]?[0-9]{0,2}"});
 			$(".digits-only-minus").inputmask("Regex", {regex: "[-]?[0-9]*"});
 			$(".digits-only").inputmask("Regex", {regex: "[0-9]*"});
 
