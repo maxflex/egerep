@@ -174,7 +174,7 @@ class PaymentsController extends Controller
         // $sources = DB::table('payment_sources')->whereId(1)->get();
 
         // кол-во элементов
-        $query      = DB::table('payments')->where('source_id', $source->id)->orWhere('addressee_id', $source->id);
+        $query      = DB::table('payments')->where('date', '>', $source->remainder_date)->whereRaw("(source_id={$source->id} or addressee_id={$source->id})");
         $item_cnt   = cloneQuery($query)->count();
         $items      = cloneQuery($query)->orderBy('date', 'desc')->take(Source::PER_PAGE_REMAINDERS)->skip(($page - 1) * Source::PER_PAGE_REMAINDERS)->get();
 
@@ -187,10 +187,6 @@ class PaymentsController extends Controller
             if ($date > $source->remainder_date) {
                 $remainder += Payment::where('addressee_id', $source->id)->where('date', '<=', $date)->where('date', '>', $source->remainder_date)->sum('sum');
                 $remainder -= Payment::where('source_id', $source->id)->where('date', '<=', $date)->where('date', '>', $source->remainder_date)->sum('sum');
-            }
-            if ($date < $source->remainder_date) {
-                $remainder -= Payment::where('addressee_id', $source->id)->where('date', '>=', $date)->where('date', '<', $source->remainder_date)->sum('sum');
-                $remainder += Payment::where('source_id', $source->id)->where('date', '>=', $date)->where('date', '<', $source->remainder_date)->sum('sum');
             }
             // если date == source->remainder_date, то будет перезаписано ниже
             $totals[$date] = ['sum' => round($remainder, 2)];
