@@ -193,7 +193,9 @@ class PaymentsController extends Controller
         }
 
         // inject входящий остаток
-        if ($source->remainder_date >= array_keys($items)[count($items) - 1] && $source->remainder_date <= array_keys($items)[0]) {
+        if (($source->remainder_date >= array_keys($items)[count($items) - 1] && $source->remainder_date <= array_keys($items)[0])
+            || ($item_cnt < Source::PER_PAGE_REMAINDERS)
+        ) {
             $totals[$source->remainder_date] = [
                 'sum'       => $source->remainder,
                 'comment'   => 'входящий остаток',
