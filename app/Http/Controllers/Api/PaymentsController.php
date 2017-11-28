@@ -174,7 +174,7 @@ class PaymentsController extends Controller
         // $sources = DB::table('payment_sources')->whereId(1)->get();
 
         // кол-во элементов
-        $query      = DB::table('payments')->where('date', '>', $source->remainder_date)->whereRaw("(source_id={$source->id} or addressee_id={$source->id})");
+        $query      = DB::table('payments')->where('date', '>=', $source->remainder_date)->whereRaw("(source_id={$source->id} or addressee_id={$source->id})");
         $item_cnt   = cloneQuery($query)->count();
         $items      = cloneQuery($query)->orderBy('date', 'desc')->take(Source::PER_PAGE_REMAINDERS)->skip(($page - 1) * Source::PER_PAGE_REMAINDERS)->get();
 
@@ -198,11 +198,7 @@ class PaymentsController extends Controller
                 'sum'       => $source->remainder,
                 'comment'   => 'входящий остаток',
             ];
-            if (! isset($items[$source->remainder_date])) {
-                $items[$source->remainder_date] = [[]];
-                ksort($items);
-                $items = array_reverse($items);
-            }
+            $items[$source->remainder_date] = [[]];
         }
 
         return compact('items', 'totals', 'item_cnt');
