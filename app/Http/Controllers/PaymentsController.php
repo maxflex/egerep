@@ -111,9 +111,6 @@ class PaymentsController extends Controller
                     if ($d['sum'] && ! filter_var($d['sum'], FILTER_VALIDATE_FLOAT)) {
                         return response()->json("неверная сумма #{$index}", 422);
                     }
-                    if (! in_array((string)$d['type'], ["0", "1", "2"])) {
-                        return response()->json("неверный тип #{$index}", 422);
-                    }
                     if ($d['id']) {
                         if (! preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) [0-9]{2}:[0-9]{2}:[0-9]{2}$/", $d['created_at'])) {
                             return response()->json("неверный формат created_at #{$index}", 422);
