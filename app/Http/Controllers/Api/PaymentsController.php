@@ -191,6 +191,7 @@ class PaymentsController extends Controller
             $sum = $remainder->remainder;
             if ($date > $remainder->getClean('date')) {
                 $sum += Payment::where('addressee_id', $source->id)->where('date', '<=', $date)->where('date', '>', $remainder->getClean('date'))->sum('sum');
+                $sum -= Payment::where('source_id', $source->id)->where('date', '<=', $date)->where('date', '>', $remainder->getClean('date'))->sum('sum');
             }
             // если date == source->remainder_date, то будет перезаписано ниже
             $totals[$date] = ['sum' => round($sum, 2)];
