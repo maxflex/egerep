@@ -34,7 +34,7 @@ class SourcesController extends Controller
      */
     public function create()
     {
-        if (! allowed(9999)) {
+        if (! allowed(9999) || ! allowed(9998)) {
             return view('errors.not_allowed');
         }
         return view(self::VIEWS_FOLDER . 'create')->with(ngInit([
@@ -50,7 +50,7 @@ class SourcesController extends Controller
      */
     public function edit($id)
     {
-        if (! allowed(9999)) {
+        if (! allowed(9999) || ! allowed(9998)) {
             return view('errors.not_allowed');
         }
         return view(self::VIEWS_FOLDER . 'edit')->with(ngInit(compact('id')));
