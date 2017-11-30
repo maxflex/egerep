@@ -168,39 +168,46 @@ class PaymentsController extends Controller
     public function remainders(Request $request)
     {
         $page = isset($request->page) ? $request->page : 1;
-        $source = DB::table('payment_sources')->whereId($request->source_id)->first();
+        $source = Source::find($request->source_id);
 
         // $sources = DB::table('payment_sources')->get();
         // $sources = DB::table('payment_sources')->whereId(1)->get();
 
         // кол-во элементов
-        $query      = DB::table('payments')->where('date', '>=', $source->remainder_date)->whereRaw("(source_id={$source->id} or addressee_id={$source->id})");
+        $query      = DB::table('payments')->where('date', '>=', $source->remainders->last()->getClean('date'))->whereRaw("(source_id={$source->id} or addressee_id={$source->id})");
         $item_cnt   = cloneQuery($query)->count();
         $items      = cloneQuery($query)->orderBy('date', 'desc')->take(Source::PER_PAGE_REMAINDERS)->skip(($page - 1) * Source::PER_PAGE_REMAINDERS)->get();
+
+        // для inject входящий остаток
+        $earliest_payment_date = cloneQuery($query)->orderBy('date', 'asc')->value('date');
+        $latest_payment_date = cloneQuery($query)->orderBy('date', 'desc')->value('date');
 
         $items = collect($items)->groupBy('date')->all();
 
         // суммы дней
         $totals = [];
         foreach($items as $date => $data) {
-            $remainder = $source->remainder;
-            if ($date > $source->remainder_date) {
-                $remainder += Payment::where('addressee_id', $source->id)->where('date', '<=', $date)->where('date', '>', $source->remainder_date)->sum('sum');
-                $remainder -= Payment::where('source_id', $source->id)->where('date', '<=', $date)->where('date', '>', $source->remainder_date)->sum('sum');
+            $remainder = $source->getNearestRemainder($date);
+            $sum = $remainder->remainder;
+            if ($date > $remainder->getClean('date')) {
+                $sum += Payment::where('addressee_id', $source->id)->where('date', '<=', $date)->where('date', '>', $remainder->getClean('date'))->sum('sum');
             }
             // если date == source->remainder_date, то будет перезаписано ниже
-            $totals[$date] = ['sum' => round($remainder, 2)];
+            $totals[$date] = ['sum' => round($sum, 2)];
         }
 
         // inject входящий остаток
-        if (($source->remainder_date >= array_keys($items)[count($items) - 1] && $source->remainder_date <= array_keys($items)[0])
-            || ($item_cnt < Source::PER_PAGE_REMAINDERS)
-        ) {
-            $totals[$source->remainder_date] = [
-                'sum'       => $source->remainder,
-                'comment'   => 'входящий остаток',
-            ];
-            $items[$source->remainder_date] = [[]];
+        $dates = array_keys($items);
+        foreach($source->remainders as $r) {
+            if (($r->getClean('date') >= $dates[count($dates) - 1] && $r->getClean('date') <= $dates[0])
+                || ($r->getClean('date') < $earliest_payment_date) || ($r->getClean('date') > $latest_payment_date)
+            ) {
+                $totals[$r->getClean('date')] = [
+                    'sum'       => $r->remainder,
+                    'comment'   => ($r->date == $source->remainders->last()->date) ? 'входящий остаток' : 'засвидетельствованный остаток',
+                ];
+                $items[$r->getClean('date')] = [[]];
+            }
         }
 
         return compact('items', 'totals', 'item_cnt');

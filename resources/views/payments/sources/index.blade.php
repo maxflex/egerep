@@ -18,12 +18,6 @@
                       @{{ model.name }}
                     </a>
                 </td>
-                <td>
-                    @{{ model.remainder | number }}
-                </td>
-                <td>
-                    @{{ model.remainder_date }}
-                </td>
             </tr>
         </tbody>
     </table>

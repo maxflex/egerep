@@ -49,7 +49,7 @@ class SourcesController extends Controller
      */
     public function show($id)
     {
-        return Source::find($id);
+        return Source::with('remainders')->find($id);
     }
 
     /**

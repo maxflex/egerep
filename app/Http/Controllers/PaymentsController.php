@@ -43,7 +43,7 @@ class PaymentsController extends Controller
 
         return view(self::VIEWS_FOLDER . 'remainders')->with(ngInit([
             // 'page' => $request->page,
-            'sources' => Source::whereNotNull('remainder_date')->orderBy('position')->get(),
+            'sources' => Source::has('remainders')->orderBy('position')->get(),
             'expenditures' => collect(Expenditure::get())->keyBy('id')
             // 'item_cnt' => $item_cnt,
         ]));

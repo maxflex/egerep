@@ -173,11 +173,33 @@ angular.module('Egerep')
                     IndexService.page.data.forEach (model, index) ->
                         PaymentSource.update({id: model.id, position: index})
 
-    .controller 'PaymentSourceForm', ($scope, FormService, PaymentSource)->
+    .controller 'PaymentSourceForm', ($scope, FormService, PaymentSource, SourceRemainder)->
         bindArguments($scope, arguments)
         angular.element(document).ready ->
             FormService.init(PaymentSource, $scope.id, $scope.model)
             FormService.prefix = 'payments/'
+
+        $scope.editRemainder = (model) ->
+            $scope.modal_remainder = _.clone(model)
+            $('#remainder-stream-modal').modal('show')
+
+        $scope.deleteRemainder = (model) ->
+            SourceRemainder.delete {id: model.id}, (response) ->
+                $('#remainder-stream-modal').modal('hide')
+                FormService.init(PaymentSource, $scope.id, $scope.model)
+
+        $scope.addRemainderDialog = (remainder = false) ->
+            $scope.modal_remainder = _.clone(remainder || {date: moment().format('DD.MM.YYYY'), source_id: $scope.id})
+            $('#remainder-stream-modal').modal('show')
+
+        $scope.saveRemainder = ->
+            $scope.adding_remainder = true
+
+            func = if $scope.modal_remainder.id then SourceRemainder.update else SourceRemainder.save
+            func $scope.modal_remainder, (response) ->
+                $scope.adding_remainder = false
+                $('#remainder-stream-modal').modal('hide')
+                FormService.init(PaymentSource, $scope.id, $scope.model)
 
     .controller 'PaymentExpenditureIndex', ($scope, $attrs, $timeout, IndexService, PaymentExpenditure, PaymentExpenditureGroup) ->
         bindArguments($scope, arguments)

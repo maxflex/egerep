@@ -180,6 +180,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api', 'middleware' => ['web']],
 
     Route::group(['namespace' => 'Payments', 'prefix' => 'payments'], function() {
         Route::resource('sources', 'SourcesController');
+        Route::resource('source/remainders', 'SourceRemaindersController');
         Route::resource('expendituregroups', 'ExpenditureGroupsController');
         Route::resource('expenditures', 'ExpendituresController');
     });
