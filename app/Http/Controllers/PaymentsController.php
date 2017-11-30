@@ -140,17 +140,17 @@ class PaymentsController extends Controller
             foreach($data as $d) {
                 if (isset($d['action']) && $d['action'] == 'delete') {
                     unset($d['action']);
-                    DB::table('payments')->whereId($d['id'])->delete();
+                    Payment::destroy($d['id']);
                 } else
                 if (isset($d['action']) && $d['action'] == 'add') {
                     unset($d['action']);
                     $d['created_at'] = now();
                     $d['updated_at'] = now();
-                    DB::table('payments')->insert($d);
+                    Payment::create($d);
                 } else {
                     unset($d['action']);
                     $d['updated_at'] = now();
-                    DB::table('payments')->whereId($d['id'])->update($d);
+                    Payment::find($d['id'])->update($d);
                 }
             }
 
