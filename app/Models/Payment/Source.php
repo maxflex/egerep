@@ -20,7 +20,7 @@ class Source extends Model
     public function getNearestRemainder($date)
     {
         foreach($this->remainders as $r) {
-            if ($r->date <= $date) {
+            if ($r->getClean('date') <= $date) {
                 return $r;
             }
         }
