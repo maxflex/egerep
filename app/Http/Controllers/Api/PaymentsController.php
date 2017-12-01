@@ -90,7 +90,9 @@ class PaymentsController extends Controller
 
     public function delete(Request $request)
     {
-        Payment::whereIn('id', $request->ids)->delete();
+        foreach($request->ids as $id) {
+            Payment::destroy($id);
+        }
     }
 
     public function stats(Request $request)

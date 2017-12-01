@@ -23,6 +23,11 @@ class RequestsController extends Controller
         ];
     }
 
+
+    // request 1 14630
+    // client 14630
+    // attachments_client
+
     /**
      * Переместить заявку
      */
@@ -33,7 +38,9 @@ class RequestsController extends Controller
         $client = Client::where('id', $client_id);
 
         if ($client->exists()) {
-            \App\Models\Request::find($id)->update(compact('client_id'));
+            $request = \App\Models\Request::find($id);
+            \App\Models\Attachment::where('client_id', $request->client_id)->update(compact('client_id'));
+            $request->update(compact('client_id'));
             // удалить клиентов без заявок
             Client::removeWithoutRequests();
             return 1;
