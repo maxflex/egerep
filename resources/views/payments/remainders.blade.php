@@ -18,9 +18,16 @@
     </div>
     <table class="table table-hover reverse-borders">
         <tbody ng-repeat="(date, items) in data.items">
+            <tr ng-if="data.remainders[date]">
+                <td colspan="4"></td>
+                <td>@{{ data.remainders[date].sum | number }}</td>
+                <td colspan="2" class="text-gray">
+                    @{{ data.totals[date].comment }}
+                </td>
+            </tr>
             <tr>
                 <td colspan="3"></td>
-                <td>@{{ data.totals[date].sum | number }}</td>
+                <td colspan="2">@{{ data.totals[date].sum | number }}</td>
                 <td colspan="2" class="text-gray">
                     @{{ data.totals[date].comment }}
                 </td>
@@ -34,6 +41,8 @@
                 </td>
                 <td width='120'>
                     <span ng-show="item.source_id == source_id" class="text-danger">-@{{ item.sum | number }}</span>
+                </td>
+                <td width='120'>
                 </td>
                 <td width='120'>
                 </td>

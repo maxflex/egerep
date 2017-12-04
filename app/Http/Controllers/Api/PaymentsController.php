@@ -189,7 +189,7 @@ class PaymentsController extends Controller
         // суммы дней
         $totals = [];
         foreach($items as $date => $data) {
-            $remainder = $source->getNearestRemainder($date);
+            $remainder = $source->remainders->last();
             $sum = $remainder->remainder;
             if ($date > $remainder->getClean('date')) {
                 $sum += Payment::where('addressee_id', $source->id)->where('date', '<=', $date)->where('date', '>', $remainder->getClean('date'))->sum('sum');
@@ -201,18 +201,18 @@ class PaymentsController extends Controller
 
         // inject входящий остаток
         $dates = array_keys($items);
+        $remainders = [];
         foreach($source->remainders as $r) {
             if (($r->getClean('date') >= $dates[count($dates) - 1] && $r->getClean('date') <= $dates[0])
                 || ($r->getClean('date') < $earliest_payment_date) || ($r->getClean('date') > $latest_payment_date)
             ) {
-                $totals[$r->getClean('date')] = [
-                    'sum'       => $r->remainder,
-                    'comment'   => ($r->date == $source->remainders->last()->date) ? 'входящий остаток' : 'засвидетельствованный остаток',
+                $remainders[$r->getClean('date')] = [
+                    'sum'     => $r->remainder,
+                    'comment' => ($r->date == $source->remainders->last()->date) ? 'входящий остаток' : 'засвидетельствованный остаток',
                 ];
-                $items[$r->getClean('date')] = [[]];
             }
         }
 
-        return compact('items', 'totals', 'item_cnt');
+        return compact('items', 'totals', 'remainders', 'item_cnt');
     }
 }
