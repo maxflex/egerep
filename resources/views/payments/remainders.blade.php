@@ -27,7 +27,7 @@
                     @{{ data.remainders[date].comment }}
                 </td>
             </tr>
-            <tr>
+            <tr ng-if="data.totals[date]">
                 <td colspan="3"></td>
                 <td colspan="2">@{{ data.totals[date].sum | number }}</td>
                 <td colspan="2" class="text-gray">
