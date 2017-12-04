@@ -19,7 +19,9 @@
     <table class="table table-hover reverse-borders">
         <tbody ng-repeat="(date, items) in data.items">
             <tr ng-if="data.remainders[date]">
-                <td colspan="4"></td>
+                <td colspan="4">
+                    <span ng-show="!items.length">@{{ date | date:'dd.MM.yyyy' }}</span>
+                </td>
                 <td>@{{ data.remainders[date].sum | number }}</td>
                 <td colspan="2" class="text-gray">
                     @{{ data.remainders[date].comment }}
