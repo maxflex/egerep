@@ -22,7 +22,7 @@
                 <td colspan="4"></td>
                 <td>@{{ data.remainders[date].sum | number }}</td>
                 <td colspan="2" class="text-gray">
-                    @{{ data.totals[date].comment }}
+                    @{{ data.remainders[date].comment }}
                 </td>
             </tr>
             <tr>
