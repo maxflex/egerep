@@ -211,7 +211,7 @@ class PaymentsController extends Controller
                     'comment' => ($r->date == $source->remainders->last()->date) ? 'входящий остаток' : 'засвидетельствованный остаток',
                 ];
                 if (! isset($items[$r->getClean('date')])) {
-                    $items[$r->getClean('date')] = [[]];
+                    $items[$r->getClean('date')] = [];
                 }
             }
         }
