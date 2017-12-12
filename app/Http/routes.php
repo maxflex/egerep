@@ -8,7 +8,35 @@ Route::get('logout', 'LoginController@logout');
 Route::group(['middleware' => ['web', LogUrlOpen::class]], function () {
     Route::get('/', 'RequestsController@index');
     Route::get('/testy', function() {
-        return \App\Service\YandexDirect::getExludedSites();
+        $years = [2015, 2016, 2017];
+        $data = [];
+        $data[] = ['дата', 'первых занятий', 'последних занятий'];
+        foreach($years as $year) {
+	        $date = new \DateTime($year . '-09-01');
+            $end_date = ($year + 1) . '-06-30';
+            while ($date->format('Y-m-d') < $end_date) {
+                $formatted_date = $date->format('Y-m-d');
+                $start_count = \DB::connection('egecrm')->select("SELECT COUNT(*) as cnt FROM (
+                        SELECT id_entity, id_subject, year, MIN(lesson_date) as `min_lesson_date` FROM visit_journal
+                        WHERE type_entity='STUDENT' AND grade <= 11
+                        GROUP BY id_entity, id_subject, year
+                    ) vj WHERE vj.min_lesson_date = '{$formatted_date}'
+                ")[0]->cnt;
+                $end_count = \DB::connection('egecrm')->select("SELECT COUNT(*) as cnt FROM (
+                        SELECT id_entity, id_subject, year, MAX(lesson_date) as `max_lesson_date` FROM visit_journal
+                        WHERE type_entity='STUDENT' AND grade <= 11
+                        GROUP BY id_entity, id_subject, year
+                    ) vj WHERE vj.max_lesson_date = '{$formatted_date}'
+                ")[0]->cnt;
+                $data[] = [$formatted_date, $start_count, $end_count];
+                $date->modify('+1 day');
+            }
+        }
+        \Excel::create('vj_' . date('Y-m-d-H-i-s'), function($excel) use($data) {
+            $excel->sheet('vj', function($sheet) use($data) {
+                $sheet->fromArray($data, null, 'A1', true, false);
+            });
+        })->export('xls');
     });
     Route::get('temp/{year}', 'TempController@index');
 
