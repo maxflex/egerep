@@ -279,6 +279,12 @@ angular.module('Egerep')
             load($scope.current_page)
             paginate 'payments/remainders', $scope.current_page
 
+        $scope.getDatesReversed = ->
+            arr = []
+            $.each $scope.data.items, (date) ->
+                arr.push(date)
+            arr.sort().reverse()
+
         load = (page) ->
             ajaxStart()
             $http.post 'api/payments/remainders',

@@ -196,7 +196,7 @@ class PaymentsController extends Controller
                 $sum -= Payment::where('source_id', $source->id)->where('date', '<=', $date)->where('date', '>', $remainder->getClean('date'))->sum('sum');
             }
             // если date == source->remainder_date, то будет перезаписано ниже
-            $totals[$date] = ['sum' => round($sum, 2)];
+            $totals[$date] = ['sum' => round($sum, 2), 'comment' => 'остаток на конец дня'];
         }
 
         // inject входящий остаток

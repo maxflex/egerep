@@ -17,10 +17,10 @@
         </div>
     </div>
     <table class="table table-hover reverse-borders">
-        <tbody ng-repeat="(date, items) in data.items">
+        <tbody ng-repeat="date in getDatesReversed()">
             <tr ng-if="data.remainders[date]">
-                <td colspan="4">
-                    <span ng-show="!items.length">@{{ date | date:'dd.MM.yyyy' }}</span>
+                <td colspan="3">
+                    <span ng-show="!data.items[date].length">@{{ date | date:'dd.MM.yyyy' }}</span>
                 </td>
                 <td>@{{ data.remainders[date].sum | number }}</td>
                 <td colspan="2" class="text-gray">
@@ -29,12 +29,12 @@
             </tr>
             <tr ng-if="data.totals[date]">
                 <td colspan="3"></td>
-                <td colspan="2">@{{ data.totals[date].sum | number }}</td>
+                <td>@{{ data.totals[date].sum | number }}</td>
                 <td colspan="2" class="text-gray">
                     @{{ data.totals[date].comment }}
                 </td>
             </tr>
-            <tr ng-repeat="item in items" ng-class="{'last-date': $last}">
+            <tr ng-repeat="item in data.items[date]" ng-class="{'last-date': $last}">
                 <td width='120'>
                     <span ng-show="$last">@{{ date | date:'dd.MM.yyyy' }}</span>
                 </td>
@@ -43,8 +43,6 @@
                 </td>
                 <td width='120'>
                     <span ng-show="item.source_id == source_id" class="text-danger">-@{{ item.sum | number }}</span>
-                </td>
-                <td width='120'>
                 </td>
                 <td width='120'>
                 </td>
