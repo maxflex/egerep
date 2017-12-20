@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Redis;
 
 class Sms extends Model
 {
-    protected $fillable = ['number', 'user_id', 'id_status', 'id_status', 'id_smsru', 'message'];
+    protected $fillable = ['number', 'user_id', 'id_status', 'id_status', 'external_id', 'message'];
     protected $appends = ['user_login'];
 
     public function getUserLoginAttribute()
@@ -32,13 +32,16 @@ class Sms extends Model
 			if (!preg_match('/[0-9]{10}/', $number)) {
 				continue;
 			}
-			$params = array(
-				"api_id"	=>	"8d5c1472-6dea-d6e4-75f4-a45e1a0c0653",
-				"to"		=>	$number,
-				"text"		=>	$message,
-				"from"      =>  "EGE-Repetit",
+            $params = array(
+				"login"		=> config('sms.login'),
+				"psw"		=> config('sms.psw'),
+                "fmt"       => 1, // 1 – вернуть ответ в виде чисел: ID и количество SMS через запятую (1234,1)
+                "charset"   => "utf-8",
+				"phones"	=> $number,
+				"mes"		=> $message,
+				"sender"    => "EGE-Centr",
 			);
-			$result = self::exec("http://sms.ru/sms/send", $params, $create);
+			$result = self::exec(config('sms.host'), $params, $create);
 		}
 
 
@@ -55,15 +58,14 @@ class Sms extends Model
 		curl_close($ch);
 
 		// Сохраняем отправленную смс
-		$info = explode("\n", $result);
+		$info = explode(",", $result);
 
 		$info = [
-			"id_status" => $info[0],
-			"id_smsru"	=> $info[1],
-			"balance"	=> $info[2],
+			"id_status"   => 0,
+			"external_id" => $info[0],
             "user_id"   => User::loggedIn() ? User::fromSession()->id : 0,
-			"message"	=> $params["text"],
-			"number"	=> $params["to"],
+			"message"	=> $params["mes"],
+			"number"	=> $params["phones"],
 		];
 
 		// создаем объект для истории

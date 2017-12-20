@@ -92,24 +92,15 @@ class ExternalController extends Controller
      */
     public function updateSmsStatus($request)
     {
-        foreach ($request->data as $entry) {
-            $lines = explode("\n",$entry);
-            if ($lines[0] == "sms_status") {
-
-                $sms_id 	= $lines[1];
-                $sms_status = $lines[2];
-
-                \App\Models\Sms::where('id_smsru', $sms_id)->update([
-                    'id_status' => $sms_status
-                ]);
-
-				event(new SmsStatusUpdate($sms_id, $sms_status));
-
-                // "Изменение статуса. Сообщение: $sms_id. Новый статус: $sms_status";
-                // Здесь вы можете уже выполнять любые действия над этими данными.
-            }
+        if (isset($request->mes)) {
+            // message
+        } else {
+            // status
+            \App\Models\Sms::where('external_id', $request->id)->update([
+                'id_status' => $request->status
+            ]);
+            event(new SmsStatusUpdate($request->id, $request->status));
         }
-        exit("100"); /* Важно наличие этого блока, иначе наша система посчитает, что в вашем обработчике сбой */
     }
 
     public function mangoStats($request)

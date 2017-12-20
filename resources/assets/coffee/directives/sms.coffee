@@ -7,7 +7,7 @@ angular.module('Egerep').directive 'sms', ->
         #pusher
         PusherService.bind 'SmsStatusUpdate', (data) ->
             angular.forEach $scope.history, (val, key) ->
-                if val.id_smsru == data.id_smsru
+                if val.external_id == data.external_id
                     val.id_status = data.id_status
                     $scope.$apply()
                 console.log val, key

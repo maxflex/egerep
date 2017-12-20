@@ -9,7 +9,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 class SmsStatusUpdate extends Event implements ShouldBroadcast
 {
     use SerializesModels;
-    public $id_smsru; # id сообщения
+    public $external_id; # id сообщения
     public $id_status; // статус сообщения
 
     /**
@@ -17,9 +17,9 @@ class SmsStatusUpdate extends Event implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct($id_smsru, $id_status)
+    public function __construct($external_id, $id_status)
     {
-        $this->id_smsru = $id_smsru;
+        $this->external_id = $external_id;
         $this->id_status = $id_status;
     }
 
@@ -36,7 +36,7 @@ class SmsStatusUpdate extends Event implements ShouldBroadcast
     public function broadcastWith()
     {
         return [
-            'id_smsru' => $this->id_smsru,
+            'external_id' => $this->external_id,
             'id_status'     => $this->id_status,
         ];
     }
