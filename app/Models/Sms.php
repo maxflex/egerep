@@ -39,7 +39,7 @@ class Sms extends Model
                 "charset"   => "utf-8",
 				"phones"	=> $number,
 				"mes"		=> $message,
-				"sender"    => "EGE-Centr",
+				"sender"    => "EGE-Repetit",
 			);
 			$result = self::exec(config('sms.host'), $params, $create);
 		}
