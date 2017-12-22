@@ -5,11 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\Events\SmsStatusUpdate;
 use Illuminate\Http\Request;
 
-use App\Models\Api;
+use App\Models\Api\Api;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\Tutor;
+use App\Models\Sms;
 use Illuminate\Support\Facades\Redis;
 
 class ExternalController extends Controller
@@ -96,10 +97,18 @@ class ExternalController extends Controller
             // message
         } else {
             // status
-            \App\Models\Sms::where('external_id', $request->id)->update([
-                'id_status' => $request->status
-            ]);
-            event(new SmsStatusUpdate($request->id, $request->status));
+            $sms = Sms::where('external_id', $request->id);
+
+            // если СМС хранится в EGEREP
+            if ($sms->exists()) {
+                $sms->update([
+                    'id_status' => $request->status
+                ]);
+                event(new SmsStatusUpdate($request->id, $request->status));
+            } else {
+                // иначе отправляем уведомление о смене статуса в EGECRM
+                Api::exec('SmsStatus', $request->all());
+            }
         }
     }
 

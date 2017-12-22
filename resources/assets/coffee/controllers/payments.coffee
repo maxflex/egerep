@@ -280,6 +280,7 @@ angular.module('Egerep')
             paginate 'payments/remainders', $scope.current_page
 
         $scope.getDatesReversed = ->
+            return if not $scope.data
             arr = []
             $.each $scope.data.items, (date) ->
                 arr.push(date)
