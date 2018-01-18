@@ -6,18 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Email extends Model
 {
-    public function __construct($array)
-    {
-        parent::__construct($array);
+    protected $fillable = [
+        'email' 	,
+        'subject' 	,
+        'message' 	,
+        'files'		,
+        'place'		,
+        'id_place' 	,
+        'additional',
+    ];
 
-        $this->getCoordinates();
-
-        if (mb_strlen($this->message) > self::INLINE_EMAIL_LENGTH) {
-            $this->message_short = mb_strimwidth($this->message, 0, self::INLINE_EMAIL_LENGTH, '...', 'utf-8');
-        }
-    }
-
-    public static function send($email, $subject, $message, $files, $place = NULL, $id_place = NULL, $additional = NULL)
+    public static function send($email, $subject, $message, $files = [], $place = NULL, $id_place = NULL, $additional = NULL)
     {
         foreach ($files as $file) {
             unset($file['email_uploaded_file_id']);
