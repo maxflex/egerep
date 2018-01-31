@@ -11,5 +11,3 @@ Envoy.blade.php
 .DS_Store
 .editorconfig
 test.php
-/local
-/app/Console/Commands/ReviewLink.php
