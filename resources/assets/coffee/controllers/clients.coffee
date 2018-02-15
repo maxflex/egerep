@@ -416,6 +416,7 @@ angular
                         $scope.client.markers.splice index, 1
 
         $scope.bindMarkerChangeType = (marker) ->
+            return false
             google.maps.event.addListener marker, 'click', (event) ->
                 if @type == 'green'
                     @type = 'red'

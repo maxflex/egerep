@@ -31,7 +31,7 @@ class CommandsController extends Controller
      */
     public function postRecalcEfficency()
     {
-        \Artisan::queue('recalc:efficency', ['--queue' => 'default']);
+        \Artisan::queue('recalc:efficency');
     }
 
     /**

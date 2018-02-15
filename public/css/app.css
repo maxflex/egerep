@@ -26249,15 +26249,8 @@ tspan.mg-points-mono {
   background-color: #e2a6a6;
   border-color: #e2a6a6; }
 
-.gmnoprint:not(.gm-bundled-control) {
-  display: none; }
-
 .gm-bundled-control .gmnoprint {
   display: block; }
-
-.gm-style-cc {
-  left: 50px;
-  right: auto !important; }
 
 map > div {
   border-radius: 4px; }
