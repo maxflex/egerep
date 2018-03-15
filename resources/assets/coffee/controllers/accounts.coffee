@@ -34,6 +34,7 @@ angular.module('Egerep')
                 if result is true
                     AccountPayment.delete {id: payment.id}, ->
                         account.all_payments = removeById(account.all_payments, payment.id)
+                $rootScope.closeDialog('add-account-payment')
 
         $scope.updateArchive = (field, set) ->
             # просто update выдавал ошибку field doesnt exists
@@ -129,7 +130,7 @@ angular.module('Egerep')
             $scope.dialog 'change-account-date'
 
         $scope.remove = (account) ->
-            bootbox.confirm '<b>Удалить встречу?</b> Все платежи встречи будут удалены.', (result) ->
+            bootbox.confirm '<b>Удалить встречу?</b>', (result) ->
                 if result is true
                     Account.delete {id: account.id}, ->
                         $scope.tutor.last_accounts = removeById($scope.tutor.last_accounts, account.id)
