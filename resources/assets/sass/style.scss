@@ -474,26 +474,25 @@
 
 	.accounts-data {
         width: 1000px;
+		font-size: 12px;
+		margin-top: 20px;
 	  	// margin-bottom: 40px;
 		& .mbs {
 			margin-bottom: 5px;
 			& > span:first-of-type {
 				display: inline-block;
-				width: 260px;
-				font-weight: bold;
+				width: 220px;
+				// font-weight: bold;
 				float: left;
 			}
 		}
 	}
 	.accounts-table {
         & .account-payments {
-            & tr td:first-of-type {
-                padding-left: 0 !important;
-            }
-            & tr td {
-                border: none !important;
-                padding: 1px 3px;
-            }
+			margin-bottom: 20px;
+            & > div:not(:last-child) {
+				margin-bottom: 4px;
+			}
         }
 		& input {
 			width: 100px;
@@ -4225,4 +4224,8 @@ tr.ui-sortable-helper {
 .disable-events {
 	pointer-events: none;
 	cursor: default !important;
+}
+
+.small, small {
+	font-size: 12px;
 }

@@ -7,6 +7,9 @@ angular.module('Egerep')
         $scope.current_period = 0
         $scope.all_displayed  = false
 
+        $scope.getStyle = (account) ->
+            height: $("#meeting-info-#{ account.id }").height() + 4
+
         $scope.paymentModal = (account, payment = {}) ->
             return if payment.confirmed and $scope.user.rights.indexOf('48') is -1
             $scope.modal_account = account
@@ -123,17 +126,7 @@ angular.module('Egerep')
                 endDate     : getAccountEndDate(index)
 
             $scope.selected_account = $scope.tutor.last_accounts[index]
-            $scope.change_date_end = $scope.formatDate($scope.selected_account.date_end, true)
             $scope.dialog 'change-account-date'
-
-        $scope.changeDate = ->
-            $scope.selected_account.date_end = convertDate($scope.change_date_end)
-            Account.update
-                id: $scope.selected_account.id
-                date_end: $scope.selected_account.date_end
-            # , (response) ->
-            #     $scope.selected_account = response
-            $scope.closeDialog 'change-account-date'
 
         $scope.remove = (account) ->
             bootbox.confirm '<b>Удалить встречу?</b> Все платежи встречи будут удалены.', (result) ->

@@ -22,7 +22,6 @@ class Account extends Model
         'user_id',
         'debt',
         'debt_type',
-        'comment',
         'payment_method',
         'data',
         'confirmed',

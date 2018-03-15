@@ -34,6 +34,8 @@ class Kernel extends ConsoleKernel
         Commands\SwitchGrades::class,
         Commands\CallStatus::class,
         Commands\DeleteMarginIntermediate::class,
+
+        Commands\Once\AccountComments::class,
     ];
 
     /**

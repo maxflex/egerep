@@ -75,24 +75,6 @@
     </div>
 </div>
 
-
-{{-- ИЗМЕНЕНИЕ ДАТЫ ВСТРЕЧИ --}}
-<div class="modal" id='change-account-date' tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Изменить дату встречи</h4>
-            </div>
-            <div class="modal-body">
-                <input type="text" id='date-end-change' class="form-control" placeholder="дата конца периода" ng-model='change_date_end'>
-            </div>
-            <div class="modal-footer center">
-                <button type="button" class="btn btn-primary" ng-click="changeDate()">Изменить</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 {{-- ПАРАМЕТРЫ СТЫКОВКИ --}}
 <div class="modal" id='account-info' tabindex="-1">
     <div class="modal-dialog" style="width: 50%">
@@ -135,4 +117,42 @@
             </div>
         </div>
     </div>
+</div>
+{{-- ДОБАВЛЕНИЕ ПЛАТЕЖА --}}
+<div id="add-account-payment" class="modal" role="dialog" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">@{{ modal_payment.id ? 'Редактировать' : 'Добавить' }} платеж</h4>
+      </div>
+      <div class="modal-body">
+          <div class="form-group">
+              <input placeholder='передано' type="text" ng-model='modal_payment.sum' class="form-control digits-only">
+          </div>
+          <div class="form-group">
+              <select ng-model='modal_payment.method' class='form-control'>
+                  <option value="">метод расчета</option>
+                  <option disabled>──────────────</option>
+                  <option ng-repeat='(index, method) in PaymentMethods' value="@{{ index }}"
+                    ng-selected="modal_payment.method !== undefined && modal_payment.method == index">
+                      @{{ method }}
+                  </option>
+              </select>
+          </div>
+          <div class="form-group">
+              <input placeholder='дата' type="text" ng-model='modal_payment.date' class="form-control bs-date">
+          </div>
+      </div>
+      <div class="modal-footer center">
+        <button type="button" class="btn btn-primary full-width" ng-click="editPayment()">
+            @{{ modal_payment.id ? 'редактировать' : 'добавить' }}
+        </button>
+        <div style='margin-top: 8px' ng-show="modal_payment.id && (!modal_payment.confirmed || user.rights.indexOf('48') !== -1)">
+            <button ng-click='removePayment(modal_account, modal_payment)' class='btn btn-danger full-width'>
+                удалить
+            </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
