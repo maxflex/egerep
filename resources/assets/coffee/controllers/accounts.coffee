@@ -10,6 +10,12 @@ angular.module('Egerep')
         $scope.getStyle = (account) ->
             height: $("#meeting-info-#{ account.id }").height() + 4
 
+        # 01.01.2018 => 01.01.18
+        $scope.splitYear = (date) ->
+            d = date.split('.')
+            d[2] = d[2].slice(2, 4)
+            d.join('.')
+
         $scope.paymentModal = (account, payment = {}) ->
             return if payment.confirmed and $scope.user.rights.indexOf('48') is -1
             $scope.modal_account = account

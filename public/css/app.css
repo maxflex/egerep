@@ -26616,10 +26616,10 @@ a {
       text-align: left; }
     .accounts-table tr td .account-guard {
       z-index: 1000;
-      height: 40px;
+      height: 80px;
       width: 420px;
       position: absolute;
-      left: 260px;
+      left: 220px;
       outline: none !important; }
       .accounts-table tr td .account-guard:hover {
         outline: none; }

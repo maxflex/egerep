@@ -13,9 +13,6 @@
                         <span>@{{ account.debt_calc }}</span>
                     </div>
                     <div class="mbs" style='position: relative'>
-                        @if(! allowed(\Shared\Rights::ER_EDIT_PAYMENTS))
-                            <div class="blocker-div" style='height: calc(100% + 5px)'></div>
-                        @endif
                         <span>Задолженность</span>
                         <pencil-input model='account.debt'></pencil-input>
                         <span ng-if='account.debt > 0'> – репетитор <span class="link-like-no-color"
@@ -27,7 +24,6 @@
                         </span>
                     </div>
                     <div class="mbs">
-                        <div class="blocker-div" ng-show="account.confirmed && !{{ allowed(\Shared\Rights::ER_EDIT_ACCOUNTS, true) }}"></div>
                         <span>Расчет создан</span>
                         @{{ account.user_login }} @{{ formatDateTime(account.created_at) }}
                         <span class="link-like text-danger" style='margin-left: 8px'
@@ -53,7 +49,7 @@
                         <span ng-show='!payment.id'>платеж</span>
                         на сумму @{{ payment.sum }} руб.
                         (@{{ payment.id ? PaymentMethods[payment.method] : 'взаимозачёт' }})
-                        на дату @{{ payment.date }}
+                        на дату @{{ splitYear(payment.date) }}
                         проведён @{{ UserService.getLogin(payment.user_id) }} @{{ formatDateTime(payment.created_at) }}
 
                         <span style='margin-left: 8px' @if(allowed(\Shared\Rights::ER_EDIT_PAYMENTS)) class="link-like" ng-click="toggleConfirmed(payment, AccountPayment)" @endif
