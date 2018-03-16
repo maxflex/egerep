@@ -38,10 +38,14 @@ class DelayedJobs extends Command
      */
     public function handle()
     {
+	    \Log::info("Getting delayed jobs...");
 		// получить все текущие задачи
 		$current_jobs = DelayedJob::whereRaw("DATE_FORMAT(run_at, '%Y-%m-%d %H:%i')='" . date('Y-m-d H:i') ."'")->get();
 
+		\Log::info(count($current_jobs) . " jobs found");
+
 		foreach($current_jobs as $job) {
+			\Log::info("Handling " . $job->class);
 			$job_class = new $job->class;
 			$job_class->handle($job->params);
 			$job->delete();
