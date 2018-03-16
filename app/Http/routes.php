@@ -7,7 +7,7 @@ Route::get('logout', 'LoginController@logout');
 
 Route::group(['middleware' => ['web', LogUrlOpen::class]], function () {
     Route::get('/', 'RequestsController@index');
-    
+
     Route::get('temp/{year}', 'TempController@index');
 
     Route::get('emergency', 'EmergencyController@index');
@@ -124,6 +124,9 @@ Route::group(['middleware' => ['web', LogUrlOpen::class]], function () {
  * API ROUTES
  */
 Route::group(['namespace' => 'Api', 'prefix' => 'api', 'middleware' => ['web']], function () {
+    Route::get('continue-session', function() {
+        event(new App\Events\ContinueSession(\App\Models\User::fromSession()->id));
+    });
     Route::get('activity', 'ActivityController@index');
     Route::resource('markers', 'MarkersController');
     Route::get('notifications/get', 'NotificationsController@get');

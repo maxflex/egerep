@@ -72,5 +72,6 @@ class Kernel extends ConsoleKernel
         $schedule->command('tutor_distances:recalc')->dailyAt('03:00');
         $schedule->command('recalc:tutor_data')->dailyAt('03:30');
         $schedule->command('recalc:efficency')->dailyAt('22:30');
+        $schedule->command('jobs:delayed')->everyMinute();
     }
 }

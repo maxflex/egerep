@@ -54,5 +54,6 @@
       </div>
     @endif
     @include('_search')
+    @include('_logout')
   </body>
 </html>
