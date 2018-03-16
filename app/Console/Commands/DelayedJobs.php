@@ -44,7 +44,7 @@ class DelayedJobs extends Command
 		foreach($current_jobs as $job) {
 			$job_class = new $job->class;
 			$job_class->handle($job->params);
-			$job->destroy();
+			$job->delete();
 		}
     }
 }
