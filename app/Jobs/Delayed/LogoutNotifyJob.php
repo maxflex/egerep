@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Jobs\Delayed;
+
 use App\Events\LogoutNotify;
 
 /**
