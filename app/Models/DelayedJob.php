@@ -20,7 +20,7 @@ class DelayedJob extends Model
         self::where('class', $class)->where('params', json_encode($params))->delete();
 
         self::insert([
-            'class'     => $class,
+            'class'     => '\\' . $class,
             'params'    => json_encode($params),
             'run_at'    => (new \DateTime)->modify("+{$delay_in_minutes} minutes")->format('Y-m-d H:i:00')
         ]);
