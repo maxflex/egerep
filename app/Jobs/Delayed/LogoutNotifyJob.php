@@ -6,7 +6,7 @@ use App\Events\LogoutNotify;
  * Уведомление о логауте
  */
 
-class LogoutNotifyJob extends BaseJob
+class LogoutNotifyJob extends Job
 {
     public function handle($params)
     {
