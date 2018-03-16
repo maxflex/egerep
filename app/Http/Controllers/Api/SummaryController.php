@@ -294,12 +294,11 @@ class SummaryController extends Controller
 
     private function _getPaymentsData($start, $end)
     {
-        $account_payments = DB::table('accounts')
-                        ->select(DB::raw("sum(account_payments.sum) as sum, account_payments.method"))
-                        ->leftJoin('account_payments', 'account_payments.account_id', '=', 'accounts.id')
-                        ->whereRaw("date_end >= '{$start}'")
-                        ->whereRaw("date_end <= '{$end}'")
-                        ->groupBy('account_payments.method')
+        $account_payments = DB::table('account_payments')
+                        ->select(DB::raw("sum(sum) as sum, method"))
+                        ->whereRaw("date >= '{$start}'")
+                        ->whereRaw("date <= '{$end}'")
+                        ->groupBy('method')
                         ->get();
 
         $mutual_payments = MutualPayment::betweenDates($start, $end)->sum('sum');
