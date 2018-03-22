@@ -61,7 +61,6 @@ return [
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix'    => '',
-            'unix_socket'   => env('DB_SOCKET', ''),
         ],
 
         'egecrm' => [
@@ -73,7 +72,6 @@ return [
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix'    => '',
-            'unix_socket'   => env('DB_SOCKET', ''),
         ],
         'repetitors' => [
             'driver'    => 'mysql',
@@ -92,7 +90,6 @@ return [
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix'    => '',
-            'unix_socket'   => env('DB_SOCKET', ''),
         ],
 
         'factory' => [
@@ -104,7 +101,6 @@ return [
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix'    => '',
-            'unix_socket'   => env('DB_SOCKET', ''),
         ],
 
         'pgsql' => [

@@ -3,10 +3,10 @@
   "devDependencies": {
     "gulp": "^3.9.1",
     "laravel-elixir-jade": "^0.2.4",
-    "require-dir": "^0.3.2"
+    "require-dir": "^1.0.0"
   },
   "dependencies": {
     "bootstrap-sass": "^3.3.7",
-    "laravel-elixir": "^4.2.1"
+    "laravel-elixir": "^6.0.0-17"
   }
 }
