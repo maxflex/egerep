@@ -429,7 +429,7 @@ class Tutor extends Service\Person
         parent::boot();
 
         static::saving(function($tutor) {
-            if ($tutor->changed(['login', 'password'])) {
+            if ($tutor->changed(['login', 'password', 'email'])) {
                 $tutor->updateUser();
             }
         });
@@ -678,6 +678,7 @@ class Tutor extends Service\Person
             ], [
                 'login'     => $this->login,
                 'password'  => $this->password,
+                'email'     => $this->email,
             ]);
         }
     }
