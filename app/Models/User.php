@@ -19,6 +19,7 @@ class User extends Model
         'password',
         'color',
         'type',
+        'email',
         'id_entity',
     ];
 
