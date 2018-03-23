@@ -56,8 +56,6 @@ class Tutor extends Service\Person
         'ready_to_work',
         'comment',
         'description',
-        'login',
-        'password',
         'branches',
         'in_egecentr',
         'video_link',
@@ -429,7 +427,7 @@ class Tutor extends Service\Person
         parent::boot();
 
         static::saving(function($tutor) {
-            if ($tutor->changed(['login', 'password', 'email'])) {
+            if ($tutor->changed(['email', 'phone', 'first_name', 'last_name', 'middle_name'])) {
                 $tutor->updateUser();
             }
         });
@@ -676,9 +674,11 @@ class Tutor extends Service\Person
                 'id_entity' => $this->id,
                 'type'      => static::USER_TYPE,
             ], [
-                'login'     => $this->login,
-                'password'  => $this->password,
-                'email'     => $this->email,
+                'email'         => $this->email,
+                'phone'         => $this->phone,
+                'first_name'    => $this->first_name,
+                'last_name'     => $this->last_name,
+                'middle_name'   => $this->middle_name,
             ]);
         }
     }

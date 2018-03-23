@@ -338,11 +338,6 @@ angular
         $scope.$watchCollection 'tutor', (newVal, oldVal) ->
             $scope.form_changed = true if $scope.fully_loaded
 
-        $scope.$watch 'tutor.in_egecentr', (newVal, oldVal) ->
-            if newVal and !$scope.tutor.login and $scope.tutor.first_name and $scope.tutor.last_name and $scope.tutor.middle_name
-                $scope.tutor.login = TutorService.generateLogin($scope.tutor)
-                $scope.tutor.password = TutorService.generatePassword()
-
         $scope.svgSave = ->
             $scope.form_changed = true
             $('#svg-modal').modal 'hide'
