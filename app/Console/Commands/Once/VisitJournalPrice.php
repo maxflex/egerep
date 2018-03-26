@@ -42,12 +42,23 @@ class VisitJournalPrice extends Command
             ->where('year', 2017)
             ->pluck('id_entity');
 
+        $student_ids = array_unique($student_ids);
+
         $bar = $this->output->createProgressBar(count($student_ids));
 
         foreach($student_ids as $student_id) {
             $last_student_contract = $this->getLastContract($student_id);
             if ($last_student_contract) {
-                $price = $last_student_contract->grade == 11 ? 1900 : 1700;
+                switch($last_student_contract->grade) {
+                    case 11:
+                        $price = 1700;
+                        break;
+                    case 14:
+                        $price = 1600;
+                        break;
+                    default:
+                        $price = 1550;
+                }
 
     			if ($last_student_contract->discount) {
     				$price = round($price - ($price * ($last_student_contract->discount / 100)));
