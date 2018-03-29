@@ -37,61 +37,61 @@ class TransferVj extends Command
      */
     public function handle()
     {
-        // $planned = dbEgecrm('group_schedule')->where('id_group', '>', 0)
-        //             ->where('date', '>', now(true))->get();
-        //
-        // $this->info('Planned lessons...');
-        // $bar = $this->output->createProgressBar(count($planned));
-        // foreach($planned as $p) {
-        //     dbEgecrm('visit_journal')->insert([
-        //         'id_group' => $p->id_group,
-        //         'lesson_date' => $p->date,
-        //         'lesson_time' => $p->time,
-        //         'cabinet' => $p->cabinet,
-        //         'is_free' => $p->is_free,
-        //         'cancalled' => $p->cancelled,
-        //         'year' => null,
-        //     ]);
-        //     $bar->advance();
-        // }
-        // $bar->finish();
+        $planned = dbEgecrm('group_schedule')->where('id_group', '>', 0)
+                    ->where('date', '>', now(true))->get();
+
+        $this->info('Planned lessons...');
+        $bar = $this->output->createProgressBar(count($planned));
+        foreach($planned as $p) {
+            dbEgecrm('visit_journal')->insert([
+                'id_group' => $p->id_group,
+                'lesson_date' => $p->date,
+                'lesson_time' => $p->time,
+                'cabinet' => $p->cabinet,
+                'is_free' => $p->is_free,
+                'cancalled' => $p->cancelled,
+                'year' => null,
+            ]);
+            $bar->advance();
+        }
+        $bar->finish();
 
         //
         //  entry id
         //
-        // $this->line('Setting entry ids...');
-        // $lessons = dbEgecrm('visit_journal')->where('type_entity', 'TEACHER')->orWhere('type_entity', null)->get();
-        //
-        // $bar = $this->output->createProgressBar(count($lessons));
-        //
-        // foreach($lessons as $lesson) {
-        //     dbEgecrm('visit_journal')
-        //         ->where('id_group', $lesson->id_group)
-        //         ->where('lesson_date', $lesson->lesson_date)
-        //         ->where('lesson_time', $lesson->lesson_time)
-        //         ->update([
-        //             'entry_id' => $lesson->id
-        //         ]);
-        //     $bar->advance();
-        // }
-        // $bar->finish();
+        $this->line('Setting entry ids...');
+        $lessons = dbEgecrm('visit_journal')->where('type_entity', 'TEACHER')->orWhere('type_entity', null)->get();
+
+        $bar = $this->output->createProgressBar(count($lessons));
+
+        foreach($lessons as $lesson) {
+            dbEgecrm('visit_journal')
+                ->where('id_group', $lesson->id_group)
+                ->where('lesson_date', $lesson->lesson_date)
+                ->where('lesson_time', $lesson->lesson_time)
+                ->update([
+                    'entry_id' => $lesson->id
+                ]);
+            $bar->advance();
+        }
+        $bar->finish();
 
         //
         // vacations
         //
 
-        // $this->line('Vacations...');
-        // $vacations = dbEgecrm('group_schedule')->select('date')->where('id_group', 0)->get();
-        //
-        // $bar = $this->output->createProgressBar(count($vacations));
-        //
-        // foreach($vacations as $vacation) {
-        //     dbEgecrm('vacations')->insert([
-        //         'date' => $vacation->date,
-        //         'year' => self::academicYear($vacation->date)
-        //     ]);
-        //     $bar->advance();
-        // }
+        $this->line('Vacations...');
+        $vacations = dbEgecrm('group_schedule')->select('date')->where('id_group', 0)->get();
+
+        $bar = $this->output->createProgressBar(count($vacations));
+
+        foreach($vacations as $vacation) {
+            dbEgecrm('vacations')->insert([
+                'date' => $vacation->date,
+                'year' => self::academicYear($vacation->date)
+            ]);
+            $bar->advance();
+        }
 
         $this->line('Cancelled & free...');
         $data = dbEgecrm('group_schedule')->where('cancelled', 1)->get();
