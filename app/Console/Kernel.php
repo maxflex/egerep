@@ -39,6 +39,7 @@ class Kernel extends ConsoleKernel
         Commands\Once\AccountComments::class,
         Commands\Once\CreateRepresentatives::class,
         Commands\Once\VisitJournalPrice::class,
+        Commands\Once\TransferVj::class,
     ];
 
     /**
