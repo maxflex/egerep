@@ -49,7 +49,7 @@ class TransferVj extends Command
                 'lesson_time' => $p->time,
                 'cabinet' => $p->cabinet,
                 'is_free' => $p->is_free,
-                'cancalled' => $p->cancelled,
+                'cancelled' => $p->cancelled,
                 'year' => null,
             ]);
             $bar->advance();
