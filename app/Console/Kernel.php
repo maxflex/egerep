@@ -40,6 +40,7 @@ class Kernel extends ConsoleKernel
         Commands\Once\CreateRepresentatives::class,
         Commands\Once\VisitJournalPrice::class,
         Commands\Once\TransferVj::class,
+        Commands\Once\ZeroVjPrice::class,
     ];
 
     /**
