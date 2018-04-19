@@ -4,7 +4,7 @@
 
 @section('content')
 
-<input name="photo" type="file" id="fileupload" data-url="upload/background">
+<input name="photo" type="file" id="fileupload" data-url="upload/background" style='display: none'>
 
 <table class="table reverse-borders backgrounds-table">
     <tr ng-repeat="date in dates">
