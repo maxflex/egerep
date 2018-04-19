@@ -9,7 +9,9 @@ angular
                 $('body').css({'background-image': "url(#{$scope.wallpaper.image_url})"})
                 $scope.image_loaded = true
                 $scope.$apply()
-                console.log('image loaded')
+                setTimeout ->
+                    $('#center').removeClass('animated').removeClass('fadeIn').removeAttr('style')
+                , 2000
             img.src = $scope.wallpaper.image_url
 
         angular.element(document).ready ->
