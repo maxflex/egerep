@@ -23,7 +23,7 @@
         <td width='300'>
             <span ng-if="backgrounds[date]">@{{ backgrounds[date].credentials }}</span>
         </td>
-        <td>
+        <td width='220'>
             <span class="link-like" ng-if="backgrounds[date]"
                 @if(allowed(\Shared\Rights::ER_APPROVE_BACKGROUND))
                     ng-click="toggleEnumServer(backgrounds[date], 'is_approved', UnderModer, Background)"
