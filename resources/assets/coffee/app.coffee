@@ -135,6 +135,9 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
         $rootScope.formatDateTime = (date) ->
             moment(date).format "DD.MM.YY в HH:mm"
 
+        $rootScope.formatDateCustom = (date, format) ->
+            moment(date).format(format)
+
         $rootScope.formatDate = (date, full_year = false) ->
             return '' if not date
             moment(date).format "DD.MM.YY" + (if full_year then "YY" else "")

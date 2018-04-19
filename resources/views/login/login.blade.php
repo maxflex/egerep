@@ -1,6 +1,6 @@
 @extends('login')
 @section('content')
-<center autocomplete="off">
+<center autocomplete="off" class="animated fadeIn" style='animation-duration: 1.5s'>
         <div style='display: none'>
             <input type="password"/>
         </div>

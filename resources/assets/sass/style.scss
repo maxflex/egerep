@@ -4229,3 +4229,14 @@ tr.ui-sortable-helper {
 .small, small {
 	font-size: 12px;
 }
+
+.backgrounds-table {
+	& tr {
+		& td {
+			vertical-align: middle !important;
+			& img {
+				height: 75px;
+			}
+		}
+	}
+}

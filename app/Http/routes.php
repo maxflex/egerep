@@ -21,6 +21,9 @@ Route::group(['middleware' => ['web', LogUrlOpen::class]], function () {
     Route::get('calls/missed', 'CallsController@missed');
     Route::resource('calls', 'CallsController');
 
+    Route::get('background', 'BackgroundController@index');
+    Route::get('background/preview/{id}', 'BackgroundController@preview');
+
     Route::get('reviews/{id}', 'ReviewsController@tutor');
     Route::resource('reviews', 'ReviewsController', ['only' => 'index']);
 
@@ -139,6 +142,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api', 'middleware' => ['web']],
     Route::post('tutors/merge', 'TutorsController@merge');
     Route::delete('tutors/photo/{id}', 'TutorsController@deletePhoto');
     Route::resource('tutors', 'TutorsController');
+    Route::resource('background', 'BackgroundController');
 
     Route::post('attendance', 'AttendanceController@get');
 

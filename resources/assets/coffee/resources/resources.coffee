@@ -17,6 +17,9 @@ angular.module('Egerep')
     .factory 'Review', ($resource) ->
         $resource apiPath('reviews'), {id: '@id'}, updateMethod()
 
+    .factory 'Background', ($resource) ->
+        $resource apiPath('background'), {id: '@id'}, updateMethod()
+
     .factory 'Archive', ($resource) ->
         $resource apiPath('archives'), {id: '@id'}, updateMethod()
 

@@ -793,7 +793,7 @@
             "source": {
                 "type": "git",
                 "url": "https://mkolyadin@bitbucket.org/mkolyadin/ege-shared.git",
-                "reference": "6c261e52677725473477f429f244f09d50c9a0b4"
+                "reference": "e6185dfcf06df3b4e0123606dba5c1a700125b89"
             },
             "type": "library",
             "autoload": {
@@ -801,7 +801,7 @@
                     "Shared\\": "src/"
                 }
             },
-            "time": "2017-07-26 15:25:45"
+            "time": "2018-04-19T11:20:55+00:00"
         },
         {
             "name": "google/recaptcha",
@@ -1995,6 +1995,7 @@
                 "xls",
                 "xlsx"
             ],
+            "abandoned": "phpoffice/phpspreadsheet",
             "time": "2015-05-01T07:00:55+00:00"
         },
         {
@@ -3122,16 +3123,16 @@
         },
         {
             "name": "symfony/var-dumper",
-            "version": "v3.0.2",
+            "version": "v3.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "24bb94807eff00db49374c37ebf56a0304e8aef3"
+                "reference": "1f7e071aafc6676fcb6e3f0497f87c2397247377"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/24bb94807eff00db49374c37ebf56a0304e8aef3",
-                "reference": "24bb94807eff00db49374c37ebf56a0304e8aef3",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/1f7e071aafc6676fcb6e3f0497f87c2397247377",
+                "reference": "1f7e071aafc6676fcb6e3f0497f87c2397247377",
                 "shasum": ""
             },
             "require": {
@@ -3181,7 +3182,7 @@
                 "debug",
                 "dump"
             ],
-            "time": "2016-01-07T13:38:51+00:00"
+            "time": "2016-07-26T08:03:56+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",

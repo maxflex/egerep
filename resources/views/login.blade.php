@@ -30,8 +30,14 @@
     </script>
   </head>
 
-  <body class="content" ng-app="Egerep" ng-controller="LoginCtrl" style="background-image: url('img/wallpapper/{{ $wallpapper_id }}.jpg')">
-      @yield('content')
+  <body class="content animated fadeIn" ng-app="Egerep" ng-controller="LoginCtrl" ng-init='wallpaper = {{ $wallpaper }}'>
+      <div ng-show="image_loaded">
+          @yield('content')
+          <span class="wallpaper-by animated fadeInRight">by {{ $wallpaper->user->login }}</span>
+      </div>
+      <div ng-show="!image_loaded">
+          <img src="svg/loaders/tail-spin.svg" />
+      </div>
   </body>
 
 </html>

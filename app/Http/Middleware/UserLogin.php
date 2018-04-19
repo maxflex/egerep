@@ -6,6 +6,7 @@ use Closure;
 use App\Models\User;
 use App\Models\DelayedJob;
 use App\Models\Service\Log;
+use App\Models\Background;
 
 class UserLogin
 {
@@ -19,14 +20,11 @@ class UserLogin
     public function handle($request, Closure $next)
     {
         if (! User::loggedIn()) {
-            if (! isset($_COOKIE['wallpapper_id'])) {
-                $wallpapper_count = count(glob(getcwd() . '/img/wallpapper/*.jpg'));
-                $wallpapper_id = mt_rand(1, $wallpapper_count);
-                setcookie('wallpapper_id', mt_rand(1, $wallpapper_id),  time() + 68400, '/'); // 19 часов
-            } else {
-                $wallpapper_id = $_COOKIE['wallpapper_id'];
+            $wallpaper = Background::approved()->where('date', now(true))->first();
+            if ($wallpaper === null) {
+                $wallpaper = Background::approved()->orderBy('id', 'desc')->first();
             }
-            return view('login.login', compact('wallpapper_id'));
+            return view('login.login', compact('wallpaper'));
         }
 
         // иначе юзер залогинен

@@ -29516,6 +29516,11 @@ tr.ui-sortable-helper {
 .small, small {
   font-size: 12px; }
 
+.backgrounds-table tr td {
+  vertical-align: middle !important; }
+  .backgrounds-table tr td img {
+    height: 75px; }
+
 .ios7-switch {
   display: inline-block;
   position: relative;

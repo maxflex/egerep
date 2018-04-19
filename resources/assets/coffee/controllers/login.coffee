@@ -1,7 +1,19 @@
 angular
     .module 'Egerep'
     .controller 'LoginCtrl', ($scope, $http) ->
+
+        loadImage = ->
+            $scope.image_loaded = false
+            img = new Image
+            img.addEventListener "load", ->
+                $('body').css({'background-image': "url(#{$scope.wallpaper.image_url})"})
+                $scope.image_loaded = true
+                $scope.$apply()
+                console.log('image loaded')
+            img.src = $scope.wallpaper.image_url
+
         angular.element(document).ready ->
+            loadImage()
             $('input[autocomplete="off"]').each ->
                 input = this
                 id = $(input).attr('id')
