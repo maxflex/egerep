@@ -26,7 +26,7 @@ class BackgroundController extends Controller
         $dates = [];
 
         $date_start = $d->format('Y-m-d');
-        foreach(range(1, 7 * 4) as $i) {
+        foreach(range(1, 7 * 2) as $i) {
             $dates[] = $d->format('Y-m-d');
             $d->modify('+1 day');
             $date_end = $d->format('Y-m-d');
