@@ -34,9 +34,9 @@
     ng-init='wallpaper = {{ json_encode($wallpaper) }}; preview = {{  isset($preview) ? 'true' : 'false' }}'>
       <div ng-show="image_loaded">
           @yield('content')
-          @if (isset($wallpaper->user))
-              <span class="wallpaper-by animated fadeInRight">by {{ $wallpaper->user->login }}</span>
-          @endif
+          @if (@$wallpaper->user)
+          <span class="wallpaper-by animated fadeInRight">by {{ $wallpaper->user->login }}</span>
+            @endif
       </div>
       <div ng-show="!image_loaded">
           <img src="svg/loaders/tail-spin.svg" />
