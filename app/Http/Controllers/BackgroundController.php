@@ -18,7 +18,10 @@ class BackgroundController extends Controller
      */
     public function index()
     {
-        $d = (new \DateTime)->modify('-2 weeks');
+        // первую дату сделать либо сегодня либо первая загруженная картинка
+        $first_bg_date = Background::orderBy('date', 'asc')->value('date');
+
+        $d = new \DateTime(($first_bg_date && $first_bg_date < now(true)) ? $first_bg_date : '');
 
         $dates = [];
 
@@ -33,7 +36,7 @@ class BackgroundController extends Controller
 
         return view('background.index')->with(
             ngInit([
-                'dates' => array_reverse($dates),
+                'dates' =>$dates,
                 'backgrounds' => $backgrounds->keyBy('date'),
             ])
         );
@@ -42,10 +45,12 @@ class BackgroundController extends Controller
     public function preview($id)
     {
         $wallpaper = Background::find($id);
-
         if (! allowed(\Shared\Rights::ER_APPROVE_BACKGROUND) && $wallpaper->user_id != User::fromSession()->id) {
             return view('errors.not_allowed');
         }
-        return view('login.login', compact('wallpaper'));
+        return view('login.login', [
+            'wallpaper' => $wallpaper,
+            'preview'   => true
+        ]);
     }
 }

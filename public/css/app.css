@@ -27935,6 +27935,8 @@ input[type="radio"][disabled], input[type="checkbox"][disabled], input[type="rad
 
 .no-border-bottom {
   border-bottom: 0 !important; }
+  .no-border-bottom td {
+    border-bottom: 0 !important; }
 
 .half-opacity {
   opacity: .5; }

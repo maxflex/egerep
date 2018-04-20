@@ -44,13 +44,19 @@ class UploadController extends Controller
         }
 
         /** validations **/
-        $min_height = 768;
-        $min_width  = 1024;
+        $min_width  = 3000;
+        $min_height = 2000;
 
         list($width, $height) = getimagesize($request->file('photo'));
 
         if ($width < $min_width || $height < $min_height) {
             return response()->json(['error' => "минимальный размер изображения – {$min_width}x{$min_height}"]);
+        }
+
+        // 1 пользователь не может иметь 11 и более изображений сегодня и в будущем,
+        // поэтому на стадии попытки загрузить 11-е изображение не давать ему это делать
+        if (Background::where('user_id', User::fromSession()->id)->where('date', '>=', now(true))->count() >= 10) {
+            return response()->json(['error' => "вы достигли лимита по загруженным изображениям"]);
         }
 
 

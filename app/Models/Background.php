@@ -9,10 +9,10 @@ class Background extends Model
 {
     use HasCredentials;
 
-    const UPLOAD_DIR = '/img/wallpapper/';
+    const UPLOAD_DIR = '/img/wallpaper/';
 
     protected $fillable = [
-        'is_approved',
+        'status',
         'user_id',
         'image',
         'date'
@@ -24,7 +24,7 @@ class Background extends Model
     ];
 
     protected $attributes = [
-        'is_approved' => 0
+        'status' => 0
     ];
 
     public function getImageUrlAttribute()
@@ -34,6 +34,6 @@ class Background extends Model
 
     public function scopeApproved($query)
     {
-        return $query->where('is_approved', true);
+        return $query->where('status', 1);
     }
 }

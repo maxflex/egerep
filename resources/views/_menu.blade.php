@@ -64,7 +64,9 @@
 @if (allowed(\Shared\Rights::ER_TEMPLATES))
     <a href="templates" class="list-group-item">Шаблоны</a>
 @endif
-<a href="background" class="list-group-item">Фоны</a>
+@if (in_array(\App\Models\User::fromSession()->id, [1, 69]))
+<a href="background" class="list-group-item">Календарь заставок <sup class="text-danger">new</sup></a>
+@endif
 @if (allowed(\Shared\Rights::SHOW_CONTRACT))
     <a href="contract" class="list-group-item">Договор</a>
 @endif

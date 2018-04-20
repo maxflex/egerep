@@ -22,7 +22,13 @@ class UserLogin
         if (! User::loggedIn()) {
             $wallpaper = Background::approved()->where('date', now(true))->first();
             if ($wallpaper === null) {
-                $wallpaper = Background::approved()->orderBy('id', 'desc')->first();
+                $wallpaper = Background::approved()->orderBy('id', 'asc')->first();
+                // если не найден, делаем dummy-объект с зеленым фоном
+                if ($wallpaper === null) {
+                    $wallpaper = (object)[
+                        'image_url' => 'img/background/green.png'
+                    ];
+                }
             }
             return view('login.login', compact('wallpaper'));
         }

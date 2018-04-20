@@ -38,6 +38,7 @@ angular
                 $scope.checkFields()
 
         $scope.goLogin = ->
+            return if $scope.preview
             $('center').removeClass('invalid')
             # ajaxStart()
             $http.post 'login',
@@ -64,6 +65,7 @@ angular
                     $('center').addClass('invalid')
 
         $scope.checkFields = ->
+            return if $scope.preview
             # $scope.l.start()
             $scope.in_process = true
             # $scope.goLogin()
