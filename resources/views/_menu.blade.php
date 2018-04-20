@@ -65,7 +65,7 @@
     <a href="templates" class="list-group-item">Шаблоны</a>
 @endif
 @if (in_array(\App\Models\User::fromSession()->id, [1, 69]))
-<a href="background" class="list-group-item">Календарь заставок <sup class="text-danger">new</sup></a>
+<a href="background" class="list-group-item">Календарь заставок <sup class="text-danger" style='font-weight: bold'>new</sup></a>
 @endif
 @if (allowed(\Shared\Rights::SHOW_CONTRACT))
     <a href="contract" class="list-group-item">Договор</a>

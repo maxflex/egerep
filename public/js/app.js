@@ -1414,6 +1414,10 @@
       });
       return delete $scope.backgrounds[date];
     };
+    $scope.pageChanged = function() {
+      ajaxStart();
+      return redirect("background?page=" + $scope.current_page);
+    };
     return $timeout(function() {
       $scope.today_date = moment().format("YYYY-MM-DD");
       return $('#fileupload').fileupload({

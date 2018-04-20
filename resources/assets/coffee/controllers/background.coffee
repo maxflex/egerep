@@ -15,6 +15,10 @@ angular
 		Background.delete({id: $scope.backgrounds[date].id})
 		delete $scope.backgrounds[date]
 
+	$scope.pageChanged = ->
+		ajaxStart()
+		redirect("background?page=#{$scope.current_page}")
+
 	$timeout ->
 		$scope.today_date = moment().format("YYYY-MM-DD")
 

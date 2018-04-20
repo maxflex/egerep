@@ -1,10 +1,19 @@
 @extends('app')
-@section('title', 'Настройки фона')
+@section('title', 'Календарь заставок')
 @section('controller', 'Background')
 
 @section('content')
 
 <input name="photo" type="file" id="fileupload" data-url="upload/background" style='display: none'>
+
+<div class="alert alert-warning" role="alert">
+    <b>Требования к загружаемым изображениям:</b>
+    <ul>
+        <li>разрешение минимум 3000*2000</li>
+        <li>форматы jpg, jpeg</li>
+        <li>максимально высокое качество изображения</li>
+    </ul>
+</div>
 
 <table class="table reverse-borders backgrounds-table">
     <tr ng-repeat-start="date in dates"
@@ -47,4 +56,16 @@
         </td>
     </tr>
 </table>
+
+<pagination style="margin-top: 30px"
+    ng-model="current_page"
+    ng-change="pageChanged()"
+    total-items="365"
+    max-size="10"
+    items-per-page="30"
+    first-text="«"
+    last-text="»"
+    previous-text="«"
+    next-text="»"
+></pagination>
 @stop

@@ -16,17 +16,23 @@ class BackgroundController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $page = isset($request->page) ? $request->page : 1;
+
         // первую дату сделать либо сегодня либо первая загруженная картинка
         $first_bg_date = Background::orderBy('date', 'asc')->value('date');
 
         $d = new \DateTime(($first_bg_date && $first_bg_date < now(true)) ? $first_bg_date : '');
 
+        if ($page > 1) {
+            $d->modify('+' . (30 * ($page - 1)) . ' days');
+        }
+
         $dates = [];
 
         $date_start = $d->format('Y-m-d');
-        foreach(range(1, 7 * 2) as $i) {
+        foreach(range(1, 30) as $i) {
             $dates[] = $d->format('Y-m-d');
             $d->modify('+1 day');
             $date_end = $d->format('Y-m-d');
@@ -36,7 +42,8 @@ class BackgroundController extends Controller
 
         return view('background.index')->with(
             ngInit([
-                'dates' =>$dates,
+                'current_page' => $page,
+                'dates' => $dates,
                 'backgrounds' => $backgrounds->keyBy('date'),
             ])
         );

@@ -39,7 +39,9 @@ class UploadController extends Controller
 
     public function postBackground(Request $request)
     {
-        if ($request->file('photo')->getClientSize() > 12582912) { // 12 mb с запасом
+        $file = $request->file('photo');
+
+        if ($file->getClientSize() > 12582912) { // 12 mb с запасом
             return response()->json(['error' => 'максимальный объём файла – 12 Мб']);
         }
 
@@ -47,7 +49,7 @@ class UploadController extends Controller
         $min_width  = 3000;
         $min_height = 2000;
 
-        list($width, $height) = getimagesize($request->file('photo'));
+        list($width, $height) = getimagesize($file);
 
         if ($width < $min_width || $height < $min_height) {
             return response()->json(['error' => "минимальный размер изображения – {$min_width}x{$min_height}"]);
@@ -59,10 +61,20 @@ class UploadController extends Controller
             return response()->json(['error' => "вы достигли лимита по загруженным изображениям"]);
         }
 
+        // все проверки пройдены
+        $extension = $file->getClientOriginalExtension();
 
-        $extension = $request->file('photo')->getClientOriginalExtension();
+        if (! in_array($extension, ['jpg', 'jpeg'])) {
+            return response()->json(['error' => "только файлы jpg/jpeg доступны для загрузки"]);
+        }
+
         $filename = uniqid() . '.' . $extension;
-        $request->file('photo')->move(public_path() . Background::UPLOAD_DIR, $filename);
+
+        list($resampled_width, $resampled_height) = self::getSizedown($min_width, $min_height, $width, $height);
+
+        $img = new \abeautifulsite\SimpleImage($file);
+        $img->resize($resampled_width, $resampled_height);
+        $img->save(public_path() . Background::UPLOAD_DIR . $filename, 70);
 
         $background = Background::create([
             'date' => $request->date,
@@ -71,5 +83,31 @@ class UploadController extends Controller
         ]);
 
         return $background;
+    }
+
+    // сжатие до минимальная ширина или высоты
+    private static function getSizedown($min_width, $min_height, $width, $height)
+    {
+        // 6000 - 3000 = 3000
+        $width_oversize = $width - $min_width;
+
+        // высчитываем на сколько процентов уменьшили
+        // width - 100%
+        // width_oversize - x
+        $w_percentage = $width_oversize / $width;
+
+        // на такое же кол-во процентов уменьшаем высоту
+
+        $new_height = $height - ($height * $w_percentage);
+
+        if ($new_height > $min_height) {
+            return [$min_width, $new_height];
+        }
+
+
+        $height_oversize = $height - $min_height;
+        $h_percentage = $height_oversize / $height;
+        $new_width = $width - ($width * $h_percentage);
+        return [$new_width, $min_height];
     }
 }
