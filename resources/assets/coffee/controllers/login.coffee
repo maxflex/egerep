@@ -23,7 +23,7 @@ angular
                 setTimeout ->
                     $(input).attr('id', id)
                 , 2000
-            # $scope.l = Ladda.create(document.querySelector('#login-submit'))
+            $scope.l = Ladda.create(document.querySelector('#login-submit'))
             login_data = $.cookie("login_data")
             if login_data isnt undefined
                 login_data = JSON.parse(login_data)
@@ -39,8 +39,7 @@ angular
 
         $scope.goLogin = ->
             return if $scope.preview
-            $('center').removeClass('invalid')
-            # ajaxStart()
+            # $('center').removeClass('invalid')
             $http.post 'login',
                 login: $scope.login
                 password: $scope.password
@@ -52,21 +51,19 @@ angular
                     $.removeCookie('login_data')
                     location.reload()
                 else if response.data is 'sms'
-                    # ajaxEnd()
                     $scope.in_process = false
-                    # $scope.l.stop()
+                    $scope.l.stop()
                     $scope.sms_verification = true
                     $.cookie("login_data", JSON.stringify({login: $scope.login, password: $scope.password}), { expires: 1 / (24 * 60) * 2, path: '/' })
                 else
                     $scope.in_process = false
-                    # ajaxEnd()
-                    # $scope.l.stop()
-                    # notifyError "Неправильная пара логин-пароль"
-                    $('center').addClass('invalid')
+                    $scope.l.stop()
+                    $scope.error = "Неправильная пара логин-пароль"
+                    # $('center').addClass('invalid')
 
         $scope.checkFields = ->
             return if $scope.preview
-            # $scope.l.start()
+            $scope.l.start()
             $scope.in_process = true
             # $scope.goLogin()
             if grecaptcha.getResponse() is '' then grecaptcha.execute() else $scope.goLogin()
