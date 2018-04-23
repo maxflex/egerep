@@ -4046,12 +4046,12 @@
         grecaptcha.reset();
         if (response.data === true) {
           $.removeCookie('login_data');
-          return location.reload();
+          location.reload();
         } else if (response.data === 'sms') {
           $scope.in_process = false;
           $scope.l.stop();
           $scope.sms_verification = true;
-          return $.cookie("login_data", JSON.stringify({
+          $.cookie("login_data", JSON.stringify({
             login: $scope.login,
             password: $scope.password
           }), {
@@ -4061,8 +4061,9 @@
         } else {
           $scope.in_process = false;
           $scope.l.stop();
-          return $scope.error = "Неправильная пара логин-пароль";
+          $scope.error = "Неправильная пара логин-пароль";
         }
+        return $scope.$apply();
       });
     };
     return $scope.checkFields = function() {

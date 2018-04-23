@@ -60,6 +60,7 @@ angular
                     $scope.l.stop()
                     $scope.error = "Неправильная пара логин-пароль"
                     # $('center').addClass('invalid')
+                $scope.$apply()
 
         $scope.checkFields = ->
             return if $scope.preview
