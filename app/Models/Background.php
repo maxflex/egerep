@@ -15,7 +15,8 @@ class Background extends Model
         'status',
         'user_id',
         'image',
-        'date'
+        'date',
+        'title'
     ];
 
     protected $appends = [

@@ -1399,6 +1399,21 @@
 (function() {
   angular.module('Egerep').controller('Background', function($scope, $timeout, Background, UnderModer) {
     bindArguments($scope, arguments);
+    $scope.editBackgroundModal = function(date) {
+      $scope.modal_background = _.clone($scope.backgrounds[date]);
+      return $('#edit-background').modal('show');
+    };
+    $scope.editBackground = function() {
+      $.each($scope.backgrounds, function(date, background) {
+        if (background.id === $scope.modal_background.id) {
+          $scope.backgrounds[date] = $scope.modal_background;
+        }
+      });
+      Background.update({
+        id: $scope.modal_background.id
+      }, $scope.modal_background);
+      $('#edit-background').modal('hide');
+    };
     $scope.loadImage = function(date) {
       $scope.date = date;
       $('#fileupload').fileupload({

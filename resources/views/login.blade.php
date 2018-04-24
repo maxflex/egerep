@@ -35,7 +35,12 @@
       <div ng-show="image_loaded">
           @yield('content')
           @if (@$wallpaper->user)
-          <span class="wallpaper-by animated fadeInRight">by {{ $wallpaper->user->login }}</span>
+          <span class="wallpaper-by animated fadeInRight">
+              @if ($wallpaper->title)
+                  {{ $wallpaper->title }} –
+              @endif
+              by {{ $wallpaper->user->login }}
+          </span>
             @endif
       </div>
       <div ng-show="!image_loaded">

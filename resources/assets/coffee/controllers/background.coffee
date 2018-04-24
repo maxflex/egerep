@@ -3,6 +3,19 @@ angular
 .controller 'Background', ($scope, $timeout, Background, UnderModer) ->
 	bindArguments($scope, arguments)
 
+	$scope.editBackgroundModal = (date) ->
+		$scope.modal_background = _.clone($scope.backgrounds[date])
+		$('#edit-background').modal('show')
+
+	$scope.editBackground = ->
+		$.each $scope.backgrounds, (date, background) ->
+			if background.id == $scope.modal_background.id
+				$scope.backgrounds[date] = $scope.modal_background
+				return
+		Background.update({id: $scope.modal_background.id}, $scope.modal_background)
+		$('#edit-background').modal('hide')
+		return
+
 	$scope.loadImage = (date) ->
 		$scope.date = date
 		$('#fileupload').fileupload
@@ -39,7 +52,7 @@ angular
 			,
 			done: (i, response) ->
 				if response.result.hasOwnProperty('error')
-                    notifyError(response.result.error)
-                    return
+					notifyError(response.result.error)
+					return
 				$scope.backgrounds[$scope.date] = response.result
 				$scope.$apply()

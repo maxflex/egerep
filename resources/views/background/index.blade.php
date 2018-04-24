@@ -31,8 +31,14 @@
         <td width='150'>
             <span ng-if="!backgrounds[date]" ng-show="date >= today_date" class="link-like" ng-click="loadImage(date)">загрузить</span>
 
-            <span ng-if="backgrounds[date]" ng-show="backgrounds[date].user_id == user.id || {{ allowed(\Shared\Rights::ER_APPROVE_BACKGROUND, true) }}"
+            <span ng-if="backgrounds[date]" ng-show="(backgrounds[date].user_id == user.id || {{ allowed(\Shared\Rights::ER_APPROVE_BACKGROUND, true) }}) && !(backgrounds[date].status == 1 && !{{ allowed(\Shared\Rights::ER_APPROVE_BACKGROUND, true) }})"
                 class="link-like" ng-click="remove(date)">удалить</span>
+        </td>
+        <td width='300'>
+            <span ng-if="backgrounds[date]">
+                <span class="link-like" ng-click="editBackgroundModal(date)" ng-show="(backgrounds[date].user_id == user.id || {{ allowed(\Shared\Rights::ER_APPROVE_BACKGROUND, true) }}) && !(backgrounds[date].status == 1 && !{{ allowed(\Shared\Rights::ER_APPROVE_BACKGROUND, true) }})">@{{ backgrounds[date].title || 'добавить название' }}</span>
+                <span ng-show="(backgrounds[date].status == 1 && date <= today_date) && !((backgrounds[date].user_id == user.id || {{ allowed(\Shared\Rights::ER_APPROVE_BACKGROUND, true) }}) && !(backgrounds[date].status == 1 && !{{ allowed(\Shared\Rights::ER_APPROVE_BACKGROUND, true) }}))">@{{ backgrounds[date].title }}</span>
+            </span>
         </td>
         <td width='300'>
             <span ng-if="backgrounds[date]">@{{ backgrounds[date].credentials }}</span>
@@ -56,11 +62,13 @@
 
     </tr>
     <tr ng-repeat-end ng-show="backgrounds[date] && (backgrounds[date].user_id == user.id || {{ allowed(\Shared\Rights::ER_APPROVE_BACKGROUND, true) }})">
-        <td colspan="6" style='padding-top: 16px'>
+        <td colspan="7" style='padding-top: 16px'>
             <comments ng-if="backgrounds[date]" entity-type='background' entity-id='backgrounds[date].id' user='{{ $user }}'></comments>
         </td>
     </tr>
 </table>
+
+@include('background._modals')
 
 <pagination style="margin-top: 30px"
     ng-model="current_page"
