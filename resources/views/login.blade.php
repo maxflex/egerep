@@ -30,7 +30,7 @@
     </script>
   </head>
 
-  <body class="content animated fadeIn" ng-app="Egerep" ng-controller="LoginCtrl"
+  <body class="content animated fadeIn login-{{ (isset($type) && $type == 'ec') ? 'ec' : 'er' }}" ng-app="Egerep" ng-controller="LoginCtrl"
     ng-init='wallpaper = {{ json_encode($wallpaper) }}; preview = {{  isset($preview) ? 'true' : 'false' }}'>
       <div ng-show="image_loaded">
           @yield('content')
@@ -39,7 +39,7 @@
             @endif
       </div>
       <div ng-show="!image_loaded">
-          <img src="svg/loaders/tail-spin.svg" />
+          <img src="svg/loaders/{{ (isset($type) && $type == 'ec') ? 'tail-spin-blue' : 'tail-spin' }}.svg" />
       </div>
   </body>
 

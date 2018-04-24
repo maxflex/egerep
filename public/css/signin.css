@@ -189,7 +189,7 @@ input[type="password"] {
      padding: 12px 20px;
      color: #c40000;
  }
- 
+
 .input-groups {
     width: 100%;
 }
@@ -198,3 +198,24 @@ input:focus::-webkit-input-placeholder { color:transparent; }
 input:focus:-moz-placeholder { color:transparent; } /* FF 4-18 */
 input:focus::-moz-placeholder { color:transparent; } /* FF 19+ */
 input:focus:-ms-input-placeholder { color:transparent; } /* IE 10+ */
+
+.login-ec .login-logo img {
+    width: 40px;
+}
+
+.login-ec a {
+    color: #337ab7;
+    cursor: pointer;
+}
+
+.login-ec a:hover {
+    color: #23527c;
+}
+
+.login-ec .btn {
+    background: #3479b7;
+}
+
+.login-ec .btn:hover {
+    background: #4e99dc;
+}

@@ -29523,6 +29523,11 @@ tr.ui-sortable-helper {
   .backgrounds-table tr td img {
     height: 75px; }
 
+.text-blue {
+  color: #337ab7; }
+  .text-blue:hover {
+    color: #337ab7; }
+
 .ios7-switch {
   display: inline-block;
   position: relative;

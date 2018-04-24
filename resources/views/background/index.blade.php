@@ -24,8 +24,8 @@
         </td>
         <td width='220'>
             <div ng-if="backgrounds[date]">
-                <img ng-show="backgrounds[date].user_id == user.id || {{ allowed(\Shared\Rights::ER_APPROVE_BACKGROUND, true) }}" src="@{{ backgrounds[date].image_url }}" />
-                <img ng-hide="backgrounds[date].user_id == user.id || {{ allowed(\Shared\Rights::ER_APPROVE_BACKGROUND, true) }}" src="/img/icons/no-image.png" />
+                <img ng-show="backgrounds[date].user_id == user.id || {{ allowed(\Shared\Rights::ER_APPROVE_BACKGROUND, true) }}  || (backgrounds[date].status == 1 && date <= today_date)" src="@{{ backgrounds[date].image_url }}" />
+                <img ng-hide="backgrounds[date].user_id == user.id || {{ allowed(\Shared\Rights::ER_APPROVE_BACKGROUND, true) }}  || (backgrounds[date].status == 1 && date <= today_date)" src="/img/icons/no-image.png" />
             </div>
         </td>
         <td width='150'>
@@ -47,9 +47,13 @@
             </span>
         </td>
         <td>
-            <a ng-if="backgrounds[date]" ng-show="backgrounds[date].user_id == user.id || {{ allowed(\Shared\Rights::ER_APPROVE_BACKGROUND, true) }}"
-                target="_blank" href="background/preview/@{{ backgrounds[date].id }}">предпросмотр</span>
+            <span ng-if="backgrounds[date]" ng-show="backgrounds[date].user_id == user.id || {{ allowed(\Shared\Rights::ER_APPROVE_BACKGROUND, true) }} || (backgrounds[date].status == 1 && date <= today_date)">
+                предпросмотр:
+                <a target="_blank" href="background/preview/@{{ backgrounds[date].id }}">ER</a> |
+                <a class="text-blue" target="_blank" href="background/preview/@{{ backgrounds[date].id }}?type=ec">EC</a>
+            </span>
         </td>
+
     </tr>
     <tr ng-repeat-end ng-show="backgrounds[date] && (backgrounds[date].user_id == user.id || {{ allowed(\Shared\Rights::ER_APPROVE_BACKGROUND, true) }})">
         <td colspan="6" style='padding-top: 16px'>
