@@ -22,7 +22,7 @@ class BackgroundController extends Controller
 
         // первую дату сделать либо сегодня либо первая загруженная картинка
         $first_bg_date = Background::orderBy('date', 'asc')->value('date');
-
+        $first_bg_date = '2017-04-20';
         $d = new \DateTime(($first_bg_date && $first_bg_date < now(true)) ? $first_bg_date : '');
 
         if ($page > 1) {
