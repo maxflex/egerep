@@ -5,7 +5,7 @@
         <h4 class="modal-title">Редактировать название</h4>
       </div>
       <div class="modal-body">
-          <input type="text" ng-model="modal_background.title" placeholder="название" class="form-control" />
+          <input type="text" ng-model="modal_background.title" placeholder="название" class="form-control" maxlength="35" />
       </div>
       <div class="modal-footer center">
         <button type="button" class="btn btn-primary" ng-click="editBackground()" >редактировать</button>
