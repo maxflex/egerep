@@ -10,7 +10,7 @@
             <input ng-disabled="sms_verification" type="text" id="inputLogin" placeholder="логин" autofocus ng-model="login" autocomplete="off" ng-keyup="enter($event)">
         </div>
         <div class="group">
-            <input ng-disabled="sms_verification" type="password" id="inputPassword"  placeholder="пароль" ng-model="password" autocomplete="off" ng-keyup="enter($event)">
+            <input ng-disabled="sms_verification" type="password" id="inputPassword"  placeholder="пароль" ng-model="password" autocomplete="new-password" ng-keyup="enter($event)">
         </div>
         <div class="group" ng-show="sms_verification">
             <input type="text" id="sms-code" placeholder="sms code" ng-model="code" autocomplete="off" ng-keyup="enter($event)">
