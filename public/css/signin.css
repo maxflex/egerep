@@ -130,11 +130,6 @@ input[type="password"] {
     left: calc(50% - 110px);
 }
 
-.ladda-spinner {
-    margin-left: -1px;
-    margin-top: 1px;
-}
-
 .group {
     margin-bottom: 14px;
 }
