@@ -11,6 +11,10 @@ class Background extends Model
 
     const UPLOAD_DIR = '/img/wallpaper/';
 
+    // сколько изображений максимально пользователь
+    // имеет право загружать на сегодняшний и будущие дни
+    const MAX_PER_USER = 3;
+
     protected $fillable = [
         'status',
         'user_id',

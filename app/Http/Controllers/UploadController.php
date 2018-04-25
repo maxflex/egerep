@@ -55,9 +55,9 @@ class UploadController extends Controller
             return response()->json(['error' => "минимальный размер изображения – {$min_width}x{$min_height}"]);
         }
 
-        // 1 пользователь не может иметь 11 и более изображений сегодня и в будущем,
-        // поэтому на стадии попытки загрузить 11-е изображение не давать ему это делать
-        if (Background::where('user_id', User::fromSession()->id)->where('date', '>=', now(true))->count() >= 10) {
+        // 1 пользователь не может иметь Background::MAX_PER_USER и более изображений сегодня и в будущем,
+        // поэтому на стадии попытки загрузить Background::MAX_PER_USER+1-е изображение не давать ему это делать
+        if (Background::where('user_id', User::fromSession()->id)->where('date', '>=', now(true))->count() >= Background::MAX_PER_USER) {
             return response()->json(['error' => "вы достигли лимита по загруженным изображениям"]);
         }
 
