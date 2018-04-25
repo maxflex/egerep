@@ -42,6 +42,7 @@ class Kernel extends ConsoleKernel
         Commands\Once\TransferVj::class,
         Commands\Once\ZeroVjPrice::class,
         Commands\Once\TransferCancelled::class,
+        Commands\Once\CollectPhones::class,
     ];
 
     /**
