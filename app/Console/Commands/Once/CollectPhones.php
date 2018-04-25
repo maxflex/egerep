@@ -53,7 +53,9 @@ class CollectPhones extends Command
                 if ($phone && $this->isMobilePhone($phone)) {
                     $phones[] = (object)[
                         'name' => $r->name,
-                        'phone' => $phone
+                        'phone' => $phone,
+                        'grade' => '',
+                        'date' => '',
                     ];
                 }
             }
@@ -75,7 +77,9 @@ class CollectPhones extends Command
                 if ($phone && $this->isMobilePhone($phone)) {
                     $phones[] = (object)[
                         'name' => $r->name,
-                        'phone' => $phone
+                        'phone' => $phone,
+                        'grade' => '',
+                        'date' => '',
                     ];
                 }
             }
@@ -86,7 +90,9 @@ class CollectPhones extends Command
                     if ($phone && $this->isMobilePhone($phone)) {
                         $phones[] = (object)[
                             'name' => implode(' ', [$representative->last_name, $representative->first_name, $representative->middle_name]),
-                            'phone' => $phone
+                            'phone' => $phone,
+                            'grade' => '',
+                            'date' => '',
                         ];
                     }
                 }
@@ -97,8 +103,10 @@ class CollectPhones extends Command
 
         // egerep clients
         $result = DB::select("
-            select name, phone, phone2, phone3, phone4
-            from clients where (grade!=11 and grade!=12)
+            select name, phone, phone2, phone3, phone4, grade, r.created_at as `date`
+            from clients c
+            join requests r on r.client_id = c.id
+            where (c.grade!=11 and c.grade!=12)
         ");
 
         $bar = $this->output->createProgressBar(count($result));
@@ -109,7 +117,9 @@ class CollectPhones extends Command
                 if ($phone && $this->isMobilePhone($phone)) {
                     $phones[] = (object)[
                         'name' => $r->name,
-                        'phone' => $phone
+                        'phone' => $phone,
+                        'grade' => $r->grade,
+                        'date' => $r->date
                     ];
                 }
             }
@@ -117,12 +127,12 @@ class CollectPhones extends Command
         }
 
         $phone_counter = [];
-        $text = "имя\tтелефон\n";
+        $text = "телефон\tимя\tкласс\tдата создания\n";
         foreach($phones as $phone) {
             if (in_array($phone->phone, $phone_counter)) {
                 continue;
             }
-            $text .= "{$phone->phone}\t{$phone->name}\n";
+            $text .= "{$phone->phone}\t{$phone->name}\t{$phone->grade}\t{$phone->date}\n";
             $phone_counter[] = $phone->phone;
         }
         \Storage::put('phones.tsv', $text);
