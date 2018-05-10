@@ -174,6 +174,11 @@ class User extends Model
 		return $User;
 	}
 
+    public static function id()
+    {
+        return User::fromSession()->id;
+    }
+
     /**
      * Текущего пользователя в сессию
      */

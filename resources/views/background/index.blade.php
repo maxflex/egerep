@@ -12,7 +12,7 @@
         <li>разрешение минимум 3000*2000</li>
         <li>форматы jpg, jpeg</li>
         <li>максимально высокое качество изображения</li>
-        <li>максимальный загружаемый объем 12Мб</li>
+        <li>максимальный загружаемый объем {{ \App\Models\Background::MAX_SIZE }}Мб</li>
     </ul>
 </div>
 
@@ -24,20 +24,21 @@
         </td>
         <td width='220'>
             <div ng-if="backgrounds[date]">
-                <img ng-show="backgrounds[date].user_id == user.id || {{ allowed(\Shared\Rights::ER_APPROVE_BACKGROUND, true) }}  || (backgrounds[date].status == 1 && date <= today_date)" src="@{{ backgrounds[date].image_url }}" />
-                <img ng-hide="backgrounds[date].user_id == user.id || {{ allowed(\Shared\Rights::ER_APPROVE_BACKGROUND, true) }}  || (backgrounds[date].status == 1 && date <= today_date)" src="/img/icons/no-image.png" />
+                <img ng-show="backgrounds[date].preview" src="@{{ backgrounds[date].image_url }}" />
+                <img ng-hide="backgrounds[date].preview" src="/img/icons/no-image.png" />
             </div>
         </td>
         <td width='150'>
             <span ng-if="!backgrounds[date]" ng-show="date >= today_date" class="link-like" ng-click="loadImage(date)">загрузить</span>
 
-            <span ng-if="backgrounds[date]" ng-show="(backgrounds[date].user_id == user.id || {{ allowed(\Shared\Rights::ER_APPROVE_BACKGROUND, true) }}) && !(backgrounds[date].status == 1 && !{{ allowed(\Shared\Rights::ER_APPROVE_BACKGROUND, true) }} && date <= today_date)"
+        <span ng-if="backgrounds[date]" ng-show="backgrounds[date].may_be_deleted"
                 class="link-like" ng-click="remove(date)">удалить</span>
         </td>
         <td width='300'>
             <span ng-if="backgrounds[date]">
-                <span class="link-like" ng-click="editBackgroundModal(date)" ng-show="(backgrounds[date].user_id == user.id || {{ allowed(\Shared\Rights::ER_APPROVE_BACKGROUND, true) }}) && !(backgrounds[date].status == 1 && !{{ allowed(\Shared\Rights::ER_APPROVE_BACKGROUND, true) }})">@{{ backgrounds[date].title || 'добавить название' }}</span>
-                <span ng-show="backgrounds[date].status == 1 && !((backgrounds[date].user_id == user.id || {{ allowed(\Shared\Rights::ER_APPROVE_BACKGROUND, true) }}) && !(backgrounds[date].status == 1 && !{{ allowed(\Shared\Rights::ER_APPROVE_BACKGROUND, true) }}))">@{{ backgrounds[date].title }}</span>
+
+                <span class="link-like" ng-click="editBackgroundModal(date)" ng-show="backgrounds[date].title_status == 2">@{{ backgrounds[date].title || 'добавить название' }}</span>
+                <span ng-show="backgrounds[date].title_status == 1">@{{ backgrounds[date].title }}</span>
             </span>
         </td>
         <td width='300'>
@@ -53,7 +54,7 @@
             </span>
         </td>
         <td>
-            <span ng-if="backgrounds[date]" ng-show="backgrounds[date].user_id == user.id || {{ allowed(\Shared\Rights::ER_APPROVE_BACKGROUND, true) }} || (backgrounds[date].status == 1 && date <= today_date)">
+            <span ng-if="backgrounds[date]" ng-show="backgrounds[date].user_id == user.id || {{ allowed(\Shared\Rights::ER_APPROVE_BACKGROUND, true) }}">
                 предпросмотр:
                 <a target="_blank" href="background/preview/@{{ backgrounds[date].id }}">ER</a> |
                 <a class="text-blue" target="_blank" href="background/preview/@{{ backgrounds[date].id }}?type=ec">EC</a>

@@ -15,6 +15,9 @@ class Background extends Model
     // имеет право загружать на сегодняшний и будущие дни
     const MAX_PER_USER = 3;
 
+    // максимальный размер, MB
+    const MAX_SIZE = 15;
+
     protected $fillable = [
         'status',
         'user_id',

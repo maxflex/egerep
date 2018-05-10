@@ -40,6 +40,52 @@ class BackgroundController extends Controller
 
         $backgrounds = Background::whereBetween('date', [$date_start, $date_end])->get();
 
+        foreach($backgrounds as &$background) {
+            // можно ли удалять?
+            if (allowed(\Shared\Rights::ER_APPROVE_BACKGROUND)) {
+                $background->may_be_deleted = true;
+            } else {
+                if ($background->user_id == User::id()) {
+                    if ($background->date <= now(true)) {
+                        $background->may_be_deleted = false;
+                    } else {
+                        $background->may_be_deleted = $background->approved ? false : true;
+                    }
+                } else {
+                    $background->may_be_deleted = false;
+                }
+            }
+
+            // название
+            // 0 – не отображается
+            // 1 - отображается, но не редактируется
+            // 2 – отображается и редактируется
+            if (allowed(\Shared\Rights::ER_APPROVE_BACKGROUND)) {
+                $background->title_status = 2;
+            } else {
+                if ($background->user_id == User::id()) {
+                    if ($background->approved) {
+                        $background->title_status = 1;
+                    } else {
+                        $background->title_status = 2;
+                    }
+                } else {
+                    if ($background->date <= now(true) && $background->approved) {
+                        $background->title_status = 1;
+                    } else {
+                        $background->title_status = 0;
+                    }
+                }
+            }
+
+            // превью
+            if (allowed(\Shared\Rights::ER_APPROVE_BACKGROUND) || $background->user_id == User::id()) {
+                $background->preview = true;
+            } else {
+                $background->preview = ($background->date <= now(true) && $background->approved) ? true : false;
+            }
+        }
+
         return view('background.index')->with(
             ngInit([
                 'current_page' => $page,

@@ -41,8 +41,8 @@ class UploadController extends Controller
     {
         $file = $request->file('photo');
 
-        if ($file->getClientSize() > 12582912) { // 12 mb с запасом
-            return response()->json(['error' => 'максимальный объём файла – 12 Мб']);
+        if ($file->getClientSize() > (1024 * 1024 * Background::MAX_SIZE)) { // 15 mb
+            return response()->json(['error' => 'максимальный объём файла – ' . Background::MAX_SIZE . ' Мб']);
         }
 
         /** validations **/
