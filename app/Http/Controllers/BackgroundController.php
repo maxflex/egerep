@@ -49,7 +49,7 @@ class BackgroundController extends Controller
                     if ($background->date <= now(true)) {
                         $background->may_be_deleted = false;
                     } else {
-                        $background->may_be_deleted = $background->approved ? false : true;
+                        $background->may_be_deleted = $background->status == 1 ? false : true;
                     }
                 } else {
                     $background->may_be_deleted = false;
@@ -64,13 +64,13 @@ class BackgroundController extends Controller
                 $background->title_status = 2;
             } else {
                 if ($background->user_id == User::id()) {
-                    if ($background->approved) {
+                    if ($background->status == 1) {
                         $background->title_status = 1;
                     } else {
                         $background->title_status = 2;
                     }
                 } else {
-                    if ($background->date <= now(true) && $background->approved) {
+                    if ($background->date <= now(true) && $background->status == 1) {
                         $background->title_status = 1;
                     } else {
                         $background->title_status = 0;
@@ -82,7 +82,7 @@ class BackgroundController extends Controller
             if (allowed(\Shared\Rights::ER_APPROVE_BACKGROUND) || $background->user_id == User::id()) {
                 $background->preview = true;
             } else {
-                $background->preview = ($background->date <= now(true) && $background->approved) ? true : false;
+                $background->preview = ($background->date <= now(true) && $background->status == 1) ? true : false;
             }
         }
 
