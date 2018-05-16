@@ -64,7 +64,8 @@ class Tutor extends Service\Person
         'errors',
         'security_notification',
         'photo_extension',
-        'egecentr_source'
+        'egecentr_source',
+        'photo_desc'
     ];
 
     protected $appends = [

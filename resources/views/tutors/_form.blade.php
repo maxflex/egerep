@@ -290,6 +290,11 @@
             </section>
 
             <md-input-container class="md-block" style="margin-top: 20px">
+                <label>Подпись под фото на сайте ЕГЭ-Центра</label>
+                <textarea class="md-input" ng-model="tutor.photo_desc"></textarea>
+            </md-input-container>
+
+            <md-input-container class="md-block" style="margin-top: 20px">
                 <label>Ссылка на видео</label>
                 <textarea class="md-input" ng-model="tutor.video_link"></textarea>
             </md-input-container>
