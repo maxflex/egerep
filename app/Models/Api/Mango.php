@@ -4,6 +4,7 @@ namespace App\Models\Api;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Service\Settings;
+use App\Models\SmsRating;
 use DB;
 
 class Mango {
@@ -150,7 +151,7 @@ class Mango {
 							'location'           => $info[11],
 						];
 
-                        self::rateQualitySms($piece_of_data);
+                        SmsRating::checkCall($piece_of_data);
 
 						$return[] = $piece_of_data;
 				   }
@@ -178,21 +179,4 @@ class Mango {
             'fields'     => 'records, start, finish, from_extension, from_number, to_extension, to_number, disconnect_reason, answer, entry_id, line_number, location',
         ])->key;
     }
-
-	/**
-	 * Отправить ли СМС для рейтинга?
-	 */
-	private static function rateQualitySms($piece_of_data)
-	{
-		// входящий?
-		if (! $piece_of_data['from_extension']) {
-            $seconds = $piece_of_data['answer'] ? $piece_of_data['finish'] - $piece_of_data['answer'] : 0;
-            // длительность более 2х минут
-            if ($seconds > 120) {
-                // TODO если не было sms за последнюю неделю
-                $number = $piece_of_data['from_number'];
-                \Log::info("Incoming call from {$number} was {$seconds} seconds");
-            }
-        }
-	}
 }
