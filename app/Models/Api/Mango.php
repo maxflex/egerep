@@ -66,12 +66,6 @@ class Mango {
         });
     }
 
-
-
-	public static function call()
-	{
-	}
-
 	/**
 	 * Запустить команду
 	 * @return результат $ch
@@ -141,7 +135,7 @@ class Mango {
 			   foreach ($response_lines as $index => $response_line) {
 				   $info = explode(';', $response_line);
 				   if (count($info) > 1) {
-						$return[] = [
+						$piece_of_data = [
 							'recording_id'		 => trim($info[0], '[]'),
 							'start'              => $info[1],
 							'finish'             => $info[2],
@@ -155,6 +149,10 @@ class Mango {
 							'line_number'        => $info[10],
 							'location'           => $info[11],
 						];
+
+                        self::rateQualitySms($piece_of_data);
+
+						$return[] = $piece_of_data;
 				   }
 			   }
                // сначала добавляем новые данные, потом удаляем старые
@@ -180,4 +178,21 @@ class Mango {
             'fields'     => 'records, start, finish, from_extension, from_number, to_extension, to_number, disconnect_reason, answer, entry_id, line_number, location',
         ])->key;
     }
+
+	/**
+	 * Отправить ли СМС для рейтинга?
+	 */
+	private static function rateQualitySms($piece_of_data)
+	{
+		// входящий?
+		if (! $piece_of_data['from_extension']) {
+            $seconds = $piece_of_data['answer'] ? $piece_of_data['finish'] - $piece_of_data['answer'] : 0;
+            // длительность более 2х минут
+            if ($seconds > 120) {
+                // TODO если не было sms за последнюю неделю
+                $number = $piece_of_data['from_number'];
+                \Log::info("Incoming call from {$number} was {$seconds} seconds");
+            }
+        }
+	}
 }
