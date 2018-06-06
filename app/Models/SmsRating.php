@@ -17,6 +17,7 @@ class SmsRating extends Model
         'rating',
         'number',
         'user_id',
+        'seconds',
         'mango_entry_id'
     ];
 
@@ -51,11 +52,12 @@ class SmsRating extends Model
      */
     public static function sendRateSms($piece_of_data)
     {
-        // Sms::send($piece_of_data['from_number'], 'Оцените консультацию от 1 до 5 в ответном SMS на номер +79168877777');
+        Sms::send($piece_of_data['from_number'], 'Уважаемый клиент, оцените консультацию от 1 до 5 в ответном SMS на номер +79168877777. С уважением, ЕГЭ-Центр');
         self::create([
             'call_date' => date('Y-m-d H:i:s', $piece_of_data['start']),
             'number' => $piece_of_data['from_number'],
             'user_id' => $piece_of_data['to_extension'],
+            'seconds' => $piece_of_data['answer'] ? $piece_of_data['finish'] - $piece_of_data['answer'] : 0,
             'mango_entry_id' => $piece_of_data['entry_id']
         ]);
     }
