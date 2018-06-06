@@ -9,6 +9,7 @@ use App\Models\Tutor;
 class SmsRating extends Model
 {
     protected $table = 'sms_rating';
+    public $timestamps = false;
 
     protected $fillable = [
         'call_date',
