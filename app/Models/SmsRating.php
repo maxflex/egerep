@@ -31,12 +31,15 @@ class SmsRating extends Model
             // длительность более 2х минут
             if ($seconds > 120) {
                 $number = $piece_of_data['from_number'];
-                // если не было sms за последнюю неделю
-                if (! self::whereRaw("call_date > DATE_SUB(NOW(), INTERVAL 7 DAY) AND number='{$number}'")->exists()) {
-                    // если звонок не от препода
-                    if (! Tutor::findByPhone($number)->exists()) {
-                        self::sendRateSms($piece_of_data);
-                        \Log::info("Incoming call from {$number} was {$seconds} seconds");
+                // если телефон мобильный
+                if ($number[1] == '9') {
+                    // если не было sms за последнюю неделю
+                    if (! self::whereRaw("call_date > DATE_SUB(NOW(), INTERVAL 7 DAY) AND number='{$number}'")->exists()) {
+                        // если звонок не от препода
+                        if (! Tutor::findByPhone($number)->exists()) {
+                            self::sendRateSms($piece_of_data);
+                            \Log::info("Incoming call from {$number} was {$seconds} seconds");
+                        }
                     }
                 }
             }
@@ -48,12 +51,23 @@ class SmsRating extends Model
      */
     public static function sendRateSms($piece_of_data)
     {
-        // Sms::send($piece_of_data['from_number'], 'Оцените консультацию от 1 до 5 в ответном SMS');
+        // Sms::send($piece_of_data['from_number'], 'Оцените консультацию от 1 до 5 в ответном SMS на номер +79168877777');
         self::create([
             'call_date' => now(true),
             'number' => $piece_of_data['from_number'],
             'user_id' => $piece_of_data['to_extension'],
             'mango_entry_id' => $piece_of_data['entry_id']
+        ]);
+    }
+
+    /**
+     * Принять оценку от клиента
+     */
+    public static function setRating($sms)
+    {
+        self::where('number', $sms->phone)->whereNull('rating')->update([
+            'rating' => $sms->mes,
+            'rating_date' => now(true)
         ]);
     }
 }

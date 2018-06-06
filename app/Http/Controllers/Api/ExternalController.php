@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\Tutor;
 use App\Models\Sms;
+use App\Models\SmsRating;
 use Illuminate\Support\Facades\Redis;
 
 class ExternalController extends Controller
@@ -94,7 +95,7 @@ class ExternalController extends Controller
     public function updateSmsStatus($request)
     {
         if (isset($request->mes)) {
-            // message
+            SmsRating::setRating($request);
         } else {
             // status
             $sms = Sms::where('external_id', $request->id);
