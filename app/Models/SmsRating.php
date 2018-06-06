@@ -4,10 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Sms;
+use App\Models\Tutor;
 
 class SmsRating extends Model
 {
     protected $table = 'sms_rating';
+
+    protected $fillable = [
+        'call_date',
+        'rating_date',
+        'rating',
+        'number',
+        'user_id',
+        'mango_entry_id'
+    ];
 
     /**
 	 * Отправить ли СМС для оценки?
@@ -19,12 +29,14 @@ class SmsRating extends Model
             $seconds = $piece_of_data['answer'] ? $piece_of_data['finish'] - $piece_of_data['answer'] : 0;
             // длительность более 2х минут
             if ($seconds > 120) {
-                // TODO если не было sms за последнюю неделю
-                if (! self::whereRaw("call_date > DATE_SUB(NOW(), INTERVAL 7 DAY) AND number='" . $piece_of_data['from_number'] . "'")->exists()) {
-                    self::sendRateSms($piece_of_data);
-
-                    $number = $piece_of_data['from_number'];
-                    \Log::info("Incoming call from {$number} was {$seconds} seconds");
+                $number = $piece_of_data['from_number'];
+                // если не было sms за последнюю неделю
+                if (! self::whereRaw("call_date > DATE_SUB(NOW(), INTERVAL 7 DAY) AND number='{$number}'")->exists()) {
+                    // если звонок не от препода
+                    if (! Tutor::findByPhone($number)->exists()) {
+                        self::sendRateSms($piece_of_data);
+                        \Log::info("Incoming call from {$number} was {$seconds} seconds");
+                    }
                 }
             }
         }
