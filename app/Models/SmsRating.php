@@ -53,7 +53,7 @@ class SmsRating extends Model
     {
         // Sms::send($piece_of_data['from_number'], 'Оцените консультацию от 1 до 5 в ответном SMS на номер +79168877777');
         self::create([
-            'call_date' => now(true),
+            'call_date' => now(),
             'number' => $piece_of_data['from_number'],
             'user_id' => $piece_of_data['to_extension'],
             'mango_entry_id' => $piece_of_data['entry_id']
@@ -67,7 +67,7 @@ class SmsRating extends Model
     {
         self::where('number', $sms->phone)->whereNull('rating')->update([
             'rating' => $sms->mes,
-            'rating_date' => now(true)
+            'rating_date' => now()
         ]);
     }
 }
