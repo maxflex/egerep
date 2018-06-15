@@ -13,9 +13,6 @@
                     <td>
                         <span ng-click="sortType = 'last_account_info.date_end'; sortReverse = !sortReverse">ПОСЛЕДНИЙ РАСЧЕТ</span>
                     </td>
-                    <td>
-                        ОПОВЕЩЕНИЯ СБ
-                    </td>
                     <td>КОММЕНТАРИЙ</td>
                 </tr>
             </thead>
@@ -62,7 +59,6 @@
                             </span>
                         </td>
                         <td>@{{ total(_tutors, 'debt_calc') }}</td>
-                        <td></td>
                         <td></td>
                     </tr>
                 </tfoot>
