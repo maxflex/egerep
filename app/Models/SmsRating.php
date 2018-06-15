@@ -26,8 +26,8 @@ class SmsRating extends Model
 	 */
     public static function checkCall($piece_of_data)
     {
-        // входящий?
-		if (! $piece_of_data['from_extension']) {
+        // обрабатываем только звонки от ЕГЭ-Центра
+		if ($piece_of_data['line_number'] == '74956468592') {
             $seconds = $piece_of_data['answer'] ? $piece_of_data['finish'] - $piece_of_data['answer'] : 0;
             // длительность более 2х минут
             if ($seconds > 120) {
@@ -39,7 +39,7 @@ class SmsRating extends Model
                         // если звонок не от препода
                         if (! Tutor::findByPhone($number)->exists()) {
                             self::sendRateSms($piece_of_data);
-                            \Log::info("Incoming call from {$number} was {$seconds} seconds");
+                            // \Log::info("Incoming call from {$number} was {$seconds} seconds");
                         }
                     }
                 }
@@ -58,6 +58,7 @@ class SmsRating extends Model
             'number' => $piece_of_data['from_number'],
             'user_id' => $piece_of_data['to_extension'],
             'seconds' => $piece_of_data['answer'] ? $piece_of_data['finish'] - $piece_of_data['answer'] : 0,
+            'is_incoming' => $piece_of_data['from_extension'] ? false : true,
             'mango_entry_id' => $piece_of_data['entry_id']
         ]);
     }
