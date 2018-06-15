@@ -23,6 +23,7 @@
                 <tr ng-repeat="tutor in (mode == 'list' ? tutors : debtors) | orderBy:sortType:sortReverse">
                     <td>
                         @{{ $index + 1 }}. <a href='tutors/@{{ tutor.id }}/edit'>@{{ tutor.full_name }}</a>
+                        <div class="in-egecentr list" ng-show="tutor.in_egecentr == 2"></div>
                     </td>
                     <td>
                         <span ng-class="{
@@ -37,9 +38,6 @@
                     </td>
                     <td>
                         @{{ formatDate(tutor.last_account_info.date_end) }}
-                    </td>
-                    <td>
-                        <security-notification tutor='tutor'></security-notification>
                     </td>
                     <td width='300'>
                         <span ng-click="startComment(tutor)" class="glyphicon glyphicon-pencil opacity-pointer" ng-hide="tutor.debt_comment || tutor.is_being_commented"></span>

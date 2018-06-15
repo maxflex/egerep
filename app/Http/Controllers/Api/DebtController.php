@@ -139,7 +139,7 @@ class DebtController extends Controller
             'tutors.photo_extension',
             'tutors.birth_year',
             'tutors.debt_comment',
-            'tutors.security_notification',
+            'tutors.in_egecentr',
         ])->get()->append('last_account_info');
 
         return $tutors;

@@ -26377,7 +26377,8 @@ email .input-group {
   right: 0;
   padding: 0 10px; }
   .map-tutor-list.debt-map {
-    overflow-x: auto; }
+    overflow-x: auto;
+    padding: 10px; }
     .map-tutor-list.debt-map .hide-clone {
       opacity: 0; }
   .map-tutor-list.ng-hide-add, .map-tutor-list.ng-hide-remove {
@@ -29527,6 +29528,27 @@ tr.ui-sortable-helper {
   color: #337ab7; }
   .text-blue:hover {
     color: #337ab7; }
+
+.in-egecentr {
+  display: inline-block;
+  background: #337ab7;
+  height: 19px;
+  width: 19px;
+  border-radius: 50%;
+  position: relative;
+  top: -2px;
+  line-height: 15px; }
+  .in-egecentr:before {
+    content: 'EC';
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    left: 2.5px;
+    position: relative;
+    top: 1.5px; }
+  .in-egecentr.list:before {
+    left: 2px;
+    top: 1px; }
 
 .ios7-switch {
   display: inline-block;

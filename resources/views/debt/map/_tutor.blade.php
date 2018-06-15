@@ -4,6 +4,7 @@
 <img class='ava' ng-src="@{{ _tutor.photo_url }}">
 <div class="info-line">
     <a href="tutors/@{{ _tutor.id }}/edit" target="_blank">@{{ _tutor.full_name }}</a>
+    <div class="in-egecentr" ng-show="_tutor.in_egecentr == 2"></div>
 </div>
 <div class="info-line">
     дебет: @{{ _tutor.debt_calc | number }} руб.

@@ -2313,33 +2313,6 @@
 }).call(this);
 
 (function() {
-  angular.module('Egerep').controller('ContractIndex', function($scope, $http, UserService) {
-    return bindArguments($scope, arguments);
-  }).controller('ContractEdit', function($scope, $http, $timeout, UserService) {
-    bindArguments($scope, arguments);
-    $scope.save = function() {
-      ajaxStart();
-      $scope.saving = true;
-      $scope.contract_html = $scope.editor.getValue();
-      return $http.post("contract", {
-        contract_html: $scope.contract_html,
-        contract_date: $scope.contract_date
-      }).then(function(response) {
-        ajaxEnd();
-        return $scope.saving = false;
-      });
-    };
-    return angular.element(document).ready(function() {
-      return $timeout(function() {
-        $scope.editor = ace.edit('editor');
-        return $scope.editor.getSession().setMode('ace/mode/html');
-      }, 300);
-    });
-  });
-
-}).call(this);
-
-(function() {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   angular.module('Egerep').controller('DebtMap', function($scope, $timeout, TutorService, Tutor, Subjects, YesNo) {
@@ -2573,6 +2546,7 @@
         }
         if ((ref1 = marker.tutor.id, indexOf.call($scope.tutor_ids, ref1) < 0) && marker.chosen) {
           marker.chosen = false;
+          marker.setIcon(ICON_SEMI_BLACK);
         }
         if (marker.tutor.planned_account) {
           marker.setIcon(ICON_YELLOW);
@@ -5636,32 +5610,6 @@
       templateUrl: 'directives/published-field',
       scope: {
         inEgeCentr: '@'
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').directive('securityNotification', function() {
-    return {
-      restrict: 'E',
-      scope: {
-        tutor: '='
-      },
-      templateUrl: 'directives/security-notification',
-      controller: function($scope, Tutor) {
-        return $scope.toggleNotification = function(index) {
-          var security_notification;
-          security_notification = angular.copy($scope.tutor.security_notification);
-          security_notification[index] = !security_notification[index];
-          return Tutor.update({
-            id: $scope.tutor.id,
-            security_notification: security_notification
-          }, function() {
-            return $scope.tutor.security_notification = angular.copy(security_notification);
-          });
-        };
       }
     };
   });

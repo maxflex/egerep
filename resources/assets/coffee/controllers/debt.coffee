@@ -221,6 +221,7 @@ angular
                     marker.setOpacity getOpacity marker
                 if marker.tutor.id not in $scope.tutor_ids and marker.chosen
                     marker.chosen = false
+                    marker.setIcon ICON_SEMI_BLACK
                 if marker.tutor.planned_account
                     marker.setIcon(ICON_YELLOW)
                     marker.setIcon ICON_SEMI_BLACK
