@@ -52,7 +52,7 @@ class SmsRating extends Model
      */
     public static function sendRateSms($piece_of_data)
     {
-        Sms::send($piece_of_data['from_number'], 'Уважаемый клиент, оцените консультацию от 1 до 5 в ответном SMS на номер +79168877777. С уважением, ЕГЭ-Центр');
+        Sms::send($piece_of_data['from_number'], 'Уважаемый клиент, оцените консультацию от 1 до 5 в ответном SMS на номер +79168877777. С уважением, ЕГЭ-Центр', false);
         self::create([
             'call_date' => date('Y-m-d H:i:s', $piece_of_data['start']),
             'number' => $piece_of_data['from_number'],
