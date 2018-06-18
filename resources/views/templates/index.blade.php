@@ -3,7 +3,7 @@
 @section('controller', 'TemplateIndex')
 
 @section('content')
-    <div ng-repeat="Template in allTemplates" class="row checkChange" style="margin-bottom: 20px">
+    <div ng-repeat="Template in allTemplates" class="row checkChange" style="margin-bottom: 20px" ng-hide="Template.number == 2 && !{{ allowed(\Shared\Rights::SECRET_SMS, true) }}">
         <div class="col-sm-12">
             <div class="form-group task" style="display: inline-block; width: 100%">
                 <b style="margin: 0 0 3px; padding-left: 5px" class="ng-binding">@{{Template.name}}</b>

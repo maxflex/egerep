@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\Sms;
+use App\Models\Template;
 
 class SecuritySms extends Command
 {
@@ -45,7 +46,7 @@ class SecuritySms extends Command
             ->whereRaw("(SELECT SUM(debt) FROM debts WHERE tutor_id = tutors.id AND after_last_meeting = 1) > 2000")
             ->get();
 
-        $template = dbEgecrm('templates')->where('number', 19)->value('text');
+        $template = Template::get(2);
 
         foreach($tutors as $tutor) {
             $message = str_replace('{tutor_name}', "{$tutor->first_name} {$tutor->last_name}", $template);

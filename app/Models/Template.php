@@ -13,4 +13,9 @@ class Template extends Model
         'who',
         'number'
     ];
+
+    public static function get($number)
+    {
+        return self::where('number', $number)->value('text');
+    }
 }
