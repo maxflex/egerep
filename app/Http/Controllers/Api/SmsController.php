@@ -20,7 +20,7 @@ class SmsController extends Controller
         return Sms::number($request->input('number'))->get();
     }
 
-    public function list(Request $request)
+    public function listt(Request $request)
     {
         $query = Sms::orderBy('created_at', 'desc');
 
