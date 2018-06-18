@@ -97,6 +97,25 @@ use App\Models\Sms;
 		return $name." = ".htmlspecialchars(json_encode($Object, JSON_NUMERIC_CHECK)) ."; ";
 	}
 
+    /**
+	 * Обратная функция – вернуть форматированный номер из 7290556776.
+	 *
+	 */
+	function formatNumber($number) {
+
+		// Если номер не начинается с семаки, добавляем семаку
+		if ($number[0] != "7") {
+			$number = "7". $number;
+		}
+
+		$part1 = substr($number, 1, 3);
+		$part2 = substr($number, 4, 3);
+		$part3 = substr($number, 7, 2);
+		$part4 = substr($number, 9, 2);
+
+		return "+7 ($part1) $part2-$part3-$part4";
+	}
+
 	/*
 	 * Инициализация переменных ангуляра
 	 * $array – [var_name = {var_values}; ...]

@@ -29549,6 +29549,9 @@ tr.ui-sortable-helper {
   .in-egecentr.list:before {
     top: 1px; }
 
+tr.secret-sms td {
+  background: rgba(255, 0, 57, 0.1); }
+
 .ios7-switch {
   display: inline-block;
   position: relative;

@@ -7,14 +7,28 @@ use Illuminate\Support\Facades\Redis;
 
 class Sms extends Model
 {
-    protected $fillable = ['number', 'user_id', 'id_status', 'id_status', 'external_id', 'message'];
-    protected $appends = ['user_login'];
+    public $loggable = false;
+
+    protected $fillable = ['number', 'user_id', 'id_status', 'id_status', 'external_id', 'message', 'is_secret'];
+    protected $appends = ['user_login', 'number_formatted', 'status'];
+
+    public function getNumberFormattedAttribute()
+    {
+        return formatNumber($this->attributes['number']);
+    }
 
     public function getUserLoginAttribute()
     {
-        return User::where('id', $this->user_id)->select('login')->first()->login;
+        if ($this->user_id) {
+            return User::where('id', $this->user_id)->select('login')->first()->login;
+        }
+        return User::SYSTEM_USER['login'];
     }
 
+    public function getStatusAttribute()
+    {
+        return self::textStatus($this->attributes['id_status']);
+    }
 
 	public static function sendToNumbers($numbers, $message, $create = true) {
 		foreach ($numbers as $number) {
@@ -70,6 +84,9 @@ class Sms extends Model
 
 		// создаем объект для истории
         if ($create) {
+            if ($create === 'SECRET') {
+                $info['is_secret'] = true;
+            }
             return SMS::create($info);
         }
 	}

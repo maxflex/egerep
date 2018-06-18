@@ -793,7 +793,7 @@
             "source": {
                 "type": "git",
                 "url": "https://mkolyadin@bitbucket.org/mkolyadin/ege-shared.git",
-                "reference": "e6185dfcf06df3b4e0123606dba5c1a700125b89"
+                "reference": "21364acc12f5e212b83311e24b3cb81bb518f291"
             },
             "type": "library",
             "autoload": {
@@ -801,7 +801,7 @@
                     "Shared\\": "src/"
                 }
             },
-            "time": "2018-04-19T11:20:55+00:00"
+            "time": "2018-06-18T10:07:59+00:00"
         },
         {
             "name": "google/recaptcha",

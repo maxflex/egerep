@@ -35,6 +35,7 @@ class Kernel extends ConsoleKernel
         Commands\CallStatus::class,
         Commands\DeleteMarginIntermediate::class,
         Commands\DelayedJobs::class,
+        Commands\SecuritySms::class,
 
         Commands\Once\AccountComments::class,
         Commands\Once\CreateRepresentatives::class,

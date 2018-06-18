@@ -62,6 +62,7 @@
 @if (allowed(\Shared\Rights::ER_ACTIVITY))
     <a href="activity" class="list-group-item">Активность</a>
 @endif
+<a href="sms" class="list-group-item">SMS</a>
 @if (allowed(\Shared\Rights::ER_TEMPLATES))
     <a href="templates" class="list-group-item">Шаблоны</a>
 @endif

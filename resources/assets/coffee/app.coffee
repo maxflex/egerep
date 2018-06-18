@@ -36,6 +36,8 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
     .filter 'hideZero', ->
         (item) ->
             if item > 0 then item else null
+    .filter 'formatDateTime', ->
+        (date) -> moment(date).format 'DD.MM.YY в HH:mm'
     .run ($rootScope, $q, PusherService) ->
         PusherService.bind 'IncomingRequest', (data) ->
             request_count = $('#request-count')

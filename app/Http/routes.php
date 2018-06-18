@@ -21,6 +21,8 @@ Route::group(['middleware' => ['web', LogUrlOpen::class]], function () {
     Route::get('calls/missed', 'CallsController@missed');
     Route::resource('calls', 'CallsController');
 
+    Route::resource('sms', 'SmsController');
+
     Route::get('background', 'BackgroundController@index');
     Route::get('background/preview/{id}', 'BackgroundController@preview');
 
@@ -164,6 +166,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api', 'middleware' => ['web']],
     Route::resource('accounts', 'AccountsController');
     Route::resource('periods/planned', 'PlannedAccountsController');
     Route::resource('periods/payments', 'AccountPaymentsController');
+    Route::get('sms/list', 'SmsController@list');
     Route::resource('sms', 'SmsController');
     Route::resource('periods', 'PeriodsController');
     Route::resource('stream', 'StreamController');
