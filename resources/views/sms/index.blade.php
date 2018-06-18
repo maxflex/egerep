@@ -8,6 +8,9 @@
         display: none;
     }
 </style>
+<!-- СМС -->
+<sms number='sms_number'></sms>
+
 <div class="row" style='margin-bottom: 20px; position: relative; z-index: 999'>
 	<div class="col-sm-6">
 		<input class="form-control" placeholder="поиск..." name="search" ng-keyup="filter()" ng-model="search">
@@ -16,8 +19,6 @@
 		<div class="form-group">
 			<phones entity='{}' sms-number='sms_number' entity-types='репетитор'></phones>
 		</div>
-		<!-- СМС -->
-		<sms number='sms_number'></sms>
 	</div>
     @if (allowed(\Shared\Rights::SECRET_SMS))
 	<div class="col-sm-3">
