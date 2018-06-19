@@ -19,8 +19,7 @@ class MutualPayment extends Model
 
     public static function betweenDates($date_start, $date_end)
     {
-        return self::query()->whereRaw("STR_TO_DATE(date, '%d.%m.%Y') >= '{$date_start}'")
-                ->whereRaw("STR_TO_DATE(date, '%d.%m.%Y') <= '{$date_end}'");
+        return self::query()->whereRaw("date >= '{$date_start}'")->whereRaw("date <= '{$date_end}'");
     }
 
     public static function defaultSelect()
