@@ -14,7 +14,7 @@ class MutualPayment extends Model
      */
     public static function query()
     {
-        return dbEgecrm('payments')->where('entity_type', \App\Models\Tutor::USER_TYPE)->where('id_status', self::MUTUAL_PAYMENT_STATUS);
+        return dbEgecrm('payments')->where('entity_type', 'TEACHER')->where('id_status', self::MUTUAL_PAYMENT_STATUS);
     }
 
     public static function betweenDates($date_start, $date_end)
