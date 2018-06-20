@@ -86,6 +86,7 @@
                         @{{ s.google_id }}
                     </td>
                     <td width="8%">
+                        <span ng-show="['request'].indexOf(s.action) !== -1" class="glyphicon glyphicon-envelope"></span>
                         <span ng-show='!s.referer'>@{{ s.action }}</span>
                         <a ng-show='s.referer' href='@{{ s.referer}}' target="_blank">@{{ s.action }}</a>
                     </td>
