@@ -52,13 +52,4 @@ class Tutor
         sort($errors);
         return implode(',', $errors);
     }
-
-    public static function generateLkLink($tutor_id)
-    {
-        $salt = 'AxQWRu2y3PhE1D';
-        $date = date('Y-m-d H');
-        $hash = md5($salt . $date);
-        $tutor_id_hash = md5($tutor_id . $salt . $hash);
-        return "https://ege-repetitor.ru/login/{$hash}{$tutor_id_hash}";
-    }
 }

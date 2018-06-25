@@ -43,9 +43,7 @@ class TutorsController extends Controller
 
     public function edit($id)
     {
-        return view('tutors.edit')->with(compact('id'))->with([
-            'lk_link' => \App\Models\Helpers\Tutor::generateLkLink($id),
-        ]);
+        return view('tutors.edit')->with(compact('id'));
     }
 
     public function addToList($id)

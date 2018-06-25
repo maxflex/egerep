@@ -299,7 +299,7 @@
                 <textarea class="md-input" ng-model="tutor.video_link"></textarea>
             </md-input-container>
         </div>
-        <div>
+        <div class="mb-xl">
             <h4>СТАТИСТИКА</h4>
             <div>Количество клиентов: @{{ tutor.clients_count }}</div>
             <div ng-hide="tutor.margin === null">Группа маржинальности: М@{{ tutor.margin }}</div>
@@ -315,10 +315,6 @@
                 'many': 'оценок'
             }"></ng-pluralize>)</div>
             <a href="reviews/@{{ tutor.id }}">читать все отзывы</a>
-        </div>
-        <div class="mb-xl">
-            <h4>ЛК</h4>
-            <div class='mbs' ng-if='tutor.last_login_time'>Последний вход: @{{ formatDateTime(tutor.last_login_time) }}</div>
         </div>
         <div ng-if="tutor.id">
             <h4>КОММЕНТАРИИ</h4>
