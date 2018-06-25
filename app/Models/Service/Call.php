@@ -12,7 +12,7 @@ class Call extends Model
 
     const TEST_NUMBER		= '74955653170';
     const EGEREP_NUMBER 	= '74956461080';
-    const EGECENTR_NUMBER 	= '74956468592';
+    const EGECENTR_NUMBERS 	= ['74956468592', '79999999999'];
 
     /*
         Алгоритм: сначала получаем все сегодняшние пропущенные, затем исключаем по условиям
@@ -71,7 +71,7 @@ class Call extends Model
      * Номер ЕГЭ-Центра
      */
     public static function isEgecentr($number) {
-        return $number == self::EGECENTR_NUMBER;
+        return in_array($number, self::EGECENTR_NUMBERS);
     }
 
     /*

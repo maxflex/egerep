@@ -23,8 +23,5 @@ angular
 				$scope.sms = $scope.data.data
 
 	$timeout ->
-		setTimeout ->
-			$('.phone-masked').attr('placeholder', 'отправить СМС')
-		, 1000
 		$scope.filter($scope.page)
 		$scope.current_page = $scope.page

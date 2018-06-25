@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Sms;
 use App\Models\Tutor;
+use App\Models\Service\Call;
 
 class SmsRating extends Model
 {
@@ -27,7 +28,7 @@ class SmsRating extends Model
     public static function checkCall($piece_of_data)
     {
         // обрабатываем только звонки от ЕГЭ-Центра
-		if ($piece_of_data['line_number'] == '74956468592') {
+		if (Call::isEgecentr($piece_of_data['line_number'])) {
             $seconds = $piece_of_data['answer'] ? $piece_of_data['finish'] - $piece_of_data['answer'] : 0;
             // длительность более 2х минут
             if ($seconds > 120) {

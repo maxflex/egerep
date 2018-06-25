@@ -17,7 +17,7 @@
 	</div>
 	<div class="col-sm-3">
 		<div class="form-group">
-			<phones entity='{}' sms-number='sms_number' entity-types='репетитор'></phones>
+			<phone></phone>
 		</div>
 	</div>
     @if (allowed(\Shared\Rights::SECRET_SMS))

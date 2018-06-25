@@ -120,7 +120,7 @@ class User extends Model
             return true;
         }
         $current_ip = @$_SERVER['HTTP_X_REAL_IP'];
-        foreach(['213.184.130.', '85.30.249.251', '46.138.163.142'] as $ip) {
+        foreach(['213.184.130.', '85.30.249.251', '178.140.53.201'] as $ip) {
             if (strpos($current_ip, $ip) === 0) {
                 return true;
             }
