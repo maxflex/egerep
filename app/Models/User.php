@@ -171,7 +171,7 @@ class User extends Model
             216.183.208.0	216.183.223.255
             220.158.220.0	220.158.223.255';
 
-        $current_ip = @$_SERVER['HTTP_X_REAL_IP'];
+        $current_ip = ip2long($_SERVER['HTTP_X_REAL_IP']);
 
         foreach(explode("\n", $ips) as $line) {
             list($ip_start, $ip_end) = explode("\t", $line);
