@@ -48,7 +48,7 @@ class SendSms extends Command
         // уже отослано
         $already_sent = Redis::get($cache_key) ?: 0;
 
-        $text = "ЕГЭ-Центр ведет набор 10-11 классников в школу с уклоном на подготовку к ЕГЭ. Возможен экстернат. Подробности на ege-centr.ru или по тел.: +7 (495) 646-85-92";
+        $text = "Частная школа ЕГЭ-Центра набирает 10-11 классников. Возможен экстернат. Подробнее на ege-centr.ru/private-school/, +7 (495) 646-85-92";
         $phones = file_get_contents('phones.tsv');
         // $lines = array_slice(explode("\n", $phones), $this->argument('start'), $this->argument('end'));
         $lines = array_slice(explode("\n", $phones), $already_sent, $per_send);
