@@ -6,7 +6,7 @@
     <div ng-repeat="Template in allTemplates" class="row checkChange" style="margin-bottom: 20px" ng-hide="Template.number == 2 && !{{ allowed(\Shared\Rights::SECRET_SMS, true) }}">
         <div class="col-sm-12">
             <div class="form-group task" style="display: inline-block; width: 100%">
-                <b style="margin: 0 0 3px; padding-left: 5px" class="ng-binding">@{{Template.name}}</b>
+                <b style="margin: 0 0 3px; padding-left: 5px; display: block" class="ng-binding">@{{Template.name}}</b>
                 <textarea ng-model="Template.text" class="form-control ng-pristine ng-untouched ng-valid" rows="3"></textarea>
                 <!--
                 <div class="pull-right ng-hide" ng-show="Template.type > 1">
