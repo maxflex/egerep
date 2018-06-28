@@ -61,7 +61,7 @@ class SendSms extends Command
                 $greeting = 'Здравствуйте. ';
             }
             $message = $greeting . $text;
-            Sms::send($phone, $message, false);
+            Sms::send($phone, $message, false, Sms::SENDER_EC);
         }
 
         Redis::set($cache_key, $already_sent + $per_send);

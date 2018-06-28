@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Redis;
 
 class Sms extends Model
 {
+    const SENDER_ER = 'EGE-Repetit';
+    const SENDER_EC = 'EGE-Centr';
+
     public $loggable = false;
 
     protected $fillable = ['number', 'user_id', 'id_status', 'id_status', 'external_id', 'message', 'is_secret'];
@@ -37,7 +40,7 @@ class Sms extends Model
 	}
 
 
-	public static function send($to, $message, $create = true)
+	public static function send($to, $message, $create = true, $sender = self::SENDER_ER)
 	{
 		$to = explode(",", $to);
 		foreach ($to as $number) {
@@ -53,7 +56,7 @@ class Sms extends Model
                 "charset"   => "utf-8",
 				"phones"	=> $number,
 				"mes"		=> $message,
-				"sender"    => "EGE-Repetit",
+				"sender"    => $sender,
 			);
 			$result = self::exec(config('sms.host'), $params, $create);
 		}

@@ -42,6 +42,7 @@ class SecuritySms extends Command
 		// получить всех преподавателей, у которых дебет больше 2000
         // и которым не было отправлено смс за последний месяц
         $tutors = \DB::table('tutors')
+            ->where('debtor', 0)
             ->whereRaw('((security_sms_date < DATE(NOW() - INTERVAL 30 DAY)) or (security_sms_date is null))')
             ->whereRaw("(SELECT SUM(debt) FROM debts WHERE tutor_id = tutors.id AND after_last_meeting = 1) > 2000")
             ->get();
