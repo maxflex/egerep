@@ -24,7 +24,7 @@
         <span class="badge badge-danger pull-right">{{ $missed_calls_count }}</span>
     @endif
 </a>
-<a href="background" class="list-group-item">Календарь заставок <sup class="text-danger" style='font-weight: bold'>new</sup></a>
+<a href="background" class="list-group-item">Календарь заставок</a>
 @if(allowed(\Shared\Rights::ER_PERIODS) || allowed(\Shared\Rights::ER_PERIODS_PLANNED) || allowed(\Shared\Rights::ER_DEBT))
     <a class="list-group-item active">Финансы</a>
     @if (allowed(\Shared\Rights::ER_PERIODS))
