@@ -146,13 +146,17 @@
             </div>
             <div ng-show="tutor.in_egecentr">
                 <div class="form-group">
-                    <div class="form-group">
-                        <select class="form-control" multiple id='sp-tutor-branches' ng-model='tutor.branches'>
-                            <option ng-repeat='(branch_id, branch) in Branches'
-                                    value='@{{branch_id}}'
-                                    data-content='@{{ BranchService.getNameWithColor(branch_id) }}'>@{{ branch.full }}</option>
-                        </select>
-                    </div>
+                    <select class="form-control" multiple id='sp-tutor-branches' ng-model='tutor.branches'>
+                        <option ng-repeat='(branch_id, branch) in Branches'
+                                value='@{{branch_id}}'
+                                data-content='@{{ BranchService.getNameWithColor(branch_id) }}'>@{{ branch.full }}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select class="form-control" multiple id='sp-tutor-subjects-ec'
+                        ng-model="tutor.subjects_ec"
+                        ng-options="subject_id as subject for (subject_id, subject) in Subjects.three_letters">
+                    </select>
                 </div>
             </div>
         </div>

@@ -315,6 +315,10 @@ angular
             return if newVal is undefined
             sp 'tutor-subjects', 'предмет', '+' if oldVal is undefined
             spRefresh 'tutor-subjects' if oldVal isnt undefined
+        $scope.$watch 'tutor.subjects_ec', (newVal, oldVal) ->
+            return if newVal is undefined
+            sp 'tutor-subjects-ec', 'предмет', '+' if oldVal is undefined
+            spRefresh 'tutor-subjects-ec' if oldVal isnt undefined
 
         # refresh selectpicker on update
         $scope.$watch 'tutor.grades', (newVal, oldVal) ->

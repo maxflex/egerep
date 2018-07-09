@@ -48,6 +48,7 @@ class Tutor extends Service\Person
         'markers',
         'svg_map',
         'subjects',
+        'subjects_ec',
         'grades',
         'departure_price',
         'list_comment',
@@ -80,7 +81,7 @@ class Tutor extends Service\Person
 
     // protected $with = ['markers'];
 
-    protected static $commaSeparated = ['subjects', 'grades', 'branches', 'errors'];
+    protected static $commaSeparated = ['subjects', 'subjects_ec', 'grades', 'branches', 'errors'];
 
     const UPLOAD_DIR = '/img/tutors/';
     const NO_PHOTO   = 'no-profile-img.gif';
