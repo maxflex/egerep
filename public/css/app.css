@@ -29552,6 +29552,9 @@ tr.ui-sortable-helper {
 tr.secret-sms td {
   background: rgba(255, 0, 57, 0.1); }
 
+md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-icon {
+  background-color: #d23f3f !important; }
+
 .ios7-switch {
   display: inline-block;
   position: relative;

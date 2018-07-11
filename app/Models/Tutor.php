@@ -18,7 +18,8 @@ class Tutor extends Service\Person
     public $timestamps = false;
 
     protected $casts = [
-        'egecentr_source' => 'string'
+        'egecentr_source' => 'string',
+        'auto_publish_disabled' => 'boolean'
     ];
 
     protected $fillable =  [
@@ -65,7 +66,8 @@ class Tutor extends Service\Person
         'errors',
         'photo_extension',
         'egecentr_source',
-        'photo_desc'
+        'photo_desc',
+        'auto_publish_disabled'
     ];
 
     protected $appends = [

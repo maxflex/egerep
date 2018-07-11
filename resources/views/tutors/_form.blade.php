@@ -158,6 +158,13 @@
                         ng-options="subject_id as subject for (subject_id, subject) in Subjects.three_letters">
                     </select>
                 </div>
+                <div class="form-group">
+                    <div>
+                         <md-checkbox ng-model="tutor.auto_publish_disabled">
+                           запретить автопубликацию
+                         </md-checkbox>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

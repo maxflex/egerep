@@ -4280,3 +4280,7 @@ tr.ui-sortable-helper {
 tr.secret-sms td {
 	background: rgba($red, .1);
 }
+
+md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-icon {
+	background-color: #d23f3f !important; 
+}
