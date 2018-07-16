@@ -76,6 +76,7 @@
                 <td>страница</td>
                 <td>конфигурация</td>
                 <td>время</td>
+                <td>ID заявок</td>
             </thead>
             <tbody>
                 <tr ng-repeat="s in stream">
@@ -86,7 +87,6 @@
                         @{{ s.google_id }}
                     </td>
                     <td width="8%">
-                        <span ng-show="['request'].indexOf(s.action) !== -1" class="glyphicon glyphicon-envelope"></span>
                         <span ng-show='!s.referer'>@{{ s.action }}</span>
                         <a ng-show='s.referer' href='@{{ s.referer}}' target="_blank">@{{ s.action }}</a>
                     </td>
@@ -135,6 +135,13 @@
                     </td>
                     <td width="10%">
                         @{{ formatDateTime(s.created_at) }}
+                    </td>
+                    <td>
+                        <span ng-if="s.action == 'request'">
+                            <span ng-repeat="id in s.request_ids">
+                                <a href="/requests/@{{ id }}/edit">@{{ id }}</a>@{{ $last ? '' : ', ' }}
+                            </span>
+                        </span>
                     </td>
                 </tr>
             </tbody>
