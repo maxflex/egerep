@@ -28,8 +28,8 @@ class StreamController extends Controller
             # соответствие найти по времени +10/-10 сек
             if ($d->action == 'request') {
                 $date = new DateTime($d->created_at);
-                $interval_from = (clone $date)->modify('-10 seconds')->format('Y-m-d H:i:s');
-                $interval_to   = (clone $date)->modify('+10 seconds')->format('Y-m-d H:i:s');
+                $interval_from = cloneQuery($date)->modify('-10 seconds')->format('Y-m-d H:i:s');
+                $interval_to   = cloneQuery($date)->modify('+10 seconds')->format('Y-m-d H:i:s');
                 $d->request_ids = DB::table('requests')
                     ->where('created_at', '>=', $interval_from)
                     ->where('created_at', '<=', $interval_to)
