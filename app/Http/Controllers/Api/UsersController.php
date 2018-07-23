@@ -17,7 +17,7 @@ class UsersController extends Controller
      */
     public function index()
     {
-        return User::real()->get()->toJson();
+        return User::get()->toJson();
     }
 
     /**

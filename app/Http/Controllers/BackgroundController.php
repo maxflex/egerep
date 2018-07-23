@@ -98,7 +98,7 @@ class BackgroundController extends Controller
     public function preview($id, Request $request)
     {
         $wallpaper = Background::find($id);
-        if (! allowed(\Shared\Rights::ER_APPROVE_BACKGROUND) && $wallpaper->user_id != User::fromSession()->id && !($wallpaper->status == 1 && $wallpaper->date <= now(true))) {
+        if (! allowed(\Shared\Rights::ER_APPROVE_BACKGROUND) && $wallpaper->user_id != User::id() && !($wallpaper->status == 1 && $wallpaper->date <= now(true))) {
             return view('errors.not_allowed');
         }
         return view('login.login', [

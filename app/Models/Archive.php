@@ -48,7 +48,7 @@ class Archive extends Model
         static::saving(function ($model) {
             if (! $model->exists) {
                 $model->date = date('Y-m-d');
-                $model->user_id = User::fromSession()->id;
+                $model->user_id = User::id();
             }
         });
         static::updated(function($model) {
@@ -74,7 +74,7 @@ class Archive extends Model
 
     public static function counts($search)
     {
-        foreach(array_merge(['', 0], User::real()->pluck('id')->all()) as $user_id) {
+        foreach(array_merge(['', 0], User::pluck('id')->all()) as $user_id) {
             $new_search = clone $search;
             $new_search->user_id = $user_id;
             $counts['user'][$user_id] = static::search($new_search)->count();

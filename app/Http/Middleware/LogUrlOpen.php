@@ -19,7 +19,7 @@ class LogUrlOpen
     {
         // логируем проход по URL
         if (User::loggedIn()) {
-            Log::custom('url', User::fromSession()->id, ['url' => @$_SERVER['REQUEST_URI']]);
+            Log::custom('url', User::id(), ['url' => @$_SERVER['REQUEST_URI']]);
         }
         return $next($request);
     }
