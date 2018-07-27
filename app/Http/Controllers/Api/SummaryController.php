@@ -481,6 +481,28 @@ class SummaryController extends Controller
     }
 
     /**
+     *
+     */
+    public function explainTutors(Request $request)
+    {
+        $date_from  = fromDotDate($request->date_from ?: Carbon::today()->firstOfMonth()->format('d.m.Y'));
+        $date_to    = fromDotDate($request->date_to ?: Carbon::today()->format('d.m.Y'));
+
+        $data = DB::select("
+            select x.`sum`, x.`tutor_id`, t.last_name, t.first_name, t.middle_name from
+            (select sum(ap.`sum`) as `sum`, (
+                select a.tutor_id from accounts a where a.id = ap.account_id
+            ) as `tutor_id`
+            from account_payments ap
+            where ap.date >= '{$date_from}' && ap.date <= '{$date_to}'
+            group by `tutor_id`) x
+            join tutors t on t.id = x.tutor_id
+        ");
+
+        return $data;
+    }
+
+    /**
      * @todo for @user shamshod
      * - optimize
      * */

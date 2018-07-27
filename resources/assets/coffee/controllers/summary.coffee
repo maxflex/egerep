@@ -34,6 +34,17 @@ angular
                 $rootScope.explaination_loading = false
                 $scope.stats.efficency = response.data
 
+        # расшифровка по преподавателям
+        $scope.explaination_tutors_loading = false
+
+        $scope.getExplanationByTutors = ->
+            $scope.explaination_tutors_loading = true
+            $http.post 'api/summary/users/explain/tutors', $scope.search
+            .then (response) ->
+                $scope.explaination_tutors_loading = false
+                $scope.explanation_tutors = response.data
+
+
         $scope.monthYear = (date) ->
             moment(date).format('MMMM YYYY')
 

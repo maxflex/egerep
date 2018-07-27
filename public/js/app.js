@@ -3915,6 +3915,14 @@
         return $scope.stats.efficency = response.data;
       });
     };
+    $scope.explaination_tutors_loading = false;
+    $scope.getExplanationByTutors = function() {
+      $scope.explaination_tutors_loading = true;
+      return $http.post('api/summary/users/explain/tutors', $scope.search).then(function(response) {
+        $scope.explaination_tutors_loading = false;
+        return $scope.explanation_tutors = response.data;
+      });
+    };
     $scope.monthYear = function(date) {
       return moment(date).format('MMMM YYYY');
     };

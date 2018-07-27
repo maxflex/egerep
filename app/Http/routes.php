@@ -174,6 +174,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api', 'middleware' => ['web']],
     Route::resource('calls', 'CallsController');
 
     Route::post('summary/users', 'SummaryController@users');
+    Route::post('summary/users/explain/tutors', 'SummaryController@explainTutors');
     Route::post('summary/users/explain', 'SummaryController@explain');
     Route::post('summary/payments', 'SummaryController@payments');
     Route::post('summary/debtors', 'SummaryController@debtors');
