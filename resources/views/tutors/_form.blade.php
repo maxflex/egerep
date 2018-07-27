@@ -64,14 +64,13 @@
         </div>
 
         <div class="form-group">
-            <input type="text" class="form-control digits-year" ng-model="tutor.birth_year" placeholder="год рождения">
-            <span class="inside-input" ng-show="tutor.birth_year > 999">– @{{ yearDifference(tutor.birth_year) }}
-                <ng-pluralize count="yearDifference(tutor.birth_year)" when="{
-                    'one': 'год',
-                    'few': 'года',
-                    'many': 'лет',
-                }"></ng-pluralize>
-            </span>
+            <div class="form-group">
+                <div class="input-group custom">
+                  <span class="input-group-addon">дата рождения –</span>
+                  <input type="text"
+                      class="form-control bs-date" ng-model="tutor.birthday">
+                </div>
+            </div>
         </div>
 
         <div class="form-group">

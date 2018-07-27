@@ -18,20 +18,6 @@ class CommandsController extends Controller
         ini_set('max_execution_time', 0);
 	    set_time_limit(0);
 
-/*
-        $tutors = Tutor::where('photo_extension', '<>', '')->where('id', '>', 200)->where('birth_year', '<', 1986)->skip(8000)->take(4000)->get();
-
-        $sizes = [];
-
-        foreach ($tutors as $tutor) {
-            list($width, $height) = @getimagesize($tutor->photoPath('_original'));
-            $sizes[$tutor->id] = $width * $height;
-        }
-
-		$_SESSION['sizes'] = $_SESSION['sizes'] + $sizes;
-
-		dd($_SESSION['sizes']);
-*/
 		$sizes = $_SESSION['sizes'];
 
         arsort($sizes);
