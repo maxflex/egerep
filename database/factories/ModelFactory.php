@@ -42,7 +42,7 @@ $factory->define(App\Models\Request::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Models\Attachment::class, function (Faker\Generator $faker) {
     return [
-        'user_id'   => App\Models\User::real()->pluck('id')->random(),
+        'user_id'   => App\Models\User::pluck('id')->random(),
         'tutor_id'  => App\Models\Tutor::all()->where('id', '<', 10)->pluck('id')->random(),
         'date'      => $faker->date('Y-m-d'),
         'grade'     => $faker->numberBetween(1, 11),

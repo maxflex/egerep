@@ -130,7 +130,7 @@ Route::group(['middleware' => ['web', LogUrlOpen::class]], function () {
  */
 Route::group(['namespace' => 'Api', 'prefix' => 'api', 'middleware' => ['web']], function () {
     Route::get('continue-session', function() {
-        event(new App\Events\ContinueSession(\App\Models\User::fromSession()->id));
+        event(new App\Events\ContinueSession(\App\Models\User::id()));
     });
     Route::get('activity', 'ActivityController@index');
     Route::resource('markers', 'MarkersController');

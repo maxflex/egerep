@@ -158,7 +158,7 @@ class Account extends Model
     {
         static::saving(function($model) {
             if (! $model->exists) {
-                $model->user_id = User::fromSession()->id;
+                $model->user_id = User::id();
             }
         });
 

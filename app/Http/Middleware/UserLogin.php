@@ -36,7 +36,7 @@ class UserLogin
         // иначе юзер залогинен
         DelayedJob::dispatch(
             \App\Jobs\Delayed\LogoutNotifyJob::class,
-            ['user_id' => User::fromSession()->id],
+            ['user_id' => User::id()],
             User::ADMIN_SESSION_DURATION - 1
         );
 

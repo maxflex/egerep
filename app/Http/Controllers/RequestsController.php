@@ -58,7 +58,7 @@ class RequestsController extends Controller
     {
         $client = new Client;
         $request = new \App\Models\Request;
-        $request->user_id_created = User::fromSession()->id;
+        $request->user_id_created = User::id();
         return view('clients.create')->with(
             ngInit([
                 'new_client' => $client,

@@ -136,15 +136,6 @@
     		return trim(implode(" ", $name_ordered));
     	}
 
-
-        /**
-         * Получить возраст, в зависимости от года рождения
-         */
-        public static function getAge($birth_year)
-        {
-            return date('Y') - $birth_year;
-        }
-
         public static function getPhoneFieldsAsString()
         {
             return "'".implode("','",self::$phone_fields)."'";

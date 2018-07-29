@@ -80,7 +80,7 @@ class Sms extends Model
 		$info = [
 			"id_status"   => 0,
 			"external_id" => $info[0],
-            "user_id"   => User::loggedIn() ? User::fromSession()->id : 0,
+            "user_id"   => User::loggedIn() ? User::id() : 0,
 			"message"	=> $params["mes"],
 			"number"	=> $params["phones"],
 		];

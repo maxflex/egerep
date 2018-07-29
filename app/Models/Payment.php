@@ -51,7 +51,7 @@ class Payment extends Model
             }
         });
         static::creating(function ($model) {
-            $model->user_id = User::fromSession()->id;
+            $model->user_id = User::id();
         });
     }
 

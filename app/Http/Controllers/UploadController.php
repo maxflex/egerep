@@ -57,7 +57,7 @@ class UploadController extends Controller
 
         // 1 пользователь не может иметь Background::MAX_PER_USER и более изображений сегодня и в будущем,
         // поэтому на стадии попытки загрузить Background::MAX_PER_USER+1-е изображение не давать ему это делать
-        if (Background::where('user_id', User::fromSession()->id)->where('date', '>=', now(true))->count() >= Background::MAX_PER_USER) {
+        if (Background::where('user_id', User::id())->where('date', '>=', now(true))->count() >= Background::MAX_PER_USER) {
             return response()->json(['error' => "вы достигли лимита по загруженным изображениям"]);
         }
 
@@ -78,7 +78,7 @@ class UploadController extends Controller
 
         $background = Background::create([
             'date' => $request->date,
-            'user_id' => User::fromSession()->id,
+            'user_id' => User::id(),
             'image' => $filename,
         ]);
 

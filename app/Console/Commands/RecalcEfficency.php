@@ -47,7 +47,7 @@ class RecalcEfficency extends Command
         \DB::table('efficency_data')->truncate();
 
         // системный пользователь тоже нужен, так как много заявок остаются без ответственного
-        $user_ids = array_merge([0], \App\Models\User::real()->pluck('id')->all());
+        $user_ids = array_merge([0], \App\Models\User::pluck('id')->all());
         Settings::set('efficency_updating', 1);
 
 

@@ -27,7 +27,7 @@ class Tutor extends Service\Person
         'last_name',
         'middle_name',
         'gender',
-        'birth_year',
+        'birthday',
         'start_career_year',
         'tb',
         'lk',
@@ -84,6 +84,7 @@ class Tutor extends Service\Person
     // protected $with = ['markers'];
 
     protected static $commaSeparated = ['subjects', 'subjects_ec', 'grades', 'branches', 'errors'];
+    protected static $dotDates = ['birthday'];
 
     const UPLOAD_DIR = '/img/tutors/';
     const NO_PHOTO   = 'no-profile-img.gif';
@@ -262,7 +263,7 @@ class Tutor extends Service\Person
 
     public function getAgeAttribute()
     {
-        return static::getAge($this->birth_year);
+        return date('Y') - date('Y', strtotime($this->birthday));
     }
 
     public function getClientsCountAttribute()
