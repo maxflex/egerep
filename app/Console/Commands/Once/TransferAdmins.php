@@ -45,7 +45,7 @@ class TransferAdmins extends Command
         $bar = $this->output->createProgressBar(count($admins));
         foreach($admins as $admin) {
             extract((array)$admin);
-            dbEgecrm('admins')->insert(compact('id', 'login', 'color', 'first_name', 'last_name', 'middle_name', 'phone', 'email', 'photo_extension', 'has_photo_cropped', 'salary', 'rights'));
+            dbEgecrm('admins')->insert(compact('id', 'login', 'color', 'first_name', 'last_name', 'middle_name', 'phone', 'photo_extension', 'has_photo_cropped', 'salary', 'rights'));
             dbEgecrm('users')->whereId($admin->id)->update(['id_entity' => $admin->id]);
             $bar->advance();
         }
