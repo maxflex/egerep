@@ -20,7 +20,7 @@ class ExpendituresController extends Controller
      */
     public function index(Request $request)
     {
-        if (! allowed(9999)) {
+        if (! allowed(\Shared\Rights::ER_PAYSTREAM)) {
             return view('errors.not_allowed');
         }
         return view(self::VIEWS_FOLDER . 'index')->with(ngInit([
@@ -35,7 +35,7 @@ class ExpendituresController extends Controller
      */
     public function create()
     {
-        if (! allowed(9999)) {
+        if (! allowed(\Shared\Rights::ER_PAYSTREAM)) {
             return view('errors.not_allowed');
         }
         return view(self::VIEWS_FOLDER . 'create')->with(ngInit([
@@ -52,7 +52,7 @@ class ExpendituresController extends Controller
      */
     public function edit($id)
     {
-        if (! allowed(9999)) {
+        if (! allowed(\Shared\Rights::ER_PAYSTREAM)) {
             return view('errors.not_allowed');
         }
         $groups = ExpenditureGroup::all();

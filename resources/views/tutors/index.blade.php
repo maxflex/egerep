@@ -101,8 +101,8 @@
             <span class="label tutor-state-@{{ tutor.state }}">@{{ TutorStates[tutor.state] }}</span>
         </td>
 		<td width='75'>
-            <span ng-show='tutor.birth_year > 999'>
-                @{{ yearDifference(tutor.birth_year) }} <ng-pluralize count="yearDifference(tutor.birth_year)" when="{
+            <span ng-show='tutor.age'>
+                @{{ tutor.age }} <ng-pluralize count="tutor.age" when="{
                     'one': 'год',
                     'few': 'года',
                     'many': 'лет',

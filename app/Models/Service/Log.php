@@ -111,7 +111,7 @@ class Log extends Model
         /**
          * Если не супер-пользователь, то в логах не видно paystream
          */
-        if (! allowed(9999)) {
+        if (! allowed(\Shared\Rights::ER_PAYSTREAM)) {
             $query->whereNotIn('table', ['payments', 'payment_sources', 'payment_expenditures']);
         }
 

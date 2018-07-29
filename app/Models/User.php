@@ -8,8 +8,6 @@ use App\Models\Service\Log;
 
 class User extends Model
 {
-    const SUPERUSER_RIGHT = 9999;
-
     const ADMIN_SESSION_DURATION = 40;
 
     protected $connection = 'egecrm';

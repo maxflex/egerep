@@ -19,7 +19,7 @@ class PaymentsController extends Controller
 
     public function index(Request $request)
     {
-        if (! allowed(9999)) {
+        if (! allowed(\Shared\Rights::ER_PAYSTREAM)) {
             return view('errors.not_allowed');
         }
 
@@ -33,7 +33,7 @@ class PaymentsController extends Controller
 
     public function remainders(Request $request)
     {
-        if (! allowed(9999)) {
+        if (! allowed(\Shared\Rights::ER_PAYSTREAM)) {
             return view('errors.not_allowed');
         }
         // кол-во элементов = кол-во дней с момента самого раннего состояния счета / Source::PER_PAGE_REMAINDERS
@@ -51,7 +51,7 @@ class PaymentsController extends Controller
 
     public function export()
     {
-        if (! allowed(9999)) {
+        if (! allowed(\Shared\Rights::ER_PAYSTREAM)) {
             return view('errors.not_allowed');
         }
 
@@ -74,7 +74,7 @@ class PaymentsController extends Controller
 
     public function import(Request $request)
     {
-        if (! allowed(9999)) {
+        if (! allowed(\Shared\Rights::ER_PAYSTREAM)) {
             return view('errors.not_allowed');
         }
 
