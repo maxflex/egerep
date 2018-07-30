@@ -64,13 +64,15 @@
         </div>
 
         <div class="form-group">
-            <div class="form-group">
-                <div class="input-group custom">
-                  <span class="input-group-addon">дата рождения –</span>
-                  <input type="text"
-                      class="form-control bs-date" ng-model="tutor.birthday">
-                </div>
-            </div>
+            <input type="text" placeholder="дата рождения"
+                class="form-control bs-date-top" ng-model="tutor.birthday">
+            <span class="inside-input" ng-if="tutor.birthday && tutor.birthday.length == 10" style='left: 88px'>– @{{ getAge(tutor.birthday) }}
+                <ng-pluralize count="getAge(tutor.birthday)" when="{
+                    'one': 'год',
+                    'few': 'года',
+                    'many': 'лет',
+                }"></ng-pluralize>
+            </span>
         </div>
 
         <div class="form-group">
