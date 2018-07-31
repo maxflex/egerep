@@ -346,7 +346,7 @@ class TutorsController extends Controller
 
          foreach($tutors as $tutor) {
             # Количество учеников, Количество встреч
-            $tutor->append(['clients_count', 'meeting_count', 'svg_map']);
+            $tutor->append(['clients_count', 'meeting_count', 'svg_map', 'age']);
          }
 
          return $tutors;

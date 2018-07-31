@@ -31,7 +31,7 @@
   </head>
 
   <body class="content animated fadeIn login-{{ (isset($type) && $type == 'ec') ? 'ec' : 'er' }}" ng-app="Egerep" ng-controller="LoginCtrl"
-    ng-init='wallpaper = {{ json_encode($wallpaper) }}; preview = {{  isset($preview) ? 'true' : 'false' }}'>
+    ng-init='wallpaper = {{ json_encode($wallpaper) }}; preview = {{  isset($preview) ? 'true' : 'false' }}; logged_user = <?= (isset($_COOKIE['logged_user']) ? $_COOKIE['logged_user'] : 'null') ?>'>
       <div ng-show="image_loaded">
           @yield('content')
           @if (@$wallpaper->user)

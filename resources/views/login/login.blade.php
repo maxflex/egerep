@@ -7,7 +7,7 @@
     </div>
     <div class="input-groups">
         <div class="group">
-            <input ng-disabled="sms_verification" type="text" id="inputLogin" placeholder="email" autofocus ng-model="login" autocomplete="off" ng-keyup="enter($event)">
+            <input ng-disabled="sms_verification || logged_user" type="text" id="inputLogin" placeholder="email" autofocus ng-model="login" autocomplete="off" ng-keyup="enter($event)">
         </div>
         <div class="group">
             <input ng-disabled="sms_verification" type="password" id="inputPassword"  placeholder="пароль" ng-model="password" autocomplete="new-password" ng-keyup="enter($event)">
@@ -18,6 +18,11 @@
         <div class="group">
             <button class="btn btn-submit ladda-button" type="submit" id="login-submit" data-style="zoom-in" ng-disabled="in_process" ng-click="checkFields()">войти</button>
         </div>
+    </div>
+    <div class="password-controls" ng-show="logged_user">
+		<div>
+			<a ng-click="clearLogged()" class="pointer forgot-password">другой пользователь</a>
+		</div>
     </div>
     @if (isset($type) && $type == 'ec')
     <div class="password-controls">
