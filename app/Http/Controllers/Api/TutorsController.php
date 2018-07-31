@@ -219,6 +219,7 @@ class TutorsController extends Controller
              'middle_name',
              'photo_extension',
              'subjects',
+             'birthday',
              'tb',
              'lk',
              'js',
@@ -346,7 +347,7 @@ class TutorsController extends Controller
 
          foreach($tutors as $tutor) {
             # Количество учеников, Количество встреч
-            $tutor->append(['clients_count', 'meeting_count', 'svg_map', 'age']);
+            $tutor->append(['clients_count', 'meeting_count', 'svg_map']);
          }
 
          return $tutors;
