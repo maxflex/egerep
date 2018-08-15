@@ -38,8 +38,8 @@ class PaymentsEc extends Command
      */
     public function handle()
     {
-        $f = fopen('google_ids_out.txt', 'w');
-        $google_ids = file('google_ids.txt', FILE_IGNORE_NEW_LINES);
+        $f = fopen('file_out.txt', 'w');
+        $google_ids = file('file_in.txt', FILE_IGNORE_NEW_LINES);
         $bar = $this->output->createProgressBar(count($google_ids));
         foreach($google_ids as $id_google) {
             if (dbEgecrm('requests')->where('id_google', $id_google)->exists()) {
