@@ -46,6 +46,7 @@ class Kernel extends ConsoleKernel
         Commands\Once\TransferCancelled::class,
         Commands\Once\CollectPhones::class,
         Commands\Once\TransferAdmins::class,
+        Commands\Once\PaymentsEc::class,
     ];
 
     /**
