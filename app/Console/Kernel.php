@@ -68,10 +68,10 @@ class Kernel extends ConsoleKernel
             }
         })->dailyAt('02:30'); // это выполняется примерно полчаса
 
-        $schedule->command('sms:send')->dailyAt('13:00')->skip(function() {
-            // пропустить субботу и воскресенье
-            return date('N') >= 6;
-        });
+        // $schedule->command('sms:send')->dailyAt('13:00')->skip(function() {
+        //     // пропустить субботу и воскресенье
+        //     return date('N') >= 6;
+        // });
 
         // Исключить неактивные площадки из Yandex.Direct (#1857)
         // $schedule->call(function() {
