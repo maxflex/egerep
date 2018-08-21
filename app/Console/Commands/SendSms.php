@@ -49,7 +49,7 @@ class SendSms extends Command
         $already_sent = Redis::get($cache_key) ?: 0;
 
         $text = "Частная школа ЕГЭ-Центра набирает 10-11 классников. Возможен экстернат. Подробнее на ege-centr.ru/private-school/, +7 (495) 646-85-92";
-        $phones = file_get_contents('phones.tsv');
+        $phones = file('phones.tsv', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         // $lines = array_slice(explode("\n", $phones), $this->argument('start'), $this->argument('end'));
         $lines = array_slice(explode("\n", $phones), $already_sent, $per_send);
 
