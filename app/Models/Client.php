@@ -42,10 +42,10 @@ class Client extends Service\Person
 
     public function getGradeAttribute($grade)
     {
-        if ($this->attributes['year']) {
+        if ($this->attributes['year'] && $grade < 12) {
             $years_passed = academicYear() - $this->attributes['year'];
             $new_grade = $grade + $years_passed;
-            return $new_grade > 12 ? $grade : $new_grade;
+            return $new_grade > 12 ? 12 : $new_grade;
         }
         return $grade;
     }

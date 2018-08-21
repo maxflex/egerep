@@ -62,7 +62,6 @@ angular
                 $scope.client.grade = grade_id
 
         $scope.selectYear = (year) ->
-            console.log('selecting year', year)
             if year == $scope.client.year
                 $scope.client.year = null
             else
@@ -71,10 +70,10 @@ angular
         $scope.getRealGrade = ->
             return if not $scope.client
             return 0 if not $scope.client.grade
-            if $scope.client.year
+            if $scope.client.year && $scope.client.grade < 12
                 years_passed = $scope.academic_year - $scope.client.year
                 new_grade = parseInt($scope.client.grade) + years_passed
-                return if new_grade > 12 then $scope.client.grade else new_grade
+                return if new_grade > 12 then 12 else new_grade
             return $scope.client.grade
 
         # Save everything
