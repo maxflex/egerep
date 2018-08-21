@@ -375,5 +375,19 @@ use App\Models\Sms;
         return $f5;
     }
 
+    /**
+	 * Текущий учебный год
+	 */
+	function academicYear($date = false)
+	{
+		if ($date === false) {
+			$date = now();
+		}
+		$year = date("Y", strtotime($date));
+		$day_month = date("m-d", strtotime($date));
 
-    // \для формирования печати акта
+		if ($day_month >= '01-01' && $day_month <= '07-15') {
+			$year--;
+		}
+		return $year;
+	}

@@ -9,10 +9,28 @@
             </div>
         </div>
         <div class="form-group">
-            <select class="form-control" ng-model='client.grade'
+            <select class="form-control" ng-click="grade_year_dropdown = true"></select>
+            <span class="custom-dropdown__label">
+                <span ng-show="!client.grade" class="placeholder-gray">класс и год</span>
+                <span ng-show="client.grade">
+                    @{{ getRealGrade() ? Grades[getRealGrade()] : 'класс не указан' }}
+                </span>
+            </span>
+            <div class="custom-dropdown" ng-show="grade_year_dropdown">
+                <div ng-repeat="(grade_id, label) in Grades" class="custom-dropdown__item" ng-click="selectGrade(grade_id)">
+                    @{{ label }}
+                    <span class="glyphicon glyphicon-ok check-mark" ng-show="grade_id == client.grade"></span>
+                </div>
+                <div class="custom-dropdown__separator"></div>
+                <div ng-repeat="(year, label) in Years" class="custom-dropdown__item" ng-click="selectYear(year)">
+                    @{{ label }}
+                    <span class="glyphicon glyphicon-ok check-mark" ng-show="year == client.year"></span>
+                </div>
+            </div>
+            {{-- <select class="form-control" ng-model='client.grade'
                 ng-options='+(grade_id) as label for (grade_id, label) in Grades'>
                 <option value="">выберите класс</option>
-            </select>
+            </select> --}}
             {{-- <select class="form-control" ng-model='client.grade'>
                 <option value="">выберите класс</option>
                 <option ng-repeat='(grade_id, label) in Grades' ng-value='grade_id' ng-selected='client.grade == grade_id'>@{{ label }}</option>

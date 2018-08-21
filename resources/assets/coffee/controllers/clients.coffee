@@ -33,7 +33,7 @@ angular
     #
     #   ADD/EDIT CONTROLLER
     #
-    .controller "ClientsForm", ($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, AttachmentStates, ReviewScores, Archive, Review, ApiService, UserService, RecommendationService, AttachmentService, AttachmentVisibility, Marker, YesNo, Checked) ->
+    .controller "ClientsForm", ($scope, $rootScope, $timeout, $interval, $http, Client, Request, RequestList, User, RequestStates, Subjects, Grades, Attachment, ReviewStates, ArchiveStates, AttachmentStates, ReviewScores, Archive, Review, ApiService, UserService, RecommendationService, AttachmentService, AttachmentVisibility, Marker, YesNo, Checked, Years) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
@@ -53,13 +53,38 @@ angular
                 $scope.$apply()
                 saveSelectedList()
 
+        $scope.selectGrade = (grade_id) ->
+            if grade_id == $scope.client.grade
+                $scope.client.grade = 0
+            else
+                if not $scope.client.year
+                    $scope.client.year = $scope.academic_year
+                $scope.client.grade = grade_id
+
+        $scope.selectYear = (year) ->
+            console.log('selecting year', year)
+            if year == $scope.client.year
+                $scope.client.year = null
+            else
+                $scope.client.year = year
+
+        $scope.getRealGrade = ->
+            return if not $scope.client
+            return 0 if not $scope.client.grade
+            if $scope.client.year
+                years_passed = $scope.academic_year - $scope.client.year
+                new_grade = parseInt($scope.client.grade) + years_passed
+                return if new_grade > 12 then $scope.client.grade else new_grade
+            return $scope.client.grade
+
         # Save everything
         $scope.edit = ->
             filterMarkers()
             $scope.ajaxStart()
             $scope.client.$update()
                 .then (response) ->
-                    $scope.client = response;
+                    response.grade = response.grade_clean
+                    $scope.client = response
                     $scope.loadMarkers()
                     $scope.ajaxEnd()
                     $timeout ->
@@ -107,11 +132,13 @@ angular
             # $rootScope.frontendStop() - 2 раза потому что Client.get загружает клиента асинхронно. если сделать общим
             # рендер телефонных номеров может сломаться, т. к. она сработает как только frontendStopped.
             if $scope.id > 0
-                $scope.client = Client.get {id: $scope.id}, (client) ->
+                Client.get {id: $scope.id}, (client) ->
                     $scope.selected_request = if $scope.request_id then _.findWhere(client.requests, {id: $scope.request_id}) else client.requests[0]
                     $scope.parseHash()
                     sp 'list-subjects', 'выберите предмет'
                     $rootScope.frontendStop()
+                    client.grade = client.grade_clean
+                    $scope.client = client
             else
                 $scope.client = $scope.new_client
                 $scope.client.requests = [$scope.new_request]

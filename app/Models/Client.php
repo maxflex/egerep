@@ -12,11 +12,12 @@ class Client extends Service\Person
 
     protected $with = ['requests', 'markers'];
 
-    protected $appends = ['requests_count'];
+    protected $appends = ['requests_count', 'grade_clean'];
 
     protected $fillable = [
         'name',
         'grade',
+        'year',
         'address',
         'requests',
         'markers',
@@ -37,6 +38,21 @@ class Client extends Service\Person
         foreach ($value as $request) {
             Request::find($request['id'])->update($request);
         }
+    }
+
+    public function getGradeAttribute($grade)
+    {
+        if ($this->attributes['year']) {
+            $years_passed = academicYear() - $this->attributes['year'];
+            $new_grade = $grade + $years_passed;
+            return $new_grade > 12 ? $grade : $new_grade;
+        }
+        return $grade;
+    }
+
+    public function getGradeCleanAttribute($grade)
+    {
+        return $this->attributes['grade'];
     }
 
     /**

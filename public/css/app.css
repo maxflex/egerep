@@ -29555,6 +29555,51 @@ tr.secret-sms td {
 md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-icon {
   background-color: #d23f3f !important; }
 
+.custom-dropdown {
+  position: absolute;
+  width: 100%;
+  background: white;
+  z-index: 9;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  list-style: none;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175); }
+  .custom-dropdown__label {
+    position: absolute;
+    top: 7px;
+    left: 13px;
+    pointer-events: none; }
+  .custom-dropdown__separator {
+    margin: 7px 0px;
+    border-top: 1px solid #ccc; }
+  .custom-dropdown__item {
+    padding: 3px 20px;
+    cursor: pointer;
+    outline: none;
+    position: relative; }
+    .custom-dropdown__item .check-mark {
+      position: absolute;
+      display: inline-block;
+      right: 15px;
+      margin-top: 5px; }
+    .custom-dropdown__item:hover {
+      background-color: #f5f5f5; }
+  .custom-dropdown__close {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 8; }
+
+.placeholder-gray {
+  color: #999999; }
+
 .ios7-switch {
   display: inline-block;
   position: relative;

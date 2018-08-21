@@ -35,7 +35,7 @@
         </div>
         <div class='mbs' ng-show='request_tutor_ids.length > 0'>
             <b>Отмеченные репетиторы в заявке:</b>
-            <span ng-repeat="tutor_id in request_tutor_ids" style="display: block">
+            <span ng-repeat="tutor_id in request_tutor_ids track by $index" style="display: block">
                 <a href="tutors/@{{ tutor_id }}/edit" target="_blank">@{{ tutors[tutor_id] }}</a>
             </span>
         </div>

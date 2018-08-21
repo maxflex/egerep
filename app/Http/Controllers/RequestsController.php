@@ -63,6 +63,7 @@ class RequestsController extends Controller
             ngInit([
                 'new_client' => $client,
                 'new_request' => $request,
+                'academic_year' => academicYear(),
             ])
         );
     }
@@ -100,7 +101,9 @@ class RequestsController extends Controller
         return view('clients.edit')->with([
             'id' => $request->client_id,
             'request_id' => $request->id,
-        ]);
+        ])->with(ngInit([
+            'academic_year' => academicYear(),
+        ]));
         // return redirect()->route('clients.edit', [
         //     'id' => $request->client_id
         // ]);
