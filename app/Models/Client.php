@@ -71,10 +71,10 @@ class Client extends Service\Person
         // чтобы не забыли если что-то добавим в будущем.
         parent::boot();
 
-        static::creating($model) {
+        static::creating(function($model) {
             if (! $model->year) {
                 $model->year = academicYear();
             }
-        }
+        });
     }
 }
