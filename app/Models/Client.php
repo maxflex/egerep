@@ -52,7 +52,7 @@ class Client extends Service\Person
 
     public function getGradeCleanAttribute($grade)
     {
-        return $this->attributes['grade'];
+        return @$this->attributes['grade'];
     }
 
     /**
