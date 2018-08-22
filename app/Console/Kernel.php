@@ -37,6 +37,7 @@ class Kernel extends ConsoleKernel
         Commands\DelayedJobs::class,
         Commands\SecuritySms::class,
         Commands\SendSms::class,
+        Commands\CallStats::class,
 
         Commands\Once\AccountComments::class,
         Commands\Once\CreateRepresentatives::class,
@@ -79,6 +80,9 @@ class Kernel extends ConsoleKernel
         // })->dailyAt('04:00');
 
         $schedule->command('summary:calc')->dailyAt('03:15'); // затем должно запуститься это
+
+
+        $schedule->command('call:stats')->dailyAt('23:30');
 
         $schedule->command('attendance ' . now(true))->dailyAt('23:00');
 
