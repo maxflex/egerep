@@ -48,10 +48,12 @@ class PaymentsEc2 extends Command
                 $sum = DB::connection('egecrm')->select("SELECT sum(if(id_type=1, `sum`, `sum` * -1)) as `sum` from payments
                     where entity_type='STUDENT'
                         AND entity_id IN ({$student_ids})
-                        AND `date` BETWEEN '2018-07-01' AND '2018-10-30'
+                        AND `date` BETWEEN '2017-07-01' AND '2017-10-30'
                 ")[0]->sum;
-                fwrite($f, "{$id_google}\t{$sum}\n");
+            } else {
+	            $sum = 'not found';
             }
+            fwrite($f, "{$id_google}\t{$sum}\n");
             $bar->advance();
         }
     }

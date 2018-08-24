@@ -21,7 +21,6 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\PhoneChanged' => [],
         'App\Events\LogAction' => [],
         'App\Events\RecalcTutorDebt' => [],
-        'App\Events\LogoutNotify' => [],
         'App\Events\ContinueSession' => [],
     ];
 

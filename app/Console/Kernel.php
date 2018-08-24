@@ -34,7 +34,6 @@ class Kernel extends ConsoleKernel
         Commands\SwitchGrades::class,
         Commands\CallStatus::class,
         Commands\DeleteMarginIntermediate::class,
-        Commands\DelayedJobs::class,
         Commands\SecuritySms::class,
         Commands\SendSms::class,
         Commands\CallStats::class,
@@ -93,6 +92,5 @@ class Kernel extends ConsoleKernel
         $schedule->command('tutor_distances:recalc')->dailyAt('03:00');
         $schedule->command('recalc:tutor_data')->dailyAt('03:30');
         $schedule->command('recalc:efficency')->dailyAt('22:30');
-        $schedule->command('jobs:delayed')->everyMinute();
     }
 }

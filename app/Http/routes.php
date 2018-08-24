@@ -4,9 +4,11 @@ use App\Http\Middleware\LogUrlOpen;
 
 Route::post('login', 'LoginController@login');
 Route::get('logout', 'LoginController@logout');
+Route::get('auth', 'AuthController@index');
 
 Route::group(['middleware' => ['web', LogUrlOpen::class]], function () {
     Route::get('/', 'RequestsController@index');
+    Route::get('auth/continue-session', 'AuthController@continueSession');
 
     Route::get('generate-pdf', function() {
        $data = \DB::connection('egecrm')->select("SELECT s.id as student_id, s.id_representative, c.*, r.first_name, r.last_name, r.middle_name

@@ -21,5 +21,13 @@ window.logoutCountdown = ->
 	, 1000
 
 window.continueSession = ->
-	$.get "api/continue-session"
+	$.get "/auth/continue-session"
 	logoutCountdownClose()
+
+window.listenToSession = (app_key, user_id) ->
+	pusher = new Pusher(app_key, {cluster: 'eu'})
+	channel = pusher.subscribe('session.' + user_id)
+	channel.bind "App\\Events\\LogoutSignal", (data) ->
+		switch data.action
+			when 'notify' then logoutCountdown()
+			when 'destroy' then redirect('/logout')

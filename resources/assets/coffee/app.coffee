@@ -71,13 +71,6 @@ angular.module("Egerep", ['ngSanitize', 'ngResource', 'ngMaterial', 'ngMap', 'ng
             $.get('logout')
             window.location.replace 'https://google.com/'
 
-        PusherService.bind 'LogoutNotify', (data) ->
-            logoutCountdown() if $rootScope.$$childHead.user.id == data.user_id
-
-        PusherService.bind 'ContinueSession', (data) ->
-            logoutCountdownClose() if $rootScope.$$childHead.user.id == data.user_id
-
-
         # отвечает за загрузку данных
         $rootScope.dataLoaded = $q.defer()
         # конец анимации front-end загрузки и rebind маск

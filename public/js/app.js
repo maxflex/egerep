@@ -141,16 +141,6 @@
       $.get('logout');
       return window.location.replace('https://google.com/');
     });
-    PusherService.bind('LogoutNotify', function(data) {
-      if ($rootScope.$$childHead.user.id === data.user_id) {
-        return logoutCountdown();
-      }
-    });
-    PusherService.bind('ContinueSession', function(data) {
-      if ($rootScope.$$childHead.user.id === data.user_id) {
-        return logoutCountdownClose();
-      }
-    });
     $rootScope.dataLoaded = $q.defer();
     $rootScope.frontendStop = function(rebind_masks) {
       if (rebind_masks == null) {
@@ -347,8 +337,24 @@
   };
 
   window.continueSession = function() {
-    $.get("api/continue-session");
+    $.get("/auth/continue-session");
     return logoutCountdownClose();
+  };
+
+  window.listenToSession = function(app_key, user_id) {
+    var channel, pusher;
+    pusher = new Pusher(app_key, {
+      cluster: 'eu'
+    });
+    channel = pusher.subscribe('session.' + user_id);
+    return channel.bind("App\\Events\\LogoutSignal", function(data) {
+      switch (data.action) {
+        case 'notify':
+          return logoutCountdown();
+        case 'destroy':
+          return redirect('/logout');
+      }
+    });
   };
 
 }).call(this);
