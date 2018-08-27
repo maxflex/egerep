@@ -314,7 +314,7 @@
         <div class="mb-xl">
             <h4>СТАТИСТИКА</h4>
             <div>Количество клиентов: @{{ tutor.clients_count }}</div>
-            <div ng-hide="tutor.margin === null">Группа маржинальности: М@{{ tutor.margin }}</div>
+            <div>Группа маржинальности: @{{ tutor.margin }}</div>
             <div>Cредняя оценка: @{{ tutor.statistics.er_review_avg | number : 1 }} (на основе @{{ tutor.statistics.er_review_count }} <ng-pluralize count='tutor.statistics.er_review_count' when="{
                 'one': 'оценки',
                 'few': 'оценок',

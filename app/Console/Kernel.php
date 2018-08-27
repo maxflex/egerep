@@ -37,6 +37,7 @@ class Kernel extends ConsoleKernel
         Commands\SecuritySms::class,
         Commands\SendSms::class,
         Commands\CallStats::class,
+        Commands\SetTutorMargin::class,
 
         Commands\Once\AccountComments::class,
         Commands\Once\CreateRepresentatives::class,

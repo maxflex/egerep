@@ -112,8 +112,8 @@
             <a href="requests/@{{ attachment.request_id }}/edit#@{{ attachment.request_list_id }}#@{{ attachment.id }}">@{{ attachment.id }}</a>
         </td>
         <td align="left" width="23%">
-            <a href="tutors/@{{ attachment.tutor_id }}/edit">@{{ attachment.tutor.full_name}}</a> 
-            <span ng-hide="attachment.tutor.margin === null">(M@{{attachment.tutor.margin}})</span>
+            <a href="tutors/@{{ attachment.tutor_id }}/edit">@{{ attachment.tutor.full_name}}</a>
+            @{{ attachment.tutor.margin }}
         </td>
         <td width="6%">
             @{{ attachment.date }}

@@ -141,6 +141,10 @@ class Tutor extends Service\Person
         ]));
     }
 
+    public function getMarginAttribute($margin)
+    {
+        return 'M' . ($margin ?: 'E');
+    }
 
     public function getReviewAvgAttribute()
     {

@@ -21,7 +21,7 @@
 </td>
 <td width='150'>
     <plural count='tutor.clients_count' type='client' hide-zero></plural>
-    <span ng-hide="tutor.margin === null">(M@{{ tutor.margin }})</span>
+    @{{ tutor.margin }}
 </td>
 <td width='150'>
   <plural count='getHours(tutor.minutes)' type='hour' hide-zero></plural>

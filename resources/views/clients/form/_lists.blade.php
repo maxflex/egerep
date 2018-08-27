@@ -44,7 +44,7 @@
                         </td>
                         <td style='width: 12%'>
                             <plural count='tutor.clients_count' type='client' none-text='клиентов нет' hide-zero></plural>
-                            <span ng-hide="tutor.margin === null">(M@{{ tutor.margin }})</span>
+                            @{{ tutor.margin }}
                         </td>
                         <td style='width: 15%' data-init="@{{recommendation = RecommendationService.get(tutor, client.grade)}}">
                             <span aria-label='@{{ recommendation.text }}' class='hint--bottom-right cursor-default' ng-class="{
