@@ -75,9 +75,6 @@ class SetTutorMargin extends Command
 
             $margin = ceil($avg_commission / 2000);
 
-            if ($margin > 5) {
-                $margin = 5;
-            }
             if ($margin == 0) {
                 $margin = 1;
             }
