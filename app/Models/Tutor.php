@@ -372,6 +372,8 @@ class Tutor extends Service\Person
         $min_minutes = PHP_INT_MAX;
         $client_marker = (object)$client_marker;
 
+        $mutual_metro = null;
+
         foreach($this->markers as $marker) {
             # сначала проверяем, есть ли общие ближайшие станции метро
             foreach ($client_marker->metros as $metro) {
