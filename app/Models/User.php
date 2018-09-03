@@ -54,7 +54,6 @@ class User extends Model
         if (isset($_SESSION["user"]) && $_SESSION["user"]) {
             SessionService::destroy();
             unset($_SESSION['user']);
-            header("Refresh:0");
         }
     }
 

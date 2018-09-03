@@ -10,72 +10,9 @@ Route::group(['middleware' => ['web', LogUrlOpen::class]], function () {
     Route::get('/', 'RequestsController@index');
     Route::get('auth/continue-session', 'AuthController@continueSession');
 
-    Route::get('generate-pdf', function() {
-       $data = \DB::connection('egecrm')->select("SELECT s.id as student_id, s.id_representative, c.*, r.first_name, r.last_name, r.middle_name
-           from students s
-           join representatives r on r.id = s.id_representative
-           join contract_info ci on s.id = ci.id_student
-           join contracts c on c.id_contract = ci.id_contract
-           where ci.year=2017 and
-               c.current_version=1 and
-               exists(select 1 from contract_subjects cs where cs.id_contract = c.id and (cs.status in (2, 3)))
-           group by s.id
-           order by last_name asc, r.first_name asc, r.middle_name asc
-       ");
-
-       $all_conditions = [];
-       $some_conditions = [];
-
-       echo "<table>";
-       foreach($data as $d) {
-           // сумма платежей и возвратов по категории "обучение", отмеченных 2017-2018 гг. 
-           // точно равняется сумме, указанной последней версии договора 2017-2018 гг. (условие 3)
-           $query = dbEgecrm('payments')
-               ->where('category', 1)
-               ->where('year', 2017)
-               ->where('entity_type', 'STUDENT')
-               ->where('entity_id', $d->student_id);
-
-           $payments = cloneQuery($query)->where('id_type', 1)->sum('sum');
-           $returns  = cloneQuery($query)->where('id_type', 2)->sum('sum');
-           // dump([($payments - $returns), $d->sum]);
-           if (($payments - $returns) == $d->sum) {
-               $all_conditions[] = $d;
-// 				echo "<tr><td>{$d->student_id}</td><td>{$d->sum}</td></tr>";
-// 				echo "<tr><td>{$d->last_name} {$d->first_name} {$d->middle_name}</td></tr>";
-           } else {
-               $some_conditions[] = $d;
-//                 echo "<tr><td>{$d->student_id}</td><td>" . ($payments - $returns) . "</td></tr>";
-               echo "<tr><td>{$d->last_name} {$d->first_name} {$d->middle_name}</td></tr>";
-           }
-       }
-       echo "</table>";
-       die;
-// 		dd(count($all_conditions));
-
-       // $dompdf->loadHtml(view('actprint', ['student_id' => 1]));
-       // $dompdf->loadHtml('<html>
-       // <body>
-       // <h1>test</h1>
-       // </body>
-       // </html>');
-
-       // instantiate and use the dompdf class
-       $html = '';
-//         dd(count($all_conditions));
-       $all_conditions = array_slice($all_conditions, 600, 200);
-       foreach($all_conditions as $d) {
-           $d->first = dbEgecrm('contracts')->where('id_contract', $d->id_contract)->orderBy('id', 'asc')->first();
-           $html .= view('actprint', compact('d'));
-       }
-
-       $dompdf = new Dompdf\Dompdf;
-       $dompdf->loadHtml($html);
-       $dompdf->setPaper('A4', 'portrait');
-       $dompdf->render();
-       $dompdf->stream();
-   });
-
+    Route::get('google-ids', function() {
+        return view('google-ids.index');
+    });
 
     Route::get('temp/{year}', 'TempController@index');
 
@@ -201,6 +138,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api', 'middleware' => ['web']],
     Route::get('continue-session', function() {
         event(new App\Events\ContinueSession(\App\Models\User::id()));
     });
+    Route::post('google-ids', 'GoogleIdsController@show');
     Route::get('activity', 'ActivityController@index');
     Route::resource('markers', 'MarkersController');
     Route::get('notifications/get', 'NotificationsController@get');
