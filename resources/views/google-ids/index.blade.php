@@ -37,12 +37,12 @@
                     </td>
                     <td ng-if="d" width='150'>
                         <div ng-repeat="request in d.requests">
-                            @{{ request.date }}
+                            @{{ formatDate(request.created_at) }}
                         </div>
                     </td>
                     <td ng-if="d" width='150'>
                         <div ng-repeat="request in d.requests">
-                            <a href="/requests/@{{ request.id }}/edit">@{{ request.id }}</a>@{{ $last ? '' : ', '}}
+                            <a href="/requests/@{{ request.id }}/edit">@{{ request.id }}</a>
                         </div>
                     </td>
                     <td ng-if="d">

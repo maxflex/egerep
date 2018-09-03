@@ -36,6 +36,7 @@
     @if (allowed(\Shared\Rights::ER_DEBT))
         <a href="debt/map" class="list-group-item">Дебет</a>
     @endif
+    <a href="google-ids" class="list-group-item">Google IDS</a>
 @endif
 <a class="list-group-item active">Административное</a>
 @if (allowed(\Shared\Rights::ER_SUMMARY))

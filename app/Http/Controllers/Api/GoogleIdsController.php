@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Request as ClientRequest;
+use DB;
 
 class GoogleIdsController extends Controller
 {
@@ -27,8 +28,8 @@ class GoogleIdsController extends Controller
             $query = ClientRequest::where('google_id', $google_id);
 
             if ($query->exists()) {
-                $requests = $query->select('id', 'date')->get();
-                $requests_string = implode(',', collect($requests)->pluck('id'));
+                $requests = $query->select('id', 'created_at')->get();
+                $requests_string = implode(',', collect($requests)->pluck('id')->all());
 
                 $commission = DB::select("SELECT round(sum(if(ad.commission > 0, ad.commission, 0.25 * ad.sum))) as `sum`
                     FROM request_lists rl
