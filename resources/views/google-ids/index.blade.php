@@ -54,7 +54,7 @@
                 </tr>
             </tbody>
             <tfoot>
-                <tr>
+                <tr style='font-weight: bold'>
                     <td>
                     </td>
                     <td colspan='2'>
