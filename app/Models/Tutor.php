@@ -668,16 +668,15 @@ class Tutor extends Service\Person
     public function updateUser()
     {
         if ($this->in_egecentr) {
-            User::updateOrCreate([
+            $condition = [
                 'id_entity' => $this->id,
-                'type'      => static::USER_TYPE,
-            ], [
-                'email'         => $this->email,
-                'phone'         => $this->phone,
-                'first_name'    => $this->first_name,
-                'last_name'     => $this->last_name,
-                'middle_name'   => $this->middle_name,
-            ]);
+                'type' => 'TEACHER'
+            ];
+            if (dbEgecrm('users')->where($condition)->exists()) {
+                dbEgecrm('users')->where($condition)->update(['email' => $this->email]);
+            } else {
+                dbEgecrm('users')->insert(array_merge($condition, ['email' => $this->email]));
+            }
         }
     }
 

@@ -46,25 +46,31 @@ class ContractsX extends Command
         $prices = json_decode($prices->value, JSON_OBJECT_AS_ARRAY);
 
         $result = [];
-
+		$errors = [];
         $bar = $this->output->createProgressBar(count($contracts));
         foreach($contracts as $contract) {
-            $contract_subject_sum = dbEgecrm('contract_subjects')->where('id_contract', $contract->id)->sum('count');
-            $price = $contract_subject_sum * $prices[$contract->year][$contract->grade];
-            if ($contract->discount) {
-                $price = round($price - ($price * ($contract->discount / 100)));
-            }
-            if ($price != $contract->sum) {
-                $result[] = $contract->id_contract;
-            }
-            $bar->advance();
-        }
+	        if (isset($prices[$contract->year][$contract->grade])) {
+		        $contract_subject_sum = dbEgecrm('contract_subjects')->where('id_contract', $contract->id)->sum('count');
+	            $price = $contract_subject_sum * $prices[$contract->year][$contract->grade];
+	            if ($contract->discount) {
+	                $price = round($price - ($price * ($contract->discount / 100)));
+	            }
+	            if ($price != $contract->sum) {
+	                $result[] = $contract->id_contract;
+	            }
+	        } else {
+		        $errors[] = $contract->id_contract;
+		    }
+		    $bar->advance();
+	    }
+
+		$this->line("\n");
 
         $result = array_unique($result);
+		$this->info(implode(', ', $result));
 
-        foreach($result as $id_contract) {
-            $this->info($id_contract);
-        }
+		$errors = array_unique($errors);
+		$this->error(implode(', ', $errors));
 
         $bar->finish();
     }
