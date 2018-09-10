@@ -67,7 +67,12 @@ class Tutor extends Service\Person
         'photo_extension',
         'egecentr_source',
         'photo_desc',
-        'auto_publish_disabled'
+        'auto_publish_disabled',
+        'passport_series',
+        'passport_number',
+        'passport_code',
+        'passport_address',
+        'passport_issue_place',
     ];
 
     protected $appends = [

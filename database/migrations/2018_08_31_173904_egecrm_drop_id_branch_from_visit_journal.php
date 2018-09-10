@@ -13,7 +13,7 @@ class EgecrmDropIdBranchFromVisitJournal extends Migration
     public function up()
     {
         Schema::connection('egecrm')->table('visit_journal', function (Blueprint $table) {
-            $table->dropColumn('id_branch');
+            // $table->dropColumn('id_branch');
         });
     }
 

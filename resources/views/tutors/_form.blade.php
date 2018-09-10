@@ -312,6 +312,31 @@
             </md-input-container>
         </div>
         <div class="mb-xl">
+            <h4>ПАСПОРТ</h4>
+            <div style='display: flex'>
+                <md-input-container class="md-block" style="margin-top: 20px; margin-right: 10px">
+                    <label>Серия</label>
+                    <textarea class="md-input digits-only" ng-model="tutor.passport_series"></textarea>
+                </md-input-container>
+                <md-input-container class="md-block" style="margin-top: 20px; margin-right: 10px">
+                    <label>Номер</label>
+                    <textarea class="md-input digits-only" ng-model="tutor.passport_number"></textarea>
+                </md-input-container>
+                <md-input-container class="md-block" style="margin-top: 20px; margin-right: 10px">
+                    <label>Код подразделения</label>
+                    <textarea class="md-input digits-only" ng-model="tutor.passport_code"></textarea>
+                </md-input-container>
+            </div>
+            <md-input-container class="md-block" style="margin-top: 20px">
+                <label>Выдан</label>
+                <textarea class="md-input digits-only" ng-model="tutor.passport_issue_place"></textarea>
+            </md-input-container>
+            <md-input-container class="md-block" style="margin-top: 20px">
+                <label>Зарегистрирован по адресу</label>
+                <textarea class="md-input digits-only" ng-model="tutor.passport_address"></textarea>
+            </md-input-container>
+        </div>
+        <div class="mb-xl">
             <h4>СТАТИСТИКА</h4>
             <div>Количество клиентов: @{{ tutor.clients_count }}</div>
             <div>Группа маржинальности: @{{ tutor.margin }}</div>
