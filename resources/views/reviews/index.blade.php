@@ -85,6 +85,7 @@
                 <td>ПОДПИСЬ</td>
                 <td>ТЕКСТ ОТЗЫВА</td>
                 <td>ОЦЕНКА</td>
+                <td>БАЛЛ</td>
             </thead>
             <tbody>
                 <tr ng-repeat='attachment in attachments'>
@@ -126,6 +127,11 @@
                     </td>
                     <td>
                         <span ng-if='attachment.review'>@{{ ReviewScores[attachment.review.score] }}</span>
+                    </td>
+                    <td>
+                        <span ng-if='attachment.review.max_ball'>
+                            @{{ attachment.review.ball }} из @{{ attachment.review.max_ball }}
+                        </span>
                     </td>
                     <td style="width: 5%; text-align: center">
                         <span ng-repeat='code in attachment.review.errors' ng-attr-aria-label="@{{ ReviewErrors[code] }}" class='hint--bottom-left'>@{{ code }}@{{ $last ? '' : ',  ' }}</span>
