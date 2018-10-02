@@ -95,6 +95,10 @@ class PaymentsController extends Controller
             ];
 
             foreach($data as $index => $d) {
+                // skip empty
+                if (count(array_filter($d)) == 0) {
+                    continue;
+                }
                 foreach(['source_id', 'addressee_id', 'expenditure_id', 'user_id'] as $field) {
                     if ($d[$field] && ! in_array($d[$field], $unique_ids[$field])) {
                         $unique_ids[$field][] = $d[$field];
@@ -138,6 +142,10 @@ class PaymentsController extends Controller
 
             // валидация пройдена, импорт...
             foreach($data as $d) {
+                // skip empty
+                if (count(array_filter($d)) == 0) {
+                    continue;
+                }
                 if (isset($d['action']) && $d['action'] == 'delete') {
                     unset($d['action']);
                     Payment::destroy($d['id']);
