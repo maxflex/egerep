@@ -143,11 +143,10 @@ angular.module('Egerep')
 
         getTotal = ->
             total = {in: 0, out: 0, sum: 0}
-            $.each $scope.stats_data, (year, data) ->
-                data.forEach (d) ->
-                    total.in  += parseFloat(d.in)
-                    total.out += parseFloat(d.out)
-                    total.sum += parseFloat(d.sum)
+            $.each $scope.stats_data, (index, d) ->
+                total.in  += parseFloat(d.in)
+                total.out += parseFloat(d.out)
+                total.sum += parseFloat(d.sum)
             total
 
     .controller 'PaymentForm', ($scope, FormService, Payment)->
