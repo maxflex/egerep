@@ -141,6 +141,14 @@ angular.module('Egerep')
                 else
                     $scope.stats_data = null
 
+        $scope.formatDecimal = (a) ->
+            return if not a
+            a = a.toString()
+            return a if a.indexOf('.') is -1
+            parts = a.split('.')
+            parts[1] = parts[1].substr(0, 2)
+            return parts.join(',')
+
         getTotal = ->
             total = {in: 0, out: 0, sum: 0}
             $.each $scope.stats_data, (index, d) ->

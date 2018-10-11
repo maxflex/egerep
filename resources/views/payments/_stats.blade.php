@@ -38,13 +38,13 @@
                     @{{ d.date }}
                 </td>
                 <td width='150'>
-                    <span ng-show="d.in != 0" class="text-success">+@{{ d.in }}</span>
+                    <span ng-show="d.in != 0" class="text-success">+@{{ formatDecimal(d.in) }}</span>
                 </td>
                 <td width='150'>
-                    <span ng-show="d.out != 0" class="text-danger">-@{{ d.out }}</span>
+                    <span ng-show="d.out != 0" class="text-danger">-@{{ formatDecimal(d.out) }}</span>
                 </td>
                 <td>
-                    <span ng-show="d.sum != 0">@{{ d.sum }}</span>
+                    <span ng-show="d.sum != 0">@{{ formatDecimal(d.sum) }}</span>
                 </td>
             </tr>
         </table>
@@ -54,13 +54,13 @@
 
                 </td>
                 <td width='150'>
-                    <b ng-show="totals.in != 0" class="text-success">+@{{ totals.in }}</b>
+                    <b ng-show="totals.in != 0" class="text-success">+@{{ formatDecimal(totals.in) }}</b>
                 </td>
                 <td width='150'>
-                    <b ng-show="totals.out != 0" class="text-danger">-@{{ totals.out }}</b>
+                    <b ng-show="totals.out != 0" class="text-danger">-@{{ formatDecimal(totals.out) }}</b>
                 </td>
                 <td>
-                    <b>@{{ totals.sum }}</b>
+                    <b>@{{ formatDecimal(totals.sum) }}</b>
                 </td>
             </tr>
         </table>
@@ -71,13 +71,13 @@
                     @{{ expenditure_id ? getExpenditure(expenditure_id).name : 'не указано' }}
                 </td>
                 <td width='150'>
-                    <span ng-show="data.in != 0" class="text-success">+@{{ data.in }}</span>
+                    <span ng-show="data.in != 0" class="text-success">+@{{ formatDecimal(data.in) }}</span>
                 </td>
                 <td width='150'>
-                    <span ng-show="data.out != 0" class="text-danger">-@{{ data.out }}</span>
+                    <span ng-show="data.out != 0" class="text-danger">-@{{ formatDecimal(data.out) }}</span>
                 </td>
                 <td>
-                    <span>@{{ data.sum }}</span>
+                    <span>@{{ formatDecimal(data.sum) }}</span>
                 </td>
             </tr>
         </table>
@@ -87,13 +87,13 @@
 
                 </td>
                 <td width='150'>
-                    <b ng-show="totals.in != 0" class="text-success">+@{{ totals.in  }}</b>
+                    <b ng-show="totals.in != 0" class="text-success">+@{{ formatDecimal(totals.in)  }}</b>
                 </td>
                 <td width='150'>
-                    <b ng-show="totals.out != 0" class="text-danger">-@{{ totals.out  }}</b>
+                    <b ng-show="totals.out != 0" class="text-danger">-@{{ formatDecimal(totals.out)  }}</b>
                 </td>
                 <td>
-                    <b>@{{ totals.sum }}</b>
+                    <b>@{{ formatDecimal(totals.sum) }}</b>
                 </td>
             </tr>
         </table>
