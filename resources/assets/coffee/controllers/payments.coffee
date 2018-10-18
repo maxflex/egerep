@@ -124,7 +124,18 @@ angular.module('Egerep')
             $('#payment-stream-modal').modal('show')
 
         $scope.formatStatDate = (date) ->
-            moment(date + '-01').format('MMMM')
+            moment(date + '-01').format('MM.YYYY')
+
+        $scope.search_stats =
+            mode: 'by_days'
+            date_start: ''
+            date_end: ''
+        
+        $scope.$watch 'search_stats.mode', (newVal, oldVal) ->
+            if newVal isnt oldVal
+                # выбраны какие-то фильтры
+                if Object.keys($scope.search_stats).length > 3
+                    $scope.loadStats()
 
         $scope.loadStats = ->
             return if $scope.tab isnt 'stats'

@@ -30,12 +30,23 @@
             <button type="button" ng-disabled="!(search_stats.wallet_ids && search_stats.wallet_ids.length) || stats_loading" class="btn btn-primary full-width" style='margin-top: 21px' ng-click="loadStats()">показать</button>
         </div> --}}
     </div>
+
+    <div class="top-links">
+        <a class="pointer" ng-class="{'active': search_stats.mode == 'by_days'}" ng-click="search_stats.mode = 'by_days'">по дням</a>
+        <a class="pointer" ng-class="{'active': search_stats.mode == 'by_months'}" ng-click="search_stats.mode = 'by_months'">по месяцам</a>
+    </div>
+
     <div class="vertical-center" ng-if="stats_data === null">нет данных</div>
     <div ng-if="stats_data && stats_data !== null">
         <table class="table no-borders">
             <tr ng-repeat="d in stats_data">
                 <td width='300'>
-                    @{{ d.date }}
+                    <span ng-if="d.date.length == 10">
+                        @{{ d.date }}
+                    </span>
+                    <span ng-if="d.date.length != 10">
+                        @{{ formatStatDate(d.date) }}
+                    </span>
                 </td>
                 <td width='150'>
                     <span ng-show="d.in != 0" class="text-success">+@{{ formatDecimal(d.in) }}</span>
