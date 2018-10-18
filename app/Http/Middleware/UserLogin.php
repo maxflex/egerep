@@ -20,8 +20,7 @@ class UserLogin
         if (! User::loggedIn()) {
             // $user = User::find(69);
             // $user->toSession();
-            // return redirect(config('sso.server') . '?url=' . url()->current());
-            dd('here');
+            return redirect(config('sso.server') . '?url=' . url()->current());
         }
         SessionService::action();
         view()->share('user', User::fromSession());
