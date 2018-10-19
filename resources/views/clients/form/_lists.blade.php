@@ -46,7 +46,7 @@
                             <plural count='tutor.clients_count' type='client' none-text='клиентов нет' hide-zero></plural>
                             @{{ tutor.margin }}
                         </td>
-                        <td style='width: 15%' data-init="@{{recommendation = RecommendationService.get(tutor, client.grade)}}">
+                        <td style='width: 15%' data-init="@{{ recommendation = RecommendationService.get(tutor, getRealGrade()) }}">
                             <span aria-label='@{{ recommendation.text }}' class='hint--bottom-right cursor-default' ng-class="{
                                 'text-success': recommendation.type == 0,
                                 'text-warning': recommendation.type == 1,
