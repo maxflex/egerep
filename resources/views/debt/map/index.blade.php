@@ -3,9 +3,7 @@
 @section('title', 'Дебет')
 
 @section('scripts')
-    <script src="//maps.google.ru/maps/api/js?libraries=places"></script>
-    <script src="{{ asset('/js/maps.js', isProduction()) }}"></script>
-    <script src="{{ asset('/js/markerclusterer.js', isProduction()) }}"></script>
+    @include('modules.map-scripts', ['clusterer' => true])
 @stop
 
 
