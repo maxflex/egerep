@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use Illuminate\Database\Eloquent\Builder;
+
 /**
  * Скрыть некоторые значения платежей для обычных пользователей
  * Отображать только суперпользователям
