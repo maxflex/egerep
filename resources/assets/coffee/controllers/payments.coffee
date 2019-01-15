@@ -2,7 +2,7 @@ angular.module('Egerep')
     .controller 'PaymentsIndex', ($scope, $attrs, $timeout, $http, IndexService, Payment, UserService, Checked) ->
         bindArguments($scope, arguments)
 
-        $(window).on 'keydown', (e) -> $scope.removeSelectedPayments() if e.which is 8
+        $scope.payment_actions_index = null
 
         $('#import-button').fileupload
             # начало загрузки
@@ -32,7 +32,6 @@ angular.module('Egerep')
                 expenditure_id: ''
                 type: ''
 
-            $scope.selected_payments = []
             $scope.tab = 'payments'
 
             IndexService.init(Payment, $scope.current_page, $attrs)
@@ -44,21 +43,9 @@ angular.module('Egerep')
 
         $scope.keyFilter = (event) ->
             $scope.filter() if event.keyCode is 13
-
-        $scope.selectPayment = (payment) ->
-            if payment.id in $scope.selected_payments
-                $scope.selected_payments = _.without($scope.selected_payments, payment.id)
-            else
-                $scope.selected_payments.push(payment.id)
-
-        $scope.removeSelectedPayments = ->
-            if $scope.selected_payments.length then bootbox.confirm "Вы уверены, что хотите удалить <b>#{$scope.selected_payments.length}</b> платежей?", (response) ->
-                if response is true
-                    ajaxStart()
-                    $.post('api/payments/delete', {ids: $scope.selected_payments}).then (response) ->
-                        $scope.selected_payments = []
-                        $scope.filter()
-                        ajaxEnd()
+        
+        $scope.setPaymentActionsIndex = (index) ->
+            $scope.payment_actions_index = index
 
         $scope.getExpenditure = (id) ->
             id = parseInt(id)
@@ -107,6 +94,7 @@ angular.module('Egerep')
                 $scope.filter()
 
         $scope.clonePayment = (payment) ->
+            $scope.payment_actions_index = null
             new_payment = _.clone(payment)
             delete new_payment.id
             delete new_payment.created_at
@@ -120,6 +108,7 @@ angular.module('Egerep')
                 $scope.filter()
 
         $scope.editPayment = (model) ->
+            $scope.payment_actions_index = null
             $scope.modal_payment = _.clone(model)
             $('#payment-stream-modal').modal('show')
 

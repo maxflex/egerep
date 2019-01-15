@@ -21,45 +21,45 @@
             </select>
         </div>
         <div>
-            <label>проверено</label>
-            <select ng-model="search.checked" class="selectpicker" ng-change="filter()">
-                <option value="">не выбрано</option>
-                <option disabled>──────────────</option>
-                <option ng-repeat="c in Checked" value="@{{ $index }}">@{{ c }}</option>
-            </select>
-        </div>
-        <div>
             <label>назначение</label>
             <input type="text" id='payment-purpose' ng-keyup='keyFilter($event)' class="form-control" ng-model="search.purpose" placeholder="не выбрано">
         </div>
     </div>
 
     <table class="table reverse-borders" style='font-size: 13px'>
-        <tr ng-repeat="model in IndexService.page.data" ng-class="{'selected': selected_payments.indexOf(model.id) !== -1}">
-            <td width='85'>
-                <i class="fa fa-star table-star" ng-class="{'active': model.checked}" aria-hidden="true" ng-click="toggleEnumServer(model, 'checked', Checked, Payment)"></i>
-                <img src="img/svg/copy-file.svg" class="pointer" style='width: 13px; margin-right: 5px; outline: none' ng-click="clonePayment(model)" />
-                <i class="fa fa-pencil pointer text-success" aria-hidden="true" ng-click="editPayment(model)"></i>
+        <tr ng-repeat="model in IndexService.page.data">
+            <td width='10'>
+                {{-- <img src="img/svg/copy-file.svg" class="pointer" style='width: 13px; margin-right: 5px; outline: none' ng-click="clonePayment(model)" /> --}}
+                {{-- <i class="fa fa-pencil pointer text-success" aria-hidden="true" ng-click="editPayment(model)"></i> --}}
+                <i class="fa fa-pencil pointer text-success" aria-hidden="true" ng-click="setPaymentActionsIndex($index)"></i>
+                <div class="custom-dropdown" ng-show="payment_actions_index === $index" style='width: 150px'>
+                    <div class="custom-dropdown__item" ng-click='editPayment(model)'>
+                        редактировать
+                    </div>
+                    <div class="custom-dropdown__item" ng-click='clonePayment(model)'>
+                        клонировать
+                    </div>
+                </div>
             </td>
-            <td ng-click="selectPayment(model)">
+            <td>
                 @{{ model.sum | number }}
             </td>
-            <td ng-click="selectPayment(model)">
+            <td>
                 @{{ model.date }}
             </td>
-            <td ng-click="selectPayment(model)">
+            <td>
                 @{{ findById(sources, model.source_id).name }}
             </td>
-            <td ng-click="selectPayment(model)">
+            <td>
                 @{{ findById(sources, model.addressee_id).name }}
             </td>
-            <td ng-click="selectPayment(model)">
+            <td>
                 @{{ getExpenditure(model.expenditure_id).name }}
             </td>
             {{-- <td>
                 @{{ UserService.getLogin(model.user_id) }}: @{{ formatDateTime(model.created_at) }}
             </td> --}}
-            <td width="250" ng-click="selectPayment(payment)">
+            <td width="250">
                 @{{ model.purpose | cut:false:20 }}
             </td>
         </tr>

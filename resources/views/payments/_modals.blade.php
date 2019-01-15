@@ -48,9 +48,6 @@
               <label>назначение</label>
               <textarea ng-model="modal_payment.purpose" rows="3"></textarea>
           </div>
-          <div>
-              <i class="fa fa-star table-star" ng-class="{'active': modal_payment.checked}" aria-hidden="true" ng-click="modal_payment.checked = !modal_payment.checked"></i>
-          </div>
       </div>
       <div class="modal-footer center">
         <button ng-hide="modal_payment.id" type="button" class="btn btn-primary" ng-disabled="adding_payment" ng-click="savePayment()">добавить</button>

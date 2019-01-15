@@ -3,9 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Payment\Source;
-use App\Models\Payment\Expenditure;
-use App\Models\Payment\ExpenditureGroup;
 
 class Payment extends Model
 {
@@ -16,8 +13,7 @@ class Payment extends Model
         'date',
         'addressee_id',
         'source_id',
-        'expenditure_id',
-        'checked'
+        'expenditure_id'
     ];
 
     protected $attributes = [
@@ -66,13 +62,6 @@ class Payment extends Model
         $query = $model ? self::query() : \DB::table('payments');
         $query->orderBy('date', 'desc')->orderBy('id', 'desc');
 
-        // лимитируем то что только для суперпользователя
-        if (! allowed(\Shared\Rights::IS_SUPERUSER)) {
-            $query->whereNotIn('source_id', Source::HIDDEN_IDS);
-            $query->whereNotIn('addressee_id', Source::HIDDEN_IDS);
-            $query->whereNotIn('expenditure_id', Expenditure::whereIn('group_id', ExpenditureGroup::HIDDEN_IDS)->pluck('id'));
-        }
-
         if (isset($search->source_ids) && count($search->source_ids)) {
             $query->whereIn('source_id', $search->source_ids);
         }
@@ -87,10 +76,6 @@ class Payment extends Model
 
         if (isset($search->purpose) && ! isBlank($search->purpose)) {
             $query->whereRaw("purpose LIKE '%" . $search->purpose . "%'");
-        }
-
-        if (isset($search->checked) && ! isBlank($search->checked)) {
-            $query->where('checked', $search->checked);
         }
 
         return $query;

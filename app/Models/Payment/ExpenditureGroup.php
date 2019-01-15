@@ -3,15 +3,9 @@
 namespace App\Models\Payment;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\PaymentScope;
 
 class ExpenditureGroup extends Model
 {
-    use PaymentScope;
-
-    // скрыть для PaymentScope
-    const HIDDEN_IDS = [9];
-
     protected $table = 'payment_expenditure_groups';
 
     protected $fillable = ['name', 'position'];

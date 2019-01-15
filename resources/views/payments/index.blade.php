@@ -11,6 +11,7 @@
             <a class="pointer" ng-class="{'active': tab == 'stats'}" ng-click="tab = 'stats'">статистика</a>
         </div>
     </div>
+    <div class="custom-dropdown__close" ng-click="payment_actions_index = null" ng-show="payment_actions_index !== null"></div>
     @include('payments._payments')
     @include('payments._stats')
 
