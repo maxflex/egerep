@@ -13,8 +13,12 @@ class DropFieldsFromPayments extends Migration
     public function up()
     {
         Schema::table('payments', function (Blueprint $table) {
-            //
+            $table->dropColumn('checked');
         });
+
+        \DB::table('payment_expenditure_groups')->whereId(9)->delete();
+        \DB::table('payment_sources')->whereId(12)->delete();
+
     }
 
     /**
