@@ -133,7 +133,8 @@ angular.module('Egerep')
 
         $scope.search_stats =
             mode: 'by_days'
-            date_start: '01.01.2017'
+            # date_start: '01.01.2017'
+            date_start: ''
             date_end: ''
         
         $scope.$watch 'search_stats.mode', (newVal, oldVal) ->
@@ -187,7 +188,7 @@ angular.module('Egerep')
             while i <= 11
                 d = $scope.stats_data[index + i]
                 if d is undefined
-                    console.log('qutting 1 because ' + (index + i) + ' doesnt exist')
+                    # console.log('qutting 1 because ' + (index + i) + ' doesnt exist')
                     return ''
                 s1 += parseInt(d.sum)
                 i++
@@ -196,11 +197,10 @@ angular.module('Egerep')
             while i <= 12
                 d = $scope.stats_data[index + i]
                 if d is undefined
-                    console.log('qutting 2 because ' + (index + i) + ' doesnt exist')
+                    # console.log('qutting 2 because ' + (index + i) + ' doesnt exist')
                     return ''
                 s2 += parseInt(d.sum)
                 i++
-            console.log('SUCCESS')
             return s1 - s2
 
 

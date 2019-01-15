@@ -26,9 +26,9 @@
                 <input type="text" readonly placeholder="не указано" class="form-control bs-date-clear pointer" ng-model="search_stats.date_end" ng-change="loadStats()">
             </div>
         </div>
-        <div>
+        {{-- <div>
             <button type="button" ng-disabled="!(search_stats.wallet_ids && search_stats.wallet_ids.length) || stats_loading" class="btn btn-primary full-width" style='margin-top: 21px' ng-click="loadStats()">показать</button>
-        </div>
+        </div> --}}
     </div>
 
     <div class="top-links">
