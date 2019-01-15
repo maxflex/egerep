@@ -4189,6 +4189,8 @@ md-option {
 
 .flex-list label {
 	margin: 0 0 2px 10px;
+	width: 100%;
+	padding-right: 20px;
 }
 
 .hidden-select {
@@ -4336,4 +4338,12 @@ md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-ico
 
 .placeholder-gray {
 	color: $placeholder_gray;
+}
+
+.link-inside-label {
+	color: $green_main;
+	border-bottom: 1px dashed $green_main;
+	font-weight: normal;
+	cursor: pointer;
+	float: right;
 }

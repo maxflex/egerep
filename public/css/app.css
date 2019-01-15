@@ -29482,7 +29482,9 @@ md-option {
   margin-bottom: 0; }
 
 .flex-list label {
-  margin: 0 0 2px 10px; }
+  margin: 0 0 2px 10px;
+  width: 100%;
+  padding-right: 20px; }
 
 .hidden-select {
   width: 100%;
@@ -29599,6 +29601,13 @@ md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-ico
 
 .placeholder-gray {
   color: #999999; }
+
+.link-inside-label {
+  color: #158E51;
+  border-bottom: 1px dashed #158E51;
+  font-weight: normal;
+  cursor: pointer;
+  float: right; }
 
 .ios7-switch {
   display: inline-block;

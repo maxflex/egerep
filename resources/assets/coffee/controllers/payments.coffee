@@ -44,6 +44,24 @@ angular.module('Egerep')
         $scope.keyFilter = (event) ->
             $scope.filter() if event.keyCode is 13
         
+        $scope.selectAllExpenditures = ->
+            except = [40, 42, 29]
+            $scope.search.expenditure_ids = []
+            $scope.expenditures.forEach (expenditure) ->
+                expenditure.data.forEach (d) ->
+                    $scope.search.expenditure_ids.push(d.id.toString()) if except.indexOf(d.id) is -1
+            $timeout -> $('.expenditure-select').selectpicker('refresh')
+            $scope.filter()
+        
+        $scope.selectAllSources = (field) ->
+            except = [4, 6]
+            $scope.search[field] = []
+            $scope.sources.forEach (source) ->
+                $scope.search[field].push(source.id.toString()) if except.indexOf(source.id) is -1
+            $timeout -> $('.selectpicker').selectpicker('refresh')
+            $scope.filter()
+
+        
         $scope.setPaymentActionsIndex = (index) ->
             $scope.payment_actions_index = index
 

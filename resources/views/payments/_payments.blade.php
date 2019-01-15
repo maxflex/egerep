@@ -1,19 +1,19 @@
 <div ng-show="tab == 'payments'">
     <div class="row flex-list">
         <div>
-            <label>источник</label>
+            <label>источник <span class='link-inside-label' ng-click='selectAllSources("source_ids")'>набор 1</span></label>
             <select multiple title="не выбрано" ng-model="search.source_ids" class="selectpicker" ng-change="filter()">
                 <option ng-repeat="source in sources" value="@{{ source.id }}">@{{ source.name }}</option>
             </select>
         </div>
         <div>
-            <label>адресат</label>
+            <label>адресат <span class='link-inside-label' ng-click='selectAllSources("addressee_ids")'>набор 1</span></label>
             <select multiple title="не выбрано" ng-model="search.addressee_ids" class="selectpicker" ng-change="filter()">
                 <option ng-repeat="source in sources" value="@{{ source.id }}">@{{ source.name }}</option>
             </select>
         </div>
         <div>
-            <label>статья</label>
+            <label>статья <span class='link-inside-label' ng-click='selectAllExpenditures()'>набор 1</span></label>
             <select multiple title="не выбрано" ng-model="search.expenditure_ids" class="selectpicker expenditure-select" ng-change="filter()">
                 <optgroup ng-repeat="expenditure in expenditures" label="@{{ expenditure.name }}">
                     <option ng-repeat="d in expenditure.data" value="@{{ d.id }}">@{{ d.name }}</option>
