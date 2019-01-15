@@ -1648,134 +1648,6 @@
 }).call(this);
 
 (function() {
-  var apiPath, updateMethod;
-
-  angular.module('Egerep').factory('Marker', function($resource) {
-    return $resource(apiPath('markers'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Notification', function($resource) {
-    return $resource(apiPath('notifications'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Account', function($resource) {
-    return $resource(apiPath('accounts'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('AccountPayment', function($resource) {
-    return $resource(apiPath('account/payments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('PlannedAccount', function($resource) {
-    return $resource(apiPath('periods/planned'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Review', function($resource) {
-    return $resource(apiPath('reviews'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Background', function($resource) {
-    return $resource(apiPath('background'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Archive', function($resource) {
-    return $resource(apiPath('archives'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Attachment', function($resource) {
-    return $resource(apiPath('attachments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('RequestList', function($resource) {
-    return $resource(apiPath('lists'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Request', function($resource) {
-    return $resource(apiPath('requests'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      transfer: {
-        method: 'POST',
-        url: apiPath('requests', 'transfer')
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  }).factory('Sms', function($resource) {
-    return $resource(apiPath('sms'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Payment', function($resource) {
-    return $resource(apiPath('payments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('PaymentSource', function($resource) {
-    return $resource(apiPath('payments/sources'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('SourceRemainder', function($resource) {
-    return $resource(apiPath('payments/source/remainders'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('PaymentExpenditure', function($resource) {
-    return $resource(apiPath('payments/expenditures'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('PaymentExpenditureGroup', function($resource) {
-    return $resource(apiPath('payments/expendituregroups'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Comment', function($resource) {
-    return $resource(apiPath('comments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Client', function($resource) {
-    return $resource(apiPath('clients'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('User', function($resource) {
-    return $resource(apiPath('users'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Tutor', function($resource) {
-    return $resource(apiPath('tutors'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      deletePhoto: {
-        url: apiPath('tutors', 'photo'),
-        method: 'DELETE'
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  });
-
-  apiPath = function(entity, additional) {
-    if (additional == null) {
-      additional = '';
-    }
-    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
-  };
-
-  updateMethod = function() {
-    return {
-      update: {
-        method: 'PUT'
-      }
-    };
-  };
-
-}).call(this);
-
-(function() {
   angular.module('Egerep').factory('Model', function($resource) {
     return $resource('api/models/:id', {}, {
       update: {
@@ -4471,32 +4343,30 @@
     $scope.selectAllExpenditures = function() {
       var except;
       except = [40, 42, 29];
-      $scope.search.expenditure_ids = [];
+      $scope.search_stats.expenditure_ids = [];
       $scope.expenditures.forEach(function(expenditure) {
         return expenditure.data.forEach(function(d) {
           if (except.indexOf(d.id) === -1) {
-            return $scope.search.expenditure_ids.push(d.id.toString());
+            return $scope.search_stats.expenditure_ids.push(d.id.toString());
           }
         });
       });
-      $timeout(function() {
-        return $('.expenditure-select').selectpicker('refresh');
-      });
-      return $scope.filter();
-    };
-    $scope.selectAllSources = function(field) {
-      var except;
-      except = [4, 6];
-      $scope.search[field] = [];
-      $scope.sources.forEach(function(source) {
-        if (except.indexOf(source.id) === -1) {
-          return $scope.search[field].push(source.id.toString());
-        }
-      });
-      $timeout(function() {
+      return $timeout(function() {
         return $('.selectpicker').selectpicker('refresh');
       });
-      return $scope.filter();
+    };
+    $scope.selectAllSources = function() {
+      var except;
+      except = [4, 6];
+      $scope.search_stats.wallet_ids = [];
+      $scope.sources.forEach(function(source) {
+        if (except.indexOf(source.id) === -1) {
+          return $scope.search_stats.wallet_ids.push(source.id.toString());
+        }
+      });
+      return $timeout(function() {
+        return $('.selectpicker').selectpicker('refresh');
+      });
     };
     $scope.setPaymentActionsIndex = function(index) {
       return $scope.payment_actions_index = index;
@@ -4584,7 +4454,7 @@
     };
     $scope.search_stats = {
       mode: 'by_days',
-      date_start: '',
+      date_start: '01.01.2017',
       date_end: ''
     };
     $scope.$watch('search_stats.mode', function(newVal, oldVal) {
@@ -4627,7 +4497,7 @@
       parts[1] = parts[1].substr(0, 2);
       return parts.join(',');
     };
-    return getTotal = function() {
+    getTotal = function() {
       var total;
       total = {
         "in": 0,
@@ -4640,6 +4510,44 @@
         return total.sum += parseFloat(d.sum);
       });
       return total;
+    };
+    $scope.lastYearDiff = function(data) {
+      var date_parts, last_year_data;
+      date_parts = data.date.split('-');
+      last_year_data = $scope.stats_data.find(function(e) {
+        return e.date === ((parseInt(date_parts[0]) - 1) + '-' + date_parts[1]);
+      });
+      if (last_year_data !== void 0) {
+        return data.sum - last_year_data.sum;
+      }
+      return '';
+    };
+    return $scope.diff2 = function(index) {
+      var d, i, s1, s2;
+      s1 = 0;
+      i = 0;
+      while (i <= 11) {
+        d = $scope.stats_data[index + i];
+        if (d === void 0) {
+          console.log('qutting 1 because ' + (index + i) + ' doesnt exist');
+          return '';
+        }
+        s1 += parseInt(d.sum);
+        i++;
+      }
+      s2 = 0;
+      i = 1;
+      while (i <= 12) {
+        d = $scope.stats_data[index + i];
+        if (d === void 0) {
+          console.log('qutting 2 because ' + (index + i) + ' doesnt exist');
+          return '';
+        }
+        s2 += parseInt(d.sum);
+        i++;
+      }
+      console.log('SUCCESS');
+      return s1 - s2;
     };
   }).controller('PaymentForm', function($scope, FormService, Payment) {
     bindArguments($scope, arguments);
@@ -6330,6 +6238,134 @@
       filterMarkers();
     };
   });
+
+}).call(this);
+
+(function() {
+  var apiPath, updateMethod;
+
+  angular.module('Egerep').factory('Marker', function($resource) {
+    return $resource(apiPath('markers'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Notification', function($resource) {
+    return $resource(apiPath('notifications'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Account', function($resource) {
+    return $resource(apiPath('accounts'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('AccountPayment', function($resource) {
+    return $resource(apiPath('account/payments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('PlannedAccount', function($resource) {
+    return $resource(apiPath('periods/planned'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Review', function($resource) {
+    return $resource(apiPath('reviews'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Background', function($resource) {
+    return $resource(apiPath('background'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Archive', function($resource) {
+    return $resource(apiPath('archives'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Attachment', function($resource) {
+    return $resource(apiPath('attachments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('RequestList', function($resource) {
+    return $resource(apiPath('lists'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Request', function($resource) {
+    return $resource(apiPath('requests'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      transfer: {
+        method: 'POST',
+        url: apiPath('requests', 'transfer')
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  }).factory('Sms', function($resource) {
+    return $resource(apiPath('sms'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Payment', function($resource) {
+    return $resource(apiPath('payments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('PaymentSource', function($resource) {
+    return $resource(apiPath('payments/sources'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('SourceRemainder', function($resource) {
+    return $resource(apiPath('payments/source/remainders'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('PaymentExpenditure', function($resource) {
+    return $resource(apiPath('payments/expenditures'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('PaymentExpenditureGroup', function($resource) {
+    return $resource(apiPath('payments/expendituregroups'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Comment', function($resource) {
+    return $resource(apiPath('comments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Client', function($resource) {
+    return $resource(apiPath('clients'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('User', function($resource) {
+    return $resource(apiPath('users'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Tutor', function($resource) {
+    return $resource(apiPath('tutors'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      deletePhoto: {
+        url: apiPath('tutors', 'photo'),
+        method: 'DELETE'
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  });
+
+  apiPath = function(entity, additional) {
+    if (additional == null) {
+      additional = '';
+    }
+    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
+  };
+
+  updateMethod = function() {
+    return {
+      update: {
+        method: 'PUT'
+      }
+    };
+  };
 
 }).call(this);
 

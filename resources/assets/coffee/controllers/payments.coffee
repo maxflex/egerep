@@ -46,20 +46,18 @@ angular.module('Egerep')
         
         $scope.selectAllExpenditures = ->
             except = [40, 42, 29]
-            $scope.search.expenditure_ids = []
+            $scope.search_stats.expenditure_ids = []
             $scope.expenditures.forEach (expenditure) ->
                 expenditure.data.forEach (d) ->
-                    $scope.search.expenditure_ids.push(d.id.toString()) if except.indexOf(d.id) is -1
-            $timeout -> $('.expenditure-select').selectpicker('refresh')
-            $scope.filter()
-        
-        $scope.selectAllSources = (field) ->
-            except = [4, 6]
-            $scope.search[field] = []
-            $scope.sources.forEach (source) ->
-                $scope.search[field].push(source.id.toString()) if except.indexOf(source.id) is -1
+                    $scope.search_stats.expenditure_ids.push(d.id.toString()) if except.indexOf(d.id) is -1
             $timeout -> $('.selectpicker').selectpicker('refresh')
-            $scope.filter()
+        
+        $scope.selectAllSources = ->
+            except = [4, 6]
+            $scope.search_stats.wallet_ids = []
+            $scope.sources.forEach (source) ->
+                $scope.search_stats.wallet_ids.push(source.id.toString()) if except.indexOf(source.id) is -1
+            $timeout -> $('.selectpicker').selectpicker('refresh')
 
         
         $scope.setPaymentActionsIndex = (index) ->
@@ -135,7 +133,7 @@ angular.module('Egerep')
 
         $scope.search_stats =
             mode: 'by_days'
-            date_start: ''
+            date_start: '01.01.2017'
             date_end: ''
         
         $scope.$watch 'search_stats.mode', (newVal, oldVal) ->
@@ -174,6 +172,38 @@ angular.module('Egerep')
                 total.out += parseFloat(d.out)
                 total.sum += parseFloat(d.sum)
             total
+        
+        # разница – в прошлом году этого месяца
+        $scope.lastYearDiff = (data) ->
+            date_parts = data.date.split('-')
+            last_year_data = $scope.stats_data.find (e) -> e.date is ((parseInt(date_parts[0]) - 1) + '-' + date_parts[1])
+            if last_year_data isnt undefined
+                return (data.sum - last_year_data.sum)
+            return ''
+        
+        $scope.diff2 = (index) ->
+            s1 = 0
+            i = 0
+            while i <= 11
+                d = $scope.stats_data[index + i]
+                if d is undefined
+                    console.log('qutting 1 because ' + (index + i) + ' doesnt exist')
+                    return ''
+                s1 += parseInt(d.sum)
+                i++
+            s2 = 0
+            i = 1
+            while i <= 12
+                d = $scope.stats_data[index + i]
+                if d is undefined
+                    console.log('qutting 2 because ' + (index + i) + ' doesnt exist')
+                    return ''
+                s2 += parseInt(d.sum)
+                i++
+            console.log('SUCCESS')
+            return s1 - s2
+
+
 
     .controller 'PaymentForm', ($scope, FormService, Payment)->
         bindArguments($scope, arguments)

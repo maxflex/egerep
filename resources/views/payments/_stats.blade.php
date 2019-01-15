@@ -1,13 +1,13 @@
 <div ng-show="tab == 'stats'">
     <div class="row flex-list">
         <div>
-            <label>кошелёк</label>
+            <label>кошелёк<span class='link-inside-label' ng-click='selectAllSources()'>набор 1</span></label>
             <select multiple title="не выбрано" ng-model="search_stats.wallet_ids" class="selectpicker" ng-change="loadStats()">
                 <option ng-repeat="source in sources" value="@{{ source.id }}">@{{ source.name }}</option>
             </select>
         </div>
         <div>
-            <label>статьи</label>
+            <label>статьи<span class='link-inside-label' ng-click='selectAllExpenditures()'>набор 1</span></label>
             <select multiple title="не выбрано" ng-model="search_stats.expenditure_ids" class="selectpicker" ng-change="loadStats()">
                 <optgroup ng-repeat="expenditure in expenditures" label="@{{ expenditure.name }}">
                     <option ng-repeat="d in expenditure.data" value="@{{ d.id }}">@{{ d.name }}</option>
@@ -26,9 +26,9 @@
                 <input type="text" readonly placeholder="не указано" class="form-control bs-date-clear pointer" ng-model="search_stats.date_end" ng-change="loadStats()">
             </div>
         </div>
-        {{-- <div>
+        <div>
             <button type="button" ng-disabled="!(search_stats.wallet_ids && search_stats.wallet_ids.length) || stats_loading" class="btn btn-primary full-width" style='margin-top: 21px' ng-click="loadStats()">показать</button>
-        </div> --}}
+        </div>
     </div>
 
     <div class="top-links">
@@ -39,6 +39,16 @@
     <div class="vertical-center" ng-if="stats_data === null">нет данных</div>
     <div ng-if="stats_data && stats_data !== null">
         <table class="table no-borders">
+            <thead>
+                <tr>
+                    <th>дата</th>
+                    <th>приход</th>
+                    <th>расход</th>
+                    <th>разница</th>
+                    <th ng-if="search_stats.mode == 'by_months'">разница с прошлым годом этого месяца</th>
+                    <th ng-if="search_stats.mode == 'by_months'">разница сумм за год с прошлым месяцем</th>
+                </tr>
+            </thead>
             <tr ng-repeat="d in stats_data">
                 <td width='300'>
                     <span ng-if="d.date.length == 10">
@@ -54,8 +64,14 @@
                 <td width='150'>
                     <span ng-show="d.out != 0" class="text-danger">-@{{ formatDecimal(d.out) }}</span>
                 </td>
-                <td>
+                <td width='150'>
                     <span ng-show="d.sum != 0">@{{ formatDecimal(d.sum) }}</span>
+                </td>
+                <td ng-if="search_stats.mode == 'by_months'">
+                    @{{ formatDecimal(lastYearDiff(d)) }}
+                </td>
+                <td ng-if="search_stats.mode == 'by_months'">
+                    @{{ formatDecimal(diff2($index)) }}
                 </td>
             </tr>
         </table>
