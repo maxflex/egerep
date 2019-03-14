@@ -62,6 +62,7 @@ return [
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix'    => '',
+            // 'strict' => false,
         ],
 
         'egecrm' => [
@@ -80,6 +81,18 @@ return [
             'driver'    => 'mysql',
             'host'      => env('DB_HOST_FACTORY'),
             'database'  => env('DB_DATABASE_FACTORY'),
+            'username'  => env('DB_USERNAME_FACTORY'),
+            'password'  => env('DB_PASSWORD_FACTORY'),
+            'port'      => env('DB_PORT', 3306),
+            'charset'   => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix'    => '',
+        ],
+
+        'egecrm2' => [
+            'driver'    => 'mysql',
+            'host'      => env('DB_HOST_FACTORY'),
+            'database'  => env('DB_HOST_EGECRM2', 'egecrm2'),
             'username'  => env('DB_USERNAME_FACTORY'),
             'password'  => env('DB_PASSWORD_FACTORY'),
             'port'      => env('DB_PORT', 3306),

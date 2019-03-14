@@ -430,6 +430,24 @@ class Tutor extends Service\Person
         parent::boot();
 
         static::saving(function($tutor) {
+            if ($tutor->changed(['email'])) {
+                // отстреливаем в синюю базу
+                // TODO: снести поле email
+                $query = dbEgecrm2('emails')
+                    ->where('entity_type', "App\\Models\\Teacher")
+                    ->where('entity_id', $tutor->id);
+
+                if (cloneQuery($query)->exists()) {
+                    $query->update(['email' => $tutor->email]);
+                } else {
+                    $query->insert([
+                        'entity_type' => "App\\Models\\Teacher",
+                        'entity_id' => $tutor->id,
+                        'password' => '',
+                        'email' => $tutor->email,
+                    ]);
+                }
+            }
             if ($tutor->changed(['email', 'phone', 'first_name', 'last_name', 'middle_name'])) {
                 $tutor->updateUser();
             }

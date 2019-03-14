@@ -237,7 +237,12 @@ use App\Models\Sms;
       */
      function dbEgecrm($table)
      {
-         return \DB::connection('egecrm')->table($table);
+        return \DB::connection('egecrm')->table($table);
+     }
+
+     function dbEgecrm2($table)
+     {
+        return \DB::connection('egecrm2')->table($table);
      }
 
     function fileExists($url)
