@@ -3,7 +3,7 @@
 @include('tutors._modals')
 
 <sms number='sms_number'></sms>
-<input name="file" type="file" id="fileupload2" data-url="upload/file/" style='display: none'>
+<input name="file" type="file" id="fileupload2" data-url="upload/tutorfile/" style='display: none'>
 
 <div class="row">
     <div class="col-sm-1" style="width: 157px">
