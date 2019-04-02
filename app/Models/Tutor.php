@@ -23,6 +23,7 @@ class Tutor extends Service\Person
     ];
 
     protected $fillable =  [
+        'file',
         'first_name',
         'last_name',
         'middle_name',

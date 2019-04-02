@@ -27,7 +27,7 @@ class UploadController extends Controller
     /**
      * tutor file
      */
-    public function postFile(Request $request)
+    public function postTutorfile(Request $request)
     {
         $tutor_id = $request->input('tutor_id');
         $file = uniqid() . '.' . $request->file('file')->getClientOriginalExtension();
