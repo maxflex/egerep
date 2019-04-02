@@ -91,6 +91,7 @@ class Tutor extends Service\Person
     protected static $commaSeparated = ['subjects', 'subjects_ec', 'grades', 'branches', 'errors'];
     protected static $dotDates = ['birthday'];
 
+    const FILE_UPLOAD_DIR = '/tutor-files/';
     const UPLOAD_DIR = '/img/tutors/';
     const NO_PHOTO   = 'no-profile-img.gif';
     const USER_TYPE  = 'TEACHER';

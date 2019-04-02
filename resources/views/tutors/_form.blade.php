@@ -3,6 +3,7 @@
 @include('tutors._modals')
 
 <sms number='sms_number'></sms>
+<input name="file" type="file" id="fileupload2" data-url="upload/file/">
 
 <div class="row">
     <div class="col-sm-1" style="width: 157px">
@@ -110,6 +111,16 @@
                     <div class="form-group">
                         <email entity='tutor'></email>
                     </div>
+                </div>
+            </div>
+            <div class='row'>
+                <div class='col-sm-12'>
+                    <span ng-show='!tutor.file' class='link-like' onclick="$('#fileupload2').click()">загрузить файл</span>
+                    <span ng-show='tutor.file'>
+                        <a href='/tutor-files/@{{ tutor.file }}' target='_blank'>скачать файл</a>
+                        <a class='pointer' onclick="$('#fileupload2').click()" style='margin: 0 10px'>загрузить новый</a>
+                        <a class='link-like red' ng-click='tutor.file = null'>удалить</a>
+                    </span>
                 </div>
             </div>
             <div class="row">

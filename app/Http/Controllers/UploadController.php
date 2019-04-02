@@ -24,6 +24,21 @@ class UploadController extends Controller
         ];
     }
 
+    /**
+     * tutor file
+     */
+    public function postFile(Request $request)
+    {
+        $tutor_id = $request->input('tutor_id');
+        $file = uniqid() . '.' . $request->file('file')->getClientOriginalExtension();
+        Tutor::where('id', $tutor_id)->update(['file' => $file]);
+        $request->file('file')->move(public_path() . Tutor::FILE_UPLOAD_DIR, $file);
+        return [
+            'file' => $file,
+            // 'size'      => filesize(public_path() . Tutor::UPLOAD_DIR .  $tutor_id . '_original.' . $extension)
+        ];
+    }
+
     public function postCropped(Request $request)
     {
         $tutor = Tutor::find($request->input('tutor_id'));

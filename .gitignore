@@ -2,6 +2,7 @@
 /public/img/tutors/*
 /public/build
 /public/img/wallpaper
+/public/tutor-files
 /vendor
 /resources/assets/bower
 Homestead.yaml

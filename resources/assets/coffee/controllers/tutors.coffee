@@ -270,6 +270,7 @@ angular
 
 
         $scope.picture_version = 1;
+        
         bindFileUpload = ->
         	# загрузка файла договора
         	$('#fileupload').fileupload
@@ -299,6 +300,32 @@ angular
                     $scope.$apply()
                     bindCropper()
         		,
+        
+        # загрузка файла в поле преподавателя file
+        bindFileUpload2 = ->
+        	# загрузка файла договора
+        	$('#fileupload2').fileupload
+        		formData:
+        			tutor_id: $scope.tutor.id
+        		maxFileSize: 10000000, # 10 MB
+        		
+                # начало загрузки
+        		send: ->
+        			NProgress.configure({ showSpinner: true })
+        		,
+        		# во время загрузки
+        		progress: (e, data) ->
+        		    NProgress.set(data.loaded / data.total)
+        		,
+        		# всегда по окончании загрузки (неважно, ошибка или успех)
+        		always: ->
+        		    NProgress.configure({ showSpinner: false })
+        		    ajaxEnd()
+        		,
+        		done: (i, response) ->
+                    $scope.tutor.file = response.result.file
+                    $scope.$apply()
+        		,
 
         # show photo editor
         $scope.showPhotoEditor = ->
@@ -313,6 +340,7 @@ angular
                     $timeout ->
                         # bindCropper()
                         bindFileUpload()
+                        bindFileUpload2()
                     , 1000
                     $scope.original_tutor = angular.copy $scope.tutor
                     $rootScope.frontendStop()
