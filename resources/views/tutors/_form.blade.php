@@ -144,11 +144,6 @@
                     {{-- <option ng-repeat="(id, label) in TutorSources" value='@{{ id }}' ng-selected="id == tutor.source">@{{ label }}</option> --}}
                 </select>
             </div>
-            <div class="form-group">
-                <select class="form-control"
-                    ng-model="tutor.in_egecentr"
-                    ng-options="+(workplace) as label for (workplace, label) in Workplaces" placeholder="место работы"></select>
-            </div>
             <div ng-show="tutor.in_egecentr">
                 <div class="form-group">
                     <select class="form-control" multiple id='sp-tutor-branches' ng-model='tutor.branches'>
