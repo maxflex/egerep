@@ -31,7 +31,7 @@ class UploadController extends Controller
     {
         $tutor_id = $request->input('tutor_id');
         $file = uniqid() . '.' . $request->file('file')->getClientOriginalExtension();
-        Tutor::where('id', $tutor_id)->update(['file' => $file]);
+        // Tutor::where('id', $tutor_id)->update(['file' => $file]);
         $request->file('file')->move(public_path() . Tutor::FILE_UPLOAD_DIR, $file);
         return [
             'file' => $file,
