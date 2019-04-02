@@ -64,8 +64,8 @@ class User extends Model
 	{
         return isset($_SESSION["user"]) && $_SESSION["user"]    // пользователь залогинен
             && ! User::fromSession()->isBanned()                // и не заблокирован
-            && User::notChanged();                               // и данные по пользователю не изменились
-            // && SessionService::exists();
+            && User::notChanged()                               // и данные по пользователю не изменились
+            && SessionService::exists();
 	}
 
     /*
