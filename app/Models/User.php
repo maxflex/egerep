@@ -64,8 +64,8 @@ class User extends Model
 	{
         return isset($_SESSION["user"]) && $_SESSION["user"]    // пользователь залогинен
             && ! User::fromSession()->isBanned()                // и не заблокирован
-            && User::notChanged();                               // и данные по пользователю не изменились
-            // && SessionService::exists();
+            && User::notChanged()                               // и данные по пользователю не изменились
+            && SessionService::exists();
 	}
 
     /*
@@ -150,6 +150,9 @@ class User extends Model
      */
     public static function notChanged()
     {
+        if (app()->environment('local')) {
+            return false;
+        }
         return User::fromSession()->updated_at == dbEgecrm('admins')->whereId(User::id())->value('updated_at');
     }
 
