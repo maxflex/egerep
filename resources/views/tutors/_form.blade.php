@@ -118,8 +118,8 @@
                     <span ng-show='!tutor.file' class='link-like' onclick="$('#fileupload2').click()">загрузить файл</span>
                     <span ng-show='tutor.file'>
                         <a href='/tutor-files/@{{ tutor.file }}' target='_blank'>скачать файл</a>
-                        <a class='pointer' onclick="$('#fileupload2').click()" style='margin: 0 10px'>загрузить новый</a>
-                        <a class='link-like red' ng-click='tutor.file = null'>удалить</a>
+                        {{-- <a class='pointer' onclick="$('#fileupload2').click()" style='margin: 0 10px'>загрузить новый</a> --}}
+                        <a class='link-like red' ng-click='tutor.file = null' style='margin: 0 10px'>удалить</a>
                     </span>
                 </div>
             </div>
