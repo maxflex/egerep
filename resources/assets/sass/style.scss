@@ -853,8 +853,8 @@
 	background-color: $hr_gray;
 }
 .tutor-state-1 {
-	color: white;
-	background-color: $blue
+	color: $blue;
+	background-color: rgba($blue, .25); 
 }
 .tutor-state-2 {
 	color: rgb(210, 63, 63);
@@ -871,6 +871,10 @@
 .tutor-state-5 {
 	color: white;
 	background-color: $green_main;
+}
+.tutor-state-6 {
+	color: white;
+	background-color: $blue
 }
 
 .tutor-inegecentr-0 {
@@ -890,7 +894,7 @@
 }
 
 .tutor-inegecentr-4 {
-	@extend .tutor-state-1;
+	@extend .tutor-state-6;
 }
 
 .tutor-inegecentr-5 {

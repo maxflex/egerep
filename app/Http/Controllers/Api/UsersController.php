@@ -17,6 +17,10 @@ class UsersController extends Controller
      */
     public function index()
     {
+        // на локалхосте загрузка пользователей кладёт систему
+        if (app()->environment('local')) {
+            return [];
+        }
         return User::get()->toJson();
     }
 

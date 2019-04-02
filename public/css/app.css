@@ -26890,9 +26890,9 @@ span {
   color: #999999;
   background-color: #eee; }
 
-.tutor-state-1, .tutor-inegecentr-4 {
-  color: white;
-  background-color: #337AB7; }
+.tutor-state-1 {
+  color: #337AB7;
+  background-color: rgba(51, 122, 183, 0.25); }
 
 .tutor-state-2, .tutor-inegecentr-3 {
   color: #d23f3f;
@@ -26909,6 +26909,10 @@ span {
 .tutor-state-5, .tutor-inegecentr-2 {
   color: white;
   background-color: #158E51; }
+
+.tutor-state-6, .tutor-inegecentr-4 {
+  color: white;
+  background-color: #337AB7; }
 
 .pointer {
   cursor: pointer !important; }
