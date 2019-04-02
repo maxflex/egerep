@@ -151,7 +151,7 @@ class User extends Model
     public static function notChanged()
     {
         if (app()->environment('local')) {
-            return false;
+            return true;
         }
         return User::fromSession()->updated_at == dbEgecrm('admins')->whereId(User::id())->value('updated_at');
     }
