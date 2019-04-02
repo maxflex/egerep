@@ -63,11 +63,12 @@
         </select>
     </div>
     <div>
-        <select class="form-control" ng-model='egecentr_source' ng-change="changeSource()" id='change-source'>
+        <select class="form-control" ng-model='source' ng-change="changeSource()" id='change-source'>
             <option value="">источник</option>
             <option disabled>──────────────</option>
             <option data-subtext="@{{ source_counts[0] || '' }}" value="0">ЕГЭ-Репетитор</option>
             <option data-subtext="@{{ source_counts[1] || '' }}" value="1">ЕГЭ-Центр</option>
+            <option data-subtext="@{{ source_counts[2] || '' }}" value="2">HH.ru</option>
         </select>
     </div>
     <div>

@@ -17,10 +17,10 @@ class TutorsController extends Controller
     public function counts(Request $request)
     {
         return [
-            'state_counts'      => Tutor::stateCounts($request->user_id, $request->published_state, $request->errors_state, $request->egecentr_source),
-            'user_counts'       => Tutor::userCounts($request->state, $request->published_state, $request->errors_state, $request->egecentr_source),
-            'published_counts'  => Tutor::publishedCounts($request->state, $request->user_id, $request->errors_state, $request->egecentr_source),
-            'errors_counts'     => Tutor::errorsCounts($request->state, $request->user_id, $request->published_state, $request->egecentr_source),
+            'state_counts'      => Tutor::stateCounts($request->user_id, $request->published_state, $request->errors_state, $request->source),
+            'user_counts'       => Tutor::userCounts($request->state, $request->published_state, $request->errors_state, $request->source),
+            'published_counts'  => Tutor::publishedCounts($request->state, $request->user_id, $request->errors_state, $request->source),
+            'errors_counts'     => Tutor::errorsCounts($request->state, $request->user_id, $request->published_state, $request->source),
             'source_counts'     => Tutor::sourceCounts($request->state, $request->user_id, $request->published_state, $request->errors_state),
         ];
     }
@@ -37,7 +37,7 @@ class TutorsController extends Controller
                     ->searchByLastNameAndPhone($request->global_search)
                     ->searchByPublishedState($request->published_state)
                     ->searchByErrorsState($request->errors_state)
-                    ->searchBySource($request->egecentr_source)
+                    ->searchBySource($request->source)
                     ->searchByMarkers($request->markers_state)
                     ->paginate(30, ['clients_count'])
                     ->toJson();

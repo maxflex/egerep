@@ -18,7 +18,7 @@ class Tutor extends Service\Person
     public $timestamps = false;
 
     protected $casts = [
-        'egecentr_source' => 'string',
+        // 'source' => 'string',
         'auto_publish_disabled' => 'boolean'
     ];
 
@@ -65,7 +65,7 @@ class Tutor extends Service\Person
         'debtor',
         'errors',
         'photo_extension',
-        'egecentr_source',
+        'source',
         'photo_desc',
         'auto_publish_disabled',
         'passport_series',
@@ -565,10 +565,10 @@ class Tutor extends Service\Person
         return $query;
     }
 
-    private static function addSourceCondition($query, $egecentr_source)
+    private static function addSourceCondition($query, $source)
     {
-        if ($egecentr_source !== '' && $egecentr_source !== null) {
-            $query->where('egecentr_source', $egecentr_source);
+        if ($source !== '' && $source !== null) {
+            $query->where('source', $source);
         }
         return $query;
     }
@@ -587,7 +587,7 @@ class Tutor extends Service\Person
      * State counts
      * @return array [state_id] => state_count
      */
-    public static function stateCounts($user_id, $published_state, $errors_code, $egecentr_source)
+    public static function stateCounts($user_id, $published_state, $errors_code, $source)
     {
         $return = [];
         foreach (range(0, 5) as $i) {
@@ -597,7 +597,7 @@ class Tutor extends Service\Person
             }
             static::addPublishedCondition($query, $published_state);
             static::addErrorsCondition($query, $errors_code);
-            static::addSourceCondition($query, $egecentr_source);
+            static::addSourceCondition($query, $source);
             $return[$i] = $query->count();
         }
         return $return;
@@ -607,7 +607,7 @@ class Tutor extends Service\Person
      * State counts
      * @return array [user_id] => state_count
      */
-    public static function userCounts($state, $published_state, $errors_code, $egecentr_source)
+    public static function userCounts($state, $published_state, $errors_code, $source)
     {
         $user_ids = static::where('responsible_user_id', '>', 0)->groupBy('responsible_user_id')->pluck('responsible_user_id');
         $return = [];
@@ -618,7 +618,7 @@ class Tutor extends Service\Person
             }
             self::addPublishedCondition($query, $published_state);
             self::addErrorsCondition($query, $errors_code);
-            static::addSourceCondition($query, $egecentr_source);
+            static::addSourceCondition($query, $source);
             $return[$user_id] = $query->count();
         }
         return $return;
@@ -628,7 +628,7 @@ class Tutor extends Service\Person
      * Published state counts
      * @return array [state_id] => state_count
      */
-    public static function publishedCounts($state, $user_id, $errors_code, $egecentr_source)
+    public static function publishedCounts($state, $user_id, $errors_code, $source)
     {
         $return = [];
         foreach (range(0, 1) as $i) {
@@ -640,19 +640,19 @@ class Tutor extends Service\Person
                 $query->where('responsible_user_id', $user_id);
             }
             self::addErrorsCondition($query, $errors_code);
-            static::addSourceCondition($query, $egecentr_source);
+            static::addSourceCondition($query, $source);
             $return[$i] = $query->count();
         }
         return $return;
     }
 
     /* подсчет преподов с ошибками в анкете */
-    public static function errorsCounts($state, $user_id, $published_state, $egecentr_source)
+    public static function errorsCounts($state, $user_id, $published_state, $source)
     {
         $return = [];
         foreach (range(1, 4) as $error_code) {
             $query = self::addErrorsCondition(self::query(), $error_code);
-            static::addSourceCondition($query, $egecentr_source);
+            static::addSourceCondition($query, $source);
             self::addPublishedCondition($query, $published_state);
             if (! empty($state) || strlen($state) > 0) {
                 $query->where('state', $state);

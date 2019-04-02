@@ -4,7 +4,7 @@ angular
     #
     #   LIST CONTROLLER
     #
-    .controller "TutorsIndex", ($scope, $rootScope, $timeout, $http, Tutor, TutorStates, UserService, PusherService, TutorPublishedStates, TutorErrors, PhoneFields) ->
+    .controller "TutorsIndex", ($scope, $rootScope, $timeout, $http, Tutor, TutorStates, UserService, PusherService, TutorPublishedStates, TutorErrors, PhoneFields, TutorSources) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
@@ -16,7 +16,7 @@ angular
         $scope.user_id          = localStorage.getItem('tutors_index_user_id')
         $scope.published_state  = localStorage.getItem('tutors_index_published_state')
         $scope.errors_state     = localStorage.getItem('tutors_index_errors_state')
-        $scope.egecentr_source  = localStorage.getItem('tutors_index_egecentr_source')
+        $scope.source           = localStorage.getItem('tutors_index_source')
         $scope.markers_state    = localStorage.getItem('tutors_index_markers_state')
 
         PusherService.bind 'ResponsibleUserChanged', (data) ->
@@ -49,7 +49,7 @@ angular
             loadTutors $scope.current_page
 
         $scope.changeSource = ->
-            localStorage.setItem 'tutors_index_egecentr_source', $scope.egecentr_source
+            localStorage.setItem 'tutors_index_source', $scope.source
             loadTutors $scope.current_page
 
         $scope.changeMarkers = ->
@@ -72,7 +72,7 @@ angular
             params += "&user_id=#{ $scope.user_id }" if $scope.user_id
             params += "&published_state=#{ $scope.published_state }" if $scope.published_state isnt null and $scope.published_state isnt ''
             params += "&errors_state=#{ $scope.errors_state }" if $scope.errors_state isnt null and $scope.errors_state isnt ''
-            params += "&egecentr_source=#{ $scope.egecentr_source }" if $scope.egecentr_source isnt null and $scope.egecentr_source isnt ''
+            params += "&source=#{ $scope.source }" if $scope.source isnt null and $scope.source isnt ''
             params += "&markers_state=#{ $scope.markers_state }" if $scope.markers_state isnt null and $scope.markers_state isnt ''
 
             # update repetitors
@@ -89,7 +89,7 @@ angular
                 user_id:         $scope.user_id
                 published_state: $scope.published_state
                 errors_state:    $scope.errors_state
-                egecentr_source: $scope.egecentr_source
+                source: $scope.source
                 markers_state: $scope.markers_state
             .then (response) ->
                 $scope.state_counts     = response.data.state_counts
@@ -135,7 +135,7 @@ angular
     #
     #   ADD/EDIT CONTROLLER
     #
-    .controller "TutorsForm", ($scope, $rootScope, $timeout, Tutor, SvgMap, Subjects, Grades, ApiService, TutorStates, Genders, Workplaces, Branches, BranchService, TutorService, $http, Marker) ->
+    .controller "TutorsForm", ($scope, $rootScope, $timeout, Tutor, SvgMap, Subjects, Grades, ApiService, TutorStates, Genders, Workplaces, Branches, BranchService, TutorService, $http, Marker, TutorSources) ->
         bindArguments($scope, arguments)
 
         $rootScope.frontend_loading = true

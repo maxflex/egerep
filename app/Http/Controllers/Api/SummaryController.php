@@ -216,7 +216,7 @@ class SummaryController extends Controller
         $tutors = DB::table('tutors')
                         ->whereRaw("DATE(created_at) >= '{$start}'")
                         ->whereRaw("DATE(created_at) <= '{$end}'")
-                        ->where('egecentr_source', 0)
+                        ->where('source', 0)
                         ->count();
 
         $account_payments = DB::table('account_payments')

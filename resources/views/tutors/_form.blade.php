@@ -135,9 +135,8 @@
         </div>
         <div class="col-sm-4">
             <div class="form-group">
-                <select class="form-control" ng-model="tutor.egecentr_source">
-                    <option value='0'>анкета создана стандартным методом</option>
-                    <option value='1'>анкета ЕГЭ-Центра</option>
+                <select class="form-control" ng-model="tutor.source" ng-options="+(id) as label for (id, label) in TutorSources" placeholder="место работы">
+                    {{-- <option ng-repeat="(id, label) in TutorSources" value='@{{ id }}' ng-selected="id == tutor.source">@{{ label }}</option> --}}
                 </select>
             </div>
             <div class="form-group">
