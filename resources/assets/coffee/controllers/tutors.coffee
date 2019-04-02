@@ -290,6 +290,9 @@ angular
         		    NProgress.configure({ showSpinner: false })
         		    ajaxEnd()
         		,
+
+                fail: -> notifyError('ошибка загрузки')
+
         		done: (i, response) ->
                     $scope.tutor.photo_extension     = response.result.extension
                     $scope.tutor.photo_original_size = response.result.size
@@ -322,6 +325,9 @@ angular
         		    NProgress.configure({ showSpinner: false })
         		    ajaxEnd()
         		,
+                
+                fail: -> notifyError('ошибка загрузки')
+
         		done: (i, response) ->
                     $scope.tutor.file = response.result.file
                     $scope.$apply()
