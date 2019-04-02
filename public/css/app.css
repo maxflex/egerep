@@ -26886,7 +26886,7 @@ span {
   width: 120px;
   margin: 0 auto; }
 
-.tutor-state-0 {
+.tutor-state-0, .tutor-inegecentr-0 {
   color: #999999;
   background-color: #eee; }
 
@@ -26894,7 +26894,7 @@ span {
   color: white;
   background-color: #337AB7; }
 
-.tutor-state-2 {
+.tutor-state-2, .tutor-inegecentr-3 {
   color: #d23f3f;
   background-color: #ffcccc; }
 
@@ -26902,11 +26902,11 @@ span {
   color: white;
   background-color: red; }
 
-.tutor-state-4 {
+.tutor-state-4, .tutor-inegecentr-1 {
   color: #158E51;
   background-color: #cdf1d9; }
 
-.tutor-state-5 {
+.tutor-state-5, .tutor-inegecentr-2 {
   color: white;
   background-color: #158E51; }
 

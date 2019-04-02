@@ -873,6 +873,22 @@
 	background-color: $green_main;
 }
 
+.tutor-inegecentr-0 {
+	@extend .tutor-state-0;
+}
+
+.tutor-inegecentr-1 {
+	@extend .tutor-state-4;
+}
+
+.tutor-inegecentr-2 {
+	@extend .tutor-state-5;
+}
+
+.tutor-inegecentr-3 {
+	@extend .tutor-state-2;
+}
+
 .pointer {
 	cursor: pointer !important;
 }

@@ -583,6 +583,30 @@ class Tutor extends Service\Person
         return self::addSourceCondition($query, $source);
     }
 
+    public function scopeSearchByInEgecentr($query, $value)
+    {
+        if ($value !== '' && $value !== null) {
+            $query->where('in_egecentr', $value);
+        }
+        return $query;
+    }
+
+    public function scopeSearchBySubjectsEr($query, $value)
+    {
+        if ($value !== '' && $value !== null) {
+            $query->whereIn('subjects', explode(',', $value));
+        }
+        return $query;
+    }
+
+    public function scopeSearchBySubjectsEc($query, $value)
+    {
+        if ($value !== '' && $value !== null) {
+            $query->whereIn('subjects_ec', explode(',', $value));
+        }
+        return $query;
+    }
+
     /**
      * State counts
      * @return array [state_id] => state_count

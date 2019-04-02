@@ -16,7 +16,7 @@
 
 @section('content')
 
-<div class="row flex-list">
+<div class="row flex-list" style='margin-bottom: 10px'>
     <div>
         {{-- <ng-select object='TutorStates' model='state' none-text='статус'></ng-select> --}}
         <select class="form-control" ng-model='state' ng-change="changeState()" id='change-state'>
@@ -91,6 +91,35 @@
             ></option>
         </select>
     </div>
+</div>
+
+<div class="row flex-list" style='width: calc(50% - 5px)'>
+    <div>
+        <select class="form-control sp" ng-model='in_egecentr' ng-change="changeInEgecentr()">
+            <option value="">статус ЕЦ</option>
+            <option disabled>──────────────</option>
+            <option ng-repeat="(id, label) in Workplaces" value="@{{ id }}">@{{ label }}</option>
+        </select>
+    </div>
+
+    <div>
+        <select class="form-control sp" ng-change="changeSubjectsEr()"
+            multiple
+            title='Предметы МР'
+            ng-model="subjects_er"
+            ng-options="index as subject for (index, subject) in Subjects.all">
+        </select>
+    </div>
+
+    <div>
+        <select class="form-control sp" ng-change="changeSubjectsEc()"
+            multiple
+            title='Предметы ЕЦ'
+            ng-model='subjects_ec'
+            ng-options="index as subject for (index, subject) in Subjects.all">
+        </select>
+    </div>
+
 </div>
 
 <table id="tutorList" class="table table-divlike" style="position: relative">

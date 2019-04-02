@@ -135,7 +135,12 @@
         </div>
         <div class="col-sm-4">
             <div class="form-group">
-                <select class="form-control" ng-model="tutor.source" ng-options="+(id) as label for (id, label) in TutorSources" placeholder="место работы">
+                <div class="tutor-state tutor-inegecentr-@{{ tutor.in_egecentr }}" ng-click="toggleEnum(tutor, 'in_egecentr', Workplaces)" style='width: 100%'>
+                    @{{ Workplaces[tutor.in_egecentr] }}
+                </div>
+            </div>
+            <div class="form-group">
+                <select class="form-control" ng-model="tutor.source" ng-options="+(id) as label for (id, label) in TutorSources">
                     {{-- <option ng-repeat="(id, label) in TutorSources" value='@{{ id }}' ng-selected="id == tutor.source">@{{ label }}</option> --}}
                 </select>
             </div>

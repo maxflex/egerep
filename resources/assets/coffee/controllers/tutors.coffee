@@ -4,7 +4,7 @@ angular
     #
     #   LIST CONTROLLER
     #
-    .controller "TutorsIndex", ($scope, $rootScope, $timeout, $http, Tutor, TutorStates, UserService, PusherService, TutorPublishedStates, TutorErrors, PhoneFields, TutorSources) ->
+    .controller "TutorsIndex", ($scope, $rootScope, $timeout, $http, Tutor, TutorStates, UserService, PusherService, TutorPublishedStates, TutorErrors, PhoneFields, TutorSources, Workplaces, Subjects) ->
         bindArguments($scope, arguments)
         $rootScope.frontend_loading = true
 
@@ -18,6 +18,9 @@ angular
         $scope.errors_state     = localStorage.getItem('tutors_index_errors_state')
         $scope.source           = localStorage.getItem('tutors_index_source')
         $scope.markers_state    = localStorage.getItem('tutors_index_markers_state')
+        $scope.in_egecentr      = localStorage.getItem('tutors_index_in_egecentr')
+        $scope.subjects_ec      = if localStorage.getItem('tutors_index_subjects_ec') then localStorage.getItem('tutors_index_subjects_ec').split(',') else []
+        $scope.subjects_er      = if localStorage.getItem('tutors_index_subjects_er') then localStorage.getItem('tutors_index_subjects_er').split(',') else []
 
         PusherService.bind 'ResponsibleUserChanged', (data) ->
             if tutor = findById($scope.tutors, data.tutor_id)
@@ -56,6 +59,18 @@ angular
             localStorage.setItem 'tutors_index_markers_state', $scope.markers_state
             loadTutors $scope.current_page
 
+        $scope.changeInEgecentr = ->
+            localStorage.setItem 'tutors_index_in_egecentr', $scope.in_egecentr
+            loadTutors $scope.current_page
+
+        $scope.changeSubjectsEr = ->
+            localStorage.setItem 'tutors_index_subjects_er', $scope.subjects_er
+            loadTutors $scope.current_page
+
+        $scope.changeSubjectsEc = ->
+            localStorage.setItem 'tutors_index_subjects_ec', $scope.subjects_ec
+            loadTutors $scope.current_page
+
         $timeout ->
             loadTutors($scope.page)
             $scope.current_page = $scope.page
@@ -73,6 +88,9 @@ angular
             params += "&published_state=#{ $scope.published_state }" if $scope.published_state isnt null and $scope.published_state isnt ''
             params += "&errors_state=#{ $scope.errors_state }" if $scope.errors_state isnt null and $scope.errors_state isnt ''
             params += "&source=#{ $scope.source }" if $scope.source isnt null and $scope.source isnt ''
+            params += "&in_egecentr=#{ $scope.in_egecentr }" if $scope.in_egecentr isnt null and $scope.in_egecentr isnt ''
+            params += "&subjects_er=#{ $scope.subjects_er.join(',') }" if $scope.subjects_er and $scope.subjects_er.length > 0
+            params += "&subjects_ec=#{ $scope.subjects_ec.join(',') }" if $scope.subjects_ec and $scope.subjects_ec.length > 0
             params += "&markers_state=#{ $scope.markers_state }" if $scope.markers_state isnt null and $scope.markers_state isnt ''
 
             # update repetitors
