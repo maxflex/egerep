@@ -95,28 +95,43 @@
 
 <div class="row flex-list" style='width: calc(50% - 5px)'>
     <div>
-        <select class="form-control sp" ng-model='in_egecentr' ng-change="changeInEgecentr()">
+        <select class="form-control sp" ng-model='in_egecentr' ng-change="changeInEgecentr()"  id='change-in-egecentr'>
             <option value="">статус ЕЦ</option>
             <option disabled>──────────────</option>
-            <option ng-repeat="(id, label) in Workplaces" value="@{{ id }}">@{{ label }}</option>
+            <option
+                ng-repeat="(id, label) in Workplaces"
+                data-subtext="@{{ in_egecentr_counts[id] || '' }}"
+                value="@{{ id }}">@{{ label }}</option>
         </select>
     </div>
 
     <div>
-        <select class="form-control sp" ng-change="changeSubjectsEr()"
+        <select class="form-control sp" ng-change="changeSubjectsEr()" id='change-subjects-er'
             multiple
             title='Предметы МР'
             ng-model="subjects_er"
-            ng-options="index as subject for (index, subject) in Subjects.all">
+        >
+             <option
+                value="@{{ id }}"
+                ng-repeat="(id, subject) in Subjects.all"
+                data-subtext="@{{ subjects_er_counts[id] || '' }}">
+                @{{ subject }}
+            </option>
         </select>
     </div>
 
     <div>
-        <select class="form-control sp" ng-change="changeSubjectsEc()"
+        <select class="form-control sp" ng-change="changeSubjectsEc()"  id='change-subjects-ec'
             multiple
             title='Предметы ЕЦ'
             ng-model='subjects_ec'
-            ng-options="index as subject for (index, subject) in Subjects.all">
+        >
+            <option
+                value="@{{ id }}"
+                ng-repeat="(id, subject) in Subjects.all"
+                data-subtext="@{{ subjects_ec_counts[id] || '' }}">
+                @{{ subject }}
+            </option>
         </select>
     </div>
 

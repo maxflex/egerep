@@ -109,6 +109,9 @@ angular
                 errors_state:    $scope.errors_state
                 source: $scope.source
                 markers_state: $scope.markers_state
+                in_egecentr: $scope.in_egecentr
+                subjects_er: $scope.subjects_er
+                subjects_ec: $scope.subjects_ec
             .then (response) ->
                 $scope.state_counts     = response.data.state_counts
                 $scope.user_counts      = response.data.user_counts
@@ -116,15 +119,18 @@ angular
                 $scope.errors_counts    = response.data.errors_counts
                 $scope.source_counts    = response.data.source_counts
                 $scope.marker_counts    = response.data.marker_counts
+                $scope.in_egecentr_counts    = response.data.in_egecentr_counts
+                $scope.subjects_er_counts    = response.data.subjects_er_counts
+                $scope.subjects_ec_counts    = response.data.subjects_ec_counts
                 $timeout ->
                     # потому что data кэшируется
                     # @todo: add issue at github
                     # @link: https://github.com/silviomoreto/bootstrap-select/issues/293
-                    $('#change-state option, #change-user option, #change-published option, #change-errors option, #change-source option, #change-markers option').each (index, el) ->
+                    $('#change-state option, #change-user option, #change-published option, #change-errors option, #change-source option, #change-markers option, #change-in-egecentr option, #change-subjects-ec option, #change-subjects-er option').each (index, el) ->
                         $(el).data 'subtext', $(el).attr 'data-subtext'
                         $(el).data 'content', $(el).attr 'data-content'
 
-                    $('#change-state, #change-user, #change-published, #change-errors, #change-source, #change-markers').selectpicker 'refresh'
+                    $('#change-state, #change-user, #change-published, #change-errors, #change-source, #change-markers, #change-in-egecentr, #change-subjects-ec, #change-subjects-er').selectpicker 'refresh'
                     $rootScope.frontend_loading = false
 
         $scope.blurComment = (tutor) ->

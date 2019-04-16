@@ -22,6 +22,36 @@ class TutorsController extends Controller
             'published_counts'  => Tutor::publishedCounts($request->state, $request->user_id, $request->errors_state, $request->source),
             'errors_counts'     => Tutor::errorsCounts($request->state, $request->user_id, $request->published_state, $request->source),
             'source_counts'     => Tutor::sourceCounts($request->state, $request->user_id, $request->published_state, $request->errors_state),
+
+            'in_egecentr_counts'     => Tutor::inEgecentrCounts(
+                $request->source,
+                $request->state,
+                $request->user_id,
+                $request->published_state,
+                $request->errors_state,
+                $request->subjects_er,
+                $request->subjects_ec
+            ),
+
+            'subjects_er_counts'     => Tutor::subjectsErCounts(
+                $request->source,
+                $request->state,
+                $request->user_id,
+                $request->published_state,
+                $request->errors_state,
+                $request->in_egecentr,
+                $request->subjects_ec
+            ),
+
+            'subjects_ec_counts'     => Tutor::subjectsEcCounts(
+                $request->source,
+                $request->state,
+                $request->user_id,
+                $request->published_state,
+                $request->errors_state,
+                $request->in_egecentr,
+                $request->subjects_er
+            )
         ];
     }
 

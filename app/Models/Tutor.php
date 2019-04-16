@@ -595,16 +595,22 @@ class Tutor extends Service\Person
 
     public function scopeSearchBySubjectsEr($query, $value)
     {
-        if ($value !== '' && $value !== null) {
-            $query->whereIn('subjects', explode(',', $value));
+        if ($value !== '' && $value !== null && $value !== []) {
+            if (! is_array($value)) {
+                $value = explode(',', $value);
+            }
+            $query->whereIn('subjects', $value);
         }
         return $query;
     }
 
     public function scopeSearchBySubjectsEc($query, $value)
     {
-        if ($value !== '' && $value !== null) {
-            $query->whereIn('subjects_ec', explode(',', $value));
+        if ($value !== '' && $value !== null && $value !== []) {
+            if (! is_array($value)) {
+                $value = explode(',', $value);
+            }
+            $query->whereIn('subjects_ec', $value);
         }
         return $query;
     }
@@ -696,7 +702,7 @@ class Tutor extends Service\Person
     public static function sourceCounts($state, $user_id, $published_state, $errors_code)
     {
         $return = [];
-        foreach ([0, 1] as $source) {
+        foreach ([0, 2] as $source) {
             $query = self::addSourceCondition(self::query(), $source);
             static::addErrorsCondition($query, $errors_code);
             self::addPublishedCondition($query, $published_state);
@@ -710,6 +716,75 @@ class Tutor extends Service\Person
         }
         return $return;
     }
+
+      public static function inEgecentrCounts($source, $state, $user_id, $published_state, $errors_code, $subjects_er, $subjects_ec)
+      {
+          $return = [];
+          foreach (range(0, 5) as $in_egecentr) {
+            $query = self::query()
+                ->searchByInEgecentr($in_egecentr)
+                ->searchBySubjectsEc($subjects_ec)
+                ->searchBySubjectsEr($subjects_er);
+
+            self::addSourceCondition($query, $source);
+            static::addErrorsCondition($query, $errors_code);
+            self::addPublishedCondition($query, $published_state);
+              if (! empty($state) || strlen($state) > 0) {
+                  $query->where('state', $state);
+              }
+              if (! empty($user_id)) {
+                  $query->where('responsible_user_id', $user_id);
+              }
+              $return[$in_egecentr] = $query->count();
+          }
+          return $return;
+      }
+
+      public static function subjectsErCounts($source, $state, $user_id, $published_state, $errors_code, $in_egecentr, $subjects_ec)
+      {
+          $return = [];
+          foreach (range(1, 11) as $subject_id) {
+            $query = self::query()
+                ->searchByInEgecentr($in_egecentr)
+                ->searchBySubjectsEc($subjects_ec)
+                ->searchBySubjectsEr("{$subject_id}");
+
+            self::addSourceCondition($query, $source);
+            static::addErrorsCondition($query, $errors_code);
+            self::addPublishedCondition($query, $published_state);
+              if (! empty($state) || strlen($state) > 0) {
+                  $query->where('state', $state);
+              }
+              if (! empty($user_id)) {
+                  $query->where('responsible_user_id', $user_id);
+              }
+              $return[$subject_id] = $query->count();
+          }
+          return $return;
+      }
+
+      public static function subjectsEcCounts($source, $state, $user_id, $published_state, $errors_code, $in_egecentr, $subjects_er)
+      {
+          $return = [];
+          foreach (range(1, 11) as $subject_id) {
+            $query = self::query()
+                ->searchByInEgecentr($in_egecentr)
+                ->searchBySubjectsEr($subjects_er)
+                ->searchBySubjectsEc("{$subject_id}");
+
+            self::addSourceCondition($query, $source);
+            static::addErrorsCondition($query, $errors_code);
+            self::addPublishedCondition($query, $published_state);
+              if (! empty($state) || strlen($state) > 0) {
+                  $query->where('state', $state);
+              }
+              if (! empty($user_id)) {
+                  $query->where('responsible_user_id', $user_id);
+              }
+              $return[$subject_id] = $query->count();
+          }
+          return $return;
+      }
 
     /**
      * Updates corresponding user from users table
