@@ -622,7 +622,7 @@ class Tutor extends Service\Person
     public static function stateCounts($user_id, $published_state, $errors_code, $source)
     {
         $return = [];
-        foreach (range(0, 5) as $i) {
+        foreach (range(0, 6) as $i) {
             $query = static::where('state', $i);
             if (! empty($user_id)) {
                 $query->where('responsible_user_id', $user_id);
@@ -702,7 +702,7 @@ class Tutor extends Service\Person
     public static function sourceCounts($state, $user_id, $published_state, $errors_code)
     {
         $return = [];
-        foreach ([0, 2] as $source) {
+        foreach (range(0, 2) as $source) {
             $query = self::addSourceCondition(self::query(), $source);
             static::addErrorsCondition($query, $errors_code);
             self::addPublishedCondition($query, $published_state);
