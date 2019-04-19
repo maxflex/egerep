@@ -141,7 +141,9 @@
 	<tr ng-repeat="tutor in tutors"
 		data-id="@{{tutor.id}}">
 		<td width='20'><span ng-show="tutor.has_photo_original" class="glyphicon glyphicon-camera" ng-class="{'half-opacity': ! tutor.has_photo_cropped}"></span></td>
-		<td style="width:300px"><a href='tutors/@{{ tutor.id }}/edit'>@{{ tutor.full_name }}</a></td>
+		<td style="width:300px">
+            <a href='tutors/@{{ tutor.id }}/edit'>@{{ tutor.last_name }} @{{ tutor.first_name[0] }}. @{{ tutor.middle_name[0] }}.</a>
+        </td>
 		<td width='75'>
             <span ng-show='tutor.age'>
                 @{{ tutor.age }} <ng-pluralize count="tutor.age" when="{
@@ -161,15 +163,27 @@
                 <span ng-if="tutor[phone_field + '_duplicate']" ng-click='duplicateClick(tutor[phone_field])'>Д</span>
             </span>
         </td>
-		<td style="width:50px">@{{ tutor.tb }}</td>
-		<td style="width:50px">@{{ tutor.lk }}</td>
-		<td style="width:50px">@{{ tutor.js }}</td>
+        <td style="width:100px">
+            <span class="label pointer tutor-state-@{{ tutor.state }} hint--bottom"
+                aria-label="статус MR"
+                ng-click="toggleEnumServer(tutor, 'state', TutorStates, Tutor)">
+                @{{ TutorStates[tutor.state] }}
+            </span>
+        </td>
+        <td style="width:150px">
+            <span class="label pointer tutor-inegecentr-@{{ tutor.in_egecentr }}  hint--bottom"
+                aria-label="статус EC"
+                ng-click="toggleEnumServer(tutor, 'in_egecentr', Workplaces, Tutor)">
+                @{{ Workplaces[tutor.in_egecentr] }}
+            </span>
+        </td>
         <td style="width:100px">
             <user-switch entity='tutor' user-id='responsible_user_id' resource='Tutor'>
 		</td>
 		<td>
 		    <span ng-click="startComment(tutor)" class="glyphicon glyphicon-pencil opacity-pointer" ng-hide="tutor.list_comment || tutor.is_being_commented"></span>
             <input type="text" class='no-border-outline tutor-list-comment' id='list-comment-@{{ tutor.id }}' maxlength="64" placeholder="введите комментарий..."
+                style='font-size: 12px'
                 ng-model='tutor.list_comment'
                 ng-show='tutor.list_comment || tutor.is_being_commented'
                 ng-blur='blurComment(tutor)'
@@ -198,3 +212,9 @@
 >
 </pagination>
 @stop
+
+<style>
+.hint--bottom:after {
+    width: auto !important;
+}
+</style>
