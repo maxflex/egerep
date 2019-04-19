@@ -141,7 +141,7 @@
 	<tr ng-repeat="tutor in tutors"
 		data-id="@{{tutor.id}}">
 		<td width='20'><span ng-show="tutor.has_photo_original" class="glyphicon glyphicon-camera" ng-class="{'half-opacity': ! tutor.has_photo_cropped}"></span></td>
-		<td style="width:300px">
+		<td style="width:250px">
             <a href='tutors/@{{ tutor.id }}/edit'>@{{ tutor.last_name }} @{{ tutor.first_name[0] }}. @{{ tutor.middle_name[0] }}.</a>
         </td>
 		<td width='75'>
