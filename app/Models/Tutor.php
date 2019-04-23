@@ -642,6 +642,8 @@ class Tutor extends Service\Person
     public static function userCounts($state, $published_state, $errors_code, $source)
     {
         $user_ids = static::where('responsible_user_id', '>', 0)->groupBy('responsible_user_id')->pluck('responsible_user_id');
+        // count system
+        $user_ids[] = 0;
         $return = [];
         foreach ($user_ids as $user_id) {
             $query = static::where('responsible_user_id', $user_id);
