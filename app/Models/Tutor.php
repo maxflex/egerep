@@ -526,6 +526,28 @@ class Tutor extends Service\Person
     }
 
     /**
+     * Search by duplicates
+     */
+    public function scopeSearchByDuplicates($query, $value)
+    {
+        if (isset($value) && $value) {
+            switch($value) {
+                case 'phone':
+                    return $query->whereRaw("
+                        exists (
+                            select 1 from tutors t2 where
+                            tutors.id != t2.id and
+                            (
+                                (tutors.phone11 <> '' and (tutors.phone = t2.phone or tutors.phone = t2.phone2)) or
+                                (tutors.phone2 <> '' and (tutors.phone2 = t2.phone or tutors.phone2 = t2.phone2))
+                            )
+                        )
+                    ");
+            }
+        }
+    }
+
+    /**
      * Search by user id
      */
     public function scopeSearchByUser($query, $user_id)

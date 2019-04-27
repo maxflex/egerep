@@ -62,18 +62,23 @@ class TutorsController extends Controller
      */
     public function index(Request $request)
     {
-        return Tutor::searchByState($request->state)
-                    ->searchByUser($request->user_id)
-                    ->searchByLastNameAndPhone($request->global_search)
-                    ->searchByPublishedState($request->published_state)
-                    ->searchByErrorsState($request->errors_state)
-                    ->searchBySource($request->source)
-                    ->searchByMarkers($request->markers_state)
-                    ->searchByInEgecentr($request->in_egecentr)
-                    ->searchBySubjectsEr($request->subjects_er)
-                    ->searchBySubjectsEc($request->subjects_ec)
-                    ->paginate(30, ['clients_count'])
-                    ->toJson();
+        $query = Tutor::searchByState($request->state)
+            ->searchByUser($request->user_id)
+            ->searchByLastNameAndPhone($request->global_search)
+            ->searchByPublishedState($request->published_state)
+            ->searchByErrorsState($request->errors_state)
+            ->searchBySource($request->source)
+            ->searchByMarkers($request->markers_state)
+            ->searchByDuplicates($request->duplicates)
+            ->searchByInEgecentr($request->in_egecentr)
+            ->searchBySubjectsEr($request->subjects_er)
+            ->searchBySubjectsEc($request->subjects_ec);
+
+        // if (isset($request->duplicates) && $request->duplicates) {
+        //     if ($requst->duplicates === 'by')
+        // }
+
+        return $query->paginate(30, ['clients_count'])->toJson();
     }
 
     /**

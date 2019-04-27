@@ -135,6 +135,16 @@
         </select>
     </div>
 
+    <div>
+        <select class="form-control sp" ng-model='duplicates' ng-change='changeDuplicates()'>
+            <option value="">дубли</option>
+            <option disabled>──────────────</option>
+            <option value="phone">по номеру телефона</option>
+            <option value="last_name">по фамилии</option>
+            <option value="last_first_name">по фамилии и имени</option>
+            <option value="fio">по фио</option>
+        </select>
+    </div>
 </div>
 
 <table id="tutorList" class="table table-divlike" style="position: relative">
