@@ -157,7 +157,9 @@
             <a href='tutors/@{{ tutor.id }}/edit'>@{{ tutor.last_name }} @{{ tutor.first_name[0] }}. @{{ tutor.middle_name[0] }}.</a>
         </td>
 		<td width='75'>
-            <span ng-show='tutor.age'>
+            <span ng-show='tutor.age' ng-class="{
+                'tutor-duplicate-spacer': tutor.hasOwnProperty('duplicate_tutor_ids') && $index > 0
+            }">
                 @{{ tutor.age }} <ng-pluralize count="tutor.age" when="{
                     'one': 'год',
                     'few': 'года',
@@ -206,7 +208,7 @@
                 ng-show="duplicates"
                 ng-click='deleteTutor($index)'
                 class='glyphicon glyphicon-remove text-danger opacity-pointer'
-                style='z-index: 1; position: absolute; right: 0; top: 10px'></span>
+                style="z-index: 1; position: absolute; right: 0; top: @{{ tutor.hasOwnProperty('duplicate_tutor_ids') && $index > 0 ?  '55px': '10px' }}"></span>
 		</td>
 	</tr>
 </table>

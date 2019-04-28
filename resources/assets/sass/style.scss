@@ -362,6 +362,7 @@
 	    }
 
 	    & tr td {
+			vertical-align: bottom;
 	        padding: 7px 0!important;
 	    }
 	}
@@ -4374,4 +4375,9 @@ md-checkbox.md-default-theme.md-checked .md-icon, md-checkbox.md-checked .md-ico
 	font-weight: normal;
 	cursor: pointer;
 	float: right;
+}
+
+.tutor-duplicate-spacer {
+	display: inline-block;
+	padding-top: 45px;
 }
