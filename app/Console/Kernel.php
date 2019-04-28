@@ -50,6 +50,8 @@ class Kernel extends ConsoleKernel
         Commands\Once\PaymentsEc::class,
         Commands\Once\PaymentsEc2::class,
         Commands\Once\ContractsX::class,
+
+        Commands\TransferPhones::class,
     ];
 
     /**

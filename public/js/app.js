@@ -5674,6 +5674,10 @@
         return $('#global-search').submit();
       });
     };
+    $scope.deleteTutor = function(index) {
+      $http["delete"]('api/tutors/' + $scope.tutors[index].id);
+      return $scope.tutors.splice(index, 1);
+    };
     $scope.yearDifference = function(year) {
       return moment().format("YYYY") - year;
     };

@@ -150,7 +150,9 @@
 <table id="tutorList" class="table table-divlike" style="position: relative">
 	<tr ng-repeat="tutor in tutors"
 		data-id="@{{tutor.id}}">
-		<td width='20'><span ng-show="tutor.has_photo_original" class="glyphicon glyphicon-camera" ng-class="{'half-opacity': ! tutor.has_photo_cropped}"></span></td>
+		<td width='20'>
+            <span class="glyphicon glyphicon-camera" ng-show="tutor.has_photo_original" ng-class="{'half-opacity': ! tutor.has_photo_cropped}"></span>
+        </td>
 		<td style="width:250px">
             <a href='tutors/@{{ tutor.id }}/edit'>@{{ tutor.last_name }} @{{ tutor.first_name[0] }}. @{{ tutor.middle_name[0] }}.</a>
         </td>
@@ -190,7 +192,7 @@
         <td style="width:100px">
             <user-switch entity='tutor' user-id='responsible_user_id' resource='Tutor'>
 		</td>
-		<td>
+		<td style='position: relative'>
 		    <span ng-click="startComment(tutor)" class="glyphicon glyphicon-pencil opacity-pointer" ng-hide="tutor.list_comment || tutor.is_being_commented"></span>
             <input type="text" class='no-border-outline tutor-list-comment' id='list-comment-@{{ tutor.id }}' maxlength="64" placeholder="введите комментарий..."
                 style='font-size: 12px'
@@ -200,6 +202,11 @@
                 ng-focus='focusComment(tutor)'
                 ng-keyup='saveComment($event, tutor)'
             >
+            <span
+                ng-show="duplicates"
+                ng-click='deleteTutor($index)'
+                class='glyphicon glyphicon-remove text-danger opacity-pointer'
+                style='z-index: 1; position: absolute; right: 0; top: 10px'></span>
 		</td>
 	</tr>
 </table>

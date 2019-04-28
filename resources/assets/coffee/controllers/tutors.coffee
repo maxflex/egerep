@@ -32,6 +32,10 @@ angular
             $scope.global_search = phone
             $timeout ->
                 $('#global-search').submit()
+        
+        $scope.deleteTutor = (index) ->
+            $http.delete('api/tutors/' + $scope.tutors[index].id)
+            $scope.tutors.splice(index, 1)
 
         $scope.yearDifference = (year) ->
             moment().format("YYYY") - year

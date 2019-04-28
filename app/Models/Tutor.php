@@ -533,16 +533,41 @@ class Tutor extends Service\Person
         if (isset($value) && $value) {
             switch($value) {
                 case 'phone':
-                    return $query->whereRaw("
-                        exists (
-                            select 1 from tutors t2 where
-                            tutors.id != t2.id and
-                            (
-                                (tutors.phone <> '' and (tutors.phone = t2.phone or tutors.phone = t2.phone2)) or
-                                (tutors.phone2 <> '' and (tutors.phone2 = t2.phone or tutors.phone2 = t2.phone2))
-                            )
-                        )
-                    ");
+                    return $query
+                        ->select(DB::raw('tutors.*, GROUP_CONCAT(p2.tutor_id) as duplicate_tutor_ids'))
+                        ->leftJoin('phones as p1', 'p1.tutor_id', '=', 'tutors.id')
+                        ->leftJoin('phones as p2', 'p2.tutor_id', '<>', 'tutors.id')
+                        ->whereRaw("p1.phone = p2.phone")
+                        ->groupBy('tutors.id');
+                        case 'phone':
+                case 'last_name':
+                    return $query
+                        ->select(DB::raw('tutors.*, GROUP_CONCAT(t2.id) as duplicate_tutor_ids'))
+                        ->join('tutors as t2', 't2.last_name', '=', 'tutors.last_name')
+                        ->whereRaw("t2.id <> tutors.id and tutors.last_name <> ''")
+                        ->groupBy('tutors.id');
+                case 'last_first_name':
+                    return $query
+                        ->select(DB::raw('tutors.*, GROUP_CONCAT(t2.id) as duplicate_tutor_ids'))
+                        ->join('tutors as t2', function ($join) {
+                            return $join
+                                ->on('t2.last_name', '=', 'tutors.last_name')
+                                ->on('t2.first_name', '=', 'tutors.first_name');
+                        })
+                        ->whereRaw("t2.id <> tutors.id and tutors.last_name <> ''")
+                        ->groupBy('tutors.id');
+                case 'fio':
+                    return $query
+                        ->select(DB::raw('tutors.*, GROUP_CONCAT(t2.id) as duplicate_tutor_ids'))
+                        ->join('tutors as t2', function ($join) {
+                            return $join
+                                ->on('t2.last_name', '=', 'tutors.last_name')
+                                ->on('t2.first_name', '=', 'tutors.first_name')
+                                ->on('t2.middle_name', '=', 'tutors.middle_name');
+                        })
+                        ->whereRaw("t2.id <> tutors.id and tutors.last_name <> '' and tutors.middle_name <> ''")
+                        ->groupBy('tutors.id');
+                default: return $query;
             }
         }
     }
