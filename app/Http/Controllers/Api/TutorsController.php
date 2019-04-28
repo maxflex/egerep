@@ -81,7 +81,7 @@ class TutorsController extends Controller
             $inserted = 0;
             foreach($items as $index => $item) {
                 if (isset($item->duplicate_tutor_ids) && $item->duplicate_tutor_ids) {
-                    logger("Duplicates for {$item->id}: " . $item->duplicate_tutor_ids);
+                    // logger("Duplicates for {$item->id}: " . $item->duplicate_tutor_ids);
                     $duplicateTutors = Tutor::whereIn('id', explode(',', $item->duplicate_tutor_ids))->get()->all();
                     array_splice($items, $index + 1 + $inserted, 0, $duplicateTutors);
                     $inserted += count($duplicateTutors);
@@ -96,7 +96,7 @@ class TutorsController extends Controller
                 'prev_page_url' => $paginator->previousPageUrl(),
                 'from'          => $paginator->firstItem(),
                 'to'            => $paginator->lastItem(),
-                'data'          => $items,
+                'data'          => collect($items)->unique('id')->all(),
             ];
         }
             // return $query->take(10)->get();
