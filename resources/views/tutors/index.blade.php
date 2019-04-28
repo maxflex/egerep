@@ -93,7 +93,7 @@
     </div>
 </div>
 
-<div class="row flex-list" style='width: calc(50% - 5px)'>
+<div class="row flex-list" style='width: calc(67% - 8px)'>
     <div>
         <select class="form-control sp" ng-model='in_egecentr' ng-change="changeInEgecentr()"  id='change-in-egecentr'>
             <option value="">статус ЕЦ</option>
