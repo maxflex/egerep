@@ -96,7 +96,7 @@ class TutorsController extends Controller
                 'prev_page_url' => $paginator->previousPageUrl(),
                 'from'          => $paginator->firstItem(),
                 'to'            => $paginator->lastItem(),
-                'data'          => collect($items)->unique('id')->all(),
+                'data'          => collect($items)->unique('id')->values()->all(),
             ];
         }
             // return $query->take(10)->get();
