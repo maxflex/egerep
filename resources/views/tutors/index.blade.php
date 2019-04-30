@@ -156,6 +156,11 @@
 		<td style="width:250px">
             <a href='tutors/@{{ tutor.id }}/edit'>@{{ tutor.last_name }} @{{ tutor.first_name[0] }}. @{{ tutor.middle_name[0] }}.</a>
         </td>
+        <td ng-if='duplicates' width='150'>
+            <span ng-repeat='p in tutor.phones'>
+                @{{ p.slice(-3) }}@{{ $last ? '' : ', ' }}
+            </span>
+        </td>
 		<td width='75'>
             <span ng-show='tutor.age' ng-class="{
                 'tutor-duplicate-spacer': tutor.hasOwnProperty('duplicate_tutor_ids') && $index > 0
@@ -205,7 +210,7 @@
                 ng-keyup='saveComment($event, tutor)'
             >
             <span
-                ng-show="duplicates"
+                ng-show="duplicates && !tutor.clients_count"
                 ng-click='deleteTutor($index)'
                 class='glyphicon glyphicon-remove text-danger opacity-pointer'
                 style="z-index: 1; position: absolute; right: 0; top: @{{ tutor.hasOwnProperty('duplicate_tutor_ids') && $index > 0 ?  '55px': '10px' }}"></span>
