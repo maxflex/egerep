@@ -156,10 +156,13 @@
 		<td style="width:250px">
             <a href='tutors/@{{ tutor.id }}/edit'>@{{ tutor.last_name }} @{{ tutor.first_name[0] }}. @{{ tutor.middle_name[0] }}.</a>
         </td>
-        <td ng-if='duplicates' width='150'>
+        <td ng-if='duplicates' width='130'>
             <span ng-repeat='p in tutor.phones'>
                 @{{ p.slice(-3) }}@{{ $last ? '' : ', ' }}
             </span>
+        </td>
+        <td ng-if='duplicates' width='100' class='text-gray'>
+            @{{ formatDate(tutor.created_at) }}
         </td>
 		<td width='75'>
             <span ng-show='tutor.age' ng-class="{
