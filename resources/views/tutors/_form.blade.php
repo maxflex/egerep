@@ -169,6 +169,12 @@
                         ng-options="subject_id as subject for (subject_id, subject) in Subjects.three_letters">
                     </select>
                 </div>
+                 <div class="form-group">
+                    <div class="input-group custom">
+                    <span class="input-group-addon">СО –</span>
+                    <input type="text" class="form-control digits-only" ng-model="tutor.so">
+                    </div>
+                </div>
                 <div class="form-group">
                     <div>
                          <md-checkbox ng-model="tutor.auto_publish_disabled">

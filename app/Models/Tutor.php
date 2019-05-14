@@ -74,6 +74,7 @@ class Tutor extends Service\Person
         'passport_code',
         'passport_address',
         'passport_issue_place',
+        'so',
     ];
 
     protected $appends = [
