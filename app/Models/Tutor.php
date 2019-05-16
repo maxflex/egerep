@@ -770,7 +770,7 @@ class Tutor extends Service\Person
       public static function inEgecentrCounts($source, $state, $user_id, $published_state, $errors_code, $subjects_er, $subjects_ec)
       {
           $return = [];
-          foreach (range(0, 5) as $in_egecentr) {
+          foreach (range(0, 6) as $in_egecentr) {
             $query = self::query()
                 ->searchByInEgecentr($in_egecentr)
                 ->searchBySubjectsEc($subjects_ec)
