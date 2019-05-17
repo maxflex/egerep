@@ -418,9 +418,6 @@ angular
         $scope.yearDifference = (year) ->
             moment().format("YYYY") - year
 
-        $scope.getAge = (birthday) ->
-            moment().format("YYYY") - birthday.split(".")[2] if birthday
-
         $scope.add = ->
             $scope.saving = true
             Tutor.save $scope.tutor, (tutor) ->

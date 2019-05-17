@@ -50,7 +50,7 @@ class RequestList extends Model
             'first_name',
             'last_name',
             'middle_name',
-            'birthday',
+            'birth_year',
             'subjects',
             'tb',
             'lk',

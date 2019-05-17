@@ -65,10 +65,10 @@
         </div>
 
         <div class="form-group">
-            <input type="text" placeholder="дата рождения"
-                class="form-control bs-date-top" ng-model="tutor.birthday">
-            <span class="inside-input" ng-if="tutor.birthday && tutor.birthday.length == 10" style='left: 88px'>– @{{ getAge(tutor.birthday) }}
-                <ng-pluralize count="getAge(tutor.birthday)" when="{
+            <input type="text" placeholder="год рождения"
+                class="form-control" ng-model="tutor.birth_year">
+            <span class="inside-input" ng-show="tutor.birth_year > 999" style='left: 88px'>– @{{ yearDifference(tutor.birth_year) }}
+                <ng-pluralize count="yearDifference(tutor.birth_year)" when="{
                     'one': 'год',
                     'few': 'года',
                     'many': 'лет',
@@ -77,7 +77,7 @@
         </div>
 
         <div class="form-group">
-            <input type="text" class="form-control digits-year" ng-model="tutor.start_career_year" placeholder="начало карьеры">
+            <input type="text" class="form-control digits-year" ng-model="tutor.start_career_year" placeholder="год начала карьеры">
             <span class="inside-input" ng-show="tutor.start_career_year > 999">– стаж @{{ yearDifference(tutor.start_career_year) }}
                 <ng-pluralize count="yearDifference(tutor.start_career_year)" when="{
                     'one': 'год',

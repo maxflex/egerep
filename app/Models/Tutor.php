@@ -28,7 +28,7 @@ class Tutor extends Service\Person
         'last_name',
         'middle_name',
         'gender',
-        'birthday',
+        'birth_year',
         'start_career_year',
         'tb',
         'lk',
@@ -90,7 +90,6 @@ class Tutor extends Service\Person
     // protected $with = ['markers'];
 
     protected static $commaSeparated = ['subjects', 'subjects_ec', 'grades', 'branches', 'errors'];
-    protected static $dotDates = ['birthday'];
 
     const FILE_UPLOAD_DIR = '/tutor-files/';
     const UPLOAD_DIR = '/img/tutors/';
@@ -163,9 +162,9 @@ class Tutor extends Service\Person
         return DB::table('tutor_departures')->where('tutor_id', $this->id)->pluck('station_id');
     }
 
-    public function getBirthdayAttribute($value)
+    public function getBirthYearAttribute($value)
     {
-        if ($value === '0000-00-00') {
+        if (!$value) {
             return null;
         }
         return $value;
@@ -282,7 +281,7 @@ class Tutor extends Service\Person
 
     public function getAgeAttribute()
     {
-        return date('Y') - date('Y', strtotime($this->birthday));
+        return date('Y') - $this->birth_year;
     }
 
     public function getClientsCountAttribute()

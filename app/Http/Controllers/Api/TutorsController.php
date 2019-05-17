@@ -207,11 +207,11 @@ class TutorsController extends Controller
          }
 
          if (isset($age_from)) {
-             $query->whereRaw("(YEAR(NOW()) - YEAR(birthday)) >= {$age_from}");
+             $query->whereRaw("(YEAR(NOW()) - birth_year) >= {$age_from}");
          }
 
          if (isset($age_to)) {
-             $query->whereRaw("(YEAR(NOW()) - YEAR(birthday)) <= {$age_to}");
+             $query->whereRaw("(YEAR(NOW()) - birth_year) <= {$age_to}");
          }
 
          if (isset($grades)) {
@@ -279,7 +279,7 @@ class TutorsController extends Controller
              'middle_name',
              'photo_extension',
              'subjects',
-             'birthday',
+             'birth_year',
              'tb',
              'lk',
              'js',
@@ -344,11 +344,11 @@ class TutorsController extends Controller
          }
 
          if (isset($age_from)) {
-             $query->whereRaw("(YEAR(NOW()) - YEAR(birthday)) >= {$age_from}");
+             $query->whereRaw("(YEAR(NOW()) - birth_year) >= {$age_from}");
          }
 
          if (isset($age_to)) {
-             $query->whereRaw("(YEAR(NOW()) - YEAR(birthday)) <= {$age_to}");
+             $query->whereRaw("(YEAR(NOW()) - birth_year) <= {$age_to}");
          }
 
          if (isset($grades)) {
@@ -396,7 +396,7 @@ class TutorsController extends Controller
              'last_name',
              'middle_name',
              'photo_extension',
-             'birthday',
+             'birth_year',
              'subjects',
              'tb',
              'lk',
