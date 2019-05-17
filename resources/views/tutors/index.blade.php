@@ -175,6 +175,11 @@
                 }"></ng-pluralize>
             </span>
         </td>
+        <td width='75'>
+            <span ng-if='tutor.so > 0'>
+                CO – @{{ tutor.so }}
+            </span>
+        </td>
         <td width='100'>
             <span ng-show='tutor.clients_count'>
                 <plural count='tutor.clients_count' type='client'></plural>

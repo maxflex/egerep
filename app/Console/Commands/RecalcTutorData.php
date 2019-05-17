@@ -53,7 +53,6 @@ class RecalcTutorData extends Command
 
         foreach($tutor_ids as $tutor_id) {
             $data = DB::table('tutors')->whereId($tutor_id)->select(
-                'video_link',
                 DB::raw('(select group_concat(station_id) FROM tutor_departures td WHERE td.tutor_id = tutors.id) as svg_map'),
                 DB::raw('(SELECT COUNT(*) FROM attachments WHERE attachments.tutor_id = tutors.id) as clients_count')
             )->first();
@@ -69,7 +68,6 @@ class RecalcTutorData extends Command
                 'reviews_count_egecrm' => DB::connection('egecrm')->table('teacher_reviews')->where('published', 1)->where('id_teacher', $tutor_id)->count(),
                 'review_avg' => static::_getReviewAvg($tutor_id),
                 'photo_exists' => static::_photoExists($tutor_id),
-                'video_duration' => $data->video_link ? Youtube::getVideoDuration($data->video_link) : null,
             ]);
             $bar->advance();
         }

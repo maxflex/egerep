@@ -61,7 +61,6 @@ class Tutor extends Service\Person
         'description',
         'branches',
         'in_egecentr',
-        'video_link',
         'debt_comment',
         'debtor',
         'errors',
@@ -162,6 +161,14 @@ class Tutor extends Service\Person
     public function getSvgMapAttribute()
     {
         return DB::table('tutor_departures')->where('tutor_id', $this->id)->pluck('station_id');
+    }
+
+    public function getBirthdayAttribute($value)
+    {
+        if ($value === '0000-00-00') {
+            return null;
+        }
+        return $value;
     }
 
     public function setSvgMapAttribute($station_ids)
@@ -647,7 +654,9 @@ class Tutor extends Service\Person
             if (! is_array($value)) {
                 $value = explode(',', $value);
             }
-            $query->whereIn('subjects', $value);
+            $query->whereRaw('(' . implode(' OR ', array_map(function($subject_id) {
+	            return "(FIND_IN_SET($subject_id, subjects))";
+            }, $value)) . ')');
         }
         return $query;
     }
@@ -658,7 +667,9 @@ class Tutor extends Service\Person
             if (! is_array($value)) {
                 $value = explode(',', $value);
             }
-            $query->whereIn('subjects_ec', $value);
+            $query->whereRaw('(' . implode(' OR ', array_map(function($subject_id) {
+	            return "(FIND_IN_SET($subject_id, subjects_ec))";
+            }, $value)) . ')');
         }
         return $query;
     }
