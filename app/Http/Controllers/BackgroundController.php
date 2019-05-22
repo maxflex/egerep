@@ -86,8 +86,12 @@ class BackgroundController extends Controller
             }
         }
 
+        // +30 на месяц вперед
+        $total_items = round((strtotime(now()) - strtotime($first_bg_date)) / (60 * 60 * 24)) + 30;
+
         return view('background.index')->with(
             ngInit([
+                'total_items' => $total_items,
                 'current_page' => $page,
                 'dates' => $dates,
                 'backgrounds' => $backgrounds->keyBy('date'),

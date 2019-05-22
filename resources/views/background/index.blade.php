@@ -74,7 +74,7 @@
 <pagination style="margin-top: 30px"
     ng-model="current_page"
     ng-change="pageChanged()"
-    total-items="365"
+    total-items="total_items"
     max-size="10"
     items-per-page="30"
     first-text="«"
