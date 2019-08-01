@@ -432,7 +432,7 @@ class SummaryController extends Controller
             if (is_int($group_key)) { // user_id
                 // только если всего заявок != 0 и всего стыковок != 0
                 if ($return_data['requests']['total'] > 0 || $return_data['attachments']['total'] > 0) {
-                    $return['data'][$group_key == 0 ? 'system' : User::whereId($group_key)->value('login')] = $return_data;
+                    $return['data'][$group_key == 0 ? 'system' : User::whereId($group_key)->value('nickname')] = $return_data;
                 }
             } else {
                 $return['data'][$group_key] = $return_data;

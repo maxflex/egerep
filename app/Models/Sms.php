@@ -23,7 +23,7 @@ class Sms extends Model
     public function getUserLoginAttribute()
     {
         if ($this->user_id) {
-            return User::where('id', $this->user_id)->select('login')->first()->login;
+            return User::where('id', $this->user_id)->select('nickname')->first()->nickname;
         }
         return User::SYSTEM_USER['login'];
     }

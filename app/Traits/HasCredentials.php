@@ -13,7 +13,7 @@ trait HasCredentials
 {
     public function getCredentialsAttribute()
     {
-        return User::whereId($this->user_id)->value('login') . ' в ' . date('d.m.y в H:i', strtotime($this->created_at));
+        return User::whereId($this->user_id)->value('nickname') . ' в ' . date('d.m.y в H:i', strtotime($this->created_at));
     }
 
     public function user()

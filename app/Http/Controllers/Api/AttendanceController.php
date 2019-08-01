@@ -46,7 +46,7 @@ class AttendanceController extends Controller
                     }
                 }
                 $login = Cache::remember("egerep:logins:{$d->user_id}", 1, function() use ($d) {
-                    return dbEgecrm('users')->whereId($d->user_id)->value('login');
+                    return dbEgecrm2('admins')->whereId($d->user_id)->value('nickname');
                 });
                 if ($login !== null) {
                     $return[$year_month][$login][date('j', strtotime($d->date))] = $label;

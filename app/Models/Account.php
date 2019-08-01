@@ -56,7 +56,7 @@ class Account extends Model
 
     public function getUserLoginAttribute()
     {
-        return User::where('id', $this->user_id)->pluck('login')->first();
+        return User::where('id', $this->user_id)->pluck('nickname')->first();
     }
 
     public function getDataAttribute()

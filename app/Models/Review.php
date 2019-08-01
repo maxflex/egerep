@@ -32,7 +32,7 @@ class Review extends Model
         if (! $this->user_id) {
             return 'system';
         } else {
-            return User::where('id', $this->user_id)->pluck('login')->first();
+            return User::where('id', $this->user_id)->pluck('nickname')->first();
         }
     }
 
