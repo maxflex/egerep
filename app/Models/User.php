@@ -7,17 +7,8 @@ use App\Service\SessionService;
 
 class User extends Model
 {
-    protected $connection = 'egecrm';
+    protected $connection = 'egecrm2';
     protected $table = 'admins';
-
-    protected $fillable = [
-        'login',
-        'password',
-        'color',
-        'type',
-        'email',
-        'id_entity',
-    ];
 
     protected static $commaSeparated = ['rights'];
 
@@ -32,10 +23,6 @@ class User extends Model
         'login' => 'system',
     ];
 
-    public function setPasswordAttribute($value)
-    {
-        $this->attributes['password'] = static::_password($value);
-    }
 
     /**
      * Если пользователь заблокирован,то его цвет должен быть черным
@@ -125,15 +112,6 @@ class User extends Model
      * Get real users
      *
      */
-    public static function scopeReal($query)
-    {
-        return $query->where('type', static::USER_TYPE);
-    }
-
-    /**
-     * Get real users
-     *
-     */
     public static function scopeActive($query)
     {
         return $query->whereRaw('NOT FIND_IN_SET(' . \Shared\Rights::ER_BANNED . ', rights)');
@@ -153,7 +131,7 @@ class User extends Model
         if (app()->environment('local')) {
             return true;
         }
-        return User::fromSession()->updated_at == dbEgecrm('admins')->whereId(User::id())->value('updated_at');
+        return User::fromSession()->updated_at == dbEgecrm2('admins')->whereId(User::id())->value('updated_at');
     }
 
     /**

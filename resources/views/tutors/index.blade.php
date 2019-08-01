@@ -40,14 +40,14 @@
         		ng-repeat="user in UserService.getWithSystem()"
         		ng-show='user_counts[user.id]'
         		value="@{{ user.id }}"
-        		data-content="<span style='color: @{{ user.color || 'black' }}'>@{{ user.login }}</span><small class='text-muted'>@{{ user_counts[user.id] || '' }}</small>"
+        		data-content="@{{ user.nickname }}<small class='text-muted'>@{{ user_counts[user.id] || '' }}</small>"
         	></option>
         	<option disabled ng-show="UserService.getBannedHaving(user_counts).length">──────────────</option>
         	<option
         		ng-show='user_counts[user.id]'
                 ng-repeat="user in UserService.getBannedUsers()"
         		value="@{{ user.id }}"
-        		data-content="<span style='color: black'>@{{ user.login }}</span><small class='text-muted'>@{{ user_counts[user.id] || '' }}</small>"
+        		data-content="<span style='color: gray'>@{{ user.nickname }}</span><small class='text-muted'>@{{ user_counts[user.id] || '' }}</small>"
         	></option>
         </select>
     </div>

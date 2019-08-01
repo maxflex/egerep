@@ -41,7 +41,7 @@
                                         ng-repeat="user in UserService.getAll()"
                                         ng-selected="user.id == tutor.planned_account.user_id"
                                         value="@{{ user.id}}"
-                                        data-content="<span style='color: @{{ user.color || 'black' }}'>@{{ user.login }}</span>"
+                                        data-content="@{{ user.nickname }}"
                                 ></option>
                             </select>
                         </div>

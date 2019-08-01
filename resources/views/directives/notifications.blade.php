@@ -5,7 +5,7 @@
     <div>
 		<div ng-repeat="notification in getNotifications() | orderBy:'created_at'" id='notification-@{{ notification.id }}' data-notification-id='@{{ notification.id }}'>
 			<div class='comment-div'>
-				<span style="color: @{{notification.user.color}}" class="comment-login">@{{ notification.user.login || 'system' }} <span class='comment-time'>@{{ formatDateTime(notification.created_at) }}:</span></span>
+				<span class="comment-login">@{{ notification.user.nickname || 'system' }} <span class='comment-time'>@{{ formatDateTime(notification.created_at) }}:</span></span>
 				<div class='new-notification' placeholder="текст напоминания" contenteditable="true"
                      ng-keydown="editNotification(notification, $event)"
                      ng-blur='unsetEditing(notification)'
@@ -40,8 +40,8 @@
             </span>
         </span>
 		<span class="comment-add-hidden" ng-show='start_notificationing'>
-			<span class="comment-add-login notification-login" style="color: @{{ user.color }}">
-			@{{ user.login }}: </span>
+			<span class="comment-add-login notification-login">
+			@{{ user.nickname }}: </span>
 			<div placeholder="текст напоминания"
                 class='new-notification'
                 contenteditable="true"

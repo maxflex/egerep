@@ -40,11 +40,11 @@
                 <table class='table table-divlike'>
                     <tr ng-repeat='data in mango_info'>
                         <td width='300'>
-                            <span ng-show='data.from_extension' style='color: @{{ UserService.getColor(data.from_extension) }}'>@{{ UserService.getLogin(data.from_extension) }}</span>
+                            <span ng-show='data.from_extension'>@{{ UserService.getLogin(data.from_extension) }}</span>
                             <span ng-hide='data.from_extension'>@{{ getNumberTitle(data.from_number) }}</span>
                             @{{ formatDateTime(data.date_start) }}
                             <span class="glyphicon glyphicon-arrow-right"></span>
-                            <span ng-show='data.to_extension' style='color: @{{ UserService.getColor(data.to_extension) }}'>@{{ UserService.getLogin(data.to_extension) }}</span>
+                            <span ng-show='data.to_extension'>@{{ UserService.getLogin(data.to_extension) }}</span>
                             <span ng-hide='data.to_extension'>@{{ getNumberTitle(data.to_number) }}</span>
                         </td>
                         <td width='100'>

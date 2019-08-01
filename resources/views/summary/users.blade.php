@@ -34,12 +34,12 @@
                             <option
                                 ng-repeat="user in UserService.getAll()"
                                 value="@{{ user.id }}"
-                                data-content="<span style='color: @{{ user.color || 'black' }}'>@{{ user.login }}</span>"
+                                data-content="@{{ user.nickname }}"
                             ></option>
                             <option
                                     ng-repeat="user in UserService.getBannedUsers()"
                                     value="@{{ user.id }}"
-                                    data-content="<span style='color: @{{ user.color || 'black' }}'>@{{ user.login }}</span>"
+                                    data-content="<span style='color: gray'>@{{ user.nickname }}</span>"
                             ></option>
                         </select>
                     </div>

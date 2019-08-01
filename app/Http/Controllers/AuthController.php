@@ -11,9 +11,9 @@ class AuthController extends Controller
     public function index(Request $request)
     {
         $key = base64_decode($request->key);
-        list($time, $user_id) = explode('|', $key);
-        if ($time == date('Y-m-d H:i') && dbEgecrm('users')->whereId($user_id)->exists()) {
-            $user = User::find(dbEgecrm('users')->whereId($user_id)->value('id_entity'));
+        list($time, $userId) = explode('|', $key);
+        if ($time == date('Y-m-d H:i') && User::whereId($userId)->exists()) {
+            $user = User::find($userId);
             if (! $user->isBanned()) {
                 $user->toSession();
                 SessionService::clearCache();

@@ -165,7 +165,11 @@ class TutorsController extends Controller
      */
      public function lists()
      {
-         return Tutor::selectRaw("CONCAT_WS(' ', last_name, first_name, middle_name) as name, id")
+        // на локалхосте загрузка пользователей кладёт систему
+        if (app()->environment('local')) {
+            return [];
+        }
+        return Tutor::selectRaw("CONCAT_WS(' ', last_name, first_name, middle_name) as name, id")
             ->pluck('name', 'id');
      }
 

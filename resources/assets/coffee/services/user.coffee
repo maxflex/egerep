@@ -20,10 +20,7 @@ angular.module 'Egerep'
             _.findWhere(this.users, {id: parseInt(user_id)}) or system_user
 
         this.getLogin = (user_id) ->
-            this.getUser(parseInt(user_id)).login
-
-        this.getColor = (user_id) ->
-            this.getUser(parseInt(user_id)).color
+            this.getUser(parseInt(user_id)).nickname
 
         this.getWithSystem = (only_active = true) ->
             users = this.getAll(only_active)
@@ -60,13 +57,13 @@ angular.module 'Egerep'
         this.getActiveInAnySystem = (with_system = true) ->
             users = _.chain(@users).filter (user) ->
                 user.rights.indexOf('35') is -1 or user.rights.indexOf('34') is -1
-            .sortBy('login').value()
+            .sortBy('nickname').value()
             users.unshift system_user if with_system
             users
 
         this.getBannedInBothSystems = ->
             _.chain(@users).filter (user) ->
                 user.rights.indexOf('35') isnt -1 and user.rights.indexOf('34') isnt -1
-            .sortBy('login').value()
+            .sortBy('nickname').value()
 
         this

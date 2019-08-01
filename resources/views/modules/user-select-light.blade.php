@@ -4,12 +4,12 @@
 	<option
 		ng-repeat="user in UserService.getActiveInAnySystem()"
 		value="@{{ user.id }}"
-		data-content="<span style='color: @{{ user.color || 'black' }}'>@{{ user.login }}</span>"
+		data-content="@{{ user.nickname }}"
 	></option>
 	<option disabled>──────────────</option>
 	<option
         ng-repeat="user in UserService.getBannedInBothSystems()"
 		value="@{{ user.id }}"
-		data-content="<span style='color: black'>@{{ user.login }}</span>"
+		data-content="<span style='color: gray'>@{{ user.nickname }}</span>"
 	></option>
 </select>
