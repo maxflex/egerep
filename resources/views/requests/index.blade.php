@@ -71,7 +71,7 @@
                    ng-show='user_counts[user.id]'
                    ng-repeat="user in UserService.getBannedUsers()"
                    value="@{{ user.id }}"
-                   data-content="@{{ user.nickname }}<small class='text-muted'>@{{ user_counts[user.id] || '' }}</small>"
+                   data-content="<span style='color: gray'>@{{ user.nickname }}</span><small class='text-muted'>@{{ user_counts[user.id] || '' }}</small>"
            ></option>
        </select>
     </div>

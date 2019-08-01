@@ -11,6 +11,7 @@ angular.module 'Egerep'
         system_user =
             color: '#999999'
             login: 'system'
+            nickname: 'system'
             id: 0
 
         this.get = (user_id) ->
