@@ -525,7 +525,8 @@
     0: 'стандартный расчет',
     1: 'яндекс.деньги',
     2: 'перевод на карту',
-    3: 'онлайн платеж'
+    3: 'онлайн платеж',
+    4: 'взаимозачёт'
   }).value('ArchiveStates', {
     impossible: 'невозможно',
     possible: 'возможно'
@@ -636,134 +637,6 @@
     },
     short_eng: ['math', 'phys', 'rus', 'lit', 'eng', 'his', 'soc', 'chem', 'bio', 'inf', 'geo']
   });
-
-}).call(this);
-
-(function() {
-  var apiPath, updateMethod;
-
-  angular.module('Egerep').factory('Marker', function($resource) {
-    return $resource(apiPath('markers'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Notification', function($resource) {
-    return $resource(apiPath('notifications'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Account', function($resource) {
-    return $resource(apiPath('accounts'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('AccountPayment', function($resource) {
-    return $resource(apiPath('account/payments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('PlannedAccount', function($resource) {
-    return $resource(apiPath('periods/planned'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Review', function($resource) {
-    return $resource(apiPath('reviews'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Background', function($resource) {
-    return $resource(apiPath('background'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Archive', function($resource) {
-    return $resource(apiPath('archives'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Attachment', function($resource) {
-    return $resource(apiPath('attachments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('RequestList', function($resource) {
-    return $resource(apiPath('lists'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Request', function($resource) {
-    return $resource(apiPath('requests'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      transfer: {
-        method: 'POST',
-        url: apiPath('requests', 'transfer')
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  }).factory('Sms', function($resource) {
-    return $resource(apiPath('sms'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Payment', function($resource) {
-    return $resource(apiPath('payments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('PaymentSource', function($resource) {
-    return $resource(apiPath('payments/sources'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('SourceRemainder', function($resource) {
-    return $resource(apiPath('payments/source/remainders'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('PaymentExpenditure', function($resource) {
-    return $resource(apiPath('payments/expenditures'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('PaymentExpenditureGroup', function($resource) {
-    return $resource(apiPath('payments/expendituregroups'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Comment', function($resource) {
-    return $resource(apiPath('comments'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Client', function($resource) {
-    return $resource(apiPath('clients'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('User', function($resource) {
-    return $resource(apiPath('users'), {
-      id: '@id'
-    }, updateMethod());
-  }).factory('Tutor', function($resource) {
-    return $resource(apiPath('tutors'), {
-      id: '@id'
-    }, {
-      update: {
-        method: 'PUT'
-      },
-      deletePhoto: {
-        url: apiPath('tutors', 'photo'),
-        method: 'DELETE'
-      },
-      list: {
-        method: 'GET'
-      }
-    });
-  });
-
-  apiPath = function(entity, additional) {
-    if (additional == null) {
-      additional = '';
-    }
-    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
-  };
-
-  updateMethod = function() {
-    return {
-      update: {
-        method: 'PUT'
-      }
-    };
-  };
 
 }).call(this);
 
@@ -1779,580 +1652,6 @@
       },
       templateUrl: 'directives/user'
     };
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('ApiService', function($http) {
-    this.metro = function(fun, data) {
-      return $http.post("api/metro/" + fun, data);
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('AttachmentService', function(AttachmentStates) {
-    this.AttachmentStates = AttachmentStates;
-    this.getState = function(attachment) {
-      if (attachment.archive) {
-        return 'ended';
-      } else {
-        if (attachment.forecast) {
-          return 'inprogress';
-        } else {
-          return 'new';
-        }
-      }
-    };
-    this.getStatus = function(attachment) {
-      return this.AttachmentStates[this.getState(attachment)];
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('BranchService', function(Branches) {
-    this.branches = Branches;
-    this.getNameWithColor = function(branch_id) {
-      var curBranch;
-      curBranch = this.branches[branch_id];
-      return '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="svg-metro"><circle fill="' + curBranch.color + '" r="6" cx="7" cy="7"></circle></svg>' + curBranch.full;
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('IndexService', function($rootScope) {
-    this.filter = function() {
-      $.cookie(this.controller, JSON.stringify(this.search), {
-        expires: 365,
-        path: '/'
-      });
-      this.current_page = 1;
-      return this.pageChanged();
-    };
-    this.max_size = 10;
-    this.init = function(Resource, current_page, attrs, load_page) {
-      if (load_page == null) {
-        load_page = true;
-      }
-      $rootScope.frontend_loading = true;
-      this.Resource = Resource;
-      this.current_page = parseInt(current_page);
-      this.controller = attrs.ngController.toLowerCase().slice(0, -5);
-      this.search = $.cookie(this.controller) ? JSON.parse($.cookie(this.controller)) : {};
-      if (load_page) {
-        return this.loadPage();
-      }
-    };
-    this.loadPage = function() {
-      var params;
-      params = {
-        page: this.current_page
-      };
-      if (this.sort !== void 0) {
-        params.sort = this.sort;
-      }
-      return this.Resource.get(params, (function(_this) {
-        return function(response) {
-          _this.page = response;
-          _this.data_loaded = true;
-          return $rootScope.frontend_loading = false;
-        };
-      })(this));
-    };
-    this.pageChanged = function() {
-      $rootScope.frontend_loading = true;
-      this.loadPage();
-      return this.changeUrl();
-    };
-    this["delete"] = function(id, text) {
-      return bootbox.confirm("Вы уверены, что хотите удалить " + text + " #" + id + "?", (function(_this) {
-        return function(result) {
-          if (result === true) {
-            return _this.Resource["delete"]({
-              id: id
-            }, function() {
-              return location.reload();
-            });
-          }
-        };
-      })(this));
-    };
-    this.changeUrl = function() {
-      return window.history.pushState('', '', this.controller + '?page=' + this.current_page);
-    };
-    return this;
-  }).service('FormService', function($rootScope, $q, $timeout) {
-    var beforeSave, modelLoaded, modelName;
-    this.init = function(Resource, id, model) {
-      this.dataLoaded = $q.defer();
-      $rootScope.frontend_loading = true;
-      this.Resource = Resource;
-      this.saving = false;
-      if (id) {
-        return this.model = Resource.get({
-          id: id
-        }, (function(_this) {
-          return function() {
-            return modelLoaded();
-          };
-        })(this));
-      } else {
-        this.model = new Resource(model);
-        return modelLoaded();
-      }
-    };
-    modelLoaded = (function(_this) {
-      return function() {
-        $rootScope.frontend_loading = false;
-        return $timeout(function() {
-          _this.dataLoaded.resolve(true);
-          return $('.selectpicker').selectpicker('refresh');
-        });
-      };
-    })(this);
-    beforeSave = (function(_this) {
-      return function() {
-        if (_this.error_element === void 0) {
-          ajaxStart();
-          if (_this.beforeSave !== void 0) {
-            _this.beforeSave();
-          }
-          _this.saving = true;
-          return true;
-        } else {
-          $(_this.error_element).focus();
-          return false;
-        }
-      };
-    })(this);
-    modelName = function() {
-      var l, model_name;
-      l = window.location.pathname.split('/');
-      model_name = l[l.length - 2];
-      if ($.isNumeric(model_name)) {
-        model_name = l[l.length - 3];
-      }
-      return model_name;
-    };
-    this["delete"] = function(event, callback) {
-      if (callback == null) {
-        callback = false;
-      }
-      return bootbox.confirm("Вы уверены, что хотите " + ($(event.target).text()) + " #" + this.model.id + "?", (function(_this) {
-        return function(result) {
-          if (result === true) {
-            beforeSave();
-            return _this.model.$delete().then(function() {
-              if (callback) {
-                callback();
-                _this.saving = false;
-                return ajaxEnd();
-              } else {
-                return redirect(modelName());
-              }
-            }, function(response) {
-              return notifyError(response.data.message);
-            });
-          }
-        };
-      })(this));
-    };
-    this.edit = function(callback) {
-      if (callback == null) {
-        callback = null;
-      }
-      if (!beforeSave()) {
-        return;
-      }
-      return this.model.$update().then((function(_this) {
-        return function() {
-          if (callback !== null) {
-            callback();
-          }
-          _this.saving = false;
-          return ajaxEnd();
-        };
-      })(this), function(response) {
-        notifyError(response.data.message);
-        this.saving = false;
-        return ajaxEnd();
-      });
-    };
-    this.create = function() {
-      if (!beforeSave()) {
-        return;
-      }
-      return this.model.$save().then((function(_this) {
-        return function(response) {
-          return redirect(_this.prefix + modelName() + ("/" + response.id + "/edit"));
-        };
-      })(this), (function(_this) {
-        return function(response) {
-          notifyError(response.data.message);
-          _this.saving = false;
-          ajaxEnd();
-          return _this.onCreateError(response);
-        };
-      })(this));
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('PhoneService', function($rootScope, $http) {
-    this.info = function(number) {
-      return $http.post('api/command/mango-stats', {
-        number: number
-      });
-    };
-    this.call = function(number) {
-      return location.href = "tel:" + number.replace(/[^0-9]/g, '');
-    };
-    this.isMobile = function(number) {
-      return number && (parseInt(number[4]) === 9 || parseInt(number[1]) === 9);
-    };
-    this.clean = function(number) {
-      return number.replace(/[^0-9]/gim, "");
-    };
-    this.format = function(number) {
-      if (!number) {
-        return;
-      }
-      number = this.clean(number);
-      return '+' + number.substr(0, 1) + ' (' + number.substr(1, 3) + ') ' + number.substr(4, 3) + '-' + number.substr(7, 2) + '-' + number.substr(9, 2);
-    };
-    this.sms = function(number) {
-      $rootScope.sms_number = number;
-      return $('#sms-modal').modal('show');
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('PusherService', function($http) {
-    var init;
-    this.bind = function(channel, callback) {
-      if (this.pusher === void 0) {
-        init();
-      }
-      return this.channel.bind("App\\Events\\" + channel, callback);
-    };
-    init = (function(_this) {
-      return function() {
-        _this.pusher = new Pusher('2d212b249c84f8c7ba5c', {
-          encrypted: true,
-          cluster: 'eu'
-        });
-        return _this.channel = _this.pusher.subscribe('egerep');
-      };
-    })(this);
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('RecommendationService', function(Recommendations, RecommendationTypes) {
-    this.get = function(tutor, grade) {
-      var recommendation;
-      recommendation = this.getRecommendation(tutor, grade);
-      recommendation.type_text = RecommendationTypes[recommendation.type];
-      return recommendation;
-    };
-    this.getRecommendation = function(tutor, grade) {
-      var month;
-      month = moment().format('M');
-      if (grade !== 10) {
-        if (month >= 7 && month <= 10) {
-          if (tutor.meeting_count >= 2) {
-            return Recommendations[1];
-          } else {
-            if (tutor.meeting_count === 1) {
-              return Recommendations[2];
-            } else {
-              if (tutor.active_clients_count >= 2) {
-                return Recommendations[3];
-              } else {
-                return Recommendations[4];
-              }
-            }
-          }
-        } else {
-          if (month >= 11 || month <= 2) {
-            if (tutor.meeting_count >= 2) {
-              return Recommendations[5];
-            } else {
-              if (tutor.meeting_count === 1) {
-                return Recommendations[6];
-              } else {
-                if (tutor.active_clients_count >= 2) {
-                  return Recommendations[7];
-                } else {
-                  return Recommendations[8];
-                }
-              }
-            }
-          } else {
-            if (tutor.meeting_count >= 2) {
-              return Recommendations[9];
-            } else {
-              return Recommendations[10];
-            }
-          }
-        }
-      } else {
-        if (tutor.meeting_count >= 2) {
-          return Recommendations[11];
-        } else {
-          if (tutor.meeting_count === 1) {
-            return Recommendations[12];
-          } else {
-            if (tutor.active_clients_count >= 2) {
-              return Recommendations[13];
-            } else {
-              return Recommendations[14];
-            }
-          }
-        }
-      }
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('SvgMap', function() {
-    this.show = function() {
-      $('#svg-modal').modal('show');
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('TutorService', function($http) {
-    this.translit = {
-      'А': 'A',
-      'Б': 'B',
-      'В': 'V',
-      'Г': 'G',
-      'Д': 'D',
-      'Е': 'E',
-      'Ё': 'E',
-      'Ж': 'Gh',
-      'З': 'Z',
-      'И': 'I',
-      'Й': 'Y',
-      'К': 'K',
-      'Л': 'L',
-      'М': 'M',
-      'Н': 'N',
-      'О': 'O',
-      'П': 'P',
-      'Р': 'R',
-      'С': 'S',
-      'Т': 'T',
-      'У': 'U',
-      'Ф': 'F',
-      'Х': 'H',
-      'Ц': 'C',
-      'Ч': 'Ch',
-      'Ш': 'Sh',
-      'Щ': 'Sch',
-      'Ъ': 'Y',
-      'Ы': 'Y',
-      'Ь': 'Y',
-      'Э': 'E',
-      'Ю': 'Yu',
-      'Я': 'Ya',
-      'а': 'a',
-      'б': 'b',
-      'в': 'v',
-      'г': 'g',
-      'д': 'd',
-      'е': 'e',
-      'ё': 'e',
-      'ж': 'gh',
-      'з': 'z',
-      'и': 'i',
-      'й': 'y',
-      'к': 'k',
-      'л': 'l',
-      'м': 'm',
-      'н': 'n',
-      'о': 'o',
-      'п': 'p',
-      'р': 'r',
-      'с': 's',
-      'т': 't',
-      'у': 'u',
-      'ф': 'f',
-      'х': 'h',
-      'ц': 'c',
-      'ч': 'ch',
-      'ш': 'sh',
-      'щ': 'sch',
-      'ъ': 'y',
-      'ы': 'y',
-      'ь': 'y',
-      'э': 'e',
-      'ю': 'yu',
-      'я': 'ya'
-    };
-    this.default_tutor = {
-      gender: "male",
-      branches: [],
-      phones: [],
-      subjects: [],
-      grades: [],
-      svg_map: [],
-      markers: [],
-      state: 0,
-      in_egecentr: 0
-    };
-    this.getFiltered = function(search_data) {
-      return $http.post('api/tutors/filtered', search_data);
-    };
-    this.select = function(search_data) {
-      return $http.post('api/tutors/select', search_data);
-    };
-    this.getDebtMap = function(search_data) {
-      return $http.post('api/debt/map', search_data);
-    };
-    this.getDebtors = function() {
-      return $http.get('api/debt');
-    };
-    this.generateLogin = function(tutor) {
-      var i, len, letter, login, ref;
-      login = '';
-      ref = tutor.last_name.toLowerCase();
-      for (i = 0, len = ref.length; i < len; i++) {
-        letter = ref[i];
-        login += this.translit[letter];
-      }
-      login = login.slice(0, 3);
-      login += '_' + this.translit[tutor.first_name.toLowerCase()[0]] + this.translit[tutor.middle_name.toLowerCase()[0]];
-      return login;
-    };
-    this.generatePassword = function() {
-      return Math.floor(10000000 + Math.random() * 89999999);
-    };
-    return this;
-  });
-
-}).call(this);
-
-(function() {
-  angular.module('Egerep').service('UserService', function(User, $rootScope, $timeout) {
-    var system_user;
-    this.users = User.query();
-    $timeout((function(_this) {
-      return function() {
-        return _this.current_user = $rootScope.$$childTail.user;
-      };
-    })(this));
-    system_user = {
-      color: '#999999',
-      login: 'system',
-      nickname: 'system',
-      id: 0
-    };
-    this.get = function(user_id) {
-      return this.getUser(user_id);
-    };
-    this.getUser = function(user_id) {
-      return _.findWhere(this.users, {
-        id: parseInt(user_id)
-      }) || system_user;
-    };
-    this.getLogin = function(user_id) {
-      return this.getUser(parseInt(user_id)).nickname;
-    };
-    this.getWithSystem = function(only_active) {
-      var users;
-      if (only_active == null) {
-        only_active = true;
-      }
-      users = this.getAll(only_active);
-      users.unshift(system_user);
-      return users;
-    };
-    this.getAll = function(only_active) {
-      if (only_active == null) {
-        only_active = true;
-      }
-      if (only_active) {
-        return _.filter(this.users, function(user) {
-          return user.rights.length && user.rights.indexOf('35') === -1;
-        });
-      } else {
-        return this.users;
-      }
-    };
-    this.toggle = function(entity, user_id, Resource) {
-      var new_user_id, obj;
-      if (Resource == null) {
-        Resource = false;
-      }
-      new_user_id = entity[user_id] ? 0 : this.current_user.id;
-      if (Resource) {
-        return Resource.update((
-          obj = {
-            id: entity.id
-          },
-          obj["" + user_id] = new_user_id,
-          obj
-        ), function() {
-          return entity[user_id] = new_user_id;
-        });
-      } else {
-        return entity[user_id] = new_user_id;
-      }
-    };
-    this.getBannedUsers = function() {
-      return _.filter(this.users, function(user) {
-        return user.rights.length && user.rights.indexOf('35') !== -1;
-      });
-    };
-    this.getBannedHaving = function(condition_obj) {
-      return _.filter(this.users, function(user) {
-        return user.rights.indexOf('35') !== -1 && condition_obj && condition_obj[user.id];
-      });
-    };
-    this.getActiveInAnySystem = function(with_system) {
-      var users;
-      if (with_system == null) {
-        with_system = true;
-      }
-      users = _.chain(this.users).filter(function(user) {
-        return user.rights.indexOf('35') === -1 || user.rights.indexOf('34') === -1;
-      }).sortBy('nickname').value();
-      if (with_system) {
-        users.unshift(system_user);
-      }
-      return users;
-    };
-    this.getBannedInBothSystems = function() {
-      return _.chain(this.users).filter(function(user) {
-        return user.rights.indexOf('35') !== -1 && user.rights.indexOf('34') !== -1;
-      }).sortBy('nickname').value();
-    };
-    return this;
   });
 
 }).call(this);
@@ -7018,6 +6317,708 @@
       $('#gmap-modal').modal('hide');
       filterMarkers();
     };
+  });
+
+}).call(this);
+
+(function() {
+  var apiPath, updateMethod;
+
+  angular.module('Egerep').factory('Marker', function($resource) {
+    return $resource(apiPath('markers'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Notification', function($resource) {
+    return $resource(apiPath('notifications'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Account', function($resource) {
+    return $resource(apiPath('accounts'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('AccountPayment', function($resource) {
+    return $resource(apiPath('account/payments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('PlannedAccount', function($resource) {
+    return $resource(apiPath('periods/planned'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Review', function($resource) {
+    return $resource(apiPath('reviews'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Background', function($resource) {
+    return $resource(apiPath('background'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Archive', function($resource) {
+    return $resource(apiPath('archives'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Attachment', function($resource) {
+    return $resource(apiPath('attachments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('RequestList', function($resource) {
+    return $resource(apiPath('lists'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Request', function($resource) {
+    return $resource(apiPath('requests'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      transfer: {
+        method: 'POST',
+        url: apiPath('requests', 'transfer')
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  }).factory('Sms', function($resource) {
+    return $resource(apiPath('sms'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Payment', function($resource) {
+    return $resource(apiPath('payments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('PaymentSource', function($resource) {
+    return $resource(apiPath('payments/sources'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('SourceRemainder', function($resource) {
+    return $resource(apiPath('payments/source/remainders'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('PaymentExpenditure', function($resource) {
+    return $resource(apiPath('payments/expenditures'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('PaymentExpenditureGroup', function($resource) {
+    return $resource(apiPath('payments/expendituregroups'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Comment', function($resource) {
+    return $resource(apiPath('comments'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Client', function($resource) {
+    return $resource(apiPath('clients'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('User', function($resource) {
+    return $resource(apiPath('users'), {
+      id: '@id'
+    }, updateMethod());
+  }).factory('Tutor', function($resource) {
+    return $resource(apiPath('tutors'), {
+      id: '@id'
+    }, {
+      update: {
+        method: 'PUT'
+      },
+      deletePhoto: {
+        url: apiPath('tutors', 'photo'),
+        method: 'DELETE'
+      },
+      list: {
+        method: 'GET'
+      }
+    });
+  });
+
+  apiPath = function(entity, additional) {
+    if (additional == null) {
+      additional = '';
+    }
+    return ("api/" + entity + "/") + (additional ? additional + '/' : '') + ":id";
+  };
+
+  updateMethod = function() {
+    return {
+      update: {
+        method: 'PUT'
+      }
+    };
+  };
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('ApiService', function($http) {
+    this.metro = function(fun, data) {
+      return $http.post("api/metro/" + fun, data);
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('AttachmentService', function(AttachmentStates) {
+    this.AttachmentStates = AttachmentStates;
+    this.getState = function(attachment) {
+      if (attachment.archive) {
+        return 'ended';
+      } else {
+        if (attachment.forecast) {
+          return 'inprogress';
+        } else {
+          return 'new';
+        }
+      }
+    };
+    this.getStatus = function(attachment) {
+      return this.AttachmentStates[this.getState(attachment)];
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('BranchService', function(Branches) {
+    this.branches = Branches;
+    this.getNameWithColor = function(branch_id) {
+      var curBranch;
+      curBranch = this.branches[branch_id];
+      return '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="svg-metro"><circle fill="' + curBranch.color + '" r="6" cx="7" cy="7"></circle></svg>' + curBranch.full;
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('IndexService', function($rootScope) {
+    this.filter = function() {
+      $.cookie(this.controller, JSON.stringify(this.search), {
+        expires: 365,
+        path: '/'
+      });
+      this.current_page = 1;
+      return this.pageChanged();
+    };
+    this.max_size = 10;
+    this.init = function(Resource, current_page, attrs, load_page) {
+      if (load_page == null) {
+        load_page = true;
+      }
+      $rootScope.frontend_loading = true;
+      this.Resource = Resource;
+      this.current_page = parseInt(current_page);
+      this.controller = attrs.ngController.toLowerCase().slice(0, -5);
+      this.search = $.cookie(this.controller) ? JSON.parse($.cookie(this.controller)) : {};
+      if (load_page) {
+        return this.loadPage();
+      }
+    };
+    this.loadPage = function() {
+      var params;
+      params = {
+        page: this.current_page
+      };
+      if (this.sort !== void 0) {
+        params.sort = this.sort;
+      }
+      return this.Resource.get(params, (function(_this) {
+        return function(response) {
+          _this.page = response;
+          _this.data_loaded = true;
+          return $rootScope.frontend_loading = false;
+        };
+      })(this));
+    };
+    this.pageChanged = function() {
+      $rootScope.frontend_loading = true;
+      this.loadPage();
+      return this.changeUrl();
+    };
+    this["delete"] = function(id, text) {
+      return bootbox.confirm("Вы уверены, что хотите удалить " + text + " #" + id + "?", (function(_this) {
+        return function(result) {
+          if (result === true) {
+            return _this.Resource["delete"]({
+              id: id
+            }, function() {
+              return location.reload();
+            });
+          }
+        };
+      })(this));
+    };
+    this.changeUrl = function() {
+      return window.history.pushState('', '', this.controller + '?page=' + this.current_page);
+    };
+    return this;
+  }).service('FormService', function($rootScope, $q, $timeout) {
+    var beforeSave, modelLoaded, modelName;
+    this.init = function(Resource, id, model) {
+      this.dataLoaded = $q.defer();
+      $rootScope.frontend_loading = true;
+      this.Resource = Resource;
+      this.saving = false;
+      if (id) {
+        return this.model = Resource.get({
+          id: id
+        }, (function(_this) {
+          return function() {
+            return modelLoaded();
+          };
+        })(this));
+      } else {
+        this.model = new Resource(model);
+        return modelLoaded();
+      }
+    };
+    modelLoaded = (function(_this) {
+      return function() {
+        $rootScope.frontend_loading = false;
+        return $timeout(function() {
+          _this.dataLoaded.resolve(true);
+          return $('.selectpicker').selectpicker('refresh');
+        });
+      };
+    })(this);
+    beforeSave = (function(_this) {
+      return function() {
+        if (_this.error_element === void 0) {
+          ajaxStart();
+          if (_this.beforeSave !== void 0) {
+            _this.beforeSave();
+          }
+          _this.saving = true;
+          return true;
+        } else {
+          $(_this.error_element).focus();
+          return false;
+        }
+      };
+    })(this);
+    modelName = function() {
+      var l, model_name;
+      l = window.location.pathname.split('/');
+      model_name = l[l.length - 2];
+      if ($.isNumeric(model_name)) {
+        model_name = l[l.length - 3];
+      }
+      return model_name;
+    };
+    this["delete"] = function(event, callback) {
+      if (callback == null) {
+        callback = false;
+      }
+      return bootbox.confirm("Вы уверены, что хотите " + ($(event.target).text()) + " #" + this.model.id + "?", (function(_this) {
+        return function(result) {
+          if (result === true) {
+            beforeSave();
+            return _this.model.$delete().then(function() {
+              if (callback) {
+                callback();
+                _this.saving = false;
+                return ajaxEnd();
+              } else {
+                return redirect(modelName());
+              }
+            }, function(response) {
+              return notifyError(response.data.message);
+            });
+          }
+        };
+      })(this));
+    };
+    this.edit = function(callback) {
+      if (callback == null) {
+        callback = null;
+      }
+      if (!beforeSave()) {
+        return;
+      }
+      return this.model.$update().then((function(_this) {
+        return function() {
+          if (callback !== null) {
+            callback();
+          }
+          _this.saving = false;
+          return ajaxEnd();
+        };
+      })(this), function(response) {
+        notifyError(response.data.message);
+        this.saving = false;
+        return ajaxEnd();
+      });
+    };
+    this.create = function() {
+      if (!beforeSave()) {
+        return;
+      }
+      return this.model.$save().then((function(_this) {
+        return function(response) {
+          return redirect(_this.prefix + modelName() + ("/" + response.id + "/edit"));
+        };
+      })(this), (function(_this) {
+        return function(response) {
+          notifyError(response.data.message);
+          _this.saving = false;
+          ajaxEnd();
+          return _this.onCreateError(response);
+        };
+      })(this));
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('PhoneService', function($rootScope, $http) {
+    this.info = function(number) {
+      return $http.post('api/command/mango-stats', {
+        number: number
+      });
+    };
+    this.call = function(number) {
+      return location.href = "tel:" + number.replace(/[^0-9]/g, '');
+    };
+    this.isMobile = function(number) {
+      return number && (parseInt(number[4]) === 9 || parseInt(number[1]) === 9);
+    };
+    this.clean = function(number) {
+      return number.replace(/[^0-9]/gim, "");
+    };
+    this.format = function(number) {
+      if (!number) {
+        return;
+      }
+      number = this.clean(number);
+      return '+' + number.substr(0, 1) + ' (' + number.substr(1, 3) + ') ' + number.substr(4, 3) + '-' + number.substr(7, 2) + '-' + number.substr(9, 2);
+    };
+    this.sms = function(number) {
+      $rootScope.sms_number = number;
+      return $('#sms-modal').modal('show');
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('PusherService', function($http) {
+    var init;
+    this.bind = function(channel, callback) {
+      if (this.pusher === void 0) {
+        init();
+      }
+      return this.channel.bind("App\\Events\\" + channel, callback);
+    };
+    init = (function(_this) {
+      return function() {
+        _this.pusher = new Pusher('2d212b249c84f8c7ba5c', {
+          encrypted: true,
+          cluster: 'eu'
+        });
+        return _this.channel = _this.pusher.subscribe('egerep');
+      };
+    })(this);
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('RecommendationService', function(Recommendations, RecommendationTypes) {
+    this.get = function(tutor, grade) {
+      var recommendation;
+      recommendation = this.getRecommendation(tutor, grade);
+      recommendation.type_text = RecommendationTypes[recommendation.type];
+      return recommendation;
+    };
+    this.getRecommendation = function(tutor, grade) {
+      var month;
+      month = moment().format('M');
+      if (grade !== 10) {
+        if (month >= 7 && month <= 10) {
+          if (tutor.meeting_count >= 2) {
+            return Recommendations[1];
+          } else {
+            if (tutor.meeting_count === 1) {
+              return Recommendations[2];
+            } else {
+              if (tutor.active_clients_count >= 2) {
+                return Recommendations[3];
+              } else {
+                return Recommendations[4];
+              }
+            }
+          }
+        } else {
+          if (month >= 11 || month <= 2) {
+            if (tutor.meeting_count >= 2) {
+              return Recommendations[5];
+            } else {
+              if (tutor.meeting_count === 1) {
+                return Recommendations[6];
+              } else {
+                if (tutor.active_clients_count >= 2) {
+                  return Recommendations[7];
+                } else {
+                  return Recommendations[8];
+                }
+              }
+            }
+          } else {
+            if (tutor.meeting_count >= 2) {
+              return Recommendations[9];
+            } else {
+              return Recommendations[10];
+            }
+          }
+        }
+      } else {
+        if (tutor.meeting_count >= 2) {
+          return Recommendations[11];
+        } else {
+          if (tutor.meeting_count === 1) {
+            return Recommendations[12];
+          } else {
+            if (tutor.active_clients_count >= 2) {
+              return Recommendations[13];
+            } else {
+              return Recommendations[14];
+            }
+          }
+        }
+      }
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('SvgMap', function() {
+    this.show = function() {
+      $('#svg-modal').modal('show');
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('TutorService', function($http) {
+    this.translit = {
+      'А': 'A',
+      'Б': 'B',
+      'В': 'V',
+      'Г': 'G',
+      'Д': 'D',
+      'Е': 'E',
+      'Ё': 'E',
+      'Ж': 'Gh',
+      'З': 'Z',
+      'И': 'I',
+      'Й': 'Y',
+      'К': 'K',
+      'Л': 'L',
+      'М': 'M',
+      'Н': 'N',
+      'О': 'O',
+      'П': 'P',
+      'Р': 'R',
+      'С': 'S',
+      'Т': 'T',
+      'У': 'U',
+      'Ф': 'F',
+      'Х': 'H',
+      'Ц': 'C',
+      'Ч': 'Ch',
+      'Ш': 'Sh',
+      'Щ': 'Sch',
+      'Ъ': 'Y',
+      'Ы': 'Y',
+      'Ь': 'Y',
+      'Э': 'E',
+      'Ю': 'Yu',
+      'Я': 'Ya',
+      'а': 'a',
+      'б': 'b',
+      'в': 'v',
+      'г': 'g',
+      'д': 'd',
+      'е': 'e',
+      'ё': 'e',
+      'ж': 'gh',
+      'з': 'z',
+      'и': 'i',
+      'й': 'y',
+      'к': 'k',
+      'л': 'l',
+      'м': 'm',
+      'н': 'n',
+      'о': 'o',
+      'п': 'p',
+      'р': 'r',
+      'с': 's',
+      'т': 't',
+      'у': 'u',
+      'ф': 'f',
+      'х': 'h',
+      'ц': 'c',
+      'ч': 'ch',
+      'ш': 'sh',
+      'щ': 'sch',
+      'ъ': 'y',
+      'ы': 'y',
+      'ь': 'y',
+      'э': 'e',
+      'ю': 'yu',
+      'я': 'ya'
+    };
+    this.default_tutor = {
+      gender: "male",
+      branches: [],
+      phones: [],
+      subjects: [],
+      grades: [],
+      svg_map: [],
+      markers: [],
+      state: 0,
+      in_egecentr: 0
+    };
+    this.getFiltered = function(search_data) {
+      return $http.post('api/tutors/filtered', search_data);
+    };
+    this.select = function(search_data) {
+      return $http.post('api/tutors/select', search_data);
+    };
+    this.getDebtMap = function(search_data) {
+      return $http.post('api/debt/map', search_data);
+    };
+    this.getDebtors = function() {
+      return $http.get('api/debt');
+    };
+    this.generateLogin = function(tutor) {
+      var i, len, letter, login, ref;
+      login = '';
+      ref = tutor.last_name.toLowerCase();
+      for (i = 0, len = ref.length; i < len; i++) {
+        letter = ref[i];
+        login += this.translit[letter];
+      }
+      login = login.slice(0, 3);
+      login += '_' + this.translit[tutor.first_name.toLowerCase()[0]] + this.translit[tutor.middle_name.toLowerCase()[0]];
+      return login;
+    };
+    this.generatePassword = function() {
+      return Math.floor(10000000 + Math.random() * 89999999);
+    };
+    return this;
+  });
+
+}).call(this);
+
+(function() {
+  angular.module('Egerep').service('UserService', function(User, $rootScope, $timeout) {
+    var system_user;
+    this.users = User.query();
+    $timeout((function(_this) {
+      return function() {
+        return _this.current_user = $rootScope.$$childTail.user;
+      };
+    })(this));
+    system_user = {
+      color: '#999999',
+      login: 'system',
+      nickname: 'system',
+      id: 0
+    };
+    this.get = function(user_id) {
+      return this.getUser(user_id);
+    };
+    this.getUser = function(user_id) {
+      return _.findWhere(this.users, {
+        id: parseInt(user_id)
+      }) || system_user;
+    };
+    this.getLogin = function(user_id) {
+      return this.getUser(parseInt(user_id)).nickname;
+    };
+    this.getWithSystem = function(only_active) {
+      var users;
+      if (only_active == null) {
+        only_active = true;
+      }
+      users = this.getAll(only_active);
+      users.unshift(system_user);
+      return users;
+    };
+    this.getAll = function(only_active) {
+      if (only_active == null) {
+        only_active = true;
+      }
+      if (only_active) {
+        return _.filter(this.users, function(user) {
+          return user.rights.length && user.rights.indexOf('35') === -1;
+        });
+      } else {
+        return this.users;
+      }
+    };
+    this.toggle = function(entity, user_id, Resource) {
+      var new_user_id, obj;
+      if (Resource == null) {
+        Resource = false;
+      }
+      new_user_id = entity[user_id] ? 0 : this.current_user.id;
+      if (Resource) {
+        return Resource.update((
+          obj = {
+            id: entity.id
+          },
+          obj["" + user_id] = new_user_id,
+          obj
+        ), function() {
+          return entity[user_id] = new_user_id;
+        });
+      } else {
+        return entity[user_id] = new_user_id;
+      }
+    };
+    this.getBannedUsers = function() {
+      return _.filter(this.users, function(user) {
+        return user.rights.length && user.rights.indexOf('35') !== -1;
+      });
+    };
+    this.getBannedHaving = function(condition_obj) {
+      return _.filter(this.users, function(user) {
+        return user.rights.indexOf('35') !== -1 && condition_obj && condition_obj[user.id];
+      });
+    };
+    this.getActiveInAnySystem = function(with_system) {
+      var users;
+      if (with_system == null) {
+        with_system = true;
+      }
+      users = _.chain(this.users).filter(function(user) {
+        return user.rights.indexOf('35') === -1 || user.rights.indexOf('34') === -1;
+      }).sortBy('nickname').value();
+      if (with_system) {
+        users.unshift(system_user);
+      }
+      return users;
+    };
+    this.getBannedInBothSystems = function() {
+      return _.chain(this.users).filter(function(user) {
+        return user.rights.indexOf('35') !== -1 && user.rights.indexOf('34') !== -1;
+      }).sortBy('nickname').value();
+    };
+    return this;
   });
 
 }).call(this);

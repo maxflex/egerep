@@ -51,6 +51,7 @@ class Kernel extends ConsoleKernel
         Commands\Once\PaymentsEc2::class,
         Commands\Once\ContractsX::class,
         Commands\Once\TransferUserIds::class,
+        Commands\Once\CreateMutualPayments::class,
 
         Commands\TransferPhones::class,
     ];

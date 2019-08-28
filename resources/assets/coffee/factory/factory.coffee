@@ -165,6 +165,7 @@ angular.module('Egerep')
         1: 'яндекс.деньги'
         2: 'перевод на карту'
         3: 'онлайн платеж'
+        4: 'взаимозачёт'
 
     .value 'ArchiveStates',
         impossible: 'невозможно'
