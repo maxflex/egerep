@@ -51,8 +51,8 @@ class CreateMutualPayments extends Command
                 'user_id' => User::where('old_id', $payment->id_user)->value('id'),
                 'method' => 4,
                 'confirmed' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => $payment->first_save_date,
+                'updated_at' => $payment->first_save_date,
             ]);
             $bar->advance();
         }
