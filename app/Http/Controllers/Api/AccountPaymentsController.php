@@ -8,7 +8,6 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\AccountPayment;
 use App\Models\Account;
-use App\Models\Helpers\MutualPayment;
 use DB;
 
 class AccountPaymentsController extends Controller
@@ -20,16 +19,11 @@ class AccountPaymentsController extends Controller
      */
     public function index(Request $request)
     {
-        $per_page = 999999;
-        // получаем ВСЕ данные из account_payments и egecrm-payments
-        // мерджим, сортируем по дате и вырезаем пагинацию
         $account_payments = AccountPayment::orderBy('date', 'desc');
-        $egecrm_payments = MutualPayment::query()->select(MutualPayment::defaultSelect())->orderBy(DB::raw("STR_TO_DATE(date, '%d.%m.%Y')", 'desc'));
 
         // фильр по пользователям
         if (isset($request->user_id) && ! isBlank($request->user_id)) {
             $account_payments->where('user_id', $request->user_id);
-            $egecrm_payments->where('id_user', $request->user_id);
         }
 
         // фильтр по типам расчета
@@ -38,7 +32,6 @@ class AccountPaymentsController extends Controller
             if ($request->method == -1) {
                 $account_payments->whereId(-1); // обнуляем результаты $account_payments, останутся только взаимозачёты
             } else {
-                $egecrm_payments->whereId(-1); // обнуляем результаты $egecrm_payments
                 $account_payments->where('method', $request->method);
             }
         }
@@ -46,19 +39,10 @@ class AccountPaymentsController extends Controller
         // фильтр по статусам платежа
         if (isset($request->confirmed) && ! isBlank($request->confirmed)) {
             $account_payments->where('confirmed', $request->confirmed);
-            $egecrm_payments->where('confirmed', $request->confirmed);
         }
 
-        // мердж
-        $data = array_merge($account_payments->get()->all(), $egecrm_payments->get());
+        $data = $account_payments->orderBy('date', 'desc')->get()->all();
 
-        // сортировка
-        usort($data, function($a, $b) {
-            return fromDotDate($a->date) < fromDotDate($b->date);
-        });
-
-
-        // вырезаем пагинацию
         $return = array_slice($data, ($request->page > 0 ? ($request->page - 1) * $per_page : 0), $per_page);
 
         // информация о преподе

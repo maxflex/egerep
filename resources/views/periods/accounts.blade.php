@@ -56,8 +56,7 @@
             <td>@{{ period.user_login }}</td>
             <td>@{{ period.debt_calc | hideZero | number}}</td>
             <td ng-init="_sum = getSum(period.all_payments)">
-                <span ng-show='_sum[0]'>@{{ _sum[0] | number }}</span>
-                <span class='mutual-debt' ng-if="_sum[1]"><span ng-show='_sum[0]'>+</span> @{{ _sum[1] | number }}</span>
+                <span ng-show='_sum'>@{{ _sum | number }}</span>
             </td>
             <td>
                 @{{ totalCommission(period) | number }}

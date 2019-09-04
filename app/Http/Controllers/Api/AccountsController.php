@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Helpers\MutualPayment;
-
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -95,7 +93,5 @@ class AccountsController extends Controller
     public function destroy($id)
     {
         Account::destroy($id);
-        // Удалить все платежи из NER
-        MutualPayment::query()->where('account_id', $id)->delete();
     }
 }

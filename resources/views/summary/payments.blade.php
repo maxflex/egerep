@@ -7,9 +7,6 @@
                 <td ng-repeat="(method, label) in PaymentMethods">
                     @{{ label }}
                 </td>
-                <td>
-                    взаимозачет
-                </td>
                 <td class="left-border">все платежи</td>
             </tr>
         </thead>
@@ -20,9 +17,6 @@
                 </td>
                 <td ng-repeat="(method, label) in PaymentMethods" class="text-center">
                     @{{ summary.account_payments[method].sum | hideZero | number }}
-                </td>
-                <td class="text-center">
-                    @{{ summary.mutual_payments.sum | hideZero | number }}
                 </td>
                 <td class="left-border text-center">
                     @{{ summary.total | hideZero | number }}

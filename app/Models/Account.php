@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Helpers\MutualPayment;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\AccountData;
 use App\Models\Tutor;
@@ -112,15 +111,7 @@ class Account extends Model
      */
     public function getAllPaymentsAttribute()
     {
-        $payments = $this->payments->all();
-
-        // приводим в соответствие поля из таблицы egecrm-payments
-        $mutual_payments = dbEgecrm('payments')
-            ->select(MutualPayment::defaultSelect())
-            ->where('id_status', 6)
-            ->where('account_id', $this->id)->get();
-
-        return array_merge($payments, $mutual_payments);
+        return $this->payments->all();
     }
 
     /**
