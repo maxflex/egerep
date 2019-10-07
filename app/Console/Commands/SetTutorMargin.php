@@ -50,12 +50,12 @@ class SetTutorMargin extends Command
             //  с 15 июля 2016 года по 15 июля 2018 года
             $query = Attachment::has('archive')
                 ->where('tutor_id', $tutor_id)
-                ->whereBetween('date', ['2016-07-15', '2018-07-15']);
+                ->whereBetween('date', ['2017-07-15', '2019-07-15']);
 
-            if (cloneQuery($query)->count() < 20) {
+            if (cloneQuery($query)->count() > 40) {
                 $query = Attachment::has('archive')
                     ->where('tutor_id', $tutor_id)
-                    ->take(20)
+                    ->take(40)
                     ->orderBy('id', 'desc');
             }
 
