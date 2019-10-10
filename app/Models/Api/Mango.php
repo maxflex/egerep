@@ -4,7 +4,6 @@ namespace App\Models\Api;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Service\Settings;
-use App\Models\SmsRating;
 use DB;
 
 class Mango {
@@ -150,8 +149,6 @@ class Mango {
 							'line_number'        => $info[10],
 							'location'           => $info[11],
 						];
-
-                        SmsRating::checkCall($piece_of_data);
 
 						$return[] = $piece_of_data;
 				   }
