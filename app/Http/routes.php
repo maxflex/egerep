@@ -14,8 +14,6 @@ Route::group(['middleware' => ['web', LogUrlOpen::class]], function () {
         return view('google-ids.index');
     });
 
-    Route::get('temp/{year}', 'TempController@index');
-
     Route::get('emergency', 'EmergencyController@index');
 
     Route::get('activity', 'ActivityController@index');
@@ -23,7 +21,6 @@ Route::group(['middleware' => ['web', LogUrlOpen::class]], function () {
     Route::get('stream', 'StreamController@index');
     Route::get('stream/configurations', 'StreamController@configurations');
 
-    Route::get('calls', 'CallsController@index');
     Route::get('calls/missed', 'CallsController@missed');
     Route::resource('calls', 'CallsController');
 
@@ -110,7 +107,6 @@ Route::group(['middleware' => ['web', LogUrlOpen::class]], function () {
 
     Route::controllers([
         'upload'    => 'UploadController',
-        'command'   => 'CommandsController',
         'graph'     => 'GraphController',
     ]);
 
@@ -177,8 +173,6 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api', 'middleware' => ['web']],
     Route::resource('sms', 'SmsController');
     Route::resource('periods', 'PeriodsController');
     Route::resource('stream', 'StreamController');
-
-    Route::resource('calls', 'CallsController');
 
     Route::post('summary/users', 'SummaryController@users');
     Route::post('summary/users/explain/tutors', 'SummaryController@explainTutors');

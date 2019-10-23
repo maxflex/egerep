@@ -231,19 +231,10 @@ use App\Models\Sms;
         return \DB::connection('factory')->table($table);
     }
 
-    /**
-      *
-      * EGCRM connection helper
-      */
-     function dbEgecrm($table)
-     {
-        return \DB::connection('egecrm')->table($table);
-     }
-
-     function dbEgecrm2($table)
-     {
+    function dbEgecrm2($table)
+    {
         return \DB::connection('egecrm2')->table($table);
-     }
+    }
 
     function fileExists($url)
     {

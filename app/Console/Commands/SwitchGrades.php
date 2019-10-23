@@ -43,11 +43,6 @@ class SwitchGrades extends Command
          */
 
         // 11 и экстернат в студенты
-        dbEgecrm('students')->whereIn('grade', [11, 14])->update(['grade' => 12]);
-        // с 1 по 10 +1
-        dbEgecrm('students')->whereBetween('grade', [1, 10])->increment('grade');
-
-        // 11 и экстернат в студенты
         DB::table('clients')->whereIn('grade', [11, 14])->update(['grade' => 12]);
         // с 1 по 10 +1
         DB::table('clients')->whereBetween('grade', [1, 10])->increment('grade');

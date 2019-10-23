@@ -106,8 +106,12 @@ class ExternalController extends Controller
                 ]);
                 event(new SmsStatusUpdate($request->id, $request->status));
             } else {
-                // иначе отправляем уведомление о смене статуса в EGECRM
-                Api::exec('SmsStatus', $request->all());
+                // тут было обновление статуса SMS для EC
+                dbEgecrm2('sms_messages')
+                    ->where('external_id', $request->id)
+                    ->update([
+                        'id_status' => $request->status
+                    ]);
             }
         }
     }

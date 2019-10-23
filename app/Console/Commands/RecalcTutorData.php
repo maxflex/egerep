@@ -65,7 +65,6 @@ class RecalcTutorData extends Command
                                     ->where('tutor_id', $tutor_id)
                                     ->where('reviews.state', 'published')
                                     ->whereBetween('score', [1, 10])->count(),
-                'reviews_count_egecrm' => DB::connection('egecrm')->table('teacher_reviews')->where('published', 1)->where('id_teacher', $tutor_id)->count(),
                 'review_avg' => static::_getReviewAvg($tutor_id),
                 'photo_exists' => static::_photoExists($tutor_id),
             ]);

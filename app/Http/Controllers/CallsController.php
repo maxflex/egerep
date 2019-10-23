@@ -10,15 +10,6 @@ use App\Http\Controllers\Controller;
 
 class CallsController extends Controller
 {
-    public function index()
-    {
-        return view('calls.index')->with(
-            ngInit([
-                // 'month' => date('n'),
-            ])
-        );
-    }
-
     public function missed()
     {
         return view('calls.missed')->with(ngInit([

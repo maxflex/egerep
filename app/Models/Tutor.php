@@ -213,7 +213,7 @@ class Tutor extends Service\Person
 
     public function getStatisticsAttribute()
     {
-        $stats = Api\Api::exec('teacherStatistics', ['tutor_id' => $this->id]);
+        $stats = (object) [];
 //        $stats->er_review_count = Attachment::where('tutor_id', $this->id)->has('review')->count();
         $stats->er_review_count = DB::table('reviews')->join('attachments', 'attachments.id', '=', 'attachment_id')->where('tutor_id', $this->id)->whereBetween('score', [1, 10])->count();
         $review_score_sum = DB::table('reviews')->join('attachments', 'attachments.id', '=', 'attachment_id')->where('tutor_id', $this->id)->whereBetween('score', [1, 10])->select('reviews.score')->sum('reviews.score');
@@ -459,9 +459,6 @@ class Tutor extends Service\Person
                         'email' => $tutor->email,
                     ]);
                 }
-            }
-            if ($tutor->changed(['email', 'phone', 'first_name', 'last_name', 'middle_name'])) {
-                $tutor->updateUser();
             }
         });
 
@@ -848,25 +845,6 @@ class Tutor extends Service\Person
           }
           return $return;
       }
-
-    /**
-     * Updates corresponding user from users table
-     */
-    public function updateUser()
-    {
-        if ($this->in_egecentr) {
-            $condition = [
-                'id_entity' => $this->id,
-                'type' => 'TEACHER'
-            ];
-            if (dbEgecrm('users')->where($condition)->exists()) {
-                dbEgecrm('users')->where($condition)->update(['email' => $this->email]);
-            } else {
-                dbEgecrm('users')->insert(array_merge($condition, ['email' => $this->email]));
-            }
-        }
-    }
-
 
      /**
       * Лимит даты для отображения начальной отчетности
