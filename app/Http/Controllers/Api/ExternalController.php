@@ -110,7 +110,7 @@ class ExternalController extends Controller
                 dbEgecrm2('sms_messages')
                     ->where('external_id', $request->id)
                     ->update([
-                        'id_status' => $request->status
+                        'status' => $request->status
                     ]);
             }
         }
