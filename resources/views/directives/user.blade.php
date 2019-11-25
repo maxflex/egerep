@@ -1,1 +1,1 @@
-<span style='color: @{{ model.color }}'>@{{ model.login || 'system' }}</span>
+<span style='color: @{{ model.color }}'>@{{ model.nickname || 'system' }}</span>
