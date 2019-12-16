@@ -15,7 +15,7 @@ angular.module('Egerep').directive 'notifications', ->
         bindDateMask = (notification_id) ->
             $("#notification-#{notification_id}")
                 .find('.notification-date-add')
-                .mask 'd9.y9.y9', {clearIfNotMatch: true}
+                .mask 'd9.y9.99', {clearIfNotMatch: true}
 
         $timeout ->
             $scope.notifications.forEach (notification) ->
