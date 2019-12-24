@@ -19,6 +19,8 @@ class AccountPaymentsController extends Controller
      */
     public function index(Request $request)
     {
+        $per_page = 50;
+
         $account_payments = AccountPayment::orderBy('date', 'desc');
 
         // фильр по пользователям
