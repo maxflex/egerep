@@ -44,7 +44,7 @@ class Log extends Model
 
         $return = [];
 
-        foreach(array_diff($tables, self::EXCLUDE_TABLES) as $table) {
+        foreach(array_diff($tables, self::EXCEPT_TABLES) as $table) {
             if ($table) {
                 $return[$table] = Schema::getColumnListing($table);
             }
